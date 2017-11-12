@@ -1,0 +1,80 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model MemberAddressDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.MemberId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.MemberId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Receiver) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Receiver, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ProvinceId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ProvinceId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.CityId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.CityId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.HomeAddress) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.HomeAddress, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Telephone) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Telephone, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.MobilePhone) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.MobilePhone, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ZipCode) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ZipCode, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.IsDefault) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.IsDefault, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m=> m.Id)

@@ -1,0 +1,136 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model Discount
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DiscountName) :
+    </label>
+    <div class="col-md-6">
+		@Model.DiscountName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DiscountMethod) :
+    </label>
+    <div class="col-md-6">
+		@Model.DiscountMethod
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-6">
+		@Model.Description
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.StartTime) :
+    </label>
+    <div class="col-md-6">
+		@Model.StartTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.EndTime) :
+    </label>
+    <div class="col-md-6">
+		@Model.EndTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DiscountByPrice) :
+    </label>
+    <div class="col-md-6">
+		@Model.DiscountByPrice
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DiscountPrice) :
+    </label>
+    <div class="col-md-6">
+		@Model.DiscountPrice
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DiscountByAmount) :
+    </label>
+    <div class="col-md-6">
+		@Model.DiscountByAmount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DiscountAmount) :
+    </label>
+    <div class="col-md-6">
+		@Model.DiscountAmount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DiscountType) :
+    </label>
+    <div class="col-md-6">
+		@Model.DiscountType
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DiscountRate) :
+    </label>
+    <div class="col-md-6">
+		@Model.DiscountRate
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.UpdatedTime) :
+    </label>
+    <div class="col-md-6">
+		@Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.CreatedTime) :
+    </label>
+    <div class="col-md-6">
+		@Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-6">
+		@Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-6">
+		@Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		操作人员 :
+    </label>
+    <div class="col-md-6">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

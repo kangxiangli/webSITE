@@ -1,0 +1,544 @@
+.rt_content_box {
+	min-width: 1000px;
+    width: 83%;
+    height: 85%;
+    overflow-y: scroll;
+    position: absolute;
+    top: 9%;
+    left: 14%;
+    color: #fff;
+}
+
+/*.pay_bg {
+	position: fixed;
+	
+	background: url('../../../Content/Images/information/bg.png') center center no-repeat;
+	background-size: 100% auto;
+	width: 100%;
+	height: 100%;
+	opacity: 0.7;
+}*/
+.payment_content_1{
+		/*width: 980px;*/
+	position: relative;
+	width: 80%;
+	/*padding-top: 16px;*/
+	margin-left: 50px;
+	box-sizing: border-box;
+}
+.payment_content {
+	/*width: 980px;*/
+	position: relative;
+	
+	/*padding-top: 16px;*/
+	margin-left: 50px;
+	box-sizing: border-box;
+}
+
+.pay_order {
+	height: 60px;
+	line-height: 60px;
+	font-size: 16px;
+}
+
+.payment_baran p {
+	padding: 1%;
+    margin-left: 3%;
+}
+
+.pay_price,
+.exchange {
+	color: #cfa972;
+	font-size: 24px;
+}
+
+.payment_box {
+	position: relative;
+    height: 60%;
+    width: 85%;
+    margin-top: 4%;
+    margin-left: 6%;
+    box-sizing: border-box;
+    padding-top: 6%;
+	background: rgba(255, 255, 255, 0.2);
+}
+
+.stored_value {
+	display: inline-block;
+	font-size: 18px;
+	    height: 6%;
+    width: 23%;
+	text-align: center;
+	
+}
+
+.payment_one,
+.payment_tow,
+.payment_three {
+	display: flex;
+}
+
+.payment_tow span,
+.payment_three span {
+	text-align: center;
+}
+
+.payment_tow_box,
+.payment_tree_box {
+	
+}
+
+.pay_moneny {
+	color: RGB(108, 198, 102);
+}
+
+.exchange {
+	color: #CFA972;
+	font-size: 12px;
+}
+.exchange_done{
+	color: #CFA972;
+	font-size: 16px;
+}
+.payment_tow,
+.payment_three {
+	width: 100%;
+}
+
+.payment_tow_box,
+.payment_three_box,.payment_one,.payment_tree_box {
+	margin: 10px 0;
+}
+
+.payment_one span{
+	align-self: center;
+}
+.payment_four_box {
+	width: 90%;
+	margin: 0 auto;
+	padding-bottom: 7px;
+}
+
+
+.payment_four {
+	width: 100%;
+}
+
+
+.payment_four_box {
+	height: 17%;
+    display: flex;
+     border-top: 1px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+.payment_four_box span{
+align-self: center;
+}
+.stored_online {
+	text-align: center;
+    font-size: 18px;
+    height: 37%;
+    width: 16%;
+}
+.pay_balance,.stored_jifen,.pay_integral{
+	    width: 9%;
+    display: inline-block;
+ 
+    text-align: right;
+}
+.pay_for_me{
+	width: 14%;
+    display: inline-block;
+    text-align: right;
+}
+#payment_sure {
+	width: 116px;
+	height: 40px;
+	line-height: 40px;
+	margin: 2px;
+	font-size: 16px;
+	text-align: center;
+	background-color: #c9a978;
+	bottom: 15%;
+	position: absolute;
+	left: 7%;
+	cursor: pointer;
+}
+
+
+/*支付完成页面*/
+
+.payment_done_content {
+	    width: 80%;
+    height: 30%;
+	position: absolute;
+	background: rgba(255, 255, 255, 0.2);
+	top: 100px;
+	left: 71px;
+}
+
+.payment_done_txt {}
+
+.payment_done_txt img {
+	width: 64px;
+	height: 64px;
+	line-height: 64px;
+	vertical-align: middle;
+	    margin-right: 5%;
+}
+
+.payment_done_box {
+	margin-left: 76px;
+	margin-top: 40px;
+	height: 50%;
+	
+}
+
+.payment_done_home {
+	color: #bababa;
+}
+
+.payment_done_txts {
+	    margin-left: 11%;
+}
+
+.payment_done_check {
+	width: 80px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	background: #b5b5b5;
+	font-size: 16px;
+	border-radius: 5px;
+	color: #fff;
+	display: block;
+	margin-left: 12%;
+    margin-top: 1%;
+}
+
+
+/*全部订单*/
+
+.all_order_txt {
+	font-size: 16px;
+    height: 10%;
+    line-height: 5;
+}
+
+.tabBox {
+	width: 90%;
+	overflow: hidden;
+	
+}
+
+.tabBox ul {
+	position: relative;
+	top: 1px;
+	overflow: hidden;
+}
+
+.order_content_box:after {
+	content: "";
+	display: block;
+	border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.tabBox ul li {
+	display: inline-block;
+	margin-right: 10px;
+	font-size: 14px;
+	width: 100px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.tabBox ul li span {
+	color: #cfa972;
+	margin-left: 15px;
+}
+
+.tabBox ul li.bg {
+	background: rgba(255, 255, 255, .2);
+}
+
+.tabBox .order_content_1,
+.tabBox .order_content_2,
+.tabBox .order_content_3,
+.tabBox .order_content_4 {
+	display: none;
+}
+
+.tabBox div.bg {
+	display: block;
+}
+
+.recently {
+	padding: 7px;
+	border: 1px solid rgba(255, 255, 255, .2);
+	border-bottom: none;
+}
+
+.all_order_right {
+	display: flex;
+	position: absolute;
+	width: 237px;
+	top: 9%;
+	right: 24%;
+}
+
+.order_number:hover,
+.recently:hover {
+	cursor: pointer;
+}
+
+.order_number,
+.recently {
+	background: none !important;
+	border-bottom: none !important;
+	color: rgba(255, 255, 255, .7) !important;
+}
+
+.order_number {
+	text-align: left;
+	height: 33px;
+	margin-left: 22px;
+	border-left: 1px solid rgba(255, 255, 255, .5);
+	border-right: 1px solid rgba(255, 255, 255, .5);
+	border-top: 1px solid rgba(255, 255, 255, .5);
+}
+
+.order_search_box {
+	position: relative;
+}
+
+.order_search {
+	position: absolute;
+	right: 7%;
+	top: 23%;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	cursor: pointer;
+	background: url(/Content/Images/fangdajiang.png) no-repeat;
+	background-size: cover;
+}
+
+
+/*content*/
+
+
+#menu {
+		/*height: 40px !important;
+		background: #333;*/
+		display: none;
+	}
+
+#menu .menuCon {
+	margin: 0 auto;
+}
+
+#menu .menuCon .shop {
+	position: relative;
+	float: right;
+	width: 120px;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	color: #b0b0b0;
+	background: #424242;
+}
+
+#menu .menuCon .shop.bg {
+	background: #fff;
+	color: orange;
+}
+
+#menu .menuCon .shop .shopDetail {
+	display: none;
+	position: absolute;
+	top: 40px;
+	right: 0;
+	width: 316px;
+	height: 95px;
+	line-height: 95px;
+	text-align: center;
+	background: #fff;
+	box-shadow: 3px 8px 10px 0 #ccc;
+}
+
+.menu_content {
+	    height: 80%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.menu_list {
+	background: rgba(255, 255, 255, .2);
+    height: 7%;
+    display: flex;
+    justify-content: space-around;
+}
+.menu_list span{align-self: center;}
+.menu_detail {
+	    display: flex;
+    justify-content: space-around;
+     width: 100%;
+     height: 10%;
+     padding-top: 4%;
+}
+.order_detail {
+	display: inline-block;
+	text-align: center;
+	width: 42%;
+}
+
+
+.menu_stuta_num,
+
+.menu_money,.order_reader_txt,.content_2_box_txt,.content_3_txt{
+	color: #ffd36f;
+}
+
+.menu_eye {
+	width: 30px;
+	height: 20px;
+	cursor: pointer;
+}
+
+.thumbnail_current_img {
+	max-width: 60px;
+	display: inline-block;
+	height:60px;
+	overflow: hidden;
+}
+
+.thumbnail_current_img img {
+	display: inline-block;
+	width: 100%;
+}
+
+#menu {
+/*height: 76%;*/
+	background: #8c8c8c;
+}
+
+#menu li {
+    height: 14%;
+	width: 100%;
+	margin: 5px;
+	text-align: left;
+}
+
+.menu_costume {
+	height: 60px !important;
+	line-height: 60px;
+	display: inline-block;
+    vertical-align: bottom;
+	    width: 17%;
+    text-align: center;
+}
+.menu_property{
+	line-height: 21px;
+    display: inline-block;
+    width: 13%;
+    margin-left: 4%;
+    vertical-align: super;
+}
+#menu_list{
+	margin: 2px !important;
+}
+.menu_size_txt,.menu_colour_txt,.order_online_money{
+
+	
+}
+.menu_size,.menu_colour,.order_num,.order_online_money,#time{
+	color: #fff !important;
+}
+.order_num_box,.order_time_box{
+	    vertical-align: text-bottom;
+	        width: 8%;
+	display: inline-block;
+}
+.order_num_money,.order_online_money{
+	   height: 60px !important;
+    line-height: 60px;
+    display: inline-block;
+    vertical-align: bottom;
+    width: 12%;
+    text-align: center;
+}
+.order_online_time{
+	
+    height: 15px;
+    width: 15px;
+    vertical-align: middle;
+    /*margin-top: 2%;
+    line-height: 20px;
+    margin-right: 5%;*/
+}
+.order_time_box{
+	 float: right;
+    width: 12%;
+    height: 60px;
+    line-height: 60px;
+}
+#time{
+	margin-left: 5px;
+}
+.order_reader_box{
+	float: right;
+    margin-right: 3%;
+}
+.order_reader_box p{
+	    line-height: 14px;
+}
+.order_footer{
+	width: 100%;
+	   
+    height: 10%;
+	margin-top: 1%;
+	font-size: 14px;
+	border-top: 1px solid  rgba(255, 255, 255, .5);;
+}
+.order_footer_left{
+	    float: left;
+    width: 10%;
+    height: 100%;
+    line-height: 4;
+    text-align: center;
+	cursor: pointer;
+}
+.order_footer_right{
+		cursor: pointer;
+	
+	text-align: center;
+	float: right;
+		   
+    width: 10%;
+    height: 100%;
+    line-height: 4;
+    text-align: center;
+	
+}
+.order_footer_right img{
+
+	width: 15px;
+	height: 15px;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+/*content_2*/
+.content_2_box{
+	    float: right;
+    margin-right: 3%;
+    line-height: 15px;
+    margin-top: 2%;
+}
+.content_3_box{
+	  float: right;
+    margin-right: 3%;
+    line-height: 15px;
+    margin-top: 4%;
+}

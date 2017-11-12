@@ -1,0 +1,9 @@
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Website\wwwroot\built\CreateSaleCompaign.js
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Website\wwwroot\built\GetProductList.js
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Website\wwwroot\built\GetProductsByStore.js
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Website\wwwroot\built\myPage.js
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Website\wwwroot\built\orderblank.js
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Website\wwwroot\built\RetailStep1.js
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Website\wwwroot\built\ReturnProduct.js
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Website\wwwroot\built\StartOrderblank.js
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Website\wwwroot\built\StoreSelect.js

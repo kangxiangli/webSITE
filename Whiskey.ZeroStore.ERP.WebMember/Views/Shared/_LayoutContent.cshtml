@@ -1,0 +1,21 @@
+﻿@{
+    var isAjaxView = ViewContext.ViewBag.isAjaxView;
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@RenderSection("Styles", required: false)
+
+@RenderBody()
+
+@{
+    if (isAjaxView != null && isAjaxView)
+    {
+        <script>
+            $(function () {
+                $.fashion.web.init();
+            });
+        </script>
+    }
+}
+
+@RenderSection("Scripts", required: false)

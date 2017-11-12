@@ -1,0 +1,3 @@
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Winform\obj\Debug\Whiskey.ZeroStore.ERP.Winform.csprojResolveAssemblyReference.cache
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Winform\obj\Debug\App.g.cs
+D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Winform\obj\Debug\Whiskey.ZeroStore.ERP.Winform_MarkupCompile.cache

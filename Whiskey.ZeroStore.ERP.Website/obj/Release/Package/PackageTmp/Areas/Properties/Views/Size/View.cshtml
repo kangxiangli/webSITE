@@ -1,0 +1,85 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@model Size
+<div class="form-group">
+    <label class="control-label col-md-2">
+        一级品类 :
+    </label>
+    <div class="col-md-10">
+        @Model.Category.Parent.CategoryName
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        二级品类 :
+    </label>
+    <div class="col-md-10">
+        @Model.Category.CategoryName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SizeExtentionId) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.SizeExtention != null ? Model.SizeExtention.Name : string.Empty)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.SizeName) :
+    </label>
+    <div class="col-md-10">
+		@Model.SizeName
+    </div>
+</div>
+  
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-10">
+		@Model.Description
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+		@Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+		@Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+		@Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+		@Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		操作人员 :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

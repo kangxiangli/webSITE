@@ -1,0 +1,114 @@
+﻿
+<p>
+    <button id="browse" class="form-control" style="display:inline;width:30%;margin-right:10px">选择文件</button><label id="filename">未选择文件……</label><label id="up_state"></label>
+    <button id="start_upload" class="form-control">开始上传</button>
+
+</p>
+<table class="nwe_table_ra table-list table table-striped table-bordered" width="100%">
+    <thead>
+
+    </thead>
+</table>
+<style>
+    .modal-dialog {
+        width: 60% !important;
+    }
+
+    .sorting_desc {
+        background: white !important;
+    }
+</style>
+<script src="~/Content/plupload-2.1.8/js/plupload.full.min.js"></script>
+<script src="~/Content/plupload-2.1.8/js/jquery.plupload.queue/jquery.plupload.queue.min.js"></script>
+<script>
+    debugger
+    $(function () {
+        var uploader = new plupload.Uploader(
+        {
+            runtimes: 'silverlight,html4,html5,flash',
+            browse_button: 'browse',
+            url: '@Url.Action("ExcelFileUpload")',
+            flash_swf_url: '~/Content/plupload-2.1.8/js/Moxie.swf">~/Content/plupload-2.1.8/js/Moxie.swf',
+            filters: {
+                mime_types: [
+                    { title: "txt", extensions: "txt" },
+                    { title: "excel", extensions: "xls,xlsx" }
+                ],
+                max_file_size: '400kb',
+                prevent_duplicates: true
+            }
+
+        });
+
+        uploader.init();
+        uploader.bind('FilesAdded', function (uploader, files) {
+            $("#filename").html(files[0].name);
+            $("#up_state").html("");
+        });
+        uploader.bind('BeforeUpload', function (uploader, file) {
+
+            $("#up_state").html("正在上传……")
+        }); //
+        uploader.bind('FileUploaded', function (uploader, file, obj) {
+            $("#up_state").html("上传成功");
+            $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+            //if (obj.response != null && obj.response.length > 0)
+            //    var da = $.parseJSON($(obj.response).text());
+            //    initTable(da);
+        });
+
+        $('#start_upload').click(function () {
+            uploader.start();
+        });
+    });
+
+</script>
+
+
+<script>
+    debugger
+    var dts = null;
+
+
+    $(function () {
+        $.whiskey.datatable.instances[0] = $(".nwe_table_ra").dataTable({
+            "bScrollCollapse": false,
+            "bStateSave": true,
+            "sDom": '<"H clearfix datatable-header text-center"r>t<"F clearfix datatable-footer"<"col-md-5"<"col-md-5 info  text-left"i><"pcou col-md-7 text-left info">><"col-md-7 text-right"p>>',
+            "sAjaxSource": "@Url.Action("GetBatchImportExcelData")",
+            "fnPreDrawCallback": function (oSettings) {
+                //alert("hi");
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(0)", nRow).css({ "background": "white" });
+            },
+            "aoColumns": [
+                {
+                    "sTitle": "排序",
+                    "bSortable": false,
+                    "sName": "Number",
+                    "mData": function (data) {
+                        return data.RowInd;
+                    }
+                },
+                {
+                    "sTitle": "<span class='prtit' >编号</span>",
+                    "bSortable": false,
+                    "sName": "ProductNumber",
+                    "mData": function (data) {
+                        return data.ProductBarcode;
+                    }
+                }
+            ]
+
+        });
+    })
+
+    $(function () {
+
+        $("body").delegate(".batch_td_ch", "click", function () {
+
+            $(".td_lef").prop("checked", $(this).is(":checked"));
+        })
+    })
+</script>

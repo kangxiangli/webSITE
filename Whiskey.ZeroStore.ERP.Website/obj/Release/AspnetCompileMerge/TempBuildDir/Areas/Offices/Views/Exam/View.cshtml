@@ -1,0 +1,110 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model ExamEntity
+
+@*<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />*@
+
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+        
+    </li>
+    @*<li>
+        <a href="#info" data-toggle="tab">试题信息</a>
+    </li>*@
+
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Name) :
+            </label>
+            <div class="col-md-7">
+                @Html.DisplayFor(m => m.Name, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.TotalScore) :
+            </label>
+            <div class="col-md-7">
+                @Html.DisplayFor(m => m.TotalScore, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.PassLine) :
+            </label>
+            <div class="col-md-7">
+                @Html.DisplayFor(x => x.PassLine, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.RetryCostScore) :
+            </label>
+            <div class="col-md-7">
+                @Html.DisplayFor(m => m.RetryCostScore, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.RewardMemberScore) :
+            </label>
+            <div class="col-md-7">
+                @Html.DisplayFor(m => m.RewardMemberScore, new { @class = "form-control" })
+            </div>
+        </div>
+        @*<div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.TakeExamCount) :
+            </label>
+            <div class="col-md-7">
+                @Html.DisplayFor(m => m.TakeExamCount, new { @class = "form-control" })
+            </div>
+        </div>*@
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.QuestionCount) :
+            </label>
+            <div class="col-md-7">
+                @Html.DisplayFor(m => m.QuestionCount, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.MinutesLimit) :
+            </label>
+            <div class="col-md-7">
+                @Html.DisplayFor(m => m.MinutesLimit, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.CreatedTime) :
+            </label>
+            <div class="col-md-7">
+                @Html.DisplayFor(m => m.CreatedTime, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.UpdatedTime) :
+            </label>
+            <div class="col-md-7">
+                @Html.DisplayFor(m => m.UpdatedTime, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                操作人:
+            </label>
+            <div class="col-md-7">
+                @Html.DisplayFor(m => m.Operator.Member.MemberName, new { @class = "form-control" })
+            </div>
+        </div>
+
+
+    </div>
+</div>

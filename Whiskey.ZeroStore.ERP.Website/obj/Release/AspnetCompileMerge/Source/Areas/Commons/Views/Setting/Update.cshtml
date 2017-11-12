@@ -1,0 +1,200 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model SettingDto
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SystemMemberConsumeGetScore) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SystemMemberConsumeGetScore, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SystemRecommandUserGetScore) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SystemRecommandUserGetScore, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SystemIsBalanceConsumeGetScore) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SystemIsBalanceConsumeGetScore, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SystemIsPrintWhenSaleProduct) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SystemIsPrintWhenSaleProduct, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SystemIsPrintWhenMemberDeposit) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SystemIsPrintWhenMemberDeposit, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SystemIsInventoryWarning) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SystemIsInventoryWarning, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SystemInventoryWarningNumber) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SystemInventoryWarningNumber, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DeliveryPartner) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DeliveryPartner, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DeliveryKey) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DeliveryKey, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DeliveryAPIUrl) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DeliveryAPIUrl, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DeliveryAPICompany) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DeliveryAPICompany, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DeliveryAPIOrderNumber) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DeliveryAPIOrderNumber, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DeliveryAPIOtherParams) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DeliveryAPIOtherParams, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SMSPartner) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SMSPartner, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SMSPartnerAccount) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SMSPartnerAccount, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SMSKey) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SMSKey, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SMSAPIUrl) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SMSAPIUrl, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SMSAPIMobilePhone) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SMSAPIMobilePhone, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SMSAPIMessageContent) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SMSAPIMessageContent, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.SMSNumberOfWordLimit) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.SMSNumberOfWordLimit, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.MemberIsBirthdayWarning) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.MemberIsBirthdayWarning, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.MemberBirthdayWarningAdvancedDays) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.MemberBirthdayWarningAdvancedDays, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.MemberIsSendSMSOnBirthday) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.MemberIsSendSMSOnBirthday, new { @class = "form-control control-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.MemberSendSMSContent) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.MemberSendSMSContent, new { @class = "form-control control-input" })
+    </div>
+</div>
+@Html.HiddenFor(m=> m.Id)

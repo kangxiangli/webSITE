@@ -1,0 +1,137 @@
+﻿@using Whiskey.Utility.Data
+
+<style>
+    .modal-dialog {
+        width: 750px;
+    }
+
+    #whestr input {
+        background-color: #dddddd;
+    }
+     
+</style>
+<div class="row">
+    <div class="col-md-7">
+        <div id="left_content" title="请选择右侧的下拉菜单以激活当前区域">
+            <div class="panel panel-primary panel-dark widget-profile">
+                <div class="panel-heading">
+                    <div class="widget-profile-bg-icon"></div>
+                    <div class="widget-profile-header text-center">
+                        <h3>请使用扫码枪将商品货号扫入下边文本框</h3>
+                    </div>
+                </div>
+                <div class="list-group-item no-border-hr clearfix valign-middle">
+                    <div>
+                        @* <div class="col-md-3"></div>*@
+                        <div class="" style="padding-left:0;margin-bottom:10px">
+                            @Html.TextBox("ScanNumber", "", new { @placeholder = "", @class = "scan-number  text-center input-lg form-control", @style = "ime-mode:disabled;margin-top:15px;display:inline;width:75%;height:30%", @onkeyup = "this.value=this.value.toUpperCase().replace(/[\u4e00-\u9fa5]/g,'')" })
+                            <input id="sear-ok" class="input-lg form-control" style="display:inline;width:16%;margin-left:auto" type="button" value="&raquo" />
+                        </div>
+                        <div class="col-md-3"></div>
+                        <div>
+                            <input class="form-control" id="selec_prod_list" type="button" value="选择商品……" style="font-weight: bold;" />
+                            <input class="form-control" id="selec_prodBatch_list" type="button" value="批量导入……" style="font-weight: bold;" />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-profile-counters clearfix">
+                    <div class="col-xs-4"><label class="label label-info scan-queue-count">0</label><br />队列数量</div>
+                    <div class="col-xs-4">
+                        <a href="javascript:void(0)" class="scan-valid" style="cursor:pointer;">
+                            <label class="label label-success scan-valid-count" style="cursor:default">0</label>
+                            <br />有效数量
+                        </a>
+                    </div>
+                    <div class="col-xs-4">
+                        <a href="javascript:void(0)" class="scan-invalid" style="cursor:pointer;">
+                            <label class="label label-danger scan-invalid-count" style="cursor:pointer">0</label>
+                            <br />无效数量
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="hid-ordernum_dat" value="@ViewBag.Ordernum"><div class="col-md-5">
+        <div class="stat-panel">
+            <div class="stat-row">
+                <div class="stat-cell padding-sm-hr bordered valign-top" style="padding-top:0;padding-bottom:3px">
+                    <ul id="whestr" class="list-group no-margin">
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                            <label class="control-label col-md-4">出货店铺：</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("outStore", (string)ViewBag.outStore, new { @class = "form-control receive-store" })
+
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                            <label class="control-label col-md-4">出货仓库：</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("outStorageId", (string)ViewBag.outStorage, new { @class = "form-control receive-store" })
+                                <input type="hidden" id="lin_outStorageId" value="@ViewBag.outStorageId" />
+
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                            <label class="control-label col-md-4">入货店铺：</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("inStore", (string)ViewBag.inStore, new { @class = "form-control receive-store" })
+
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                            <label class="control-label col-md-4">入货仓库：</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("inStorage", (string)ViewBag.inStorage, new { @class = "form-control receive-store" })
+
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                            <label class="control-label col-md-4">备注信息：</label>
+                            <div class="col-md-8">
+                                <textarea id="cre_Notes" class="form-control">@ViewBag.notes</textarea>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="row">
+                                <!--发货按钮-->
+                                <button id="save_pur" type="button" style="padding:4px 0" class="btn btn-success btn-padding-right col-md-2"><i class="fa fa-arrow-right"></i>发货</button>
+                                <!--保存按钮-->
+                                <button id="saveord_notsend" type="button" style="padding:4px 0" class="btn btn-primary btn-padding-right col-md-2"><i class="fa fa-arrow-right"></i>保存</button>
+                                <!--移除按钮-->
+                                <button id="removeall_ord" style="padding: 4px 0" type="button" class="btn btn-danger btn-padding-right col-md-2"><i class="fa fa-trash"></i> 移除所选商品</button>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-12">
+        <div class="panel  panel-list">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <h5>配货单商品</h5>
+                </div>
+                <div class="panel-title">
+                    <h5><i class=""></i><span style="float:right;margin-top: -23px;"><a class="btn btn-success btn-padding-right" href="/Warehouses/Orderblank/Index">返回配货管理</a></span></h5>
+                </div>
+            </div>
+            <div>
+                <table class="table pur_list_tab_cre table-list valign-middle" width="100%">
+                    <thead>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<input type="hidden" id="orderblankId" value="@ViewBag.OrderblankId" />
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="~/wwwroot/built/StartOrderblank.js"></script>

@@ -1,0 +1,157 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model MemberSingleProduct
+<style>
+	.modal-content {
+    width: 890px !important;
+}
+	.thumbnail{
+		padding: 0px;
+		max-width: 60px;
+       border: 1px solid #eaeaea;
+       margin: 0 auto 0 auto;
+       position: relative;
+       padding-bottom: 60px;
+       height: 0;
+       overflow: hidden;
+
+	}
+	.thumbnail img{
+		 width: 100%;
+           left: 0;
+           padding: 2px;
+           height: 100%;
+           position: absolute;
+	}
+</style>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ProductName) :
+    </label>
+    <div class="col-md-10">
+        @Model.ProductName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ColorId) :
+    </label>
+    <div class="col-md-10">
+        @ViewBag.Color
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SeasonId) :
+    </label>
+    <div class="col-md-10">
+        @ViewBag.Season
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SizeId) :
+    </label>
+    <div class="col-md-10">
+        @ViewBag.Size
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CategoryId) :
+    </label>
+    <div class="col-md-10">
+        @ViewBag.Category
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ProductAttrId) :
+    </label>
+    <div class="col-md-10">
+        @ViewBag.ProductAttr
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Brand) :
+    </label>
+    <div class="col-md-10">
+        @Model.Brand
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CoverImage) :
+    </label>
+    <div class="row">
+        <div class="col-xs-6 col-md-3">
+            <a href="#" class="thumbnail" >
+                <img class="popimg" src="@UiHelper.ApiUrl()@Model.CoverImage" alt="封面" id="CoverImage" />
+            </a>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Image) :
+    </label>
+    <div class="row">
+        <div class="col-xs-6 col-md-3">
+            <a href="#" class="thumbnail">
+                <img class="popimg" src="@UiHelper.ApiUrl()@Model.Image" alt="图片"/>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Price) :
+    </label>
+    <div class="col-md-10">
+        @Model.Price
+    </div>
+</div>
+
+ 
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        操作人员 :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>
+ 

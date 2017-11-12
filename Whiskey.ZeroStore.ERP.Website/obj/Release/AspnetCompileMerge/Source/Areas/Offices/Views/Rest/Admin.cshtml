@@ -1,0 +1,278 @@
+﻿
+<style>
+    #hoverStyle_tow:hover {
+        width: 62px;
+        border-radius: 0%;
+        background: black !important;
+    }
+
+    #hoverStyle_tow {
+        width: 62px;
+        border-radius: 0% !important;
+        background: #5cb85c !important;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-7">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">员工姓名</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("RealName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">可查看部门：</label>
+                        <div class="col-md-7">
+                            @Html.DropDownList("DepartmentId", (List<SelectListItem>)ViewBag.depList, new { @class = "form-control ser_sel" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+            <div class="pull-right">
+                <button id="Choose_All" title="将当前部门所有成员全部选择" type="button" onclick="Operation_All(false)" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>选择当前部门</span></button>
+                <button id="Delete_All" title="将当前部门所有成全全部删除" type="button" onclick="Operation_All(true)" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>删除当前部门</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $(".table-list").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("AdminList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("CouponId", "@ViewBag.CouponId", "equal"));
+                $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                });
+                var departmentId = $("#DepartmentId").val();
+                if (departmentId != undefined && departmentId.trim().length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("DepartmentId", departmentId, "equal"));
+                }
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+
+            {
+                "sTitle": "员工名称",
+                "bSortable": false,
+                "sName": "MemberName",
+                "mData": function (data) {
+                    return data.RealName;
+                },
+            },
+            {
+                "sTitle": "年假",
+                "bSortable": false,
+                "sName": "AnnualLeaveDays",
+                "mData": function (data) {
+                    return data.AnnualLeaveDays + "天";
+                },
+            },
+            {
+                "sTitle": "调休",
+                "bSortable": false,
+                "sName": "ChangeRestDays",
+                "mData": function (data) {
+                    return data.ChangeRestDays;
+                },
+            },
+            {
+                "sTitle": "带薪休假",
+                "bSortable": false,
+                "sName": "PaidLeaveDays",
+                "mData": function (data) {
+                    return data.PaidLeaveDays;
+                },
+            },
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    var btn = '<button id="hoverStyle_tow" type="button" onclick="Opera(this,false)" style="width: 62px;height: 30px;" class="btn btn-light-green" data-name="' + data.RealName + '"  data-id="' + data.Id + '">选择</button>';
+                    var ids = $("#AdminIds").val();
+                    if (ids != undefined && ids != "" && ids.split(',').indexOf(data.Id.toString()) > -1) {
+                        btn = '<button id="Clear_single_this" type="button" onclick="Opera(this,true)" style="width: 62px;height: 30px;" class="btn btn-light-green" data-name="' + data.RealName + '"  data-id="' + data.Id + '">删除</button>';
+                    }
+                    return btn;
+                },
+            },
+            ]
+        });
+
+        $("#Search").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+
+        $("#Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+
+    });
+
+    //操作单个员工(isdelete:是否为删除操作，true为删除，false为选择)
+    function Opera(my, isdelete) {
+        var name = $(my).attr("data-name");
+        var id = $(my).attr("data-id");
+        var msg = "";
+        if (!isdelete) {
+            msg = choose(name, id);
+        } else {
+            msg = clear_single(name, id);
+        }
+        if (msg != "ok") {
+            $.whiskey.web.alert({
+                type: "danger",
+                content: msg,
+                callback: function () {
+                }
+            });
+        }
+        $.whiskey.datatable.reset(false);
+    }
+
+    //选择员工
+    function choose(name, id) {
+        if ($("#RealNames").val() == undefined || $("#RealNames").val() == "" || $("#AdminIds").val() == undefined || $("#AdminIds").val() == "") {
+            $("#RealNames").attr("value", name);
+            $("#AdminIds").attr("value", id);
+            return "ok";
+        }
+        var names = $("#RealNames").val().split(',');
+        var ids = $("#AdminIds").val().split(',');
+
+        var index = ids.indexOf(id);
+        if (index > -1) {
+            return "已选择该用户，无法重复选择";
+        }
+        $("#RealNames").attr("value", names + "," + name);
+        $("#AdminIds").attr("value", ids + "," + id);
+        return "ok";
+    }
+
+    //删除员工
+    function clear_single(name, id) {
+        if ($("#RealNames").val() == undefined || $("#RealNames").val() == "" || $("#AdminIds").val() == undefined || $("#AdminIds").val() == "") {
+            return "未选择该用户，无法删除";
+        }
+        var names = $("#RealNames").val().split(',');
+        var ids = $("#AdminIds").val().split(',');
+
+        var index = ids.indexOf(id);
+        if (index <= -1) {
+            return "未选择该用户，无法删除";
+        }
+        ids.splice(index, 1);
+        names.splice(index, 1);
+        $("#RealNames").attr("value", names.join(','));
+        $("#AdminIds").attr("value", ids.join(','));
+        return "ok";
+    }
+
+    //操作当前部门全体员工(isdelete:是否为删除操作，true为删除，false为选择)
+    function Operation_All(isdelete) {
+        var value = $("#DepartmentId").val();
+        var departmentId = 0;
+        if (value != null && value.trim().length > 0) {
+            departmentId = parseInt(value);
+        }
+        var msg = "提示：整体选择时间较长，请耐心等待";
+        if (isdelete)
+        {
+            msg = "提示：整体删除时间较长，请耐心等待";
+        }
+        $.whiskey.web.ajaxConfirm({
+            question: "确认要将该部门成员全部选择吗？",
+            notes: msg,
+            actionUrl: "@Url.Action("GetAdminListByDepartmentId")",
+            params: { DepartmentId: departmentId },
+            success: function (data) {
+                if (!isdelete) {
+                    for (var i = 0; i < data.length; i++) {
+                        choose(data[i].RealName, data[i].Id);
+                    }
+                    msg = "选择完成";
+                } else {
+                    for (var i = 0; i < data.length; i++) {
+                        clear_single(data[i].RealName, data[i].Id);
+                    }
+                    msg = "删除完成";
+                }
+
+                $.whiskey.web.alert({
+                    type: "danger",
+                    content: msg,
+                    callback: function () {
+                    }
+                });
+            },
+            complete: function () {
+                $.whiskey.datatable.reset(false);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,734 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@model WorkTime
+
+<style>
+    .activeDate {
+        background-image: url("/Content/Images/themes/dh.png");
+        background-repeat: no-repeat;
+        background-size: 70% 70%;
+        background-position: 11px 7px;
+    }
+
+    .diaclg .modal-dialog {
+        width: 40%;
+        max-width: 80%;
+    }
+
+    .active_Check {
+        border: 2px solid #5ebd5e !important;
+    }
+
+    #monthTable td {
+        cursor: pointer;
+    }
+
+    .activeDate-blue {
+        background-image: url("/Content/Images/themes/dh-blue.png");
+        background-repeat: no-repeat;
+        background-size: 70% 70%;
+        background-position: 11px 7px;
+    }
+</style>
+
+<div class="row" id="updateWork">
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            使用职位时间 :
+        </label>
+        <div class="col-md-1">
+            @Html.CheckBox("enable_Job", Model.IsPersonalTime ? false : true, new { @class = "form-control", @onchange = "changetype(this)" })
+        </div>
+        <label class="control-label col-md-3">
+            使用个人时间 :
+        </label>
+        <div class="col-md-1">
+            @Html.CheckBox("IsPersonalTime", Model.IsPersonalTime, new { @class = "form-control", @onchange = "changetype(this)" })
+        </div>
+    </div>
+</div>
+<div class="row job_per">
+    <div class="form-group" style="display:none">
+
+        <label class="control-label col-md-3">
+            @Html.DisplayNameFor(m => m.WorkTimeName) :
+        </label>
+        <div class="col-md-7">
+            @Html.TextBoxFor(m => m.WorkTimeName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group" style="display:none">
+        <label class="control-label col-md-3">
+            @Html.DisplayNameFor(m => m.IsVacations) :
+        </label>
+        <div class="col-md-1">
+            @Html.CheckBoxFor(m => m.IsVacations, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group" style="display:none">
+        <label class="control-label col-md-3">
+            @Html.DisplayNameFor(m => m.IsFlexibleWork) :
+        </label>
+        <div class="col-md-1">
+            @Html.CheckBoxFor(m => m.IsFlexibleWork, new { @class = "form-control", @onchange = "setFlexible()" })
+        </div>
+    </div>
+    <div class="form-group warning alert-danger" id="warn" style="display:none">
+        <label class="control-label col-md-3">
+            警告 :
+        </label>
+        <div class="col-md-5">
+            <label class="control-label col-md-8">
+                <i class="fa fa-warning"></i><span id="warnInfo">请选择</span>
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            工作时间:
+        </label>
+        <div class="col-md-7">
+            <input type="text" id="WorkWeek" style="width: 100%;display:none;" readonly>
+            <span id="WorkWeekSpan" style="width:100%;color:#3ccf3c;display:inline-block;min-height:31px;line-height:27px;font-size: 17px;letter-spacing: 1px;font-weight: bolder;border:1px solid #888"></span>
+
+            <table id="monthTable" class="table table-list table-hover valign-middle table-verify">
+                <tr>
+                    <td data_value="01">1</td>
+                    <td data_value="02">2</td>
+                    <td data_value="03">3</td>
+                    <td data_value="04">4</td>
+                    <td data_value="05">5</td>
+                    <td data_value="06">6</td>
+                    <td data_value="07">7</td>
+                </tr>
+                <tr>
+                    <td data_value="08">8</td>
+                    <td data_value="09">9</td>
+                    <td data_value="10">10</td>
+                    <td data_value="11">11</td>
+                    <td data_value="12">12</td>
+                    <td data_value="13">13</td>
+                    <td data_value="14">14</td>
+                </tr>
+                <tr>
+                    <td data_value="15">15</td>
+                    <td data_value="16">16</td>
+                    <td data_value="17">17</td>
+                    <td data_value="18">18</td>
+                    <td data_value="19">19</td>
+                    <td data_value="20">20</td>
+                    <td data_value="21">21</td>
+                </tr>
+                <tr>
+                    <td data_value="22">22</td>
+                    <td data_value="23">23</td>
+                    <td data_value="24">24</td>
+                    <td data_value="25">25</td>
+                    <td data_value="26">26</td>
+                    <td data_value="27">27</td>
+                    <td data_value="28">28</td>
+                </tr>
+                <tr>
+                    <td data_value="29">29</td>
+                    <td data_value="30">30</td>
+                    <td data_value="31">31</td>
+
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            @Html.DisplayNameFor(m => m.WorkTimeType) :
+        </label>
+        <div class="col-md-7" id="divAmStartTime">
+            <select class="form-control cur_selectpicker" name="WorkTimeType" id="WorkTimeType" onchange="setTime()">
+                <option value="@((int)WorkTimeFlag.AllDay)">全天班</option>
+                <option value="@((int)WorkTimeFlag.HalfDay)">小时工</option>
+                <option value="@((int)WorkTimeFlag.Rest)">休息</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group worktime">
+        <label class="control-label col-md-3" id="labAmStartTime">
+            @Html.DisplayNameFor(m => m.AmStartTime) :
+        </label>
+        <div class="col-md-7" id="divAmStartTime">
+            <div class="input-daterange input-group">
+                <select class="input-sm form-control hour" onchange="setTime()"></select>
+                <span class="input-group-addon">:</span>
+                <select class="input-sm form-control minute" onchange="setTime()"></select>
+            </div>
+        </div>
+        @*<input type="hidden" name="AmStartTime" id="AmStartTime" />*@
+        @Html.HiddenFor(m => m.AmStartTime)
+    </div>
+    <div class="form-group" style="display:none;">
+        <label class="control-label col-md-3">
+            @Html.DisplayNameFor(m => m.AmEndTime) :
+        </label>
+        <div class="col-md-7" id="divAmEndTime">
+            <div class="input-daterange input-group">
+                <select class="input-sm form-control hour" onchange="setTime()"></select>
+                <span class="input-group-addon">:</span>
+                <select class="input-sm form-control minute" onchange="setTime()"></select>
+            </div>
+        </div>
+        @*<input type="hidden" name="AmEndTime" id="AmEndTime" />*@
+        @Html.HiddenFor(m => m.AmEndTime)
+    </div>
+    <div class="form-group" style="display:none;">
+        <label class="control-label col-md-3">
+            @Html.DisplayNameFor(m => m.PmStartTime) :
+        </label>
+        <div class="col-md-7" id="divPmStartTime">
+            <div class="input-daterange input-group">
+                <select class="input-sm form-control hour" onchange="setTime()"></select>
+                <span class="input-group-addon">:</span>
+                <select class="input-sm form-control minute" onchange="setTime()"></select>
+            </div>
+        </div>
+        @*<input type="hidden" name="PmStartTime" id="PmStartTime" />*@
+        @Html.HiddenFor(m => m.PmStartTime)
+    </div>
+
+    <div class="form-group worktime">
+        <label class="control-label col-md-3" id="labPmEndTime">
+            @Html.DisplayNameFor(m => m.PmEndTime) :
+        </label>
+        <div class="col-md-7" id="divPmEndTime">
+            <div class="input-daterange input-group">
+                <select class="input-sm form-control hour" onchange="setTime()"></select>
+                <span class="input-group-addon">:</span>
+                <select class="input-sm form-control minute" onchange="setTime()"></select>
+            </div>
+        </div>
+        @*<input type="hidden" name="PmEndTime" id="PmEndTime" />*@
+        @Html.HiddenFor(m => m.PmEndTime)
+    </div>
+    <div class="form-group worktime">
+        <label class="control-label col-md-3">
+            @Html.DisplayNameFor(m => m.WorkHour)（小时） :
+        </label>
+        <div class="col-md-7">
+            @Html.TextBoxFor(m => m.WorkHour, new { @class = "form-control", @readonly = "readonly" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+
+        </label>
+        <div class="col-md-7">
+            <button data-bb-handler="cancel" id="wtdSave" type="button" class="btn btn-primary">保存</button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            @Html.DisplayNameFor(m => m.Summary) :
+        </label>
+        <div class="col-md-7">
+            @Html.TextAreaFor(m => m.Summary, new { @class = "form-control" })
+        </div>
+    </div>
+    @Html.HiddenFor(x => x.AdminId)
+    @Html.HiddenFor(x => x.Id)
+    <input type="hidden" id="CurrentOrNext" value="@ViewBag.CurrentOrNext" />
+</div>
+<link href="/Content/Styles/Bootstrap/BootstrapSelect/bootstrap-select.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/BootstrapSelect/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+    function Dictionary() {
+        this.data = new Array();
+
+        this.put = function (key, value) {
+            this.data[key] = value;
+        };
+
+        this.get = function (key) {
+            return this.data[key];
+        };
+
+        this.remove = function (key) {
+            this.data[key] = null;
+        };
+
+        this.isEmpty = function () {
+            return this.data.length == 0;
+        };
+
+        this.size = function () {
+            return this.data.length;
+        };
+    }
+    var WorkTimeDetaileArry = new Dictionary();
+
+    function WorkTimeDetaile(Id, WorkDay, WorkTimeType, AmStartTime, AmEndTime, PmStartTime, PmEndTime, WorkHour, IsFlexibleWork) {
+        this.Id = Id;
+        this.WorkDay = WorkDay;
+        this.WorkTimeType = WorkTimeType;
+        this.AmStartTime = AmStartTime;
+        this.AmEndTime = AmEndTime;
+        this.PmStartTime = PmStartTime;
+        this.PmEndTime = PmEndTime;
+        this.WorkHour = WorkHour;
+        this.IsFlexibleWork = IsFlexibleWork;
+    }
+    if ("@ViewBag.WtdArry.Count" != "0") {
+        @{
+            foreach (var item in ViewBag.WtdArry)
+            {
+                 @: var wtd_default = new WorkTimeDetaile("@item.Id", "@item.WorkDay", "@item.WorkTimeType", "@item.AmStartTime", "@item.AmEndTime", "@item.PmStartTime", "@item.PmEndTime", "@item.WorkHour", "@item.IsFlexibleWork");
+                                                        if (item.WorkDay < 10)
+                {
+                    @: WorkTimeDetaileArry.put("0" + "@item.WorkDay", wtd_default);
+                                                        }
+                else {
+                     @: WorkTimeDetaileArry.put("@item.WorkDay", wtd_default);
+                                                }
+            }
+        }
+    } else {
+        for (var i = 1; i < 32; i++) {
+            var wtd_default = new WorkTimeDetaile(0, i, 2, "00:00", "00:00", "00:00", "00:00", 0, false);
+            if (i < 10) {
+                WorkTimeDetaileArry.put("0" + i.toString(), wtd_default);
+            } else {
+                WorkTimeDetaileArry.put(i.toString(), wtd_default);
+            }
+        }
+    }
+    $(function () {
+        $(".bootbox #WorkTimeName").val("工作时间");
+        function SplitStr(str) {
+            if (str != "") {
+                var restult = "";
+                var dataArry = new Array();
+                $(str.split(",").sort()).each(function () {
+                    if (this != "") {
+                        restult += this + ",";
+                    }
+                });
+                return restult.substr(0, restult.length - 1);
+            } else {
+                return "";
+            }
+        }
+        $("#monthTable tr td").bind("click", function () {
+            var $this = $(this);
+            var valueStr = $this.attr("data_value");
+            $("#monthTable tr td").removeClass("active_Check");
+            $this.addClass("active_Check");
+            SetWorkTimeDetaile(valueStr);
+        })
+
+        $("#wtdSave").click(function () {
+            if ($("#monthTable tr td").hasClass("active_Check")) {
+                var _WorkTimeType = $("#WorkTimeType").val();
+                var $this = $("#monthTable .active_Check:eq(0)");
+                var inputStr = $("#WorkWeek").val();
+                var valueStr = $this.attr("data_value");
+                var $amStartTime = $(".bootbox #AmStartTime").val();
+                var $amEndTime = $(".bootbox #AmEndTime").val();
+                var $aftStartTime = $(".bootbox #PmStartTime").val();
+                var $aftEndTime = $(".bootbox #PmEndTime").val();
+                var IsFlexibleWork = $(".bootbox #IsFlexibleWork").is('checked');
+                if (CompareDate("2017-04-17 " + $amStartTime, "2017-04-17 " + $aftEndTime) && _WorkTimeType != "2") {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "上班时间不能大于或等于下班时间",
+                    });
+                    return false;
+                }
+                if (_WorkTimeType == "0") {
+                    var wtd = new WorkTimeDetaile(WorkTimeDetaileArry.get(valueStr).Id, parseInt(valueStr), $("#WorkTimeType").val(), $amStartTime, $amEndTime, $aftStartTime, $aftEndTime, $(".bootbox #WorkHour").val(), IsFlexibleWork);
+                    WorkTimeDetaileArry.put(valueStr, wtd);
+                    $("#monthTable active_Check").removeClass("activeDate").removeClass("activeDate-blue").addClass("activeDate");
+                    $this.addClass("activeDate");
+                } else if (_WorkTimeType == "1") {
+                    var wtd = new WorkTimeDetaile(WorkTimeDetaileArry.get(valueStr).Id, parseInt(valueStr), $("#WorkTimeType").val(), $amStartTime, $amEndTime, $aftStartTime, $aftEndTime, $(".bootbox #WorkHour").val(), IsFlexibleWork);
+                    WorkTimeDetaileArry.put(valueStr, wtd);
+                    $("#monthTable active_Check").removeClass("activeDate").removeClass("activeDate-blue");
+                    $this.addClass("activeDate-blue");
+                } else {
+                    var wtd_default = new WorkTimeDetaile(WorkTimeDetaileArry.get(valueStr).Id, parseInt(valueStr), 2, "00:00", "00:00", "00:00", "00:00", 0, false);
+                    WorkTimeDetaileArry.put(valueStr, wtd_default);
+                    $("#monthTable active_Check").removeClass("activeDate").removeClass("activeDate-blue");
+                }
+                if ((inputStr.indexOf(valueStr) < 0 || inputStr == "") && _WorkTimeType != 2) {
+                    inputStr = inputStr + "," + valueStr;
+                    $("#WorkWeek").val(SplitStr(inputStr));
+                    $("#WorkWeekSpan").html(SplitStr(inputStr));
+                }
+                if (_WorkTimeType == 2) {
+                    inputStr = inputStr.replace(valueStr + ",", "").replace(valueStr, "");
+                    $("#WorkWeek").val(SplitStr(inputStr));
+                    $("#WorkWeekSpan").html(SplitStr(inputStr));
+                    $("#monthTable .active_Check").removeClass("activeDate").removeClass("activeDate-blue");
+                }
+                $.whiskey.web.alert({
+                    type: "success",
+                    content: "保存成功",
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请选择要修改的日期",
+                });
+            }
+        });
+
+        //初始化工作周
+        initWorkWeek();
+        $('.selectpicker').selectpicker({
+            'selectedText': 'cat',
+            'noneSelectedText': "请选择",
+            'noneResultsText': '没有搜索到'
+        });
+
+
+
+        //初始化工作时间类型
+        initWorkType();
+
+        setFlexible();
+
+        //初始化小时
+        initHour();
+        //初始化分钟
+        initMimute();
+        //初始化修改数据
+        initData();
+        var currentDay = new Date().getDate();
+        $("#monthTable tr td").removeClass("active_Check");
+        var data_value = currentDay < 10 ? ("0" + currentDay.toString()) : currentDay.toString();
+        $("#monthTable td[data_value='" + data_value + "']").addClass("active_Check");
+        SetWorkTimeDetaile(data_value);
+    })
+    function CompareDate(strDate, EndDate) {
+        return ((new Date(strDate.replace(/-/g, "\/"))) >= (new Date(EndDate.replace(/-/g, "\/"))));
+    }
+    function SetWorkTimeDetaile(key) {
+        var model = WorkTimeDetaileArry.get(key);
+        if (model != null && model != undefined) {
+            model.AmStartTime = model.AmStartTime || "";
+            var morStartHour = model.AmStartTime == "" ? "0" : model.AmStartTime.split(":")[0];
+            var morStartMinute = model.AmStartTime == "" ? "0" : model.AmStartTime.split(":")[1];
+            model.AmEndTime = model.AmEndTime || "";
+            var morEndHour = model.AmEndTime == "" ? "0" : model.AmEndTime.split(":")[0];
+            var morEndMinute = model.AmEndTime == "" ? "0" : model.AmEndTime.split(":")[1];
+            model.PmStartTime = model.PmStartTime || "";
+            var aftStartHour = model.PmStartTime == "" ? "0" : model.PmStartTime.split(":")[0];
+            var aftStartMinute = model.PmStartTime == "" ? "0" : model.PmStartTime.split(":")[1];
+            model.PmEndTime = model.PmEndTime || "";
+            var aftEndHour = model.PmEndTime == "" ? "0" : model.PmEndTime.split(":")[0];
+            var aftEndMinute = model.PmEndTime == "" ? "0" : model.PmEndTime.split(":")[1];
+            $("#divAmStartTime .hour").val(parseInt(morStartHour));
+            $("#divAmStartTime .minute").val(parseInt(morStartMinute));
+            $("#divAmEndTime .hour").val(parseInt(morEndHour));
+            $("#divAmEndTime .minute").val(parseInt(morEndMinute));
+            $("#divPmStartTime .hour").val(parseInt(aftStartHour));
+            $("#divPmStartTime .minute").val(parseInt(aftStartMinute));
+            $("#divPmEndTime .hour").val(parseInt(aftEndHour));
+            $("#divPmEndTime .minute").val(parseInt(aftEndMinute));
+            $("#WorkTimeType").val(model.WorkTimeType);
+            $("#WorkHour").val(model.WorkHour);
+            model.IsFlexibleWork = model.IsFlexibleWork || "";
+            if (model.IsFlexibleWork.toString() == "True") {
+                $(".bootbox #IsFlexibleWork").attr("checked", true);
+            }
+            if (model.WorkTimeType == "2") {
+                $(".bootbox .worktime").css("display", "none");
+                $("#monthTable td[data_value='" + model.WorkDay.toString() + "']").removeClass("activeDate-blue").removeClass("activeDate");
+            } else if (model.WorkTimeType == "0") {
+                $(".bootbox .worktime").css("display", "");
+                $("#monthTable td[data_value='" + model.WorkDay.toString() + "']").removeClass("activeDate-blue").removeClass("activeDate").addClass("activeDate");
+            } else {
+                $(".bootbox .worktime").css("display", "");
+                $("#monthTable td[data_value='" + model.WorkDay.toString() + "']").removeClass("activeDate-blue").removeClass("activeDate").addClass("activeDate-blue");
+            }
+        }
+    }
+
+    //初始化工作周
+    function initWorkWeek() {
+
+        @*var workWeek = "@Model.WorkWeek";
+        $("#WorkWeek").val(workWeek);
+        $("#WorkWeekSpan").html(workWeek)
+        var weeks = workWeek.split(',');*@
+        var weeks = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"];
+        var workWeeks = new Array();
+        for (var i = 0; i < weeks.length; i++) {
+            var week = weeks[i]
+            $("#monthTable tr td").each(function () {
+                if ($(this).attr("data_value") == week) {
+                    debugger
+                    if (WorkTimeDetaileArry.get(week).WorkTimeType.toString() == "0") {
+                        $(this).removeClass("activeDate").removeClass("activeDate-blue");
+                        $(this).addClass("activeDate");
+                        workWeeks.push(week);
+                    } else if (WorkTimeDetaileArry.get(week).WorkTimeType.toString() == "1") {
+                        $(this).removeClass("activeDate").removeClass("activeDate-blue");
+                        $(this).addClass("activeDate-blue");
+                        workWeeks.push(week);
+                    } else {
+                        $(this).removeClass("activeDate").removeClass("activeDate-blue");
+                    }
+                }
+            })
+        }
+
+        var workWeek = workWeeks.join(",");
+        $("#WorkWeek").val(workWeek);
+        $("#WorkWeekSpan").html(workWeek);
+    }
+
+
+    //初始化工作类型
+    function initWorkType() {
+        var workType = "@Model.WorkTimeType";
+        //文本显示对象
+        var $aftTime = $(".bootbox .aftTime");
+        var $labAmStartTime = $(".bootbox #labAmStartTime");
+        var $labPmEndTime = $(".bootbox #labPmEndTime");
+        if (workType == "@((int)WorkTimeFlag.AllDay)") {
+            //文本显示
+            $aftTime.css("display", "block");
+            $labAmStartTime.text("上班时间 :");
+            $labPmEndTime.text("下班时间 :");
+        }
+        else {
+            $aftTime.css("display", "none");
+            $labAmStartTime.text("上班时间：");
+            $labPmEndTime.text("下班时间：");
+        }
+        $(".bootbox #WorkTimeType option").each(function () {
+            if (workType == $(this).val()) {
+                $(this).attr("selected", "selected");
+            }
+
+        })
+    }
+
+    function setTime() {
+        var workTimeType = $(".bootbox #WorkTimeType").val();
+        //文本显示对象worktime
+        var $aftTime = $(".bootbox .aftTime");
+        var $labAmStartTime = $(".bootbox #labAmStartTime");
+        var $labPmEndTime = $(".bootbox #labPmEndTime");
+        //提交数据对象
+        var $amStartTime = $(".bootbox #AmStartTime");
+        var $amEndTime = $(".bootbox #AmEndTime");
+        var $aftStartTime = $(".bootbox #PmStartTime");
+        var $aftEndTime = $(".bootbox #PmEndTime");
+        var $workHour = $(".bootbox #WorkHour");
+        //获取设置的小时和分钟
+        var $morStartHour = $("#divAmStartTime .hour");
+        var $morStartMinute = $("#divAmStartTime .minute");
+        var $morEndHour = $("#divAmEndTime .hour");
+        var $morEndMinute = $("#divAmEndTime .minute");
+        var $aftStartHour = $("#divPmStartTime .hour");
+        var $aftStartMinute = $("#divPmStartTime .minute");
+        var $aftEndHour = $("#divPmEndTime .hour");
+        var $aftEndMinute = $("#divPmEndTime .minute");
+        //设置时间
+        var morStartHour = parseInt($morStartHour.val());
+        var morStartMinute = parseInt($morStartMinute.val());
+        var morEndHour = parseInt($morEndHour.val());
+        var morEndMinute = parseInt($morEndMinute.val());
+
+        var aftStartHour = parseInt($aftStartHour.val());
+        var aftStartMinute = parseInt($aftStartMinute.val());
+        var aftEndHour = parseInt($aftEndHour.val());
+        var aftEndMinute = parseInt($aftEndMinute.val());
+
+        var amStartTime = (morStartHour < 10 ? "0" + morStartHour : morStartHour) + ":" + (morStartMinute.length < 10 ? "0" + morStartMinute : morStartMinute);
+        var pmEndTime = (aftEndHour.length < 10 ? "0" + aftEndHour : aftEndHour) + ":" + (aftEndMinute.length < 10 ? "0" + aftEndMinute : aftEndMinute);
+        $amStartTime.attr("value", amStartTime);
+        $aftEndTime.attr("value", pmEndTime);
+        //设置工作时长
+        var sumMinute = 0;
+        var sumHour = 0;
+        if (workTimeType == "@((int)WorkTimeFlag.AllDay)") {
+            //文本显示
+            $(".bootbox .worktime").css("display", "block");
+            $aftTime.css("display", "block");
+            $labAmStartTime.text("上班时间 :");
+            $labPmEndTime.text("下班时间 :");
+            var aftStartTime = (aftStartHour.length < 10 ? "0" + aftStartHour : aftStartHour) + ":" + (aftStartMinute.length < 10 ? "0" + aftStartMinute : aftStartMinute);
+            var morEndTime = (morEndHour.length < 10 ? "0" + morEndHour : morEndHour) + ":" + (morEndMinute.length < 10 ? "0" + morEndMinute : morEndMinute);
+            $aftStartTime.attr("value", aftStartTime);
+            $amEndTime.attr("value", morEndTime);
+            //设置工作时
+            if (morEndMinute - morStartMinute < 0) {
+                sumHour = morEndHour - 1 - morStartHour;
+                sumMinute = morEndMinute + 60 - morStartMinute;
+            } else {
+                sumHour = morEndHour - morStartHour;
+                sumMinute = morEndMinute - morStartMinute;
+            }
+            if (aftEndMinute - aftStartMinute < 0) {
+                sumHour += (aftEndHour - 1 - aftStartHour);
+                sumMinute += (aftEndMinute + 60 - aftStartMinute);
+            } else {
+                sumHour += (aftEndHour - aftStartHour);
+                sumMinute += (aftEndMinute - aftStartMinute);
+            }
+        } else if (workTimeType == "@((int)WorkTimeFlag.HalfDay)") {
+            //文本显示
+            $(".bootbox .worktime").css("display", "block");
+            $aftTime.css("display", "none");
+            $labAmStartTime.text("上班时间：");
+            $labPmEndTime.text("下班时间：");
+            $aftStartTime.attr("value", "00:00");
+            $amEndTime.attr("value", "00:00");
+            if (aftEndMinute - morStartMinute < 0) {
+                sumHour += (aftEndHour - 1 - morStartHour);
+                sumMinute += (aftEndMinute + 60 - morStartMinute);
+            } else {
+                sumHour += (aftEndHour - morStartHour);
+                sumMinute += (aftEndMinute - morStartMinute);
+            }
+        } else {
+            $(".bootbox .worktime").css("display", "none");
+
+        }
+        $workHour.val(sumHour + sumMinute / 60);
+    }
+
+    //初始化数据
+    function initData() {
+
+        //小时和分钟
+        var morStartHour = "@(DateTime.Parse(Model.AmStartTime).Hour)";
+        var morStartMinute = "@(DateTime.Parse(Model.AmStartTime).Minute)";
+        var morEndHour = "@(DateTime.Parse(Model.AmEndTime).Hour)";
+        var morEndMinute = "@(DateTime.Parse(Model.AmEndTime).Minute)";
+        var aftStartHour = "@(DateTime.Parse(Model.PmStartTime).Hour)";
+        var aftStartMinute = "@(DateTime.Parse(Model.PmStartTime).Minute)";
+        var aftEndHour = "@(DateTime.Parse(Model.PmEndTime).Hour)";
+        var aftEndMinute = "@(DateTime.Parse(Model.PmEndTime).Minute)";
+        $("#divAmStartTime .hour option").each(function () {
+            if ($(this).val() == morStartHour) {
+                $(this).attr("selected", "selected");
+            }
+        });
+        $("#divAmStartTime .minute option").each(function () {
+            if ($(this).val() == morStartMinute) {
+                $(this).attr("selected", "selected");
+            }
+        });
+        $("#divAmEndTime .hour option").each(function () {
+            if ($(this).val() == morEndHour) {
+                $(this).attr("selected", "selected");
+            }
+        });
+        $("#divAmEndTime .minute option").each(function () {
+            if ($(this).val() == morEndMinute) {
+                $(this).attr("selected", "selected");
+            }
+        });
+        $("#divPmStartTime .hour option").each(function () {
+            if ($(this).val() == aftStartHour) {
+                $(this).attr("selected", "selected");
+            }
+        });
+        $("#divPmStartTime .minute option").each(function () {
+            if ($(this).val() == aftStartMinute) {
+                $(this).attr("selected", "selected");
+            }
+        });
+        $("#divPmEndTime .hour option").each(function () {
+            if ($(this).val() == aftEndHour) {
+                $(this).attr("selected", "selected");
+            }
+        });
+        $("#divPmEndTime .minute option").each(function () {
+            if ($(this).val() == aftEndMinute) {
+                $(this).attr("selected", "selected");
+            }
+        });
+    }
+
+
+    //初始化小时
+    function initHour() {
+        $(".bootbox .hour").empty();
+        for (var i = 0; i < 24; i++) {
+            var hour;
+            if (i < 10) {
+                hour = '<option value="' + i + '">0' + i + '</option>';
+            } else {
+                hour = '<option value="' + i + '">' + i + '</option>';
+            }
+
+            $(".bootbox .hour").append(hour);
+        }
+    }
+
+    //初始化分钟
+    function initMimute() {
+        $(".bootbox .minute").empty();
+        for (var i = 0; i < 60; i++) {
+            var minute;
+            if (i < 10) {
+                minute = '<option value="' + i + '">0' + i + '</option>';
+            } else {
+                minute = '<option value="' + i + '">' + i + '</option>';
+            }
+            $(".bootbox .minute").append(minute);
+        }
+    }
+
+    //弹性工作时间
+    function setFlexible() {
+        var check = $(".bootbox #IsFlexibleWork").is(":checked");
+        if (check == true) {
+            $(".bootbox .worktime").css("display", "none");
+            $(".bootbox #wtdSave").css("display", "none");
+        } else {
+
+            $(".bootbox .worktime").css("display", "block");
+            //setTime();
+        }
+    }
+
+
+</script>
+<script>
+    var _isBool ="@ViewBag.isChange";
+    $(function () {
+        @*if ("@ViewBag.isChange" != "1") {
+            $("#updateWork").css("display", "none");
+        }*@
+        changetype();
+    });
+    function changetype(obj) {
+        var en_per = $("#updateWork #IsPersonalTime")[0];
+        var en_job = $("#enable_Job")[0];
+        if (obj == en_per) {
+            en_job.checked = !en_per.checked;
+        } else {
+            en_per.checked = !en_job.checked;
+        }
+        if (en_per.checked) {
+            $(".job_per").show();
+            //$(".job_per #IsFlexibleWork").css("display", "none");
+            //$(".job_per #IsVacations").css("display", "none");
+        } else {
+            $(".job_per").hide();
+        }
+    }
+
+
+</script>
+<script>
+    // cur_selectpicker 初始化
+    $(function () {
+        $('.cur_selectpicker').selectpicker();
+    })
+</script>
+
+

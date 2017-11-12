@@ -1,0 +1,38 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@model AttendanceDto
+@Html.HiddenFor(x=>x.Id)
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(x => x.AttendanceTime) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(x => x.AttendanceTime, new { @class = "form-control", @placeholder = "考勤日期" ,@readonly="true" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        员工 :
+    </label>
+    <div class="col-md-6">
+       @ViewBag.RealName
+    </div>    
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        考勤类型 :
+    </label>
+    <div class="col-md-6  form-group">
+            <select id="attenFlag" name="attenFlag" class="form-control selectpicker">
+                <option value="@((int)ApiAttenFlag.Late)">迟到补卡</option>
+                <option value="@((int)ApiAttenFlag.LeaveEarly)">早退补卡</option>
+                <option value="@((int)ApiAttenFlag.NoSignOut)">未签退补卡</option>
+            </select>
+    </div>
+</div>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

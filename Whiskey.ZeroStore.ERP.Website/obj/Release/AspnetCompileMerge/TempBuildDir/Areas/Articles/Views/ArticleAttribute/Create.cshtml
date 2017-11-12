@@ -1,0 +1,33 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model ArticleAttributeDto
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        父级属性 :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.ParentId, (List<SelectListItem>)ViewBag.ArticleAttribute, new { @class = "form-control selectpicker"})
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(x=>x.AttributeName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.AttributeName, new { @class = "form-control"})
+    </div>
+</div>
+ <div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Description) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @placeholder = "字数长度在120字以内" })
+    </div>
+</div>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

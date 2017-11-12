@@ -1,0 +1,309 @@
+﻿@using Whiskey.ZeroStore.ERP.Models @using Whiskey.ZeroStore.ERP.Models.Enums @model BarCodeConfig
+<style type="text/css">
+	
+	*{
+		padding: 0;
+		margin: 0;
+	}
+	select {
+		outline: none;
+	}
+	
+	ul {
+		list-style: none;
+	}
+	.selectpicker_box {
+		display: none !important;
+	}
+	
+	.select_box {
+		text-align: center;
+		/* position: fixed;top:0px;right:100px;*/
+		width: 178px;
+	
+		margin: 40% auto;
+	}
+	.select_showbox {
+		color: #fff;
+		font-size: 14px;
+			z-index: 9999;
+		padding-left: 10px;
+		width: 100%;
+    height: 32px;
+    padding: 4px 12px;
+    font-size: 14px;
+    background-color: rgba(0,0,0,0.1);
+    background-image: none;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 2px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	}
+	
+	.select_option {
+		color: #fff;
+		position: relative;
+		z-index: 9999;
+		border-top: none;
+		font-size: 12px;
+		background-color: rgba(0, 0, 0, .6);
+		display: none;
+	}
+	
+	.select_option li {
+			z-index: 9999;
+		height: 40px;
+		line-height: 40px;
+		padding-left: 10px;
+	}
+	
+	.select_option li.selected {
+		/*background-color: #F3F3F3;color: #999;*/
+	}
+	
+	.select_option li.hover {
+		background-color: rgba(0, 0, 0, .4);
+		color: #fff;
+	}
+</style>
+
+<div class="printSetContent">
+	<form id="barcodeconfig">
+		@Html.HiddenFor(f => f.Id)
+		<div class="col-md-4">
+			<div class="form-group no-margin-hr">
+				<label class="control-label col-md-5 " style="margin-top:18%;">打印机纸带宽度:</label>
+				<div class="col-md-6">
+					<select class="form-control selectpicker_box form-control_box" style="margin-top:41%;margin-right: 2%;" id="PrinterPaperType" name="PrinterPaperType">
+						<option value="@((int)PrinterPaperType._30_80)">30*80(mm)</option>
+						<option value="@((int)PrinterPaperType._40_80)">40*80(mm)</option>
+						<option value="@((int)PrinterPaperType._50_120)">50*120(mm)</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-2 col-md-2_print_box" style="margin-top:6%;">
+			<div class="form-group no-margin-hr">
+				<div class="col-md-12 form-group" style="margin-left: 8%;" style="margin-top: 24%;">
+					<label class="control-label">@Html.DisplayNameFor(f => f.IsDefaultBrand):</label>
+					<input type="radio" value="true" name="IsDefaultBrand" @Html.Raw(Model.IsDefaultBrand ? "checked" : "") /><label class="control-label">是</label>
+					<input type="radio" value="false" name="IsDefaultBrand" @Html.Raw(Model.IsDefaultBrand ? "" : "checked") /><label class="control-label">否</label>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group no-margin-hr">
+				<div class="col-md-12 form-group" style="margin-top:25%">
+					@Html.TextBoxFor(t => t.DIYBrand, Model.DIYBrand, new { @class = "form-control", @placeholder = "自定义品牌", })
+				</div>
+			</div>
+		</div>
+		@*
+		<div class="col-md-2">
+			<div class="form-group no-margin-hr">
+				<div class="col-md-12 form-group" style="padding:0;">
+					<label class="control-label">@Html.DisplayNameFor(f => f.IsDefaultBrandPrice):</label>
+					<input type="radio" value="true" name="IsDefaultBrandPrice" @Html.Raw(Model.IsDefaultBrandPrice ? "checked" : "") /><label class="control-label">是</label>
+					<input type="radio" value="false" name="IsDefaultBrandPrice" @Html.Raw(Model.IsDefaultBrandPrice ? "" : "checked") /><label class="control-label">否</label>
+				</div>
+			</div>
+		</div>*@
+		<div class="col-md-2">
+			<div class="form-group no-margin-hr">
+				<div class="col-md-12 form-group" style="padding:0;">
+					<label class="control-label" style=";">@Html.DisplayNameFor(f => f.PrinterPaperDirection):</label> <br />
+					<div class="printsetLeft">
+						@Html.RadioButtonFor(f => f.PrinterPaperDirection, PrinterPaperDirection._横版)
+						<img class="hengban" src="" title="横版" alt="横版" />
+					</div>
+					<div class="printsetRight">
+						@Html.RadioButtonFor(f => f.PrinterPaperDirection, PrinterPaperDirection._竖版)
+						<img class="shuban" src="" title="竖版" alt="竖版" />
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</form>
+	<button class="btn" id="saveprj"> <i class="fa fa-check-square-o"></i> <span>保存</span></button>
+	<style>
+		.inputactive {
+			outline: none;
+			box-shadow: 0 0 16px rgba(166, 218, 160, 0.48) !important;
+		}
+	</style>
+	
+	<script>
+		$(function() {
+			var IsDefaultBrand_type = $('input[name="IsDefaultBrand"]:checked');
+			if(IsDefaultBrand_type.attr('value') == 'true') {
+				$('#DIYBrand').removeClass('inputactive');
+				$('#DIYBrand').attr("disabled", "disabled");
+			} else {
+				$('#DIYBrand').removeAttr("disabled");
+				$('#DIYBrand').addClass('inputactive');
+			};
+			$(document).on("click",".select_option li", function() {
+				
+				$("#PrinterPaperType").val($(this).attr('data-value'))
+				if($("#PrinterPaperType").val() == 0) {
+					
+					$(".hengban").attr("src", "../../../Theme/default/img/head-icons/30-80-s.png").css("width", "179%");
+					$(".printsetRight").css("display", "none");
+					
+				} else if($("#PrinterPaperType").val() == 1) {
+					$(".hengban").attr('src', '../../../Theme/default/img/head-icons/40-80-h.png').css("width", "216%");
+					$(".shuban").attr('src', '../../../Theme/default/img/head-icons/40-80-s.png').css("width", "125%");
+					$(".printsetRight").css("display", "block")
+				} else {
+					$(".hengban").attr('src', '../../../Theme/default/img/head-icons/50-120-s.png').css("width", "140%");
+					$(".printsetRight").css("display", "none")
+				}
+
+			});
+		})
+
+		$('input[name="IsDefaultBrand"]').click(function() {
+			if($(this).attr('value') == 'true') {
+				$('#DIYBrand').removeClass('inputactive');
+				$('#DIYBrand').attr("disabled", "disabled");
+
+			} else {
+				$('#DIYBrand').removeAttr("disabled");
+				$('#DIYBrand').addClass('inputactive');
+			}
+		})
+	</script>
+</div>
+
+@section Scripts{
+<script>
+	$(function() {
+		var type = @((int) Model.PrinterPaperType);
+		$("#PrinterPaperType").val(type);
+
+		$("#saveprj").click(function() {
+			var pdata = $("#barcodeconfig").serialize();
+			console.log(pdata);
+			if(pdata != "") {
+				$.post("/Properties/PrintSet/SavePrintSet", pdata, function(da) {
+					if(da.ResultType == 3) {
+						$.whiskey.web.alert({
+							type: "success",
+							content: "修改成功！",
+							callback: function() {
+								if(da.Data) {
+									$("#barcodeconfig #Id").val(da.Data);
+								}
+							}
+						});
+					} else {
+						$.whiskey.web.alert({
+							type: "info",
+							content: da.Message,
+							callback: function() {}
+						});
+					}
+				})
+			}
+		});
+	})
+</script>
+<script type="text/javascript">
+	$(function() {
+
+		if($("#PrinterPaperType").val() == 0) {
+			
+			$(".hengban").attr("src", "../../../Theme/default/img/head-icons/30-80-s.png").css("width", "179%");
+			$(".printsetRight").css("display", "none")
+		} else if($("#PrinterPaperType").val() == 1) {
+			$(".hengban").attr('src', '../../../Theme/default/img/head-icons/40-80-h.png').css("width", "216%");
+			$(".shuban").attr('src', '../../../Theme/default/img/head-icons/40-80-s.png').css("width", "125%");
+			$(".printsetRight").css("display", "block")
+		} else {
+			$(".hengban").attr('src', '../../../Theme/default/img/head-icons/50-120-s.png').css("width", "140%");
+			$(".printsetRight").css("display", "none")
+		}
+	});
+</script>
+<script type="text/javascript">
+		(function($){
+        var utilsCreateSelect;
+        var utilsCreateOptions;
+        utilsCreateOptions={
+            createOptions:function (index,ul_list){
+                //获取被选中的元素并将其值赋值到显示框中
+                var type = @((int) Model.PrinterPaperType);
+                var options=selects.eq(index).find('option'),
+                
+                        selected_option=options.eq(type),
+                        selected_index=type,
+                        showbox=ul_list.prev();
+                showbox.text(selected_option.text());
+                //为每个option建立个li并赋值
+                for(var n=0;n<options.length;n++){
+                    var tag_option=$('<li></li>');//li相当于option
+                    var option_value = options.eq(n).val();
+                    var txt_option=options.eq(n).text();
+                    tag_option.attr('data-value',option_value).text(txt_option).css('cursor','pointer').appendTo(ul_list);
+                    //为被选中的元素添加class为selected
+                    if(n==selected_index){
+                        tag_option.attr('class','selected');
+                    }
+                }
+            }
+        };
+       utilsCreateSelect={
+            createSelect:function (select_container,index){
+                //创建select容器，class为select_box，插入到select标签前
+                var tag_select=$('<div></div>');//div相当于select标签
+                tag_select.attr('class','select_box');
+                tag_select.insertBefore(select_container);
+                //显示框class为select_showbox,插入到创建的tag_select中
+                var select_showbox=$('<div></div>');//显示框
+                select_showbox.css('cursor','pointer').attr('class','select_showbox').appendTo(tag_select);
+                //创建option容器，class为select_option，插入到创建的tag_select中
+                
+                var ul_option=$('<ul></ul>');//创建option列表
+                ul_option.attr('class','select_option');
+                
+                ul_option.appendTo(tag_select);
+                utilsCreateOptions.createOptions(index,ul_option);//创建option
+                
+                //点击显示框
+                $(tag_select).click(function() {
+                    if($(this).hasClass('select_box_close')){
+                        $(this).removeClass('select_box_close');
+                        ul_option.show();
+                    }else{
+                        $(this).addClass('select_box_close');
+                        ul_option.hide();
+                    }
+
+                });
+
+                var li_option=ul_option.find('li');
+                li_option.on('click',function(){
+                    $(this).addClass('selected').siblings().removeClass('selected');
+                    var value=$(this).text();
+                    select_showbox.text(value);
+                    ul_option.hide();
+                });
+                li_option.hover(function(){
+                    $(this).css("width","100%").addClass('hover').siblings().removeClass('hover');
+                },function(){
+                    li_option.removeClass('hover');
+                });
+            }
+        };
+
+        var selects=$('.selectpicker_box');//获取select
+        for(var i=0;i<selects.length;i++){
+            utilsCreateSelect.createSelect(selects[i],i);
+        }
+    })(jQuery)
+	</script>
+
+}

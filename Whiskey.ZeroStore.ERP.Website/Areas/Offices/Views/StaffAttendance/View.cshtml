@@ -1,0 +1,180 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+@model Attendance
+
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.AttendanceTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.AttendanceTime.ToString("yyyy年MM月dd日")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Administrator.Member.RealName) :
+    </label>
+    <div class="col-md-7">
+        @Model.Administrator.Member.RealName
+    </div>
+</div>
+ 
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(x => x.AmStartTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.AmStartTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(x => x.PmEndTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.PmEndTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        考勤状态 :
+    </label>
+    <div class="col-md-7">
+        @{            
+            var word = "正常";
+            if (Model.IsLate == -1)
+            {
+                word += "迟到";
+            }else if(Model.IsLate==1)
+            {
+                word += "迟到补卡";
+            }
+            if (Model.IsLeaveEarly == -1)
+            {
+                word += "早退";
+            }
+            else if (Model.IsLeaveEarly == 1)
+            {
+                word += "早退补卡";
+            }
+            if (Model.IsNoSignOut == -1)
+            {
+                word += "未签退";
+            }
+            else if (Model.IsNoSignOut == 1)
+            {
+                word += "未签退补卡";
+            }
+
+            if (Model.FieldId != null)
+            {
+                if (Model.FieldType == (int)AttendanceFlag.AmField)
+                {
+                    word += "上午外勤";
+                }
+                else if (Model.FieldType == (int)AttendanceFlag.PmField)
+                {
+                    word += "下午外勤";
+                }
+                else
+                {
+                    word += "外勤";
+                }
+            }
+            if (Model.IsAbsence == -1)
+            {
+                if (Model.AbsenceType == (int)AttendanceFlag.AmAbsence)
+                {
+                    word += "上午缺勤";
+                }
+                else if (Model.AbsenceType == (int)AttendanceFlag.PmAbsence)
+                {
+                    word += "下午缺勤";
+                }
+                else
+                {
+                    word += "缺勤";
+                }
+            }
+            else if (Model.IsAbsence == 1)
+            {
+                word += "缺勤补卡";
+            }
+            if (Model.OvertimeId != null)
+            {
+                if (Model.OvertimeType == (int)AttendanceFlag.AmOvertime)
+                {
+                    word += "上午加班";
+                }
+                else if (Model.OvertimeType == (int)AttendanceFlag.PmOvertime)
+                {
+                    word += "下午加班";
+                }
+                else
+                {
+                    word += "加班";
+                }
+            }
+            if (Model.LeaveInfoId != null)
+            {
+                if (Model.LeaveInfoType == (int)AttendanceFlag.AmLeave)
+                {
+                    word += "上午请假";
+                }
+                else if (Model.LeaveInfoType == (int)AttendanceFlag.PmLeave)
+                {
+                    word += "下午请假";
+                }
+                else
+                {
+                    word += "请假";
+                }
+            }
+            <span>@word</span>
+        }
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        操作人员 :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>
+
+ 

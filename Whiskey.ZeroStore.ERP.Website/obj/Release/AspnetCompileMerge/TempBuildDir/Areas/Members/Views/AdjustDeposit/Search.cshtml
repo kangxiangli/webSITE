@@ -1,0 +1,159 @@
+﻿<style>
+    .modal-content{
+        width:1053px;
+    }
+
+        #hoverStyle_one:hover{
+            width:62px;
+            border-radius: 0%;
+            background: black !important;
+        }
+        #hoverStyle_one{
+
+            width:62px;
+            border-radius: 0% !important;
+            background: #5cb85c !important;
+        }
+        #hoverStyle_one>i{
+            display:block;
+            width:0px;
+            height:0px;
+
+        }
+   
+</style>
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        搜索条件 :
+    </label>
+    <div class="col-md-8 divStoreId">
+        <input type="text" name="keyWord" placeholder="会员昵称/卡号/手机号" class="form-control" id="keyWord" />
+    </div>
+    <div class="col-md-2 ">
+        <button data-bb-handler="success" type="button" class="btn btn-primary searchMember">
+            <i class="fa fa-search">
+                搜索
+            </i>
+        </button>
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="listMember">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $.whiskey.datatable.instance = $("#listMember").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("SearchMember")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var keyWord = $("#keyWord").val();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                aoData.push({ name: "KeyWord", value: keyWord });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [
+                {
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+
+            {
+                "sTitle": "会员帐号",
+                "bSortable": false,
+                "sName": "MemberName",
+                "mData": function(data){
+                    return data.MemberName;
+                },
+            },
+            {
+                "sTitle": "会员卡号",
+                "bSortable": false,
+                "sName": "CardNumber",
+                "mData": function(data){
+                    return data.CardNumber;
+                },
+            },
+            {
+                "sTitle": "手机号码",
+                "bSortable": false,
+                "sName": "MobilePhone",
+                "mData": function(data){
+                    return data.MobilePhone;
+                },
+            },
+            {
+                "sTitle": "充值",
+                "bSortable": false,
+                //"sName": "MobilePhone",
+                "mData": function (data) {
+                    return '<button id="hoverStyle_one" title="选择" type="button" class="btn btn-success btn-padding-right" onclick="Recharge(this,' + data.Id + ')" ><i class="fa fa-money"></i> <span>选择</span></button>';
+                },
+            },
+            ]
+
+       });
+        //搜索
+        $(".searchMember").click(function () {
+            $.whiskey.datatable.reset(false);
+        })
+
+    });
+    //充值
+    function Recharge(sender, Id) {        
+        $(".bootbox").modal('hide');
+        var verifyType = "@ViewBag.VerifyType";
+        var dialog = new $.whiskey.web.ajaxDialog({
+            caption: "创建数据",
+            actionUrl: "@Url.Action("Create")",
+            lockButton: $(this),
+            getParams: { Id: Id ,VerifyType: verifyType},
+            formValidator: function () {
+                var $form = $(".modal-form");
+                if (!$form.valid()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            postComplete: function () {
+                $(".bootbox").modal("hide");
+                reload();
+                return true;
+            },
+        });
+    }
+</script>

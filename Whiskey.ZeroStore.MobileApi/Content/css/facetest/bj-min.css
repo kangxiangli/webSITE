@@ -1,0 +1,396 @@
+﻿@charset "UTF-8";
+body,
+html {
+	margin: 0;
+	height: 100%
+}
+
+
+/* 公共样式 */
+
+* {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	font-size: 14px;
+}
+
+.hide {
+	display: none;
+}
+
+input {
+	outline: none;
+}
+
+
+/* 模拟下拉框 */
+
+.select {
+	position: relative;
+	top: 5%;
+	left: 5%;
+	display: none;
+	z-index: 99999;
+}
+
+.select .input_in input {
+	width: 199px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    border: 1px solid #d6d6d6;
+    cursor: pointer;
+}
+
+.select .city {
+	position: absolute;
+	top: 38px;
+	left: 0;
+}
+
+.select .city ul {
+	    width: 198px;
+    height: 300px;
+    border-top: none;
+    background: #f4ebeb;
+    position: absolute;
+    z-index: 999;
+    overflow-y: scroll;
+}
+
+.select .city ul li {
+	    height: 30px;
+    text-align: center;
+    color: #000;
+    line-height: 30px;
+    cursor: pointer;
+}
+.disabled{
+    pointer-events: none;
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+}
+.select .city ul li:hover{
+	background: rgba(0,0,0,0.2);
+}
+/*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+.scrollbar::-webkit-scrollbar{
+    width: 10px;
+    height: 10px;
+    background-color:rgba(0,0,0,0.2)
+}
+/*定义滚动条的轨道，内阴影及圆角*/
+.scrollbar::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    /*border-radius: 10px;*/
+    background-color: #f5f5f5;
+}
+/*定义滑块，内阴影及圆角*/
+.scrollbar::-webkit-scrollbar-thumb{
+    /*width: 10px;*/
+    height: 20px;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #f5f5f5;
+    }
+.dis_inline,
+.dis_inline_F>* {
+	display: inline-block
+}
+
+.clearfix:after,
+.left-chlid:after,
+.right-chlid:after {
+	content: " ";
+	display: block;
+	height: 0;
+	visibility: hidden;
+	clear: both
+}
+
+.left,
+.left-chlid>* {
+	float: left
+}
+
+.right,
+.right-chlid>* {
+	float: right
+}
+		.camera_setting{
+	height: 30px;
+    display: block;
+    line-height: 30px;
+    width: 32%;
+    position: absolute;
+    top: -60%;
+    right: 0%;
+    text-align: center;
+		}
+.camera_box{
+	  display: flex;
+    flex-flow: row inwrap;
+   
+    justify-content: space-around;
+  box-sizing: border-box;
+}
+.display{
+	display: none;
+}
+.container{
+	    position: absolute;
+    right: 9%;
+    top: 11%;
+    width: 352px;
+}
+.row{
+	    width: 196px;
+    background: rgba(0,0,0,0.5);
+    padding: 107px 78px;
+}
+.camera_set{
+	    width: 40%;
+    text-align: center;
+}
+
+#load_animate {
+	position: fixed;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	color: #000;
+}
+
+#load_animate .load_centent {
+	width: 325px;
+	height: 425px;
+	border-radius: 5px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	background: #F9F7F7;
+	transform: translate(-50%, -50%);
+}
+
+#load_animate .load_centent .start_gif {
+	width: 200px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto
+}
+
+#load_animate .load_centent div {
+	/*margin: 50px 20px 0*/
+}
+
+.load_left {
+	text-align: left !important;
+	margin-bottom: 5px;
+}
+
+.load_width {
+	width: 70% !important;
+}
+
+.typed-cursor {
+	opacity: 1;
+	-webkit-animation: blink .7s infinite;
+	-moz-animation: blink .7s infinite;
+	animation: blink .7s infinite
+}
+
+@keyframes blink {
+	0%,
+	100% {
+		opacity: 1
+	}
+	50% {
+		opacity: 0
+	}
+}
+
+@-webkit-keyframes blink {
+	0%,
+	100% {
+		opacity: 1
+	}
+	50% {
+		opacity: 0
+	}
+}
+
+@-moz-keyframes blink {
+	0%,
+	100% {
+		opacity: 1
+	}
+	50% {
+		opacity: 0
+	}
+}
+
+#ad {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 10;
+	width: 774px;
+	height: 578px;
+	margin-left: -387px;
+	margin-top: -289px
+}
+
+#ad .iwebxy_banner {
+	cursor: pointer;
+	width: 100%
+}
+
+#ad .ad_close {
+	cursor: pointer;
+	position: absolute;
+	top: 20px;
+	right: 80px;
+	z-index: 11
+}
+
+.img_tx {
+	width: 50px;
+	border-radius: 50%;
+}
+
+.img_tx_box {
+	display: block;
+	margin: 10px;
+	text-align: center;
+}
+
+.style_detail {
+	background-color: #E0DEDE;
+	margin: 10px 20px;
+	height: 50%;
+	border-radius: 5px;
+}
+
+.style_title {
+	padding: 5px;
+	text-align: center;
+}
+
+.load_name {
+	text-align: center !important;
+}
+
+.load_margin {
+	margin-bottom: 5px;
+}
+
+.load_top {
+	vertical-align: top;
+	font-style: normal;
+}
+
+.load_span {
+	width: 22%;
+	text-align: right;
+	display: inline-block;
+}
+
+.load_text_container {
+	display: block;
+}
+
+.load_row,
+.load_text {
+	display: block;
+}
+
+
+/*温馨提示*/
+
+.bg_dialog {
+	display: none;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+
+}
+.prompt_box_1{
+	position: absolute;
+	/* display: none; */
+	background-color: rgba(0, 0, 0, .6);
+	max-width: 300px;
+	display: inline-flex;
+	padding: 10px;
+	color: #fff;
+	top: 30%;
+	left: 50%;
+	margin: auto;
+	z-index: 100;
+	border-radius: 5px;
+	transform: translateX(-50%);
+}
+
+.load_vodio {
+    background-image: url('/Content/images/facetest/zuo.png');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    padding: 12px;
+    background-position: 0px 74px;
+    position: relative;
+}
+
+.load_canvas_2 {
+    background-image: url('/Content/images/facetest/you.png');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    padding: 12px;
+    margin-left: 20%;
+    background-position: 0px 74px;
+}
+/*#snap2{
+	background: url(../jietu.png);
+	background-size: 100%;
+	background-repeat: no-repeat;
+	padding: 12px;
+	margin-left: 20%;
+	background-position: 0px 74px;
+}*/
+
+.camera_image{
+	
+	    width: 100%;
+    height: 100%;
+}
+ /*效果一：360°旋转 修改rotate(旋转度数)*/
+
+
+.rotate_scale {
+    position: absolute;
+    transition: All 0.4s ease-in-out;
+    -webkit-transition: All 0.4s ease-in-out;
+    -moz-transition: All 0.4s ease-in-out;
+    -o-transition: All 0.4s ease-in-out;
+    background-image: url('/Content/images/facetest/xiangji.png');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    width: 78px;
+    margin: auto;
+    height: 78px;
+    z-index: 9999;
+    left: 50%;
+    top: 50%;
+    margin-left: -34px;
+    margin-top: -34px;
+} 
+ 
+.load_vodio:hover>.rotate_scale { 
+    transform: rotate(360deg) scale(2); 
+    -webkit-transform: rotate(360deg) scale(2); 
+    -moz-transform: rotate(360deg) scale(2); 
+    -o-transform: rotate(360deg) scale(2); 
+    -ms-transform: rotate(360deg) scale(2); 
+}

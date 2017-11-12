@@ -1,0 +1,153 @@
+﻿<style>
+    #DataTables_Table_0_wrapper {
+        background: rgba(0, 0, 0, 0.1);
+    }
+    .polaroid .img_Box{
+        /*cursor:pointer;*/
+    }
+</style>
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default checked" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-3">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">品类</label>
+                        <div class="col-md-9">
+                            @Html.DropDownList("CategoryId", (List<SelectListItem>)ViewBag.Category, new { @class = "form-control _number_input selectpicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">款号</label>
+                        <div class="col-md-9">
+                            @Html.TextBox("BigProdNum", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="position:relative;">
+    <div class="product_list" id="product_list" style="width:100%;height:100%; background:rgba(0,0,0,0.1);color: #fff;">
+        <div class="panel-heading clearfix" style="position: relative; ">
+            <div class="col-md-4 panel-title">
+                <h5>
+                    <i class="fa fa-list"></i> <span>图片列表</span>
+                </h5>
+            </div>
+            <div class="col-md-8 text-right">
+            </div>
+        </div>
+        <div class="gallery-containeron online-container-box" style="position: relative; height: 100%;">
+        </div>
+    </div>
+    <table class="table table-list table-hover valign-middle" style="display:none;" width="100%"></table>
+</div>
+
+<div id="clone_polaroid" style="display:none;">
+    <div class="polaroid" data-bigprodnum="">
+        <div class="brick">
+            <div class="img_Box">
+                <img onerror="imgloaderror(this);" class="product_img">
+            </div>
+            <p class="product_invcount"></p>
+            <p class="product_name"></p>
+            <p class="product_bigprodnum"></p>
+            <div class="dabao">
+                <img src="/Content/Images/img/qrsh.png" alt="" onerror="imgloaderror(this);">
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="/Content/Styles/Layout/mystyle.css" rel="stylesheet" />
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $("#CategoryId option[value='']:gt(0)").prop("disabled", true);
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                aLengthMenu: [16, 20, 50],
+                sAjaxSource: "@Url.Action("SampleInventoryList")",
+                fnServerParams: function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    $(".form-search input[name!='StartDate'][name!='EndDate'],.form-search select").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            if ($(this).hasClass("_number_input") && value == "-1") {
+
+                            } else {
+                                conditions.Rules.push(new $.whiskey.filter.rule(field, value, $(this).hasClass("_number_input") ? "equal" : "contains"));
+                            }
+                        }
+                    });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+                aoColumns: [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "bSortable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                }],
+                fnRowCallback: function (dom, data, index) {
+                    initData(data);
+                },
+                fnPreDrawCallback: function () {
+                    $(".online-container-box").empty();
+                },
+            });
+
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+
+            $(".online-container-box").on("click", ".polaroid .dabao", function () {
+                var $this = $(this).parents(".polaroid:first");
+                var bigprodnum = $this.attr("data-bigprodnum");
+                $.whiskey.web.ajaxView({
+                    actionUrl: "InventoryInfo",
+                    caption: "库存详情 - " + bigprodnum,
+                    params: { BigProdNum: bigprodnum },
+                    lockButton: $this,
+                });
+            });
+
+        });
+
+        //渲染数据
+        function initData(data) {
+            var $pon = $("#clone_polaroid .polaroid").clone();
+            $pon.attr("data-bigprodnum", data.BigProdNum);
+            $pon.find(".product_img").attr("src", data.ThumbnailPath || "");
+            $pon.find(".product_name").text(data.ProductName);
+            $pon.find(".product_bigprodnum").text("款号：" + data.BigProdNum);
+            $pon.find(".product_invcount").text("库存：" + data.InvCount);
+
+            $(".online-container-box").append($pon);
+        }
+
+    </script>
+}

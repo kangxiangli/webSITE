@@ -1,0 +1,88 @@
+﻿@{
+    var isAjaxView = ViewContext.ViewBag.isAjaxView;
+    var _flag = ViewContext.ViewBag._p_flag;
+    var _p_automenu = ViewContext.ViewBag._p_automenu;
+    var _showNavInfo = ViewContext.ViewBag._showNavInfo;
+}
+@{
+    if (isAjaxView == null || !isAjaxView)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+    //-1不显示菜单,只显示main-wrapper
+    if (_flag == "-1" && _p_automenu == null)
+    {
+        @RenderBody()
+    }
+    else
+    {
+        //0显示菜单
+        if (_flag == "0" || _p_automenu == true)
+        {
+            if (_p_automenu == true)
+            {
+                if (isAjaxView == null || !isAjaxView || Request["_p_flag_popin"] != null)
+                {
+                    @Styles.Render("~/bundles/styles_ext")
+
+                    @Html.Partial("_Menu", ViewBag as object)
+                   
+                    <div id="content-wrapper">
+                        @if ((ViewBag.isLogin ?? false) && (_showNavInfo ?? false))
+                        {
+                            @Html.Partial("_Nav_Info", ViewBag as object)
+                        }
+                        @RenderBody()
+                    </div>
+                    @Scripts.Render("~/bundles/scripts_ext")
+                }
+                else
+                {
+                    if ((ViewBag.isLogin ?? false) && (_showNavInfo ?? false))
+                    {
+                        @Html.Partial("_Nav_Info", ViewBag as object)
+                    }
+                    @RenderBody()
+                }
+            }
+            else
+            {
+                @Styles.Render("~/bundles/styles_ext")
+
+                @Html.Partial("_Menu", ViewBag as object)
+                
+                <div id="content-wrapper">
+                    @if ((ViewBag.isLogin ?? false) && (_showNavInfo ?? false))
+                    {
+                        @Html.Partial("_Nav_Info", ViewBag as object)
+                    }
+                    @RenderBody()
+                </div>
+                @Scripts.Render("~/bundles/scripts_ext")
+            }
+        }
+        //1不显示菜单,显示content-wrapper
+        else if (_flag == "1")
+        {
+           
+            if (isAjaxView == null || !isAjaxView)
+            {
+                <div id="content-wrapper">
+                    if ((ViewBag.isLogin ?? false) && (_showNavInfo ?? false))
+                    {
+                    @Html.Partial("_Nav_Info", ViewBag as object)
+                    }
+                    @RenderBody()
+                </div>
+            }
+            else
+            {
+                if ((ViewBag.isLogin ?? false) && (_showNavInfo ?? false))
+                {
+                    @Html.Partial("_Nav_Info", ViewBag as object)
+                }
+                @RenderBody()
+            }
+        }
+    }
+}

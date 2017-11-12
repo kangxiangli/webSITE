@@ -1,0 +1,169 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Data
+@model HolidayDto
+
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.HolidayName) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(x => x.HolidayName, new { @class = "form-control" })         
+    </div>     
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        放假时间 :
+    </label>
+    <div class="col-md-8">
+        <div class="input-group">
+            @Html.TextBoxFor(x => x.StartTime, new { @class = "form-control datetime", @placeholder = "开始时间", @readonly = "readonly", @onchange = "computeDay()" })
+            <span class="input-group-addon">至</span>
+            @Html.TextBoxFor(x => x.EndTime, new { @class = "form-control datetime", @placeholder = "结束时间", @readonly = "readonly", @onchange = "computeDay()" })
+        </div>
+    </div>
+</div>
+<div class="form-group warning alert-danger" id="warn" style="display:none">
+    <label class="control-label col-md-3">
+        警告 :
+    </label>
+    <div class="col-md-8">
+        <label class="control-label col-md-8">
+            <i class="fa fa-warning"></i><span id="warnInfo">请选择正确的休假时间</span>
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.HolidayDays) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(x => x.HolidayDays, new { @class = "form-control",@readonly="readonly" })
+    </div>    
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        选择工作日期 :
+    </label>
+    <div class="col-md-6">
+        <input type="text" id="date" class="form-control datetime"readonly="readonly">
+    </div>
+    <div class="col-md-2">
+        <button id="Add" title="添加调休日期" type="button" class="btn btn-success btn-padding-right"> <span>添加</span></button>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.WorkDates) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextAreaFor(x => x.WorkDates, new { @class = "form-control",@readonly="readonly" })
+    </div>
+    <div class="col-md-2">
+        <button id="Clear" title="创建一条新数据" type="button" class="btn btn-danger btn-dark-gray"></i> <span>清除</span></button>
+    </div>
+</div>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">     
+    //获取当前时期并赋值给日期控件
+    var myDate = new Date();
+    var date = myDate.toLocaleDateString();
+    $(function () {
+        //选择假期
+        $(".bootbox #Add").click(function () {
+            var date = $(".bootbox #date").val();
+            var startTime = $(".bootbox #StartTime").val();
+            var endTime = $(".bootbox #EndTime").val();
+            var $warnInfo = $("#warnInfo");                         
+            if (date==null ||date=="") {
+                return false;
+            } else {
+                
+                var workDates = $(".bootbox #WorkDates").val();
+                var dates = workDates.split(",");
+                var exist = false;
+                for (var i = 0; i < dates.length; i++) {
+                    if (dates[i]==date) {
+                        exist = true;
+                    }
+                }
+                if (exist==true) {
+                    return false;
+                } else {
+                    $(".bootbox #WorkDates").append(date + ",");
+                    checkDate();
+                }                
+            }
+        });
+        $(".bootbox #Clear").click(function () {
+            $(".bootbox #WorkDates").empty();
+        });
+    })
+    //计算时间
+    function computeDay() {
+        var startTime = $(".bootbox #StartTime").val();
+        var endTime = $(".bootbox #EndTime").val();
+        var $submmit=$(".bootbox .btn-primary");
+        if (startTime == null || startTime == "") {            
+            return false;            
+        }
+        if (endTime == null || endTime == "") {
+            return false;
+        }
+        checkDate();
+        var dtStart = new Date(startTime);
+        var dtEnd = new Date(endTime);
+        var day = (dtEnd - dtStart) / 1000 / 60 / 60 / 24 + 1;
+        if (day<=0) {
+            $("#warn").css("display", "block");
+            $submmit.attr("disabled", "disabled");
+        } else {
+            $("#warn").css("display", "none");            
+            $submmit.removeAttr("disabled");
+        }
+        $(".bootbox #HolidayDays").attr("value", day);
+    }
+
+    //校验时间
+    function checkDate() {
+        
+        var startTime = $(".bootbox #StartTime").val();
+        var endTime = $(".bootbox #EndTime").val();
+        var workDates = $(".bootbox #WorkDates").val();
+        var $submmit = $(".bootbox .btn-primary");
+        if (startTime != "" && endTime != "" && workDates != "") {
+            var dtStart = new Date(startTime);
+            var dtEnd = new Date(endTime);
+            var arrDates = workDates.split(',')
+            for (var i = 0; i < arrDates.length; i++) {
+                var date = arrDates[i];
+                if (date != null && date != "") {
+                    var dateTime = new Date(date);
+                    var startDay = dateTime - dtStart;
+                    var endDay = dateTime - dtEnd;
+                    if (startDay >= 0 && endDay <= 0) {
+                        $("#warn").css("display", "block");
+                        $submmit.attr("disabled", "disabled");
+                        return false;
+                    }
+                }                
+            }
+        } else {
+
+        }
+        
+
+    }
+
+   //初始化日期控件
+    $(".datetime").datetimepicker({
+        //startDate: date,
+        format: 'yyyy/mm/dd',
+        autoclose: false,
+        minView: 'month',
+        todayBtn: true,
+        pickerPosition: "bottom-left",
+        //forceParse:false
+    });
+</script>

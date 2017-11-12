@@ -1,0 +1,62 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model AdjustDepositDto
+<div class="form-group" id="back">
+    <label class="control-label col-md-3" style="cursor:pointer;color: #5ebd5e" onclick="returnLast()">
+        返回上一级
+    </label>
+</div>
+<hr />
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.MemberName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.MemberName, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+    @Html.HiddenFor(x => x.MemberId)
+    @Html.HiddenFor(x => x.VerifyType)
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Reason) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Reason, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Balance) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Balance, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Score) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Score, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<script type="text/javascript">
+
+    function returnLast() {
+        $(".bootbox").modal('hide');
+        var AddFlag = "@ViewBag.AddFlag";
+        var view = new $.whiskey.web.ajaxView({
+            caption: "详细信息",
+            actionUrl: "@Url.Action("Search")",
+            params: { AddFlag: AddFlag },
+        });
+    }
+</script>

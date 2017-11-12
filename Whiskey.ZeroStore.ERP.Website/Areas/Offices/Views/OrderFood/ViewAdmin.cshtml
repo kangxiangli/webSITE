@@ -1,0 +1,135 @@
+
+@using Whiskey.ZeroStore.ERP.Models
+@model OrderFood
+
+<style>
+
+</style>
+
+<div id="divViewAdmin">
+    <div class="panel panel-list">
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+                <tr>
+                    <td>序号</td>
+                    <td>姓名</td>
+                    <td>性别</td>
+                    <td>手机号</td>
+                    <td>操作</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item,index) in pageDatas">
+                    <td>{{ calcIndex(index)+1}}</td>
+                    <td>{{item.MemberName}}</td>
+                    <td>{{item.Gender}}</td>
+                    <td>{{item.MobilePhone}}</td>
+                    <td>
+                        <button type="button" class="btn btn-danger" v-on:click="DeleteAdmin(item.AdminId,calcIndex(index))">移除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <my-page v-bind:current="pageInfo.pageIndex"
+                 v-bind:total="pageInfo.totalCount"
+                 v-bind:page-size="pageInfo.pageSize"
+                 v-bind:page-size-opts="[10]"
+                 @@on-change="changePage"
+                 @@on-page-size-change="changePageSize">
+        </my-page>
+    </div>
+
+</div>
+
+<script>
+    var vm = new Vue({
+        el: "#divViewAdmin",
+        data: {
+            Id: "@Request["Id"]",
+            DepId: "@Request["DepId"]",
+            Admins: [],
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            },
+            pageDatas: [],
+        },
+        mounted() {
+            var me = this;
+            $.post("ViewAdminList", { Id: me.Id, DepId: me.DepId }, function (data) {
+                me.Admins = data;
+                me.search();
+            });
+        },
+        methods: {
+            calcIndex(index) {
+                return (this.pageInfo.pageIndex - 1) * this.pageInfo.pageSize + index;
+            },
+            DeleteAdmin(adminId, index) {
+                var me = this;
+                $.whiskey.web.ajaxRequest({
+                    method: "post",
+                    actionUrl: "@Url.Action("DeleteAdmin")",
+                    params: {
+                        Id: me.Id,
+                        AdminId: adminId,
+                    },
+                    showPrompt: true,
+                    complete: function () {
+                        me.Admins.splice(index, 1);
+                        me.search();
+                        $.whiskey.datatable.reset(false);
+                    }
+                });
+            },
+            search: function () {
+                var _self = this;
+                var searchData = {
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+                }
+
+                var pageInfo = {
+                    totalCount: this.Admins.length,
+                    pageCount: Math.ceil(this.Admins.length / searchData.pageSize),
+                    pageSize: searchData.pageSize
+                };
+
+                //　数据为空的情况
+                if (pageInfo.pageCount == 0) {
+                    searchData.pageIndex = 1;
+                    pageInfo.pageIndex = 1;
+                    _self.pageDatas = [];
+                    _self.pageInfo = pageInfo;
+                    return;
+                }
+
+                if (searchData.pageIndex > pageInfo.pageCount) {
+                    searchData.pageIndex = pageInfo.pageCount;
+                }
+                pageInfo.pageIndex = searchData.pageIndex;
+                var startIndex = 0;
+                if (searchData.pageIndex > 1) {
+                    startIndex = (searchData.pageIndex - 1) * searchData.pageSize;
+                }
+
+                var pageData = this.Admins.slice(startIndex, startIndex + searchData.pageSize);
+
+                _self.pageDatas = pageData;
+                _self.pageInfo = pageInfo;
+
+            },
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (size) {
+
+            }
+        },
+    });
+</script>
+

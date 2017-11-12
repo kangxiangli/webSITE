@@ -1,0 +1,157 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+
+@model ArticleItemDto
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        父级栏目 :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.ParentId, (List<SelectListItem>)ViewBag.ArticleItem, new { @class = "form-control selectpicker", @onchange = "getSectionList()" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        栏目名称 :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.ArticleItemName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        APP显示 :
+    </label>
+    <div class="col-md-1">
+        @Html.CheckBoxFor(m => m.IsApp, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group warning alert-danger" id="warn" style="display:none">
+    <label class="control-label col-md-2">
+        警告 :
+    </label>
+    <div class="col-md-10">
+        <label class="control-label col-md-8">
+            <i class="fa fa-warning"></i><span>路径只能输入数字，英文字符和分隔符 /</span>
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        输入路径 :
+    </label>
+    <div class="col-md-10">
+        <input type="text" id="inputPath" class="form-control" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ArticleItemPath) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.ArticleItemPath, new { @class = "form-control", @placeholder = "参考路径：/html/文件夹名/", @readonly = "true" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2" id="SectionTemplateName">
+        栏目模版 :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(x => x.TemplateId, (List<SelectListItem>)ViewBag.SectionTemplate, new { @class = "form-control selectpicker selectpicker_cur", @onchange = "getSectionList()" })
+    </div>
+</div>
+<input type="hidden" value="" id="hidPath" />
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", @placeholder = "字数长度在120字以内" })
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#inputPath").keyup(function (event) {
+            setPath();
+        });
+    })
+    //设置路径
+    function setPath() {
+        //debugger
+        var ParentId = $("#ParentId").val();
+        var path = $("#inputPath").val();
+        //匹配汉字
+        var rege = new RegExp("[^0-9a-zA-Z]|\/");
+        if (rege.test(path)) {
+            $("#warn").css("display", "block");
+            $(".bootbox .btn-primary").attr("disabled", "disabled");
+            return false;
+        }
+        else {
+            $("#warn").css("display", "none");
+            $(".bootbox .btn-primary").removeAttr("disabled", "disabled");
+        }
+        if (ParentId == null || ParentId == "") {
+            $("#ArticleItemPath").attr("value", "/html/" + path + "/");
+        } else {
+            var hidPath = $("#hidPath").val();
+            $("#ArticleItemPath").attr("value", hidPath + path + "/");
+        }
+    }
+
+    //获取模版
+    function getSectionList() {
+        var ParentId = $("#ParentId").val();
+        if (ParentId == null || ParentId=="") {
+
+            $("#SectionTemplateName").empty();
+            $("#SectionTemplateName").append("栏目模版：");
+            $("#TemplateId").empty();
+
+            $.ajax({
+                url: '@Url.Action("GetSectionTemplateList")',
+                type: 'GET',
+                data: { type: 2 },//2表示获取栏目模版
+                success: function (data) {
+                    for (var i = 0; i < data.list.length; i++) {
+                        $("#TemplateId").append('<option value="' + data.list[i].Id + '">' + data.list[i].TemplateName + '</option>');
+                    }
+                   $('.selectpicker_cur').selectpicker();
+                     $('.selectpicker_cur').selectpicker('refresh');
+                }
+            });
+        }
+        else {
+
+            $("#SectionTemplateName").empty();
+            $("#SectionTemplateName").append("列表模版：");
+            $("#SectionTemplateId").empty();
+            $.ajax({
+                url: '@Url.Action("GetSectionTemplateList")',
+                type: 'GET',
+                data: { type: 3, Id: ParentId },//3表示获取分页模版
+                success: function (data) {
+                    for (var i = 0; i < data.list.length; i++) {
+                        $("#TemplateId").append('<option value="' + data.list[i].Id + '">' + data.list[i].TemplateName + '</option>');
+                    }
+                     $('.selectpicker_cur').selectpicker();
+                     $('.selectpicker_cur').selectpicker('refresh');
+                    var path = data.path;
+                     var parentPath = data.parentPath;
+                    $("#hidPath").attr("value", path);
+                    $("#AttrPath").attr("value", path);
+                    $("#AttrPath").attr({ readonly: true });
+                }
+            });
+        }
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker('refresh');
+    })
+</script>

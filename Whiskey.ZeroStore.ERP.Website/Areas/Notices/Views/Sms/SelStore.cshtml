@@ -1,0 +1,242 @@
+﻿<style>
+    .adminlist .modal-dialog {
+        width: 959px;
+    }
+
+    .modal-content {
+        width: 959px;
+        margin: 0 auto;
+    }
+
+    #hoverStyle_8:hover {
+        width: 62px;
+        border-radius: 0%;
+        background: black !important;
+    }
+
+    #hoverStyle_8 {
+        width: 62px;
+        border-radius: 0% !important;
+    }
+
+        #hoverStyle_8.btn-default {
+            background: #666;
+        }
+
+        #hoverStyle_8.btn-success {
+            background: #5ebd5e;
+        }
+
+        #hoverStyle_8 > i {
+            display: block;
+            width: 0px;
+            height: 0px;
+        }
+
+    .btn-danger {
+        background: #e5603b !important;
+    }
+
+    .dataTables_length label {
+        width: 120px;
+        display: flex;
+    }
+
+    #AdminList_wrapper > .datatable-footer > .col-md-3:nth-child(2) {
+        padding: 0;
+        width: 10%;
+    }
+
+    #AdminList_wrapper > .datatable-footer > .col-md-7:nth-child(3) {
+        width: 68%;
+        margin-top: -10px;
+    }
+
+    #hoverStyle_8 span {
+        width: 62px;
+        display: inline-block;
+        height: 28px;
+        line-height: 25px;
+    }
+
+    .paginate_jump_input {
+        line-height: 0 !important;
+    }
+</style>
+<div id="notification_admin_div">
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-5">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">店铺</label>
+                            <div class="col-md-7">
+                                @Html.TextBox("StoreName", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>清除</span></button>
+                    <button id="SelectAll" title="全部选择" type="button" class="btn btn-success btn-padding-right"> <span>全部选择</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%" id="AdminList">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var notification_admin_div_dt = $("#notification_admin_div #AdminList").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("GetStoreSelectList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                $(".form-search input[name][name!='StartDate'][name!='EndDate'],.form-search select").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, $(this).hasClass("_select_input") ? "equal" : "contains"));
+                    }
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                $("#notification_admin_div #SelectAll").unbind("click.selectall").bind("click.selectall", function () {
+                    choose_selectAll(aoData);
+                });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+            {
+                "sTitle": "店铺名称",
+                "bSortable": false,
+                "sName": "StoreName",
+                "mData": function (data) {
+                    return data.StoreName;
+                },
+            },
+            {
+                "sTitle": "店铺类型",
+                "bSortable": false,
+                "sName": "StoreName",
+                "mData": function (data) {
+                    return data.TypeName;
+                },
+            },
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    var txt = "选择";
+                    var color = "default";
+                    if ($("#StoreIds option[value=" + data.Id + "]").length > 0) {
+                        color = "success ";
+                        txt = "已选择";
+                    }
+                    return '<button id="hoverStyle_8" type="button" onclick="choose(this)"  class="btn btn-' + color + ' btn_select" data-name="' + data.StoreName + '"  data-Id="' + data.Id + '"><span>' + txt + '</span></button>';
+                },
+            },
+            ]
+        });
+
+        $("#notification_admin_div #Search").on("click", function () {
+            $.whiskey.datatable.reset(false, notification_admin_div_dt);
+        });
+
+        $("#notification_admin_div #Clear").on("click", function () {
+            $.whiskey.web.clearForm("#notification_admin_div .form-search");
+        });
+
+    });
+
+    //选择店铺
+    function choose(my) {
+        var name = $(my).attr("data-name");
+        var columnValue = $(my).attr("data-Id");
+        var $sel = $("#StoreIds");
+        if ($sel.find("option[value='" + columnValue + "']").length > 0) {
+            $sel.find("option[value='" + columnValue + "']").remove();
+            $(my).text("选择").removeClass("btn-success").addClass("btn-default");
+        } else {
+            $(my).text("已选择").removeClass("btn-default").addClass("btn-success");
+            var option = '<option value="' + columnValue + '" selected="selected">' + name + '</option>';
+            $sel.append(option);
+        }
+        $('.selectpicker').selectpicker('refresh');
+    }
+    function choose_selectAll(data) {
+        $.whiskey.web.ajaxRequest({
+            actionUrl: "GetStoreSelectListAll",
+            method: "post",
+            params: data,
+            lockButton: $(this),
+            complete: function (da) {
+                if (da && da.length > 0) {
+                    var $sel = $("#StoreIds");
+                    $(da).each(function (ind, item) {
+                        if ($sel.find("option[value='" + item.Id + "']").length == 0) {
+                            $sel.append("<option value='" + item.Id + "'>" + item.StoreName + "</option>");
+                        }
+                    });
+                    $sel.selectpicker('refresh').selectpicker("selectAll");
+                    $("#notification_admin_div #AdminList .btn_select").text("已选择").addClass("btn-success").removeClass("btn-default");
+                }
+            }
+        });
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

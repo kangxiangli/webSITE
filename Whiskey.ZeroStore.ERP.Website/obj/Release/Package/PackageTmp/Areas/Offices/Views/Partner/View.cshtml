@@ -1,0 +1,125 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Partner
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.PartnerName) :
+    </label>
+    <div class="col-md-7">
+        @Model.PartnerName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsCooperation) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsCooperation == true ? "正常" : "停止合作")
+    </div>
+</div>
+ 
+<div class="form-group worktime">
+    <label class="control-label col-md-3" >
+        @Html.DisplayNameFor(m => m.PartnerAddress) :
+    </label>
+    <div class="col-md-7">
+        @Model.PartnerAddress
+    </div>
+</div>
+<div class="form-group worktime">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Contacts) :
+    </label>
+    <div class="col-md-7">
+        @Model.Contacts
+    </div>
+</div>
+ <div class="form-group worktime">
+     <label class="control-label col-md-3"  >
+         @Html.DisplayNameFor(m => m.TelPhone) :
+     </label>
+    <div class="col-md-7">
+        @Model.TelPhone
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.PhoneNum) :
+    </label>
+    <div class="col-md-7">
+        @Model.PhoneNum
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Email) :
+    </label>
+    <div class="col-md-7">
+        @Model.Email
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-7">
+        @Model.Notes
+    </div>
+</div>
+<div class="form-group worktime">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.LoginCount) :
+    </label>
+    <div class="col-md-7">
+        @Model.LoginCount（次）
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.LoginTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.LoginTime        
+    </div>
+</div>
+ <div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        操作人员 :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>
+ 

@@ -1,0 +1,55 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.Web.Helper
+@using Newtonsoft.Json
+@model List<Product>
+<script type="text/javascript" src="/content/scripts/jquery/jquery-barcode.js"></script>
+<div class="form-group">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-6 barcode-container">
+            <div class="barcode-wrapper">
+                <div class="col-md-12">名称：<span class="ProductName">@Html.Raw(StringHelper.FixedLength(item.ProductName,24))</span></div>
+                <div class="col-md-12">价格：<span class="TagPrice">￥@item.TagPrice</span></div>
+                <div class="col-md-6">颜色：<span class="ColorName">@Html.Raw(StringHelper.FixedLength(item.ProductColor, 6))</span></div>
+                <div class="col-md-6">品牌：<span class="BrandName">@Html.Raw(StringHelper.FixedLength(item.Brand.BrandName, 6))</span></div>
+                <div class="col-md-6">尺码：<span class="SizeName">@Html.Raw(StringHelper.FixedLength(item.Size.SizeName, 6))</span></div>
+                <div class="col-md-6">折扣：<span class="DiscountName">@(ConvertHelper.NumberToChinese((Math.Round(item.RetailPrice / item.TagPrice * 100)).ToString(), true))</span></div>
+                <div class="col-md-12 barcode barcode-@item.ProductNumber">
+                    <script>$(".barcode-@item.ProductNumber").barcode("@item.ProductNumber", "code93");</script>
+                </div>
+                <div class="col-md-12"><span class="ProductNumber">@item.ProductNumber</span></div>
+            </div>
+            <div class="barcode-amount">
+                <div class="input-group">
+                    <span class="input-group-addon bg-primary no-border">数量</span>
+                    @Html.TextBox("amount-" + item.ProductNumber, "1", new { @class = "form-control input-sm text-center", @onkeyup = "this.value=this.value.replace(/\\D/g,'')", @onafterpaste = "this.value=this.value.replace(/\\D/g,'')" })
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".modal-footer .btn-primary").on("click", function () {
+            var list = new Array();
+            $(".barcode-wrapper").each(function () {
+                var ProductNumber = $(this).find(".ProductNumber").text();
+                var ProductName = $(this).find(".ProductName").text();
+                var TagPrice = $(this).find(".TagPrice").text();
+                var ColorName = $(this).find(".ColorName").text();
+                var BrandName = $(this).find(".BrandName").text();
+                var SizeName = $(this).find(".SizeName").text();
+                var DiscountName = $(this).find(".DiscountName").text();
+                var amount = $("#amount-" + ProductNumber).val();
+                if (typeof (amount) == undefined) amount = 1;
+                for (i = 0; i < amount; i++) {
+                    list.push(ProductNumber + "," + ProductName + "," + TagPrice + "," + ColorName + "," + BrandName + "," + SizeName + "," + DiscountName);
+                }
+            });
+            $.whiskey.barcoder.print({
+                type: 0,
+                barcodes: list,
+            });
+        });
+    });
+</script>

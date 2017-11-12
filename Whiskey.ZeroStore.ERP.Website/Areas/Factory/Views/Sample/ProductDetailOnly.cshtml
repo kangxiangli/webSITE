@@ -1,0 +1,162 @@
+﻿@using Whiskey.ZeroStore.ERP.Models.Entities
+@model ProductOriginNumber
+<style>
+    .diaclg_productDetails .modal-dialog {
+        width: 80% !important;
+        max-width: 80%;
+    }
+
+    [fashion] {
+        border: 1px solid #222;
+    }
+
+        [fashion]:hover {
+            border: 2px solid #f28020;
+        }
+
+    .txt_content {
+        display: none;
+    }
+</style>
+@Html.HiddenFor(f => f.Id)
+
+<div class="tab-pane fade active in " id="productdetail_temp">
+    <input type="hidden" id="temp_phoneOrpc" value="@ViewBag.phoneOrpc" />
+    <div class="form-group">
+        <label class="control-label col-md-1">切换模板：</label>
+        <div class="col-md-3">
+            @Html.DropDownList("TemplateId", (List<SelectListItem>)ViewBag.Templates, new { @class = "form-control selectpicker" })
+        </div>
+        <input type="button" class="btn btn-success" value="强制刷新" onclick="getTempldateDetail('#TemplateContent_Show', $('#TemplateId').val(), true);" />
+        <input type="button" class="btn btn-success" value="还原" onclick="getTempldateDetail('#TemplateContent_Show', $('#TemplateId').val(), false);" />
+    </div>
+    <div class="form-group">
+        <div class="col-md-10" style="width:100%;padding:1rem;display:inline-block;border:1px dashed #f28020;">
+            <div class="edit" id="TemplateContent_Show" style="float:left;width:50%;padding:2rem 0 0 0;max-height:530px;overflow-y:scroll;"></div>
+            <div class="form-group keditor" style="display:none;">
+                <label class="control-label col-md-1">编辑内容：</label>
+                <div class="col-md-5">
+                    <textarea class="form-control textarea_input" id="template_PC_Input" rows="20" placeholder="请输入编辑的内容"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/Editor/kindeditor-all.js"></script>
+<script type="text/javascript" src="/content/editor/lang/zh_CN.js"></script>
+<script type="text/javascript" src="~/Content/Scripts/swiper/swiper.min.js"></script>
+<
+<script type="text/javascript">
+    $(function () {
+        var $curDescribe;
+        initialTemplate();
+        var templateidorg = $("#TemplateId").val();
+        $("#TemplateId").change(function (e) {
+            var $this = $(this);
+            var val = $this.val();
+            $.whiskey.web.confirm({
+                question: "确定要切换嘛？",
+                notes: "切换模板后，之前的模板内容会丢失",
+                ok: function () {
+                    getTempldateDetail("#TemplateContent_Show", val);
+                    templateidorg = val;
+                },
+                cancel: function () {
+                    $this.val(templateidorg);
+                }
+            });
+        });
+
+        $(document).off("click.fashion").on("click.fashion", "[fashion]", function (e) {
+            $curDescribe = $(this);
+            $("#productdetail_temp .keditor").show();
+            var strcontent = $curDescribe.clone();
+            strcontent.find("img[src='']").remove();
+            KindEditor.html('#productdetail_temp .textarea_input', strcontent.html());
+        });
+
+        $("#TemplateContent_Show").off("click.fashion").on("click.fashion", ":not([fashion])", function () {
+            $curDescribe = null;
+            $("#productdetail_temp .keditor").hide();
+        });
+
+        function initialTemplate() {
+            var orgval = "@(ViewBag.phoneOrpc==0 ? Model.TemplateId : Model.TemplatePhoneId)";
+            if (orgval != "0") {
+                $("#TemplateId").val(orgval);
+            }
+            var temp_pc = $("#TemplateId").val();
+            getTempldateDetail("#TemplateContent_Show", temp_pc);
+        }
+
+        function KindContentChange(content) {
+            if ($curDescribe && $($curDescribe).length > 0) {
+                var type = $curDescribe.attr("fashion");
+                var $activepanel = $("#productdetail_temp");
+                var $curSelectors = $activepanel.find("[fashion='" + type + "']");
+                $curSelectors.html(content);
+                if (type.indexOf("img") > -1) {
+                    if (content.length > 0) {
+                        $curSelectors.css("background", "none");
+                    } else {
+                        $curSelectors.css("background", "#ccc");
+                    }
+                }
+            }
+        }
+
+        KindEditor.create("#template_PC_Input", {
+            width: "100%",
+            height: "510px",
+            resizeType: 1,
+            uploadJson: "/content/editor/upload_json.ashx?enableHost=true",
+            fileManagerJson: "/content/editor/file_manager_json.ashx?enableHost=true",
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            formatUploadUrl: false,
+            contentEditable: true,
+            filterMode: false,
+            items: [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage', 'hr', 'emoticons',
+                'link', 'unlink'
+            ],
+            afterCreate: function (id) {
+                this.focus();
+            },
+            afterChange: function (id) {
+                this.sync();
+                KindContentChange(this.html());
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+    });
+
+    function getTempldateDetail(wrapper, Id, refresh) {
+        $.whiskey.web.ajaxRequest({
+            actionUrl: "TempldateDetail",
+            method: "post",
+            params: { templateId: Id, ponid: "@Model.Id", phoneOrpc: "@ViewBag.phoneOrpc", refresh: refresh || false },
+            complete: function (data) {
+                $(wrapper).html(data.Content);
+                $("#productdetail_temp .keditor").hide();
+            }
+        });
+    }
+
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+$('.selectpicker').selectpicker('refresh');
+    })
+</script>

@@ -1,0 +1,131 @@
+﻿<div id="app-product-select">
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>商品款号</th>
+                        <th>商品货号</th>
+                        <th>图片</th>
+                        <th>颜色</th>
+                        <th>尺码</th>
+                        <th>季节</th>
+                        <th>品牌</th>
+                        <th>吊牌价</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{index+1}}</td>
+                        <td>{{item.BigProdNum}}</td>
+                        <td>{{item.ProductNumber}}</td>
+                        <td>
+                            <img-suspension v-bind:path="item.ProductCollocationImg"></img-suspension>
+                        </td>
+                        <td>{{item.ColorName}}</td>
+                        <td>{{item.SizeName}}</td>
+                        <td>{{item.SeasonName}}</td>
+                        <td>{{item.BrandName}}</td>
+                        <td>{{item.TagPrice}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+    </div>
+</div>
+
+<script>
+    var productSelectVM = new Vue({
+        el: "#app-product-select",
+        data: {
+            productNumbers:'@ViewBag.ProductNumbers',
+            isDeleted: false,
+            isEnabled: true,
+            pageDatas: [], //分页数据
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            },
+            selectedProduct: {
+                productNumber: '',
+                productCollocationImg: ''
+            }
+        },
+        mounted: function () {
+            this.search();
+        },
+        methods: {
+            search: function (filter) {
+
+                var _self = this;
+
+                var searchData = {
+
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+                    productNumber: this.productNumbers
+                }
+
+                var name = '', val = '';
+                $("#app-product-select input[name],select[name]").each(function (index, elem) {
+                    name = elem.getAttribute("name")
+                    val = elem.value;
+                    if (val) {
+                        searchData[name] = val;
+                    }
+                })
+
+
+                if (filter) {
+                    searchData = _.extend(searchData, filter)
+                }
+
+                $.getJSON('/Common/ProductList', searchData).done(function (res) {
+
+                    if (res.ResultType !== 3) {
+                        //console
+                        return;
+                    }
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+                })
+            },
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            }
+
+        }
+
+    })
+</script>

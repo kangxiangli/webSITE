@@ -1,0 +1,209 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model ModuleDto
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.ParentId) :
+    </label>
+    <div class="col-md-4">
+        @Html.DropDownList("ParentId", (List<SelectListItem>)ViewBag.ListModule, new { @class = "form-control selectpicker" ,@onchange=""})
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.ParentId)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.ModuleName) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.ModuleName, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.ModuleName)
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Icon) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.Icon, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.Icon)
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.Description, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.Description)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.PageUrl) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.PageUrl, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.PageUrl)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.OverrideUrl) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.OverrideUrl, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.OverrideUrl)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.PageArea) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.PageArea, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.PageArea)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.PageController) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.PageController, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.PageController)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.PageAction) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.PageAction, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.PageAction)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.ColorValue) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.ColorValue, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.ColorValue)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.BadgeTag) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.BadgeTag, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.BadgeTag)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.BadgeUrl) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.BadgeUrl, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.BadgeUrl)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.onClickScripts) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.onClickScripts, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.onClickScripts)
+    </div>
+</div>
+@*<script src="/Content/Scripts/Bootstrap/bootstrap-multiselect.js"></script>
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(function () {
+        //初始化选择框
+        $('.multiselect').multiselect({
+            enableFiltering: true,
+            allSelectedText: "全选",
+            nonSelectedText: "请选择",
+            filterPlaceholder: "查询",
+            nSelectedText: "个被选中",
+        });
+        //品牌全选或者取消
+        $("#allPermission").click(function (e) {
+            e.preventDefault();
+            multiselect_toggle($("#PermissionId"), $(this));
+        });
+    });
+    //获取当前的选中项
+    function multiselect_selected($el) {
+        var ret = true;
+        $('option', $el).each(function (element) {
+            if (!!!$(this).prop('selected')) {
+                ret = false;
+            }
+        });
+        return ret;
+    }
+
+    //全选
+    function multiselect_selectAll($el) {
+        $('option', $el).each(function (element) {
+            $el.multiselect('select', $(this).val());
+        });
+    }
+
+    //取消选择
+    function multiselect_deselectAll($el) {
+        $('option', $el).each(function (element) {
+            $el.multiselect('deselect', $(this).val());
+        });
+    }
+    //获取选择
+    function multiselect_toggle($el, $btn) {
+        if (multiselect_selected($el)) {
+            multiselect_deselectAll($el);
+            $btn.text("全选");
+        }
+        else {
+            multiselect_selectAll($el);
+            $btn.text("取消全选");
+        }
+    }
+
+</script>*@
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('#ParentId').selectpicker();
+        $('#ParentId').selectpicker('refresh');
+    })
+</script>

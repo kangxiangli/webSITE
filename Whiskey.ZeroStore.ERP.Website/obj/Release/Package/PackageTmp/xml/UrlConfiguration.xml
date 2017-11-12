@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<urlList>
+  <url>
+    <name title="未知用途">域名</name>
+    <path>.ovisa.cn</path>
+  </url>
+  <url>
+    <name title="网站域名">域名</name>
+    <path>.0kufang.com</path>
+  </url>
+  <url>
+    <name title="本地运行">域名</name>
+    <path>localhost</path>
+  </url>
+  <url>
+    <name title="本地运行">域名</name>
+    <path>127.0.0.1</path>
+  </url>
+  <url>
+    <name title="未知用途">域名</name>
+    <path>10.1.1.207</path>
+  </url>
+  <url>
+    <name title="网站域名">域名</name>
+    <path>www.0-fashion.com</path>
+  </url>
+  <url>
+    <name title="网站域名">域名</name>
+    <path>.0-fashion.com</path>
+  </url>
+  <url>
+    <name title="网站域名">域名</name>
+    <path>123.56.194.232</path>
+  </url>
+  <url>
+    <name title="测试服务器">域名</name>
+    <path>11.1.1.111</path>
+  </url>
+</urlList>

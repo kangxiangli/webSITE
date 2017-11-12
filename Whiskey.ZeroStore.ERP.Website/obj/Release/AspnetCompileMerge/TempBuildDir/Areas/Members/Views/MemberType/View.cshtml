@@ -1,0 +1,26 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model MemberType
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.MemberTypeName) :
+    </label>
+    <div class="col-md-10">
+        @Model.MemberTypeName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.MemberTypeDiscount) :
+    </label>
+    <div class="col-md-10">
+        @Model.MemberTypeDiscount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Model.Notes        
+    </div>
+</div>

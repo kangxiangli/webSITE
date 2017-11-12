@@ -1,0 +1,11 @@
+﻿@using Whiskey.ZeroStore.ERP.Models.Entities
+@model ProductOriginNumber
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        拒绝原因 :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(f => f.RefuseReason, new { @class = "form-control", @rows = "12", @resize = "none" })
+    </div>
+</div>

@@ -1,0 +1,37 @@
+﻿
+<div>
+    <input type="hidden" id="hid_tag" value="@ViewBag.rawtag" />
+    <ul id="tab_content" class="nav nav-tabs">
+        <li class="active"><a id="pruchase_a" href="#Purchase" data-toggle="tab">采购单管理</a> </li>
+        <li><a id="picking_a" href="#Picking" data-toggle="tab">配货管理</a></li>
+
+    </ul>
+    <div id="TabContent" class="tab-content">
+
+        <div class="tab-pane active" id="Purchase">
+            @{
+                Html.RenderAction("PurchaseOrder", "Purchase");
+            }
+
+        </div>
+        <div class="tab-pane" id="Picking">
+            @{
+                Html.RenderAction("Index", "Orderblank");
+
+            }
+        </div>
+        
+        <a style="float:right" href="#content-wrapper">返回顶部</a>
+
+    </div>
+</div>
+<script>
+    $(function () {
+
+        var tg = $("#hid_tag").val();
+        if (tg == "ob") {
+            $("#picking_a").click();
+        }
+
+    })
+</script>

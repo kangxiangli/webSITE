@@ -1,0 +1,39 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model LogDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.LogName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.LogName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Description, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PageUrl) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PageUrl, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.IPAddress) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.IPAddress, new { @class = "form-control" })
+    </div>
+</div>

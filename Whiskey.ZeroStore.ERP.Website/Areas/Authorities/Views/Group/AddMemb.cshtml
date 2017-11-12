@@ -1,0 +1,280 @@
+﻿<style>
+    .modal-dialog {
+        width: 600px;
+    }
+</style>
+
+<div class="group_addmember">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#user_tab" data-toggle="tab">
+                用户
+            </a>
+        </li>
+        <li><a href="#role_tab" id="role_a" data-toggle="tab">角色</a></li>
+
+    </ul>
+    <link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+    <script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="user_tab">
+            <table class="table table-list add_table_user_lis  valign-middle" style="width:100%;">
+                <thead>
+                </thead>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="role_tab">
+            <table class="table table-list add_table_role_lis  valign-middle" style="width:100%;">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        initUserTab();
+        initRoleTab();
+
+        $("#Search").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+
+        $("#Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+
+
+    });
+    function initRoleTab() {
+        $.whiskey.datatable.instances[3] = $(".add_table_role_lis").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "/Authorities/Role/List",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var startDate = $(".start-date").val();
+                var endDate = $(".end-date").val();
+                if (startDate.length > 0 && endDate.length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                }
+                if ($(".trusher").is(":checked")) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                    if ($(".enabler").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                    }
+                } else {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                }
+                $(".form-search input[name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("Id");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                });
+
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                $("td:eq(3)", nRow).css("max-width", "18%").css("width", "auto");
+
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".add_table_role_lis .checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".add_table_role_lis tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                }).click();
+
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "自增编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    return '';
+                }
+            },
+
+             {
+                 "sTitle": "角色名",
+                 "bSortable": false,
+                 "sName": "rolename",
+                 "mData": function (data) {
+                     return data.RoleName;
+
+                 }
+             },
+             {
+                 "sTitle": "角色权重",
+                 "bSortable": false,
+                 "sName": "weig",
+                 "mData": function (data) {
+                     return data.Weight;
+
+                 }
+             },
+             {
+                 "sTitle": "角色描述",
+                 "bSortable": false,
+                 "sName": "descr",
+                 "mData": function (data) {
+                     return data.Description;
+
+                 }
+             },
+            ]
+
+        });
+
+    }
+    function initUserTab() {
+        $.whiskey.datatable.instances[2] = $(".add_table_user_lis").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "/Authorities/Administrator/List",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var startDate = $(".start-date").val();
+                var endDate = $(".end-date").val();
+                if (startDate.length > 0 && endDate.length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                }
+                if ($(".trusher").is(":checked")) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                    if ($(".enabler").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                    }
+                } else {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                }
+                $(".form-search input[name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("Id");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                });
+
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                $("td:eq(2)").css("float", "left");
+                $("td:eq(3)", nRow).css("max-width", "18%").css("width", "auto");
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".add_table_user_lis .checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".add_table_user_lis tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                }).click();
+
+                $(".add_table_user_lis").treegrid({
+                    saveState: true,
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "自增编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    return '';
+                }
+            },
+
+            {
+                "sTitle": "所属部门",
+                "bSortable": false,
+                "sName": "DepartMeName",
+                "mData": function (data) {
+                    return data.DepartmentName;
+                }
+            },
+
+             {
+                 "sTitle": "用户账号",
+                 "bSortable": false,
+                 "sName": "UserNam",
+                 "mData": function (data) {
+                     return data.AdminName;
+
+                 }
+             },
+               {
+                   "sTitle": "用户姓名",
+                   "bSortable": false,
+                   "sName": "UserNam",
+                   "mData": function (data) {
+                       return data.RealName;
+
+                   }
+               },
+             {
+                 "sTitle": "备注",
+                 "bSortable": false,
+                 "sName": "UserNam",
+                 "mData": function (data) {
+                     var reg = /^p.*/;
+                     if (reg.test(data.Id)) {
+                         return "";
+                     }
+                     return data.Notes;
+
+                 }
+             },
+            ]
+
+        });
+    }
+</script>

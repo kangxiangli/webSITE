@@ -1,0 +1,221 @@
+﻿<script src="~/Content/Scripts/Common/canvas_djs_min.js"></script>
+<script>
+    (function ($) {
+        initialNotiHub();
+
+        //阻止消息通知悬浮点击 Menu关闭
+        $(".notifications-list").hover(function () {
+            $(".notifications-list").on("click", function (e) {
+                e.stopPropagation();
+            });
+        });
+
+        $("#Send").on("click", function () {
+            var dialog = new $.fashion.web.ajaxDialog({
+                caption: "创建数据",
+                actionUrl: "@Url.Action("Create", "Messager", new { area = "Notices" })",
+                lockButton: $(this),
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.fashion.datatable.reset(false);
+                    return true;
+                },
+            });
+        });
+
+        function initialNotiHub(startlog) {
+            startlog = startlog || false;
+            $.connection.hub.logging = startlog;
+            var connection = $.connection.hub.start();
+            autonotificationhub = $.connection.NotificationHub;
+            autonotificationhub.client.GetMessage = function (data) {
+                $("#msgCount").html(data);
+            }
+            autonotificationhub.client.GetNotification = function (data) {
+                $("#allnotification").html(data.count || "0");
+                if (data.list) {
+                    var $divlist = $(".notifications-list"); $divlist.html('');
+                    $.each(data.list, function (index, value) {
+                        var $div = $('<div class="notification"></div>');
+                        $div.append('<div class="notification-title text-info">' + value.Title + '</div>');
+                        var description = $('<div class="notification-description"></div>').html(value.Description);
+                        $div.append(description);
+                        $div.append('<div class="notification-ago">' + value.Time + '</div>');
+                        //$div.append('<div class="notification-icon fa fa-hdd-o bg-info" title="标记已读" onclick="ReadNotifciation(this,' + value.Id + ')"></div>');
+                        $div.append('<div class="notification-icon fa fa-hdd-o bg-info" style="cursor:pointer;" title="查看详细" onclick="ViewMsg(this,' + value.Id + ',' + value.NId + ')"></div>');
+                        $divlist.append($div);
+                    });
+                }
+            }
+            autonotificationhub.client.GetBarCodeInfo = function (data) {
+                if (data) {
+                    var curinput = $("input:focus").empty().val(data);
+                    var _e_keydown = $.Event("keydown"); _e_keydown.keyCode = 13; curinput.trigger(_e_keydown);
+                    var _e_keyup = $.Event("keyup"); _e_keyup.keyCode = 13; curinput.trigger(_e_keyup);
+                }
+            }
+            connection.done(function () {
+                linkToNotiServer(autonotificationhub.server);
+            });
+            $.connection.hub.reconnected(function () {
+                linkToNotiServer(autonotificationhub.server);
+            });
+
+            autonotificationhub.client.StartServerRelease = function (seconds) {
+                if (!isNaN(seconds) && seconds > 0) {
+                    serverStartRelease(seconds);
+                }
+            }
+
+            autonotificationhub.client.GetMessageTo = function (adminId, content) {
+                $.fashion.message.get(adminId, content);
+            }
+            autonotificationhub.client.GetAllLoginAdmin = function (data) {
+                $.fashion.message.getAllAdmin(data);
+            }
+            autonotificationhub.client.selfInfo = function (data) {
+                $.fashion.message.me(data);
+            }
+            autonotificationhub.client.exit = function (adminIds) {
+                $.fashion.message.exit(adminIds);
+            }
+            autonotificationhub.client.login = function (data) {
+                $.fashion.message.login(data);
+            }
+        }
+
+        function linkToNotiServer(server) {
+            server.flushSocketLink('@Model.AdminId');
+            initialMessage(server);
+        }
+        var mask;
+        function serverStartRelease(seconds) {
+            if (mask) mask.remove();
+            mask = $("<div />").css({
+                "position": "fixed", "top": "0", "right": "0", "bottom": "0", "left": "0", "z-index": "99999",
+                "background": "rgba(0,0,0,0.8)"
+            });
+            var $body = $("body").css({ "overflow-y": "hidden" });
+            var $mask_div = $("<div />").css({ width: "920px", position: "absolute", top: "50%", left: "50%", marginTop: "-200px", marginLeft: "-460px" });
+            $body.append(mask.append($mask_div));
+            $mask_div.djs(function () {
+                mask.remove();
+                $body.css({ "overflow-y": "auto" });
+            }, seconds, "系统正在升级维护， 请耐心等待", "即将完成，请稍候...");
+        }
+        function initialMessage(server) {
+            $.fashion.message.server = server;
+            $.fashion.message.adminId = '@Model.AdminId';
+        }
+    })(jQuery);
+
+    function ViewMsg(sender, Id, NId) {
+        var view = new $.fashion.web.ajaxView({
+            caption: "详细信息",
+            actionUrl: "@Url.Action("View", "NotificationView", new { area = "Notices" })",
+            params: { Id: Id, NId: NId },
+            buttonType: 0,
+            className: "notification_view",
+            lockButton: $(sender),
+            //complete: function () {
+            //    getLastNewNotification();
+            //},
+            button: {
+                "read": {
+                    label: "已读",
+                    icon: "fa fa-save",
+                    className: "btn-warning",
+                    callback: function () {
+                        var IsRead = false;
+                        $.ajax({
+                            url: "@Url.Action("IsAnswer", "NotificationView", new { area = "Notices" })",
+                            type: "post",
+                            async: false,
+                            data: { notificationReadId: Id },
+                            success: function (d) {
+                                if (d.ResultType == 1) {
+                                    IsRead = true;
+                                }
+                                if (d.ResultType != 1 && d.ResultType != 3) {
+                                    IsRead = true;
+                                    $.fashion.web.alert({
+                                        type: "info",
+                                        content: d.Message,
+                                        callback: function () { }
+                                    });
+                                }
+                            }
+                        })
+                        if (!IsRead) {
+                            var dialog = new $.fashion.web.ajaxDialog({
+                                caption: "通知查看测验",
+                                diacl: "diaclg",
+                                actionUrl: "@Url.Action("Answer", "NotificationView", new { area = "Notices" })",
+                                //params: { notificationId: NId },
+                                getParams: { notificationReadId: Id },
+                                successEvent: function () {
+                                    var value = $("#hdAnswerRecord").val();
+                                    var Ids = $("#hdIds").val();
+
+                                    if (value == undefined || value == null) {
+                                        $.fashion.web.alert({
+                                            type: "info",
+                                            content: "请答题后再提交",
+                                            callback: function () {
+                                            }
+                                        });
+                                        return false;
+                                    }
+                                    var answers = JSON.parse(value);
+                                    $.ajax({
+                                        url: "@Url.Action("InAnswer", "NotificationView", new { area = "Notices" })",
+                                        type: "post",
+                                        async: false,
+                                        data: { list: answers, Ids: Ids, notificationReadId: Id },
+                                        success: function (result) {
+                                            $.fashion.web.alert({
+                                                type: "info",
+                                                content: result.Message,
+                                                callback: function () {
+                                                }
+                                            });
+                                            if (result.ResultType != -1) {
+                                                return false;
+                                            }
+                                            return true;
+                                        }
+                                    })
+                                },
+                                async: false,
+                                formValidator: function () {
+                                    var $form = $(".modal-form");
+                                    if (!$form.valid()) {
+                                        return false;
+                                    } else {
+                                        return true;
+                                    }
+                                },
+                                postComplete: function () {
+                                    return true;
+                                },
+                            });
+                        }
+                        //$(this).close();
+
+                        $.fashion.datatable.reset(true, $.fashion.datatable.instances[0]);
+                    }
+                },
+            },
+            close: function () {
+                autonotificationhub.server.getNotification(@Model.AdminId);
+            }
+        });
+    }
+</script>

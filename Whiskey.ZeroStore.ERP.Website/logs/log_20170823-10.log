@@ -1,0 +1,27 @@
+
+[2017-08-23 10:53:38.324] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 18 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-23 10:53:38.501] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 18 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-23 10:53:59.845] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 18 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-23 10:57:00.128] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 15 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-23 10:57:00.165] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 15 USER-20160427FL\Administrator 
+{}
+
+[2017-08-23 10:57:00.199] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 15 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-23 10:57:00.496] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 15 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-23 10:57:00.518] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 15 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-23 10:57:00.535] ERROR Whiskey.ZeroStore.ERP.Services.Implements.NotificationService 15 USER-20160427FL\Administrator 
+通知消息保存失败   在 Whiskey.ZeroStore.ERP.Services.Implements.NotificationService.Insert(Boolean contentToTitle, Action`1 sendaction, NotificationDto[] dtos)

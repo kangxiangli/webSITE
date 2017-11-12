@@ -1,0 +1,278 @@
+﻿/**
+ * Created by xiuxia on 2016/9/22.
+ */
+/*main 模块*/
+.sixBox {
+   width:100%;height:100%; 
+}
+.sixBox>div {
+    width:49.5%;
+    border-left:1px solid rgba(255,255,255,0.1);
+    float:left;
+    min-height:3rem;
+    position:relative;
+}
+.sixBox > div > a {
+    display:block;
+    position:absolute;
+    text-align:center;    
+    color:rgba(255,255,255,0.7);
+}    
+.sixBox > div img {
+    width:1.6rem;
+}
+.sixBox > div p {
+ font-size:0.7rem;
+ padding-top:0.5rem;
+}
+.sixBox .topBot {
+    border-top:1px solid rgba(255,255,255,0.1);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.smallBig {
+    animation: myfirst 0.5s;
+    -moz-animation: myfirst 0.5s;   /* Firefox */
+    -webkit-animation: myfirst 0.5s;    /* Safari 和 Chrome */
+    -o-animation: myfirst 0.5s; /* Opera */
+}
+@keyframes myfirst
+{
+    from {transform:scale(1); }
+    to {transform:scale(0.8); }
+}
+
+@-moz-keyframes myfirst /* Firefox */
+{
+    from {transform:scale(1); }
+    to {transform:scale(0.8); }
+}
+
+@-webkit-keyframes myfirst /* Safari 和 Chrome */
+{
+    from {transform:scale(1); }
+    to {transform:scale(0.8); }
+}
+
+@-o-keyframes myfirst /* Opera */
+{
+    from {transform:scale(1); }
+    to {transform:scale(0.8); }
+}
+/* end  mian*/
+/*离职申请*/
+.warmPromptBg {
+     position:absolute;
+     width:100%;
+     height:100%;
+     background-color:rgba(0,0,0,0.5);
+     top:0;
+     left:0;
+     display:none;
+}
+.warmPrompt,.warmSure {
+    position:absolute;
+    display: none;
+    background-color: #fff;
+    text-align: center;
+    width: 60%;
+    top: 40%;
+    left: 50%;
+    margin-left: -30%;
+    z-index: 100;
+    border-radius: 5px;
+    color:rgba(0,0,0,0.7);
+}
+.noCheg,.infTil{
+  color:rgba(0,0,0,0.7);
+  font-size:0.6rem;
+  height:1rem;
+  line-height:1.3rem;
+}
+.yuanyin,.xinXi{
+  font-size:0.75rem;
+  height:2rem;
+  line-height:2.2rem;
+}
+.btnAll,.hideWarm{
+    border-top: 1px solid rgba(221, 221, 221, 1) !important;
+    height: 1.8rem;
+    line-height: 1.8rem;
+    
+}
+.btnAll > input,.hideWarm{   
+     color: #0F80FB;
+     font-weight: 700;
+     font-size: 0.75em;
+     float:left;
+     height: 1.8rem;
+     background-color:transparent;
+}
+.btnAll > input {
+     width:49.5%;
+}
+.hideWarm {
+    width:100%;
+} 
+.btnAll .btnSure{
+    border-right:1px solid rgba(221, 221, 221, 1)!important;
+}
+
+/*end 离职申请*/
+
+/*发布通知*/
+.inp_txt,.department{
+    margin-top: 1rem;
+    background-color: transparent;
+    width: 90%;
+    margin-left: 5%;
+    height: 2rem;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.85);
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.2) !important;
+    border-radius: 0;
+}
+.content_txt{
+    background-color: transparent;
+    width: 90%;
+    margin-left: 5%;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.85);
+    margin-top: 2rem;
+    height: 8rem;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+.inp_btn{
+    display: inline-block;
+    width: 90%;
+    margin: 2rem 5%;
+    height: 2rem;
+    line-height: 2rem;
+    background-color: #6F5A93;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 5px;
+}
+.goal{position: relative;}
+
+.select_bg,.select_type{
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    background-color: rgba(0,0,0,0);
+}
+#seleId,.typeDiv,#dptMent{
+    width: 90%;
+    left: 5%;
+    position: absolute;
+    background-color: #2C273B;
+    max-height: 9rem;
+    margin-top: -1px;
+    overflow-y: scroll;
+}
+.type_id {
+    width:100%;
+}
+#seleId li,.type_id li,#dptMent li{
+    width: 90%;
+    margin-left: 5%;
+    text-align: center;
+    font-size: 0.8rem;
+    height: 2.3rem;
+    line-height: 2.3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1)
+}
+.select_bg,#seleId,.select_type,.typeDiv,.department,#dptMent{
+    display: none;
+}
+.showMgBg{position: absolute;width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);display: none;left: 0;top: 0;}
+.showMg{
+    position: absolute;
+    display: none;
+    background-color: #fff;
+    text-align: center;
+    width: 60%;
+    top: 50%;
+    left: 50%;
+    margin-left: -30%;
+    z-index: 100;
+    border-radius: 5px;
+    height: 4.5rem;
+    margin-top: -2.25rem;
+}
+.showMg .prom{
+    font-size: 0.7rem;
+    height: 1rem;
+    line-height: 1.5rem;
+    color: #50524B;
+}
+.showMg .msg_info{
+    font-size: 0.8rem;
+    height: 2rem;
+    line-height: 2.3rem;color: #50524B;
+}
+.showMg .sure_btn{
+    width: 100%;
+    left: 0;
+    position: absolute;
+    background-color: transparent;
+    color: #0F80FB;
+    font-weight: 700;
+    border-top: 1px solid rgba(221, 221, 221, 1) !important;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    font-size: 0.75rem;
+}
+/*end  发布通知*/
+/*弹出层遮罩层*/
+.bg_shade{
+    display:none;width: 100%;height: 100%;position: absolute;top: 0;left: 0;background-color:rgba(0,0,0,0.2);
+}
+/*end 弹出层遮罩层*/
+/*信息记录*/
+#store_box,#type_box{display: none;}
+.shop_id,.type_txt{position: relative;}
+.select_box{
+    z-index: 999;
+    margin-top: -1px;
+    width: 90%;
+    left: 5%;
+    height: 8rem;
+    position: absolute;
+    background-color: #2C273B;
+    font-size: 0.8rem;
+}
+.select_li{
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+.select_li li{
+    width: 90%;
+    margin-left: 5%;
+    text-align: center;
+    height: 2.3rem;
+    line-height: 2.3rem;
+}
+.select_li li:not(:last-child){
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+/*end 信息记录*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                     
+           

@@ -1,0 +1,120 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model CouponActivity
+
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+
+<style>
+    .li_empt {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+</style>
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #e5603b"></span>
+</div>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    @*<li class="">
+            <a href="#addImage" data-toggle="tab">上传图片</a>
+        </li>*@
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <input type="hidden" id="hidQuantity" value="0" />
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.HiddenFor(m=>m.Id)
+                @Html.DisplayNameFor(m => m.ActivityName) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.ActivityName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.CouponType) :
+            </label>
+            <div class="col-md-8">
+               
+                @Html.EnumDropDownListFor(m => m.CouponType, "请选择优惠券类型", new { @class = "selectpicker"})
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.ActivityStartDate) :
+            </label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ActivityStartDate, new { @class = "form-control datetime", @placeholder = "时间" })
+
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.ActivityEndDate) :
+            </label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ActivityEndDate, new { @class = "form-control datetime", @placeholder = "时间" })
+
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.CouponStartDate) :
+            </label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.CouponStartDate, new { @class = "form-control datetime", @placeholder = "时间" })
+
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.CouponEndDate) :
+            </label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.CouponEndDate, new { @class = "form-control datetime", @placeholder = "时间" })
+            </div>
+        </div>
+
+        <div class="form-group showSection">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextAreaFor(x => x.Notes, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    @*<div class="tab-pane fade clearfix" id="addImage">
+
+        </div>*@
+
+</div>
+
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+
+
+    //获取当前时期并赋值给日期控件
+    var myDate = new Date();
+    var date = myDate.toLocaleDateString();
+
+    //初始化日期控件
+    $(".datetime").datetimepicker({
+        startDate: date,
+        format: 'yyyy/mm/dd',
+        autoclose: false,
+        minView: 'month',
+        todayBtn: true,
+    });
+
+    $(".selectpicker").selectpicker();
+   
+</script>

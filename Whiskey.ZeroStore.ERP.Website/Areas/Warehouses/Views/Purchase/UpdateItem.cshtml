@@ -1,0 +1,56 @@
+﻿
+
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model PurchaseItem
+<style>
+    /*[disabled="disabled"] {
+      background-color:#dddddd;
+    }*/
+    input[type="text"]:disabled {
+        background: #dddddd;
+    }
+</style>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Purchase.PurchaseNumber) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Purchase.PurchaseNumber, new { @class = "form-control", disabled = "disabled" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ProductId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(c => c.Product.ProductName, new {@class="form-control",disabled="disabled" })
+       
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Quantity) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control",enabled="enabled"})
+    </div>
+</div>
+
+
+
+@Html.HiddenFor(m=> m.Id)
+
+<script>
+   
+    $(function () {
+        $("#Quantity").attr("active", true);
+       // $("#StorageId option").each(function () {
+        //    var storag = $("#outstorage").val();
+        //    if ($(this).val() == storag) {
+        //        $(this).selected();
+        //    }
+        //});
+    })
+</script>

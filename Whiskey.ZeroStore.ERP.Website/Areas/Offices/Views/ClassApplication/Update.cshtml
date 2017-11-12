@@ -1,0 +1,158 @@
+﻿
+
+@using Whiskey.ZeroStore.ERP.Models
+@model ClassApplication
+<style>
+    .clwid .modal-dialog {
+        min-width: 50%;
+        width: 70%;
+    }
+</style>
+<div class="createDiv">
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            申请人：
+        </label>
+        <div class="col-md-5">
+            <input type="text" disabled value="@ViewBag.RealName" class="form-control" />
+            <input type="hidden" value="@ViewBag.adminId" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            调班日期:
+        </label>
+        <div class="col-md-5">
+            @Html.DropDownList("Day", (List<SelectListItem>)ViewBag.workDayList, new { @class = "form-control cur_selectpicker" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            补班日期 :
+        </label>
+        <div class="col-md-5">
+            @Html.DropDownList("OffDay", (List<SelectListItem>)ViewBag.offDayList, new { @class = "form-control cur_selectpicker" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            替班人部门:
+        </label>
+        <div class="col-md-5">
+            @Html.DropDownList("SuccessionDepId", (List<SelectListItem>)ViewBag.DepList, new { @class = "form-control cur_selectpicker" , data_live_search="true"})
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            替班人:
+        </label>
+        <div class="col-md-5">
+            <select id="SuccessionId" class="form-control selectpicker_people"></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            备注:
+        </label>
+        <div class="col-md-5">
+            <textarea id="Desc" style="width:100%"></textarea>
+        </div>
+    </div>
+    @Html.HiddenFor(x=>x.Id, new { @class = "form-control" })
+</div>
+<script type="text/javascript">
+    (function () {
+        $(".createDiv #SuccessionDepId").change(function () { GetUser(); });
+        GetUser();
+        // $(".modal-dialog #RealName").val("");
+    })();
+    function GetUser() {
+        var optionHtml = "<option value=''>请选择</option>";
+        if ($(".createDiv #SuccessionDepId").val() != "") {
+            $.post("/Authorities/Resignation/GetUserList", { departmentId: $(".createDiv #SuccessionDepId").val() }, function (msg) {
+                var data = eval(msg);
+                $(data).each(function () {
+                    var admin_Id = this.Id;
+                    if (admin_Id.toString() != "@ViewBag.adminId") {
+                        optionHtml += "<option value='" + this.Id + "'>" + this.RealName + "</option>";
+                    }
+                });
+                $(".modal-dialog #SuccessionId").html(optionHtml);
+                 $('.selectpicker_people').selectpicker();
+                   $('.selectpicker_people').selectpicker('refresh');
+                $(".createDiv #Day").val("@Model.Day");
+                $(".createDiv #OffDay").val("@Model.OffDay");
+                $(".createDiv #SuccessionDepId").val("@Model.SuccessionDepId");
+                $(".createDiv #SuccessionId").val("@Model.SuccessionId");
+                $(".createDiv #Desc").val("@Model.desc");
+                 
+            });
+        } else {
+            $(".modal-dialog #SuccessionId").html(optionHtml);
+            $(".createDiv #Day").val("@Model.Day");
+            $(".createDiv #OffDay").val("@Model.OffDay");
+            $(".createDiv #SuccessionDepId").val("@Model.SuccessionDepId");
+            $(".createDiv #SuccessionId").val("@Model.SuccessionId");
+            $(".createDiv #Desc").val("@Model.desc");
+        }
+
+    }
+    function dataValiPost() {
+        var errcou = 0;
+        var da = [];
+        var Day = $(".createDiv #Day ").val();
+        var name = $(".createDiv #RealName ").val();
+        da.push({ "Id": "@Model.Id" });
+        if (Day == "") {
+
+            $(".createDiv #Day ").css({ "border": "2px solid  #e5603b" }).attr("title", "请选择调班日期");
+            errcou += 1;
+        }
+        else {
+            $(".createDiv #Day").css({ "border": "" });
+            da.push({ "Day": Day });
+        }
+        var OffDay = $(".createDiv #OffDay").val();
+        if (OffDay == "") {
+            $(".createDiv #OffDay ").css({ "border": "2px solid  #e5603b" }).attr("title", "请选择补班日期");
+            errcou += 1;
+        }
+        else {
+            $(".createDiv #OffDay").css({ "border": "" });
+            da.push({ "OffDay": OffDay });
+        }
+        var SuccessionDepId = $(".modal-dialog #SuccessionDepId").val();
+        if (SuccessionDepId == "") {
+            $(".createDiv #SuccessionDepId ").css({ "border": "2px solid  #e5603b" }).attr("title", "请选择替班人部门");
+            errcou += 1;
+        }
+        else {
+            $(".createDiv #SuccessionDepId").css({ "border": "" });
+            da.push({ "SuccessionDepId": SuccessionDepId });
+        }
+        da.push({ "adminId": "@ViewBag.adminId" });
+        var SuccessionId = $(".modal-dialog #SuccessionId").val();
+        if (SuccessionDepId == "") {
+            $(".createDiv #SuccessionId ").css({ "border": "2px solid  #e5603b" }).attr("title", "请选择替班人");
+            errcou += 1;
+        }
+        else {
+            $(".createDiv #SuccessionId").css({ "border": "" });
+            da.push({ "SuccessionId": SuccessionId });
+        }
+        da.push({ "desc": $(".createDiv #Desc").val() });
+        if (errcou == 0) {
+            return { error: 0, data: da };
+        }
+        else {
+
+            return { error: 1 }
+        }
+    }
+</script>
+<script>
+    // cur_selectpicker 初始化
+    $(function () {
+        $('.cur_selectpicker').selectpicker();
+    })
+</script>

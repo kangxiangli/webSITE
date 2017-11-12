@@ -1,0 +1,47 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model TimeoutRequest
+
+@*<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />*@
+
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.TimeoutSettingId) :
+            </label>
+            <div class="col-md-7">
+                @Html.DropDownList("TimeoutSettingId", ViewBag.TimeoutList as List<SelectListItem>, "请选择超时类型", new { @class = "form-control selectpicker" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Number) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(x => x.Number, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextAreaFor(x => x.Notes, new { @class = "form-control" })
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(function () {
+        $(".selectpicker").selectpicker();
+    })
+</script>

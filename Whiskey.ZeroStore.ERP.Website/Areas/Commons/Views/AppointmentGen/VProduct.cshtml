@@ -1,0 +1,400 @@
+﻿<style>
+    .modal-content {
+        width: 1055px !important;
+    }
+
+    #hoverStyle_8 span:hover {
+        width: 62px;
+        border-radius: 0%;
+        background: black !important;
+    }
+
+    #hoverStyle_8 {
+        width: 62px;
+        border-radius: 0% !important;
+    }
+
+        #hoverStyle_8 > i {
+            display: block;
+            width: 0px;
+            height: 0px;
+        }
+
+        #hoverStyle_8 span {
+            width: 62px;
+            display: inline-block;
+            height: 28px;
+            line-height: 25px;
+        }
+
+        #hoverStyle_8.btn-default {
+            background: #666;
+        }
+
+        #hoverStyle_8.btn-success {
+            background: #5ebd5e;
+        }
+</style>
+<div id="v_product_div">
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search text-left">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">商品品牌</label>
+                            <div class="col-md-9">
+                                @Html.DropDownList("ProductOriginNumber.BrandId", (List<SelectListItem>)ViewBag.Brand, new { @class = "form-control _select_input selectpicker" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">商品类别</label>
+                            <div class="col-md-9 ">
+                                @Html.DropDownList("ProductOriginNumber.CategoryId", (List<SelectListItem>)ViewBag.Category, new { @class = "form-control _select_input selectpicker" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">商品季节</label>
+                            <div class="col-md-9">
+                                @Html.DropDownList("ProductOriginNumber.SeasonId", (List<SelectListItem>)ViewBag.Season, new { @class = "form-control _select_input selectpicker" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">颜色</label>
+                            <div class="col-md-9">
+                                @Html.DropDownList("ColorId", (List<SelectListItem>)ViewBag.Color, new { @class = "form-control _select_input selectpicker" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">面向人群</label>
+                            <div class="col-md-9">
+                                @Html.DropDownList("ProductOriginNumber.CrowdId", (List<SelectListItem>)ViewBag.Crowds, new { @class = "form-control _select_input selectpicker" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">创建日期</label>
+                            <div class="col-md-9">
+                                <div class="input-daterange input-group">
+                                    @Html.TextBox("StartDate", "", new { @class = "start-date  form-control", @placeholder = "开始日期" })
+                                    <span class="input-group-addon">至</span>
+                                    @Html.TextBox("EndDate", "", new { @class = "end-date  form-control", @placeholder = "结束日期" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+                <div class="pull-left">
+                    <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>清除</span></button>
+                </div>
+                <div class="pull-right">
+                    <button id="SelectAll" title="选择本页所有项" type="button" class="btn btn-success btn-padding-right"><i class=""></i> <span>选择本页</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%" id="dt_product">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        $("select").each(function () {
+            $(this).children("option").not(":eq(0)").each(function () {
+                var tx = $(this).val();
+                if (tx == "" || tx == "-1") {
+                    $(this).attr("disabled", "disabled");
+                }
+            });
+        });
+
+        var _div_dt = $("#v_product_div #dt_product").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "ProductList",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                $("#v_product_div .form-search input[name][name!='StartDate'][name!='EndDate'],.form-search select").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0 && value != "-1") {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, $(this).hasClass("_select_input") ? "equal" : "contains"));
+                    }
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            fnRowCallback: function (nRow, aData, iDisplayIndex) {
+                var isEnabled = aData.IsEnabled;
+                if (isEnabled == false) {
+                    $(nRow).css({ "color": " #5ebd5e" });
+                }
+                $("td:eq(0)", nRow).addClass("text-right");
+                $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+
+                $("td:eq(2)", nRow).css({ "width": "10%", "padding-left": "0" });
+                $("td:last", nRow).addClass("text-middle").css({ "width": "13%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            fnDrawCallback: function (da, json) {
+                $.whiskey.tools.json("");
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+                var inistat = "collapsed";
+                var KeywordsVal = $("#Keywords").val();
+                if (KeywordsVal && KeywordsVal.length > 0) {
+                    inistat = "expanded";
+                }
+                $(".table-list").treegrid({
+                    initialState: inistat,
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed',
+
+                });
+                var tds = $(".treegrid-expander-expanded, .treegrid-expander-collapsed, .treegrid-expander").parents("tr").find("td:eq(3)");
+
+                var cou = 0;
+                if (tds.length > 0) {
+                    for (var i = 0; i < tds.length; i++) {
+                        var te = $(tds[i]).text();
+                        if (te != "")
+                            cou += parseInt(te);
+                    }
+                    if (cou > 0) {
+                        $(".pcou").html("当前页总数:" + cou);
+                    }
+                }
+                $("tr.treegrid-parent- :checkbox.te_1_che[value^='par']").each(function (ind,item) {
+                    var parid = $(item).val();
+                    var btns = $("tr.treegrid-parent-" + parid).find(".btn_select");
+                    var suclength = btns.filter(".btn-success").length;
+                    if (suclength == btns.length) {
+                        $(".treegrid-" + parid).find(".btn_select.btn-default").addClass("btn-success").removeClass("btn-default").find("span").text("已选择");
+                    }
+                });
+
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+            {
+                "sTitle": "款号",
+                "bSortable": false,
+                "sName": "BigProdNum",
+                "mData": function (data) {
+                    if (data.ParentId == "") {
+                        return "<span style='color:blue'>" + data.BigProdNum + "</span>";
+                    } else {
+                        return "";
+                    }
+                },
+            },
+            {
+                "sTitle": "商品货号",
+                "bSortable": false,
+                "sName": "ProductNumber",
+                "mData": function (data) {
+                    var reg = /\d+/;
+                    if (reg.test(data.ParentId)) {
+                        return "<span class='_pnum' style=\"font-family: '黑体';font-size: 17px;\">" + data.ProductNumber + "</span>";
+                    }
+                    return "";
+                }
+            },
+            {
+                "sTitle": "品牌",
+                "bSortable": false,
+                "sName": "BrandName",
+                "mData": function (data) {
+                    return data.BrandName;
+                },
+            },
+            {
+                "sTitle": "品类",
+                "bSortable": false,
+                "sName": "CategoryName",
+                "mData": function (data) {
+                    return data.CategoryName;
+                },
+            },
+            {
+                "sTitle": "季节",
+                "bSortable": false,
+                "sName": "SeasonName",
+                "mData": function (data) {
+                    return data.SeasonName;
+                },
+            },
+            {
+                "sTitle": "尺码",
+                "bSortable": false,
+                "sName": "SizeName",
+                "mData": function (data) {
+                    return data.SizeName;
+                }
+            },
+            {
+                "sTitle": "颜色",
+                "bSortable": false,
+                "sName": "ColorName",
+                "mData": function (data) {
+                    if (data.ParentId == "") {
+                        return ""
+                    } else {
+                        var st = "<img src='" + data.ColorImg + "' title='" + data.ColorName + "' style='width:40px;margin:0 auto;'>";
+                        return st;
+                    }
+                }
+            },
+            {
+                "sTitle": "图片",
+                "bSortable": false,
+                "sName": "ThumbnailPath",
+                "mData": function (data) {
+                    if (data.ThumbnailPath == null || data.ThumbnailPath == "null" || data.ThumbnailPath == "") {
+                        return "";
+                    }
+                    else {
+                        return '<div class="thumbnail-img_five_box"><div class="thumbnail-img_five"><div class="thumbnail-img_f"><img class="popimg" src="' + data.ThumbnailPath + '"/></div></div></div>';
+                    }
+                },
+            },
+            {
+                "sTitle": "吊牌价",
+                "bSortable": false,
+                "sName": "TagPrice",
+                "mData": function (data) {
+                    if (data.ParentId == "") {
+                        return data.TagPrice;
+                    }
+                    return "";
+                },
+            },
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    var txt = "选择";
+                    var color = "default";
+                    if ($("#ProductIds option[value=" + data.Id + "]").length > 0) {
+                        color = "success ";
+                        txt = "已选择";
+                    }
+                    if (data.ParentId != "") {
+                        return '<button id="hoverStyle_8" type="button" onclick="choose(this)" class="btn btn-' + color + ' btn_select" data-name="' + data.ProductNumber + '" data-Id="' + data.Id + '" data-ParentId="' + data.ParentId + '" ><span>' + txt + '</span></button>';
+                    }
+                    return '<button id="hoverStyle_8" type="button" onclick="chooseChildren(this,\''+data.Id+'\')" class="btn btn-' + color + ' btn_select"><span>' + txt + '</span></button>';
+                },
+            },
+            ]
+        });
+
+        $("#v_product_div #Search").on("click", function () {
+            $.whiskey.datatable.reset(false, _div_dt);
+        });
+
+        $("#v_product_div #Clear").on("click", function () {
+            $.whiskey.web.clearForm("#v_product_div .panel-search");
+        });
+        $("#v_product_div #SelectAll").on("click", function () {
+            $("#v_product_div #dt_product tr:not(.treegrid-parent-) .btn_select:not(.btn-success)").click();
+        });
+    });
+
+    function choose(my) {
+        var $my = $(my);
+        var name = $my.attr("data-name");
+        var columnValue = $my.attr("data-Id");
+        var $sel = $(".AppointmentAutoGen #ProductIds");
+        if ($sel.find("option[value='" + columnValue + "']").length > 0) {
+            $sel.find("option[value='" + columnValue + "']").remove();
+            $my.text("选择").removeClass("btn-success").addClass("btn-default");
+        } else {
+            $my.text("已选择").removeClass("btn-default").addClass("btn-success");
+            var option = '<option value="' + columnValue + '" selected="selected" >' + name + '</option>';
+            $sel.append(option);
+        }
+
+        var parid = $my.attr("data-parentid");
+        var btns = $("tr.treegrid-parent-" + parid).find(".btn_select");
+        var suclength = btns.filter(".btn-success").length;
+        if (suclength == btns.length) {
+            $(".treegrid-" + parid).find(".btn_select").addClass("btn-success").removeClass("btn-default").find("span").text("已选择");
+        } else {
+            $(".treegrid-" + parid).find(".btn_select").addClass("btn-default").removeClass("btn-success").find("span").text("选择");
+        }
+        $('.selectpicker').selectpicker('refresh');
+    }
+    function chooseChildren(sender, Id) {
+        $(".treegrid-parent-" + Id).find(".btn_select:not(.btn-success)").click();
+        $(".treegrid-" + Id).find(".btn_select.btn-default").addClass("btn-success").removeClass("btn-default").find("span").text("已选择");
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

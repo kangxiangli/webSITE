@@ -1,0 +1,36 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Extensions
+@model WorkOrderCategoryDto
+
+<style>
+
+</style>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.WorkOrderCategoryName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.WorkOrderCategoryName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+
+@Html.HiddenFor(f => f.Id)
+
+<script>
+    $(function () {
+
+
+    });
+</script>
+
+

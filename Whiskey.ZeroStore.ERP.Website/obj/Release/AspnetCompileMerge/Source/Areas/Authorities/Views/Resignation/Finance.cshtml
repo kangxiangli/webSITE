@@ -1,0 +1,356 @@
+﻿
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model Resignation
+
+<style>
+    .info {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+</style>
+<div class="createDiv">
+    <ul class="nav nav-tabs" role="tablist" id="navTab">
+        <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">基本信息</a></li>
+        <li role="presentation"><a href="#personnel" aria-controls="personnel" role="tab" data-toggle="tab">人事</a></li>
+        <li role="presentation"><a href="#technology" aria-controls="technology" role="tab" data-toggle="tab">技术</a></li>
+        <li role="presentation" class="active"><a href="#finance" aria-controls="finance" role="tab" data-toggle="tab">财务</a></li>
+    </ul>
+    <div id="base" style="display:none" class="info">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                部门 :
+            </label>
+            <div class="col-md-7">
+                <input type="text" value="@ViewBag.ResignationDepartmentName" class="form-control" disabled />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                离职人 :
+            </label>
+            <div class="col-md-7">
+                <input type="text" value="@ViewBag.ResignationName" class="form-control" disabled />
+                <input type="hidden" id="ResignationId" value="@Model.ResignationId" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                交接情况  :
+            </label>
+            <div class="col-md-8">
+                <label style="margin-left:20px">
+                    <input type="checkbox" disabled id="documentation" />@Html.DisplayNameFor(m => m.Documentation)
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                交接人部门:
+            </label>
+            <div class="col-md-8">
+                <div class="col-md-6">
+                    <input type="text" value="@ViewBag.HandoverManDepartmentName" class="form-control" disabled />
+                    <input type="hidden" id="HandoverManDepartmentId" value="@Model.DepartmentId" />
+                </div>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                交接人 :
+            </label>
+            <div class="col-md-8">
+                <div class="col-md-6">
+                    <input type="text" value="@ViewBag.HandoverManName" class="form-control" disabled />
+                    <input type="hidden" id="HandoverManId" value="@Model.HandoverManId" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.ResignationDate) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(x => x.ResignationDate, new { @class = "form-control", @placeholder = "离职时间", @readonly = "readonly" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.ResignationReason) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextAreaFor(m => m.ResignationReason, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                提交人:
+            </label>
+            <div class="col-md-8">
+                <input type="text" disabled class="form-control" value="ViewBag.SubmitName " />
+            </div>
+        </div>
+    </div>
+    <div id="personnelDiv" class="info" style="display:none">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                交接情况  :
+            </label>
+            <div class="col-md-8">
+                <label style="margin-left:20px">
+                    <input type="checkbox" disabled name="DepartmentManagerConfirmed" id="DepartmentManagerConfirmed" />@Html.DisplayNameFor(m => m.DepartmentManagerConfirmed)
+                </label>
+            </div>
+            <div class="form-group" style="margin-top:30px;">
+                <label class="control-label col-md-2">
+
+                </label>
+                <div class="col-md-8">
+                    <label style="margin-left:20px">
+                        <input type="checkbox" disabled name="OfficeBooks" id="OfficeBooks" />@Html.DisplayNameFor(m => m.OfficeBooks)
+                    </label>
+                    <label style="margin-left:20px">
+                        <input type="checkbox" disabled name="OfficeSupplies" id="OfficeSupplies" />@Html.DisplayNameFor(m => m.OfficeSupplies)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+
+                </label>
+                <div class="col-md-8">
+                    <label style="margin-left:20px">
+                        <input type="checkbox" disabled name="Data" id="Data" />@Html.DisplayNameFor(m => m.Data)
+                    </label>
+                    <label style="margin-left:20px">
+                        <input type="checkbox" disabled name="JobCard" id="JobCard" />@Html.DisplayNameFor(m => m.JobCard)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+
+                </label>
+                <div class="col-md-8">
+                    <label style="margin-left:20px">
+                        <input type="checkbox" disabled name="OfficeEquipment" id="OfficeEquipment" />@Html.DisplayNameFor(m => m.OfficeEquipment)
+                    </label>
+                    <label style="margin-left:20px">
+                        <input type="checkbox" disabled name="OfficeKey" id="OfficeKey" />@Html.DisplayNameFor(m => m.OfficeKey)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+
+                </label>
+                <div class="col-md-8">
+                    <label style="margin-left:20px">
+                        <input type="checkbox" disabled name="Telephone" id="Telephone" />@Html.DisplayNameFor(m => m.Telephone)
+                    </label>
+                    <label style="margin-left:20px">
+                        <input type="checkbox" disabled name="SocialSecurityStop" id="SocialSecurityStop" />@Html.DisplayNameFor(m => m.SocialSecurityStop)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+
+                </label>
+                <div class="col-md-8">
+                    <label style="margin-left:20px">
+                        <input type="checkbox" disabled name="OtherBenefitsStop" id="OtherBenefitsStop" />@Html.DisplayNameFor(m => m.OtherBenefitsStop)
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+            </label>
+            <div class="col-md-8">
+                <label style="margin-left:20px">
+                    <input type="checkbox" disabled name="Other" id="Other" />@Html.DisplayNameFor(m => m.Other)
+                </label>
+                <textarea id="OtherDesc" disabled class="form-control" maxlength="300" style="display:none"></textarea>
+            </div>
+        </div>
+    </div>
+    <div id="technologyDiv" class="info" style="display:none">
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+
+            </label>
+            <div class="col-md-8">
+                <label style="margin-left:20px">
+                    <input type="checkbox" disabled id="CancellationSystem" />@Html.DisplayNameFor(m => m.CancellationSystem)
+                </label>
+                <label style="margin-left:20px">
+                    <input type="checkbox" disabled id="ClearFingerprint" />@Html.DisplayNameFor(m => m.ClearFingerprint)
+                </label>
+                <label style="margin-left:20px">
+                    <input type="checkbox" disabled id="RecycleAccount" />@Html.DisplayNameFor(m => m.RecycleAccount)
+                </label>
+            </div>
+        </div>
+    </div>
+    <div id="financeDiv" class="info">
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+
+            </label>
+            <div class="col-md-8">
+                <label style="margin-left:20px">
+                    <input type="checkbox" checked id="WageSettlement" />@Html.DisplayNameFor(m => m.WageSettlement)
+                </label>
+                <label style="margin-left:20px">
+                    <input type="checkbox" id="LoanSettlement" />@Html.DisplayNameFor(m => m.LoanSettlement)
+                </label>
+                <label style="margin-left:20px">
+                    <input type="checkbox" id="ReimbursementEnd" />@Html.DisplayNameFor(m => m.ReimbursementEnd)
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#navTab li").click(function () {
+            //personnelDiv personnel
+            if (!$(this).hasClass("active")) {
+                if ($(this).find("a").attr("aria-controls") == "home") {
+                    $("#base").css("display", "");
+                    $("#personnelDiv").css("display", "none");
+                    $("#technologyDiv").css("display", "none");
+                    $("#financeDiv").css("display", "none");
+                }
+                else if ($(this).find("a").attr("aria-controls") == "technology") {
+                    $("#technologyDiv").css("display", "");
+                    $("#base").css("display", "none");
+                    $("#personnelDiv").css("display", "none");
+                    $("#financeDiv").css("display", "none");
+                } else if ($(this).find("a").attr("aria-controls") == "finance") {
+                    $("#financeDiv").css("display", "");
+                    $("#base").css("display", "none");
+                    $("#personnelDiv").css("display", "none");
+                    $("#technologyDiv").css("display", "none");
+
+                }
+                else {
+                    $("#base").css("display", "none"); $("#personnelDiv").css("display", "");
+                    $("#technologyDiv").css("display", "none");
+                    $("#financeDiv").css("display", "none");
+                }
+            }
+        });
+        $(".createDiv #ResignationDate").val(("@Model.ResignationDate").replace("0:00:00", ""));
+        if ("@Model.Documentation" == "True") {
+            $(".createDiv #documentation").attr("checked", true);
+        } else {
+            $(".createDiv #documentation").attr("checked", false);
+        }
+        if ("@Model.DepartmentManagerConfirmed" == "True")
+            $(".createDiv #DepartmentManagerConfirmed").attr("checked", true);
+        if ("@Model.OfficeBooks" == "True")
+            $(".createDiv #OfficeBooks").attr("checked", true);
+        if ("@Model.OfficeSupplies" == "True")
+            $(".createDiv #OfficeSupplies").attr("checked", true);
+        if ("@Model.Data" == "True")
+            $(".createDiv #Data").attr("checked", true);
+        if ("@Model.JobCard" == "True")
+            $(".createDiv #JobCard").attr("checked", true);
+        if ("@Model.OfficeEquipment" == "True")
+            $(".createDiv #OfficeEquipment").attr("checked", true);
+        if ("@Model.OfficeKey" == "True")
+            $(".createDiv #OfficeKey").attr("checked", true);
+        if ("@Model.Telephone" == "True")
+            $(".createDiv #Telephone").attr("checked", true);
+        if ("@Model.SocialSecurityStop" == "True")
+            $(".createDiv #SocialSecurityStop").attr("checked", true);
+        if ("@Model.OtherBenefitsStop" == "True")
+            $(".createDiv #OtherBenefitsStop").attr("checked", true);
+        if ("@Model.CancellationSystem" == "True")
+            $(".createDiv #CancellationSystem").attr("checked", true);
+        if ("@Model.ClearFingerprint" == "True")
+            $(".createDiv #ClearFingerprint").attr("checked", true);
+        if ("@Model.RecycleAccount" == "True")
+            $(".createDiv #RecycleAccount").attr("checked", true);
+        if ("@Model.Other" == "True") {
+            $(".createDiv #Other").attr("checked", true);
+            $(".createDiv #OtherDesc").css("display", "");
+            $(".createDiv #OtherDesc").val("@Model.OtherDesc");
+        }
+
+
+    });
+    function dataValiPost() {
+        var errcou = 0;
+        var da = [];
+        var ResignationId = $(".createDiv #ResignationId ").val();
+        var name = $(".createDiv #RealName ").val();
+        da.push({ "Id": "@Model.Id" });
+        da.push({ "operationId": "@Model.operationId" });
+        da.push({ "Documentation": "@Model.Documentation" });
+        da.push({ "ResignationId": "@Model.ResignationId" });
+        da.push({ "DepartmentId": "@Model.DepartmentId" });
+        da.push({ "HandoverManId": "@Model.HandoverManId" });
+        da.push({ "ResignationDate": "@Model.ResignationDate" });
+        da.push({ "ResignationReason": "@Model.ResignationReason" });
+        da.push({ "DepartmentManagerConfirmed": "@Model.DepartmentManagerConfirmed" });
+        da.push({ "OfficeBooks": "@Model.OfficeBooks" });
+        da.push({ "OfficeSupplies": "@Model.OfficeSupplies" });
+        da.push({ "Data": "@Model.Data" });
+        da.push({ "JobCard": "@Model.JobCard" });
+        da.push({ "OfficeEquipment": "@Model.OfficeEquipment" });
+        da.push({ "OfficeKey": "@Model.OfficeKey" });
+        da.push({ "Telephone": "@Model.Telephone" });
+        da.push({ "SocialSecurityStop": "@Model.SocialSecurityStop" });
+        da.push({ "OtherBenefitsStop": "@Model.OtherBenefitsStop" });
+        da.push({ "Other": "@Model.Other" });
+        da.push({ "OtherDesc": "@Model.OtherDesc" });
+
+        da.push({ "CancellationSystem": "@Model.CancellationSystem" });
+        da.push({ "ClearFingerprint": "@Model.ClearFingerprint" });
+        da.push({ "RecycleAccount": "@Model.RecycleAccount" });
+
+        if ($(".createDiv  #WageSettlement").is(':checked')) {
+            $(".createDiv #WageSettlement").css({ "border": "" });
+            da.push({ "WageSettlement": true });
+
+        } else {
+            $(".createDiv #WageSettlement").css({ "border": "2px solid  #e5603b" }).attr("title", "请勾选确认工资结算！");
+            errcou += 1;
+        }
+        if ($(".createDiv  #LoanSettlement").is(':checked')) {
+            $(".createDiv #LoanSettlement").css({ "border": "" });
+            da.push({ "LoanSettlement": true });
+
+        } else {
+            $(".createDiv #LoanSettlement").css({ "border": "2px solid  #e5603b" }).attr("title", "请勾选确认借款清算！");
+            errcou += 1;
+        }
+        if ($(".createDiv  #ReimbursementEnd").is(':checked')) {
+            $(".createDiv #ReimbursementEnd").css({ "border": "" });
+            da.push({ "ReimbursementEnd": true });
+
+        } else {
+            $(".createDiv #ReimbursementEnd").css({ "border": "2px solid  #e5603b" }).attr("title", "请勾选确认报销完结！");
+            errcou += 1;
+        }
+        da.push({ "ToExamineResult": 3 });
+        if (errcou == 0) {
+            return { error: 0, data: da };
+        }
+        else {
+
+            return { error: 1 }
+        }
+    }
+</script>

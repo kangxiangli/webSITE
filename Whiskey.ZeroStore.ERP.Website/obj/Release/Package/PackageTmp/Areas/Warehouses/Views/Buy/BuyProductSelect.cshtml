@@ -1,0 +1,307 @@
+﻿
+
+
+
+<style>
+.this_display{
+display: flex;
+}
+.this_display .dataTables_info{
+	width: 100px;
+}
+.this_display .dataTables_length{
+	width: 150px;
+}
+.modal-content{
+	width: 900px;
+}
+</style>
+<div>
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-4">产品编号或条码：</label>
+                    <div class="col-md-5">
+                        @Html.TextBox("AttributeNameOrNum", "", new { @class = "form-control", placeholder = "输入产品编号或者条码" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-4">商品品牌：</label>
+                    <div class="col-md-5">
+                        @Html.DropDownList("_BrandId", (List<SelectListItem>)ViewBag.Brand, new { @class = "form-control selectpicker" })
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button id="Search_par" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear_par" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <table id="nwe_table_1" class="table table-list table-hover valign-middle" width="100%">
+        <thead>
+        </thead>
+    </table>
+</div>
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+
+<script src="~/Content/Scripts/Common/comm.js"></script>
+<script>
+    var datatable_install;
+    $(document).ready(function () {
+        var storage = $("#StorageId option:selected").val();
+        var dts = $("#nwe_table_1").dataTable({
+            "bScrollCollapse": true,
+            "bSort": false,
+            "bScrollInfinite": false,
+            "sPaginationType": "full_numbers",
+            "sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-5 info this_display"il><"col-md-7 text-right"p>>',
+            "sAjaxSource": "/Warehouses/Buy/BuyProductList",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var attrName = $("#AttributeNameOrNum").val();
+                var group = new $.whiskey.filter.group();
+                group.Rules.push(new $.whiskey.filter.rule("ProductNumber", attrName, "equal"));
+                group.Rules.push(new $.whiskey.filter.rule("ProductBarcode", attrName, "equal"));
+                group.Operate = 'Or';
+                conditions.Groups.push(group);
+
+                var brand = $("#_BrandId option:selected").val();
+
+                conditions.Rules.push(new $.whiskey.filter.rule("BrandId", brand, "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("StorageId", storage, "equal"));
+
+                //var index = ind;
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                if (nRow != undefined && nRow != null) {
+                    var isEnabled = aData.IsEnabled;
+                    if (isEnabled == false) {
+                        $(nRow).css({ "color": " #5ebd5e" });
+                    }
+
+                    $("td:eq(2)", nRow).addClass("text-left");
+                    $("td:last", nRow).addClass("text-left").css({ "width": "10%" });
+                    $(nRow).addClass("treegrid-T1" + aData.Id + (aData.ParentId != "" ? " treegrid-parent-T1" + aData.ParentId : ""));
+                    return nRow;
+                }
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $("#nwe_table_1 tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".pdl_all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".pdl").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $("#nwe_table_1").treegrid({
+                    saveState: true,
+                    treeColumn: 1,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+            },
+            "aoColumns": [{
+
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox('pdl_all'),
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id, "pdl");
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "mData": function (data) {
+                    if (data.ParentId == "")
+                        return data.Id;
+                    else return "";
+                }
+            },
+            {
+                "sTitle": "条码",
+                "bSortable": false,
+                "mData": function (data) {
+                    if (data.ParentId == "")
+                        return "";
+                    return data.ProductBarcode;
+                }
+            },
+
+            {
+                "sTitle": "品牌名",
+                "bSortable": false,
+                "mData": function (data) {
+                    if (data.ParentId != "") return "";
+                    return data.BrandName;
+                },
+            },
+           {
+               "sTitle": "尺码",
+               "bStoreable": false,
+               "mData": function (data) {
+                   if (data.ParentId != "") return "";
+                   return data.SizeName;
+               }
+
+           }
+           , {
+               "sTitle": "季节",
+               "bStoreable": false,
+               "mData": function (data) {
+                   if (data.ParentId != "") return "";
+                   return data.SeasonName;
+               }
+           }
+           , {
+               "sTitle": "颜色",
+               "bStoreable": false,
+               "mData": function (data) {
+                   if (data.ParentId != "") return "";
+                   return data.ColorName;
+               }
+           },
+           {
+               "sTitle": "图片",
+               "bStoreable": false,
+
+               "mData": function (data) {
+                   if (data.ParentId != "") return "";
+                     return '<div class="thumbnail-img_five_box"><div class="thumbnail-img_five"><div class="thumbnail-img_f" onclick="showPath(this)"><img onerror="imgloaderror(this);" src="' + data.ThumbnailPath + '" class="popimg"/></div></div></div>';
+                   //return "<img class='img-thumbnail' src='" + data.ThumbnailPath + "'/>";
+               }
+           }
+            ]
+
+        });
+        $(dts).addClass("table table-striped");
+        //$.whiskey.datatable.instances[0]=dts;
+        $.whiskey.datatable.instances[0] = dts;
+        //datatable_install = $.whiskey.datatable.instance;
+        //alert("hi");
+        $("#Search_par").click(function () {
+            $.whiskey.datatable.reset(false, dts);
+
+        });
+        $("#AttributeNameOrNum").keyup(function (event) {
+            if (event.keyCode == 13) {
+                // alert("hi");
+                $.whiskey.datatable.reset(false, dts);
+                event.stopPropagation();
+            }
+        });
+        $("#Clear_par").click(function () {
+            $("#AttributeNameOrNum").val("");
+            //$("#DepartmentId option").eq(0).attr("selected", true);
+        });
+        // $(".bootbox-close-button:last").hide();
+
+
+        $("body").delegate("#nwe_table_1 .px", "click", function () {
+
+            //var par = $("#nwe_table_1 td input[type=checkbox]:checked").parents("tr").prevAll(".treegrid-expanded").children("td:first").children().children(":checkbox");
+
+            var par = $(this).parents("tr:first").attr("class");
+
+            var regex = /.+treegrid-parent-T1(\S+)/;            
+            var resul = regex.exec(par);
+
+            if (resul != null) {
+                var chisty = ".treegrid-T1" + resul[1];
+                if ($(this).is(":checked")) {
+                    $(chisty).children("td:first").find(":input").prop("checked", "checked");
+                }
+                var checkcou = 0;
+                $(chisty).nextAll(".treegrid-parent-T1" + resul[1]).each(function () {
+
+                    if ($(this).children("td:first").children().children().is(":checked")) {
+                        checkcou++;
+                    }
+                });
+                if (checkcou > 0)
+                    $(chisty).children("td:first").children().children().prop("checked", "checked");
+                else
+                    $(chisty).children("td:first").children().children().prop("checked", false);
+            }
+            else {
+
+                var regex = /.+treegrid-T1(\w+)/;
+                var ischecked = $(this).is(":checked");
+                var parid = regex.exec(par)[1];
+                
+                var id = ".treegrid-T1" + parid;
+                var parentid = ".treegrid-parent-T1" + parid;
+
+                $(id).nextAll(parentid).each(function () {
+
+                    // alert($(this).children("td:first").children().children().attr("checked"));
+
+                    $(this).children("td:first").children().children().prop("checked", ischecked);
+                });
+
+
+            }
+        })
+
+        $(".bootbox-close-button:last").click(function () {
+            $("form[0fashion='fashion-team']").parents(".modal-content").show();
+        });
+    });
+    $("#Search_par").click(function () {
+        $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+
+    });
+</script>
+<script>
+	$(document).on("mouseover", ".popimg", function () {
+		var imgsrc= $(this).attr("src");
+                if(imgsrc=="/Content/Images/noimage.png"||imgsrc==""){
+                	
+                	return;
+                }
+                if (this.tagName == "IMG") {
+                    var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                    
+                    toolTip(strImg);
+                  //  console.log(this.src);
+                } else {
+                    $(this).find("img").each(function () {
+                        var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                        toolTip(strImg);
+                    });
+                }
+            }).on("mouseout", function () {
+                $("body").find("#toolTipLayer").hide();
+            });
+
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

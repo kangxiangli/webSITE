@@ -1,0 +1,81 @@
+﻿<div class="skinBox">
+	<div class="row template-skins">
+		<a data-skin="skin-1" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x1.jpg" alt=""></a>
+		<a data-skin="skin-2" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x2.jpg" alt=""></a>
+		<a data-skin="skin-3" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x3.jpg" alt=""></a>
+		<a data-skin="skin-4" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x4.jpg" alt=""></a>
+		<a data-skin="skin-5" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x5.jpg" alt=""></a>
+		<a data-skin="skin-6" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x6.jpg" alt=""></a>
+		<a data-skin="skin-7" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x7.jpg" alt=""></a>
+		<a data-skin="skin-8" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x8.jpg" alt=""></a>
+		<a data-skin="skin-9" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x9.jpg" alt=""></a>
+		<a data-skin="skin-10" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x10.jpg" alt=""></a>
+		<a data-skin="skin-11" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x11.jpg" alt=""></a>
+		<a data-skin="skin-12" class="col-sm-2 col-xs-4" href="javascript:;"><img src="/Theme/default/img/x12.jpg" alt=""></a>
+	</div>
+</div>
+<style>
+	.skinBox{
+		padding: 20px 30px 0 0;
+	}
+	.template-skins a.col-sm-2{
+		background: transparent;
+	}
+	.template-skins a img{
+		
+		width: 100%;
+	}
+	.template-skins .template-skin-active img{
+		border: 3px dotted #FFF;
+	}
+</style>
+
+@section Scripts{
+<script>
+    var skin_init
+	if(localStorage.skin_init){
+        skin_init = localStorage.skin_init;
+        console.log(skin_init)
+		$('.template-skins').find('a[data-skin='+ skin_init +']').addClass('template-skin-active')
+        $('body').attr('id', skin_init);
+         
+        $('body').css({
+        	'background-size': 'cover',
+        	'background-repeat': 'no-repeat',
+    	    'background-position': 'center',
+    	    'background-attachment': 'fixed'
+        });
+        $('.body-cover').css('background', 'none');
+    }
+
+
+    $('.template-skins > a').on('click',function (e) {
+        e.preventDefault();
+        $('.template-skin-active').removeClass('template-skin-active')
+        $(this).addClass('template-skin-active')
+        var skin = $(this).data('skin');   
+        $('body').attr('id', skin);
+        $('#changeSkin').modal('hide');
+        $('body').css({
+        	'background-size': 'cover',
+        	'background-repeat': 'no-repeat',
+    	    'background-position': 'center',
+    	    'background-attachment': 'fixed'
+        });
+        $('.body-cover').css('background', 'none');
+    	localStorage.setItem("skin_init",skin);
+    });
+    $('.template-skins > a').hover(function (e) {
+    	$(this).css({
+    		'transition':'.5s all',
+    		'transform':'scale(1.5,1.5)',
+    		'zIndex':'1000'
+    	})
+    },function(){
+    	$(this).css({
+    		'transform':'scale(1,1)',
+    		'zIndex':'1'
+    	})
+    });
+</script>
+}

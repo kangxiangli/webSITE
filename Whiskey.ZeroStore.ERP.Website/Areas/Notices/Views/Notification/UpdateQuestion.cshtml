@@ -1,0 +1,527 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@model List<NotificationQuestion>
+<style>
+    .form-word {
+        height: 30px;
+        width: 40%;
+        background: rgba(0,0,0,0.2);
+        text-align: center;
+        line-height: 30px;
+    }
+
+    .ShowQuestion {
+        background: rgba(0,0,0,0.2);
+    }
+
+    #Question {
+        background: rgba(0,0,0,0.2);
+        padding-top: 15px;
+    }
+
+    .cur-col {
+        padding-top: 7px;
+        display: flex;
+    }
+
+        .cur-col > .form-word {
+            padding: 5px;
+            margin-right: 15px;
+            border: 0;
+        }
+
+    #btnQSubmit {
+        margin: 0 5px 5px;
+    }
+
+    .form-box {
+        width: 16%;
+    }
+</style>
+<div class="worktimeDetail">
+    <div class="row job_per">
+        <div id="ShowQuestionList" class="form-group">
+            @Html.Raw(ViewBag.htmlStr)
+        </div>
+
+        <div id="Question" style="display:">
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    问题 ：
+                </label>
+                <div class="col-md-7">
+                    @Html.TextBox("Q_Content", "", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    问题类型 ：
+                </label>
+                <div class="col-md-7">
+                    @Html.DropDownList("Q_QuestionType", (List<SelectListItem>)ViewBag.QuestionTypes, new { @class = "form-control receive-store selectpicker cur_selectpicker", data_live_search = "false", @style = "width:100%" })
+                </div>
+            </div>
+            <button data-bb-handler="cancel" id="btnQSubmit" type="button" class="btn btn-primary">提交</button>
+        </div>
+        @Html.Hidden("hdQuestionGuidId")
+        @Html.Hidden("hdAnsweringGuidId")
+        @Html.Hidden("hdQType")
+        <div id="Answer_Choice" style="display:none">
+            <div class="form-group" id="AC_Content_parent">
+                <label class="control-label col-md-3">
+                    答案 ：
+                </label>
+                <div class="col-md-7">
+                    @Html.TextBox("AC_Content", "", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group" id="AC_IsRight_parent">
+                <label class="control-label col-md-3">
+                    是否正确答案 ：
+                </label>
+                <div class="col-md-7">
+                    @Html.CheckBox("AC_IsRight", new { @class = "form-control" })
+                </div>
+            </div>
+            <button data-bb-handler="cancel" id="btnASubmit" type="button" class="btn btn-primary">提交</button>
+            <button data-bb-handler="cancel" id="btnGoBack" onclick="AddQuestion()" type="button" class="btn btn-primary">返回</button>
+        </div>
+    </div>
+</div>
+<link href="/Content/Styles/Bootstrap/BootstrapSelect/bootstrap-select.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/BootstrapSelect/bootstrap-select.min.js"></script>
+<script>
+    $(function () {
+        //var htmlStr = "";
+        //$.each(questionList, function (i, q) {
+        //    alert(q.questionType);
+        //htmlStr += "<div id=\"" + q.GuidId + "\"><div class=\"form-group\" ><input type=\"hidden\" value=\"" + q.QuestionType + "\" id=\"" + q.GuidId + "_QType\" /><input type=\"hidden\" value=\"" + q.GuidId + "\" id=\"" + q.GuidId + "_Q\" /><label class=\"control-label col-md-3\">问题" + (i + 1) + " ：</label><div class=\"col-md-7\"><label id=\"" + q.GuidId + "_QContent\">" + q.Content + "</label>&nbsp;&nbsp;&nbsp;&nbsp;<label id=\"" + q.GuidId + "_QTypeName\">" + GetQTypeName(q.QuestionType) + "</label><input type=\"button\" value=\"添加答案\" onclick=\"AddAnswering(" + q.GuidId + ")\" /><input type=\"button\" value=\"修改\" onclick=\"UpdateQuestion(" + q.GuidId + ")\" />";
+
+        //htmlStr += "<input type=\"button\" value=\"清空答案\" onclick=\"ClearAnswering('" + data.GuidId + "')\" /><input type=\"button\" value=\"删除\" onclick=\"DeleteQuestion('" + data.GuidId + "')\" />"
+
+        //htmlStr += "</div></div><div id='" + data.GuidId + "_Answerings_show'>";
+
+        //$.each(q.AnsweringsList, function (j, a) {
+        //    htmlStr += "<div id='" + a.GuidId + "' class=\"form-group\" ><input type=\"hidden\" value=\"" + a.GuidId + "\" id=\"" + q.GuidId + "_" + a.GuidId + "_A\" /><label class=\"control-label col-md-3\">" + a.Number + "、 </label><div class=\"col-md-7\"><label id=\"" + q.GuidId + "_" + a.GuidId + "_AContent\">" + (q.QuestionType != 2 ? a.Content : a.Content == "1" ? "对" : "错") + "</label><input type=\"checkbox\" readonly='readonly' onclick='return false;' id=\"" + q.GuidId + "_" + a.GuidId + "_A_IsRight\" class=\"form-control\"   " + (a.IsRight == true ? "checked=\"checked\"" : "") + " /><input type=\"button\" value=\"修改\" onclick=\"UpdateAnswering('" + q.GuidId + "','" + a.GuidId + "')\" />";
+
+        //    htmlStr += "<input type=\"button\" value=\"删除\" onclick=\"DeleteAnswering('" + qguid + "','" + data.GuidId + "')\" />"
+
+        //    htmlStr += "</div></div>";
+        //})
+        //htmlStr += "</div></div>";
+        //});
+        //$("#ShowQuestionList").html(htmlStr);
+    })
+
+    $("#btnQSubmit").click(function () {
+        var qguid = $("#hdQuestionGuidId").val();
+        var content = $("#Q_Content").val();
+        var type = $('select#Q_QuestionType option:selected').val();
+        if (content == undefined || content == "") {
+            $.whiskey.web.alert({
+                type: "info",
+                content: "问题内容不可为空",
+                callback: function () { }
+            });
+            return;
+        }
+        if (type == undefined || type == "") {
+            $.whiskey.web.alert({
+                type: "info",
+                content: "请选择问题类型",
+                callback: function () { }
+            });
+            return;
+        }
+        if (qguid == undefined || qguid == null || qguid == "") {
+            $.ajax({
+                url: "@Url.Action("AddQuestion")",
+                type: "post",
+                async: false,
+                data: { content: content, questionType: type },
+                success: function (result) {
+                    if (result.ResultType != 3) {
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: result.Message,
+                            callback: function () {
+                            }
+                        })
+                        return;
+                    }
+                    var data = result.Data;
+                    var num = result.Other;
+                    var htmlStr = "";
+                    htmlStr += "<div id=\"" + data.GuidId + "\" class=\"ShowQuestion\"><div class=\"form-group\" ><input type=\"hidden\" value=\"" + data.QuestionType + "\" id=\"" + data.GuidId + "_QType\" /><input type=\"hidden\" value=\"" + data.GuidId + "\" id=\"" + data.GuidId + "_Q\" /><label class=\"control-label col-md-3\">问题" + num + "(" + (GetQTypeName(data.QuestionType)) + ") ：</label><div class=\"col-md-9 cur-col\"><input readonly=\"readonly\"  class='form-word' id=\"" + data.GuidId + "_QContent\" value=\"" + data.Content + "\" /><input class='btn btn-success btn-padding-right' type=\"button\" value=\"添加答案\" onclick=\"AddAnswering('" + data.GuidId + "')\" /><input class='btn btn-success btn-padding-right' type=\"button\" value=\"修改\" onclick=\"UpdateQuestion('" + data.GuidId + "')\" />";
+
+                    htmlStr += "<input class='btn btn-danger btn-padding-right' type=\"button\" value=\"清空答案\" onclick=\"ClearAnswering('" + data.GuidId + "')\" /><input class='btn btn-danger btn-padding-right' type=\"button\" value=\"删除\" onclick=\"DeleteQuestion('" + data.GuidId + "')\" />"
+
+                    htmlStr += "</div></div><div id='" + data.GuidId + "_Answerings_show'></div></div>";
+                    $("#ShowQuestionList").append(htmlStr);
+
+                    $("#hdQuestionGuidId").val("");
+                    $("#hdAnsweringGuidId").val("");
+                    $("#hdQType").val("");
+                    $("#Q_Content").val("");
+                    $('select#Q_QuestionType')[0].selectedIndex = 0;
+                    $('select#Q_QuestionType').selectpicker();
+                    $('select#Q_QuestionType').selectpicker('refresh');
+                }
+            });
+        } else {
+            $.ajax({
+                url: "@Url.Action("UpdateQuestion")",
+                type: "post",
+                async: false,
+                data: { content: content, questionType: type, questionGuidId: qguid },
+                success: function (result) {
+                    if (result.ResultType != 3) {
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: result.Message,
+                            callback: function () {
+                            }
+                        })
+                        return;
+                    }
+                    var data = result.Data;
+                    if (data.AnsweringsList != undefined && data.AnsweringsList.length > 0) {
+                        $("#" + data.GuidId + "_QType").val(data.QuestionType);
+                        $("#" + data.GuidId + "_QTypeName").val(GetQTypeName(data.QuestionType));
+                        $("#" + data.GuidId + "_QContent").html(data.Content);
+                    } else {
+                        var num = result.Other;
+                        var htmlStr = "";
+                        htmlStr += "<div class=\"form-group\" ><input type=\"hidden\" value=\"" + data.QuestionType + "\" id=\"" + data.GuidId + "_QType\" /><input type=\"hidden\" value=\"" + data.GuidId + "\" id=\"" + data.GuidId + "_Q\" /><label class=\"control-label col-md-3\">问题" + num + "(" + (GetQTypeName(data.QuestionType)) + ") ：</label><div class=\"col-md-9 cur-col\"><input readonly=\"readonly\"  class='form-word'  id=\"" + data.GuidId + "_QContent\ value=\"" + data.Content + "\" /><input class='btn btn-success btn-padding-right' type=\"button\" value=\"添加答案\" onclick=\"AddAnswering('" + data.GuidId + "')\" /><input class='btn btn-success btn-padding-right' type=\"button\" value=\"修改\" onclick=\"UpdateQuestion('" + data.GuidId + "')\" />";
+
+                        htmlStr += "<input class='btn btn-danger btn-padding-right' type=\"button\" value=\"清空答案\" onclick=\"ClearAnswering('" + data.GuidId + "')\" /><input class='btn btn-danger btn-padding-right' type=\"button\" value=\"删除\" onclick=\"DeleteQuestion('" + data.GuidId + "')\" />"
+
+                        htmlStr += "</div></div><div id='" + data.GuidId + "_Answerings_show'></div>";
+                        $("#" + data.GuidId).html(htmlStr);
+                    }
+
+                    $("#hdQuestionGuidId").val("");
+                    $("#hdAnsweringGuidId").val("");
+                    $("#hdQType").val("");
+                    $("#Q_Content").val("");
+                    $('select#Q_QuestionType')[0].selectedIndex = 0;
+                    $('select#Q_QuestionType').selectpicker();
+                    $('select#Q_QuestionType').selectpicker('refresh');
+                }
+            })
+        }
+    })
+
+    $("#btnASubmit").click(function () {
+        var qguid = $("#hdQuestionGuidId").val();
+        var aguid = $("#hdAnsweringGuidId").val();
+        var type = $("#hdQType").val();
+
+        var content = $("#AC_Content").val();
+        var isRight = $("#AC_IsRight").is(':checked') == true ? true : false;
+
+        if (aguid == undefined || aguid == null || aguid == "") {
+            $.ajax({
+                url: "@Url.Action("AddAnswer")",
+                type: "post",
+                async: false,
+                data: { content: content, isRight: isRight, questionGuidId: qguid },
+                success: function (result) {
+                    if (result.ResultType != 3) {
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: result.Message,
+                            callback: function () {
+                            }
+                        })
+                        return;
+                    }
+                    var data = result.Data;
+                    var num = result.Other;
+
+                    if (type == 0 && data.IsRight == true) {
+                        $('#' + qguid + '_Answerings_show input[type=checkbox]:checked').each(function () {
+                            $(this).removeAttr("checked");
+                            $(this).css("visibility", "hidden");
+                        });
+                    }
+
+                    var htmlStr = "";
+                    htmlStr += "<div id='" + data.GuidId + "' class=\"form-group\" ><input type=\"hidden\" value=\"" + data.GuidId + "\" id=\"" + qguid + "_" + data.GuidId + "_A\" /><label class=\"control-label col-md-3\" id='" + qguid + "_" + data.GuidId + "_No'>" + data.Number + "、 </label><div class=\"col-md-9 cur-col\"><input readonly=\"readonly\"  class='form-word'  id=\"" + qguid + "_" + data.GuidId + "_AContent\" value=\"" + (type != 2 ? data.Content : data.Content == "1" ? "对" : "错") + "\"/><input type=\"checkbox\" readonly='readonly' onclick='return false;' id=\"" + qguid + "_" + data.GuidId + "_A_IsRight\" class=\"form-box\"  " + (data.IsRight == true ? (" checked=\"checked\"") : "") + " " + (type == 0 && data.IsRight == true ? "" : (" style=\"visibility:hidden\"")) + " /> <input class='btn btn-success btn-padding-right' type=\"button\" value=\"修改\" onclick=\"UpdateAnswering('" + qguid + "','" + data.GuidId + "')\" />";
+
+                    htmlStr += "<input class='btn btn-danger btn-padding-right' type=\"button\" value=\"删除\" onclick=\"DeleteAnswering('" + qguid + "','" + data.GuidId + "')\" />"
+
+                    htmlStr += "</div></div>";
+                    $("#" + qguid + "_Answerings_show").append(htmlStr);
+
+                    $("#hdQuestionGuidId").val("");
+                    $("#hdAnsweringGuidId").val("");
+                    $("#hdQType").val("");
+                    $('select#Q_QuestionType')[0].selectedIndex = 0;
+                    $("#AC_Content").val("");
+                    $("#AC_IsRight").removeAttr("checked");
+                    $("#Answer_Choice").css("display", "none");
+                    $("#Question").css("display", "");
+                    $("#Q_Content").val("");
+                }
+            });
+        } else {
+            $.ajax({
+                url: "@Url.Action("UpdateAnswer")",
+                type: "post",
+                async: false,
+                data: { content: content, isRight: isRight, questionGuidId: qguid, answerGuidId: aguid },
+                success: function (result) {
+                    if (result.ResultType != 3) {
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: result.Message,
+                            callback: function () {
+                            }
+                        })
+                        return;
+                    }
+                    var data = result.Data;
+                    if (type == 0 && data.IsRight == true) {
+
+                        $('#' + qguid + '_Answerings_show input[type=checkbox]:checked').each(function () {
+                            $(this).removeAttr("checked");
+                            $(this).css("visibility", "hidden");
+                        });
+
+                        $("#" + qguid + "_" + data.GuidId + "_A_IsRight").css("visibility", "");
+                    } else {
+                        $("#" + qguid + "_" + data.GuidId + "_A_IsRight").css("visibility", "hidden");
+                    }
+                    $("#" + qguid + "_" + data.GuidId + "_A_IsRight").prop("onclick", "");
+                    if (data.IsRight) {
+                        $("#" + qguid + "_" + data.GuidId + "_A_IsRight").prop("checked", "checked");
+                    } else {
+                        $("#" + qguid + "_" + data.GuidId + "_A_IsRight").removeAttr("checked");
+                    }
+                    $("#" + qguid + "_" + data.GuidId + "_A_IsRight").prop("onclick", "return false;");
+                    if (type != 2) {
+                        alert(data.Content);
+                        $("#" + qguid + "_" + data.GuidId + "_AContent").val(data.Content);
+                    } else {
+                        $("#" + qguid + "_" + data.GuidId + "_AContent").val(data.Content == "1" ? "对" : "错");
+                    }
+
+                    $("#hdQuestionGuidId").val("");
+                    $("#hdAnsweringGuidId").val("");
+                    $("#hdQType").val("");
+                    $('select#Q_QuestionType')[0].selectedIndex = 0;
+                    $("#AC_Content").val("");
+                    $("#AC_IsRight").removeAttr("checked");
+                    $("#Answer_Choice").css("display", "none");
+                    $("#Question").css("display", "");
+                    $("#Q_Content").val("");
+                }
+            })
+        }
+    })
+
+    function AddAnswering(QGuidId) {
+        $.ajax({
+            url: "@Url.Action("IsCanAddAnswerings")",
+            type: "post",
+            async: false,
+            data: { questionGuidId: QGuidId },
+            success: function (result) {
+                if (result.ResultType != 3) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: result.Message,
+                        callback: function () { }
+                    });
+                    return;
+                }
+
+                $("#hdQuestionGuidId").val(QGuidId);
+                $("#hdAnsweringGuidId").val("");
+                $("#Q_Content").val("");
+                var type = $("#" + QGuidId + "_QType").val();
+                $("#hdQType").val(type);
+                $('select#Q_QuestionType')[0].selectedIndex = 0;
+                $("#AC_Content").val("");
+                $("#Question").css("display", "none");
+                $("#AC_IsRight").removeAttr("checked");
+
+                if (type == "1") {
+                    $("#AC_IsRight_parent").css("display", "none");
+                    $("#AC_Content_parent").css("display", "");
+                } else if (type == "2") {
+                    $("#AC_Content_parent").css("display", "none");
+                    $("#AC_IsRight_parent").css("display", "");
+                } else {
+                    $("#AC_Content_parent").css("display", "");
+                    $("#AC_IsRight_parent").css("display", "");
+                }
+                $("#Answer_Choice").css("display", "");
+            }
+        })
+    }
+
+    function UpdateAnswering(QGuidId, AGuidId) {
+
+        var content = $("#" + QGuidId + "_" + AGuidId + "_AContent").val();
+
+        $("#hdQuestionGuidId").val(QGuidId);
+        $("#hdAnsweringGuidId").val(AGuidId);
+        var type = $("#" + QGuidId + "_QType").val();
+        $("#hdQType").val(type);
+        $("#Q_Content").val("");
+        $('select#Q_QuestionType')[0].selectedIndex = 0;
+        $("#AC_Content").val(content);
+        $("#Question").css("display", "none");
+
+        if (type == "1") {
+            $("#AC_IsRight_parent").css("display", "none");
+            $("#AC_Content_parent").css("display", "");
+        } else if (type == "2") {
+            $("#AC_Content_parent").css("display", "none");
+            $("#AC_IsRight_parent").css("display", "");
+        } else {
+            $("#AC_Content_parent").css("display", "");
+            $("#AC_IsRight_parent").css("display", "");
+        }
+
+        var isRight = $("#" + QGuidId + "_" + AGuidId + "_A_IsRight").is(":checked");
+        if (isRight == true) {
+            $("#AC_IsRight").prop("checked", "checked");
+        } else {
+            $("#AC_IsRight").removeAttr("checked");
+        }
+        $("#Answer_Choice").css("display", "");
+    }
+
+    function UpdateQuestion(QguidId) {
+        $("#hdQuestionGuidId").val(QguidId);
+        $("#hdAnsweringGuidId").val("");
+        var type = $("#" + QguidId + "_QType").val();
+        var content = $("#" + QguidId + "_QContent").html();
+        $("#Q_Content").val(content);
+        $("#hdQType").val(type);
+        $('select#Q_QuestionType option[value="' + type + '"]').prop("selected", "true");
+        $("#AC_Content").val("");
+        $("#AC_IsRight").removeAttr("checked");
+        $("#Answer_Choice").css("display", "none");
+        $("#Question").css("display", "");
+    }
+
+    function AddQuestion() {
+        $("#hdQuestionGuidId").val("");
+        $("#hdAnsweringGuidId").val("");
+        $("#Q_Content").val("");
+        $("#hdQType").val("");
+        $('select#Q_QuestionType')[0].selectedIndex = 0;
+        $("#AC_Content").val("");
+        $("#AC_IsRight").removeAttr("checked");
+        $("#Answer_Choice").css("display", "none");
+        $("#Question").css("display", "");
+    }
+
+    function ClearAnswering(QGuidId) {
+        $.ajax({
+            url: "@Url.Action("ClearAnswer")",
+            type: "post",
+            async: false,
+            data: { questionGuidId: QGuidId },
+            success: function (result) {
+                if (result.ResultType != 3) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: result.Message,
+                        callback: function () { }
+                    });
+                    return;
+                }
+                $("#" + QGuidId + "_Answerings_show").html("");
+            }
+        })
+    }
+
+    function DeleteAnswering(QGuidId, AGuidId) {
+        $.ajax({
+            url: "@Url.Action("DeleteAnswer")",
+            type: "post",
+            async: false,
+            data: { questionGuidId: QGuidId, answerGuidId: AGuidId },
+            success: function (result) {
+                if (result.ResultType != 3) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: result.Message,
+                        callback: function () { }
+                    });
+                    return;
+                }
+                $("#" + AGuidId).remove();
+
+                var data = result.Data;
+                if (data == null || data == undefined || data.length == 0) {
+                    return;
+                }
+
+                for (var i = 0; i < data.length; i++) {
+                    $("#" + QGuidId + "_" + data[i].GuidId + "_No").html(data[i].Number + "、");
+                }
+            }
+        })
+    }
+
+    function ClearQuestion() {
+        $.ajax({
+            url: "@Url.Action("ClearQuestionList")",
+            type: "post",
+            async: false,
+            data: {},
+            success: function (result) {
+                if (result.ResultType != 3) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: result.Message,
+                        callback: function () { }
+                    });
+                    return;
+                }
+                $("#ShowQuestionList").empty();
+            }
+        })
+    }
+
+    function DeleteQuestion(QGuidId) {
+        $.ajax({
+            url: "@Url.Action("DeleteQuestion")",
+            type: "post",
+            async: false,
+            data: { questionGuidId: QGuidId },
+            success: function (result) {
+                if (result.ResultType != 3) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: result.Message,
+                        callback: function () { }
+                    });
+                    return;
+                }
+                $("#" + QGuidId).remove();
+            }
+        })
+    }
+
+    function GetQTypeName(value) {
+        var typeName = "";
+        $.ajax({
+            url: "@Url.Action("GetQTypeNameByType")",
+            type: "post",
+            async: false,
+            data: { type: value },
+            success: function (result) {
+                typeName = result;
+                return;
+            }
+        });
+        return typeName;
+    }
+</script>

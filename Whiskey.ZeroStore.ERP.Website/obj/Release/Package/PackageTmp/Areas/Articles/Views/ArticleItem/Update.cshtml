@@ -1,0 +1,109 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model ArticleItemDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        父级栏目 :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.ParentId, (List<SelectListItem>)ViewBag.ArticleItem, new { @class = "form-control selectpicker", @readonly = "true" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        栏目名称 :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.ArticleItemName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        APP显示 :
+    </label>
+    <div class="col-md-1">
+        @Html.CheckBoxFor(m => m.IsApp, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ArticleItemPath) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.ArticleItemPath, new { @class = "form-control", @placeholder = "参考路径：/home/文件夹名/", @readonly = "true" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2" id="SectionTemplateName">
+        栏目模版 :
+    </label>
+    <div class="col-md-4">
+        @Html.DropDownListFor(x => x.TemplateId, (List<SelectListItem>)ViewBag.Template, new { @class = "form-control selectpicker selectpicker_cur" })
+    </div>
+</div>
+<input type="hidden" value="@Model.ArticleItemPath" id="hidPath" />
+<input type="hidden" value="" id="hidParentPath" />
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", @placeholder = "字数长度在120字以内" })
+    </div>
+</div>
+@Html.HiddenFor(m => m.Id, new { @id = "attrId" })
+
+
+<script type="text/javascript">
+
+    //获取模版
+    function getSectionList() {
+        var ParentId = $("#ParentId").val();
+        if (ParentId == null || ParentId == "") {
+            $("#SectionTemplateName").empty();
+            $("#SectionTemplateName").append("栏目模版：");
+            $("#SectionTemplateId").empty();
+            //$("#AttrPath").removeAttr("readonly");
+            $.ajax({
+                url: '@Url.Action("GetSectionTemplateList")',
+                type: 'GET',
+                data: { type: 2 },//2表示获取栏目模版
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#SectionTemplateId").append('<option value="' + data[i].Id + '">' + data[i].TemplateName + '</option>');
+                    }
+                     $('.selectpicker_cur').selectpicker();
+                     $('.selectpicker_cur').selectpicker('refresh');
+                }
+            });
+        }
+        else {
+            $("#SectionTemplateName").empty();
+            $("#SectionTemplateName").append("分页模版：");
+            $("#SectionTemplateId").empty();
+            $.ajax({
+                url: '@Url.Action("GetSectionTemplateList")',
+                type: 'GET',
+                data: { type: 3, Id: ParentId },//2表示获取分页模版
+                success: function (data) {
+                    for (var i = 0; i < data.list.length; i++) {
+                        $("#SectionTemplateId").append('<option value="' + data.list[i].Id + '">' + data.list[i].TemplateName + '</option>');
+                    }
+                     $('.selectpicker_cur').selectpicker();
+                     $('.selectpicker_cur').selectpicker('refresh');
+                    var path = data.path;
+                    var parentPath = data.parentPath;
+                    $("#hidPath").attr("value", path);
+                    $("#AttrPath").attr("value", path);
+                    $("#AttrPath").attr({ readonly: true });
+                }
+            });
+        }
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker('refresh');
+    })
+</script>

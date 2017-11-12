@@ -1,0 +1,96 @@
+﻿@using NPOI.SS.Formula.Functions
+@using Whiskey.ZeroStore.ERP.Models
+
+@model Returned
+
+<title>- 打印</title>
+<link rel="stylesheet" href="~/Content/Styles/Layout/receipt.css" />
+<style type="text/css">
+</style>
+<script src="~/Content/Scripts/Jquery/jquery-barcode.js"></script>
+<div id="account_detalis" class="mainprint account_detalis"align="center">
+    <div width="95%" border="0" align="center" cellpadding="0" cellspacing="0" style="font-size: 22px;">
+        <div height="25" align="center">
+            <h1 class="print_logo">
+                <img src="~/wwwroot/logo.png" width="250" />
+            </h1>
+        </div>
+    </div>
+
+    <div width="95%" border="0" align="center" style="font-size: 22px;">
+        <strong height="25">退货单号 : </strong>
+        <strong height="25" id="orderID">@Model.ReturnedNumber</strong>
+    </div>
+    <div class="print_detail">
+        @if (Model.MemberId.HasValue)
+        {
+            <strong class="print_member">会员</strong>
+            <strong class="usname customerName">@Model.Member.MemberName</strong>
+            <strong class="userId customerId">@Model.Member.UniquelyIdentifies</strong>
+            <span id="print_tip" class="Print_Name" ><label><input name="isprintname" type="checkbox" checked="checked" id="isprintname" value="1">打印姓名</label></span>
+        }
+    </div>
+
+    <strong class="userId Return_Fanchang">退货信息</strong>
+    <div class="print_list_detail">
+        <div class="account_detalis"><span>退货类型</span><span>@Model.Status</span></div>
+        <div class="account_detalis"><span>退货数量</span><span>@Model.ReturnedItems.Count</span></div>
+        @*<div class="account_detalis"><span>退货总额</span><span>@Model.TotalReturnAmount</span></div>*@
+
+        <div class="account_detalis"><span>现金退还</span><span>@Model.Cash</span></div>
+        <div class="account_detalis"><span>刷卡退还</span><span>@Model.SwipCard</span></div>
+        @if (Model.SwipCard > 0)
+        {
+            <div class="account_detalis"><span>刷卡类型</span><span>@Model.SwipeCardType.ToString()</span></div>
+        }
+        <div class="account_detalis"><span>消费积分退还</span><span>@Model.ConsumeScore</span></div>
+
+        <div class="account_detalis"><span>储值退还</span><span>@Model.Balance</span></div>
+
+    </div>
+
+    <div class="important_information">
+        <div class="account_detalis"><span>退货时间</span><span>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm")</span></div>
+        <div class="account_detalis"><span>退货店铺</span><span>@Model.Store.StoreName</span></div>
+        <div class="account_detalis"><span>经办人</span><span>@Model.Operator.Member.RealName</span></div>
+    </div>
+    <div id="barcode" class="print_tarcode">
+
+
+    </div>
+    <div class="print_remind_me">温馨提示:请您妥善保管购物小票，凭票退换商品，最终解释权归领时尚所有，谢谢合作。想了解更多时尚资讯，服饰养护知识欢迎登录零时尚官方网站0-Fashion.com或下载零时尚APP</div>
+</div>
+<iframe id="contfram" src="about:blank" style="display:none"></iframe>
+<script>
+    var sibling_x = $("#account_detalis").parents(".modal-body").next(".modal-footer")
+    sibling_x.prepend('<a class="btn btn-primary" href="javascript:void(0)" onclick="preview()" title="打印凭证" id="print"><span class="fa fa-print"></span>打印</a>');
+</script>
+<script>
+    $(function () {
+        var item = $('#orderID').text()
+        $("#barcode").barcode(item, "code128", { barWidth: 1, barHeight: 20, showHRI: true });
+
+    });
+
+    $(function () {
+        $("#isprintname").click(function () {
+            if (!$(this).is(":checked")) {
+                $(".usname").hide();
+            } else {
+                $(".usname").show();
+            }
+        });
+        $("#print").click(function () {
+            // preview(1);
+            preview();
+        });
+    });
+
+    function preview(oper) {
+        var frm = window.frames[0].window;
+        var cont = $(".mainprint").html().replace($("#print_tip").html(), "").replace($("#print").parents("tr:eq(0)", ""));
+        frm.document.body.innerHTML = cont;
+        frm.print();
+    }
+
+</script>

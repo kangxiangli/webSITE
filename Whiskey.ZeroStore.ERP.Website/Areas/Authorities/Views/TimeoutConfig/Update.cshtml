@@ -1,0 +1,48 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model TimeoutConfigDto
+<style>
+    .control-label {
+        text-align: center !important;
+    }
+</style>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.TaskName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.TaskName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        超时时间 :
+    </label>
+    <div class="col-md-10 timeout_datetime">
+        @Html.TextBoxFor(m => m.TimeoutDay, new { @class = "col-md-2 control-label" })
+        <label class="col-md-1 control-label">天</label>
+        @Html.TextBoxFor(m => m.TimeoutHour, new { @class = "col-md-2 control-label" })
+        <label class="col-md-1 control-label">时</label>
+        @Html.TextBoxFor(m => m.TimeoutMinute, new { @class = "col-md-2 control-label" })
+        <label class="col-md-1 control-label">分</label>
+        @Html.TextBoxFor(m => m.TimeoutSecond, new { @class = "col-md-2 control-label" })
+        <label class="col-md-1 control-label">秒</label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ActionPath) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.ActionPath, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m => m.Id)
+<script>
+    $(function () {
+        $(".timeout_datetime input").keyup(function () {
+            $(this).val($(this).val().replace(/\D|^0/g, ''));
+        }).bind("paste", function () {
+            $(this).val($(this).val().replace(/\D|^0/g, ''));
+        }).css("ime-mode", "disabled");
+    });
+</script>

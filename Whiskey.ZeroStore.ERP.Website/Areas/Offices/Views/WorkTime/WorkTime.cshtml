@@ -1,0 +1,249 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+<style>
+    #hoverStyle_2:hover {
+    	width: 62px;
+    	border-radius: 0%;
+    	background: black !important;
+    }
+    
+    #hoverStyle_2 {
+    	width: 62px;
+    	border-radius: 0% !important;
+    	background: #5cb85c !important;
+    }
+    
+    #hoverStyle_2>i {
+    	display: block;
+    	width: 0px;
+    	height: 0px;
+    }
+    
+    #Clear {
+    	background: #e5603b !important;
+    }
+</style>
+<div id="worktime_div">
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-10">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-2">名称：</label>
+                            <div class="col-md-7">
+                                @Html.TextBox("WorkTimeName", "", new { @class = "form-control", placeholder = "请输入工作时间名称" })
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+                    </div>
+                    <div class="button-recycle">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%" id="workTime">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+@*<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>*@
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var worktime_div_dt = $("#worktime_div #workTime").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("List")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var startDate = $(".start-date").val();
+                var endDate = $(".end-date").val();
+                if (startDate.length > 0 && endDate.length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                }
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                //$("td:eq(2)", nRow).css({ "float": "left", "width": "100%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".table-list").treegrid({
+                    saveState: true,
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+			{
+			    "sTitle": "编号",
+			    "bSortable": false,
+			    "sName": "RowNumber",
+			    "mData": function (data) {
+			        return '';
+			    }
+			},
+            {
+                "sTitle": "名称",
+                "bSortable": false,
+                "sName": "WorkTimeName",
+                "mData": function (data) {
+                    return data.WorkTimeName;
+                },
+            },
+            {
+                "sTitle": "公休假",
+                "bSortable": false,
+                "sName": "IsVacations",
+                "mData": function (data) {
+                    if (data.IsVacations == true) {
+                        return "是";
+                    } else {
+                        return "否";
+                    }
+
+                },
+            },
+            {
+                "sTitle": "弹性工作",
+                "bSortable": false,
+                "sName": "IsFlexibleWork",
+                "mData": function (data) {
+                    if (data.IsFlexibleWork == true) {
+                        return "是";
+                    } else {
+                        return "否";
+                    }
+
+                },
+            },
+            {
+                "sTitle": "类型",
+                "bSortable": false,
+                "sName": "WorkTimeType",
+                "mData": function (data) {
+                    if (data.WorkTimeType == "@((int)WorkTimeFlag.AllDay)") {
+                        return "全天班";
+                    } else {
+                        return "小时工";
+                    }
+
+                },
+            },
+            {
+                "sTitle": "上班时间",
+                "bSortable": false,
+                "sName": "AmStartTime",
+                "mData": function (data) {
+                    return data.AmStartTime;
+                },
+            },
+            {
+                "sTitle": "下班时间",
+                "bSortable": false,
+                "sName": "PmEndTime",
+                "mData": function (data) {
+                    return data.PmEndTime;
+                },
+            },
+            {
+                "sTitle": "工作时长",
+                "bSortable": false,
+                "sName": "WorkHour",
+                "mData": function (data) {
+                    return data.WorkHour + "小时";
+                },
+            },
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    return '<button id="hoverStyle_2" title="选择" type="button" class="btn btn-success btn-toolbar" data-id="' + data.Id + '" data-name="' + data.WorkTimeName + '" onclick="chooseWorkTime(this)"><i class="fa fa-"></i> <span>选择</span></button>';
+                },
+            },
+            ]
+        });
+        $("#worktime_div #Search").on("click", function () {
+            $.whiskey.datatable.reset(false, worktime_div_dt);
+        });
+
+        $("#worktime_div #Clear").on("click", function () {
+            $.whiskey.web.clearForm("#worktime_div .form-search");
+        });
+    });
+    //选择工作时间
+    function chooseWorkTime(option) {
+        var id = $(option).attr("data-id");
+        var name = $(option).attr("data-name");
+        $("#WorkTimeName").attr("value", name);
+        $("#WorkTimeId").attr("value", id);
+        $(".chooseIndex").modal("hide");
+    }
+</script>

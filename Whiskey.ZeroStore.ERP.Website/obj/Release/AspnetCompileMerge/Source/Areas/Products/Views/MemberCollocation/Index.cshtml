@@ -1,0 +1,1201 @@
+﻿<style>
+    .pageone {
+        width: 100%;
+        height: 400px;
+    }
+
+    #main {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 100000;
+        color: #FFF;
+    }
+
+    .canvasBox, .addCollcontent {
+        float: left;
+    }
+
+        .addCollcontent .collAddTitle {
+            width: 100px;
+            text-align: right;
+            margin-right: 20px;
+            display: inline-block;
+        }
+
+        .addCollcontent input {
+            padding: 5px 10px;
+        }
+
+        .canvasBox .swiper-slide {
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+    .addCollcontent {
+        width: 450px;
+        padding-left: 90px;
+    }
+
+        .addCollcontent > div {
+            line-height: 50px;
+            height: 50px;
+        }
+
+            .addCollcontent > div > span {
+                float: left;
+            }
+
+        .addCollcontent .addSelect.bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+            float: left;
+            width: 175px;
+            margin-top: 10px;
+        }
+
+        .addCollcontent .dropdown-menu {
+            width: 100%;
+        }
+
+    #product_list {
+        padding: 10px;
+        width: 700px;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+        #product_list li {
+            padding: 10px;
+            width: 25%;
+            float: left;
+        }
+
+        #product_list .img_box img {
+            width: 100%;
+        }
+
+        #product_list .money {
+            width: 10px;
+        }
+
+    .pageone .header .selection > img {
+        width: 1rem;
+        display: inline-block;
+    }
+
+    .biaoyu p {
+        color: #FFF;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    .pageone .header .save {
+        z-index: 999;
+        display: none;
+        position: absolute;
+        right: 10px;
+        top: 2rem;
+        background-color: rgba(255, 255, 255, .6);
+    }
+
+    #pop-up_box ul {
+        height: 100%;
+    }
+
+    #pop-up_box .border_rg {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    #pop-up_box ul li {
+        line-height: 50px;
+        text-align: center;
+        color: #0C6AFF;
+        height: 50px;
+    }
+
+    /*footer*/
+    .pageone footer {
+        position: relative;
+    }
+
+        .pageone footer li img {
+            height: 22px;
+            width: 24px;
+            margin: 6px;
+        }
+
+        .pageone footer li p {
+            color: #FFFFFF;
+            font-size: 14px;
+            text-align: center;
+        }
+
+    .imgBox {
+        height: 200px;
+        width: 320px;
+        overflow-y: auto;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, .9);
+        display: none;
+    }
+
+    .pageone footer > .imgBox > .img-box > img {
+        float: left;
+        display: block;
+        width: 20%;
+        padding: 5px;
+        border: 1px solid rgba(0, 0, 0, .1);
+    }
+
+    .pageone footer > .imgBox > .img-box > .wu {
+        float: left;
+        background: #fff;
+        width: 20%;
+        height: 0;
+        padding-bottom: 20%;
+        position: relative;
+    }
+
+        .pageone footer > .imgBox > .img-box > .wu b {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            color: black;
+        }
+
+    .addtxt {
+        display: none;
+        position: absolute;
+        bottom: 4rem;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 1);
+        color: #000;
+    }
+
+    .activeaddtxt {
+        bottom: 0;
+    }
+
+    .addtxt .text {
+        border: 1px solid #CCC;
+        resize: none;
+        height: 50px;
+        width: 85%;
+        height: 70px;
+        padding: 5px;
+    }
+
+    .sucai_img > img {
+        float: left;
+        display: block;
+        width: 20%;
+        border: 1px solid rgba(0, 0, 0, .1);
+        /*border: 1px solid rgba(0,0,0,.2)*/
+    }
+
+    .change_bg {
+        background-color: rgba(0, 0, 0, .6);
+    }
+
+    .pageone .header .save {
+        /*display: none;*/
+        background: rgba(255, 255, 255, .75);
+        border-radius: 10%;
+    }
+
+    .save ul li {
+        padding: 10px 25px;
+        text-align: center;
+    }
+
+        .save ul li:first-child {
+            border-bottom: 1px solid rgba(255, 255, 255, 1);
+        }
+
+    .swiper-wrapper > li {
+        float: left;
+    }
+</style>
+
+
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">会员昵称</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("MemberName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4 ">搭配名称</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("CollocationName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">推荐</label>
+                        <div class="col-md-8">
+                            <select class="form-control selectpicker" id="IsRecommend" name="IsRecommend">
+                                <option value="">请选择</option>
+                                <option value="false">不推荐</option>
+                                <option value="true">推荐</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">创建日期</label>
+                        <div class="col-md-8">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span> @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                    @*<button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                        <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>*@
+                    <button id="Create" title="新增搭配" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增搭配</span></button>
+                    <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                    <button id="Recommend" title="APP推荐" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-heart"></i> <span>推荐</span></button>
+                    <button id="CancleRecommend" title="取消APP推荐" type="button" class="btn btn-facebook btn-padding-right"><i class="fa "></i> <span>取消推荐</span></button>
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <span><input class="enabler" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                <span style="margin-left:20px;"><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle " width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<!--<div class="modal fade" id="productAddColl" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="min-width: 860px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                <h4 class="modal-title" id="">
+                            <span style="font-size:15px">新增搭配</span>
+                        </h4>
+            </div>
+            <div class="modal-body">
+                <div class="webview webviewBlur">
+                    <!--<div id="pop-up_box">
+                        <ul>
+                            <li id="wddp" class="border_rg">我的单品</li>
+                            <li id="scdp" class="border_rg">商城单品</li>
+                            <li id="close">取消</li>
+                        </ul>
+                    </div>-->
+<div class="pageone">
+    <div class="header" style="z-index: 10000;">
+        <div class="contain">
+            <div class="save">
+                <ul>
+                    <li id="save">保存</li>
+                    <li class="cancel">取消</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="canvasBox contain">
+        <canvas id="c"></canvas>
+        <footer>
+            <div class="imgBox sucaibox">
+                <div class="clearfix sucai_img"></div>
+            </div>
+            <div class="imgBox back-img">
+                <div class="clearfix img-box"></div>
+            </div>
+
+            <div class="swiper-container">
+                <ul class="swiper-wrapper">
+                    <li class="active swiper-slide addEle" id="addEle">
+                        <img src="/Content/Images/MemberCollocation/tab_1tj_pre_2x.png">
+                        <p>添加</p>
+                    </li>
+                    <li class="remove swiper-slide">
+                        <img src="/Content/Images/MemberCollocation/icon_m_delete_checked.png">
+                        <p>删除</p>
+                    </li>
+                    <li class="fanzhuan swiper-slide">
+                        <img src="/Content/Images/MemberCollocation/tab_3xz_pre_2x.png">
+                        <p>翻转</p>
+                    </li>
+                    <!--<li class="swiper-slide lock">
+                        <img src="../../img/tab_4sd_pre_2x.png" >
+                        <p>锁定</p>
+                    </li>-->
+                    <!--<li class="txt swiper-slide">
+                        <img src="/Content/Images/MemberCollocation/tab_5wz_pre_2x.png">
+                        <p>文字</p>
+                    </li>-->
+                    <li class="swiper-slide sucai">
+                        <img src="/Content/Images/MemberCollocation/tab_6sc_pre_2x.png">
+                        <p>素材</p>
+                    </li>
+                    <li class="addBackground swiper-slide">
+                        <img src="/Content/Images/MemberCollocation/tab_7bj_pre_2x.png" />
+                        <p>背景</p>
+                    </li>
+                    <input type="file" name="collFile" id="collFile" style="display: none;" />
+                    <li class="addfromFile swiper-slide">
+                        <img src="/Content/Images/MemberCollocation/icon_m_album_check.png" />
+                        <p>相册</p>
+                    </li>
+                    <li class="swiper-slide" id="shangyi">
+                        <img src="/Content/Images/MemberCollocation/tab_8sy_pre_2x.png" />
+                        <p>上移</p>
+                    </li>
+                    <li class="swiper-slide" id="xiayi">
+                        <img src="/Content/Images/MemberCollocation/tab_9xy_pre_2x.png" />
+                        <p>下移</p>
+                    </li>
+                </ul>
+            </div>
+        </footer>
+    </div>
+    <div class="addCollcontent">
+        <div><span class="collAddTitle">* 搭配名称：</span><input type="text" placeholder="请填写搭配名称" /></div>
+        <div>
+            <span class="collAddTitle">* 颜色：</span>
+            <div class="btn-group bootstrap-select addSelect">
+                <button id="colorSelected" type="button" class="btn dropdown-toggle bs-placeholder btn-default" data-toggle="dropdown" role="button" data-id="-1" title="请选择"><span class="filter-option pull-left">请选择</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button>
+                <div class="dropdown-menu open" role="combobox" style="max-height: 200px; overflow: hidden; min-height: 0px;">
+                    <ul class="dropdown-menu inner" role="listbox" aria-expanded="false" style="max-height: 195px; overflow-y: auto; min-height: 0px;"></ul>
+                </div>
+            </div>
+        </div>
+        <div>
+            <span class="collAddTitle">* 季节：</span>
+            <div class="btn-group bootstrap-select addSelect">
+                <button type="button" id="sesonSelected" class="btn dropdown-toggle bs-placeholder btn-default" data-toggle="dropdown" role="button" data-id="-1" title="请选择"><span class="filter-option pull-left">请选择</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button>
+                <div class="dropdown-menu open" role="combobox" style="max-height: 200px; overflow: hidden; min-height: 0px;">
+                    <ul class="dropdown-menu inner" role="listbox" aria-expanded="false" style="max-height: 195px; overflow-y: auto; min-height: 0px;"></ul>
+                </div>
+            </div>
+        </div>
+        <div>
+            <span class="collAddTitle">* 风格：</span>
+            <div class="btn-group bootstrap-select addSelect">
+                <button type="button" id="fgSelected" class="btn dropdown-toggle bs-placeholder btn-default" data-toggle="dropdown" role="button" data-id="-1" title="请选择"><span class="filter-option pull-left">请选择</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button>
+                <div class="dropdown-menu open" role="combobox" style="max-height: 200px; overflow: hidden; min-height: 0px;">
+                    <ul class="dropdown-menu inner" role="listbox" aria-expanded="false" style="max-height: 195px; overflow-y: auto; min-height: 0px;"></ul>
+                </div>
+            </div>
+        </div>
+        <div>
+            <span class="collAddTitle">* 场合：</span>
+            <div class="btn-group bootstrap-select addSelect">
+                <button type="button" id="chSelected" class="btn dropdown-toggle bs-placeholder btn-default" data-toggle="dropdown" role="button" data-id="-1" title="请选择"><span class="filter-option pull-left">请选择</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button>
+                <div class="dropdown-menu open" role="combobox" style="max-height: 200px; overflow: hidden; min-height: 0px;">
+                    <ul class="dropdown-menu inner" role="listbox" aria-expanded="false" style="max-height: 195px; overflow-y: auto; min-height: 0px;"></ul>
+                </div>
+            </div>
+        </div>
+        <div><span class="collAddTitle">备注：</span><input type="text" placeholder="请填写备注" /></div>
+    </div>
+</div>
+				</div>
+			</div>
+<div class="modal-footer">
+    <button type="button" id="moda_but_succ" class="btn btn-primary">
+        确定
+    </button>
+    <button type="button" class="btn btn-default" data-dismiss="modal">
+        关闭
+    </button>
+
+</div>
+		</div>
+<!-- /.modal-content -->
+	</div>
+<!-- /.modal-dialog -->
+</div>-->
+<div class="modal fade" id="main" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="min-width: 860px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <h4 class="modal-title" id="">
+                    <span style="font-size:15px">商城单品</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div id="wrapper">
+                    <ul id="product_list" class="clearfix container-fluid"></ul>
+                    <div class="swiper-container">
+                        <div class="swiper-wrapper">
+                            <li class="swiper-slide" data-type="1"><p>上装</p></li>
+                            <li class="swiper-slide" data-type="2"><p>下装</p></li>
+                            <li class="swiper-slide" data-type="3"><p>连体</p></li>
+                            <li class="swiper-slide" data-type="4"><p>围巾</p></li>
+                            <li class="swiper-slide" data-type="5"><p>饰品</p></li>
+                            <li class="swiper-slide" data-type="6"><p>鞋</p></li>
+                            <li class="swiper-slide" data-type="7"><p>包</p></li>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="moda_but_succ" class="btn btn-primary">
+                    确定
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+
+<!-- /.modal -->
+@section Scripts{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.whiskey.datatable.instance=$(".table-list").dataTable({
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("List")",
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    }
+                    if ($(".trusher").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                        if ($(".enabler").is(":checked")) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                        } else {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                        }
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                    }
+                    $(".form-search select[name!='StartDate'][name!='EndDate']").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                        }
+                    });
+                    $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                        }
+                    });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        var index = data.iDisplayIndex + 1;
+                        return '' + index + '';
+                    }
+                },
+
+                {
+                    "sTitle": "会员昵称",
+                    "bSortable": false,
+                    "sName": "MemberName",
+                    "mData": function(data){
+                        return data.MemberName;
+                    },
+                },
+                {
+                    "sTitle": "搭配名称",
+                    "bSortable": false,
+                    "sName": "CollocationName",
+                    "mData": function(data){
+                        return data.CollocationName;
+                    },
+                },
+                {
+                    "sTitle": "搭配图",
+                    "bSortable": false,
+                    "sName": "ImagePath",
+                    "mData": function(data){
+                        return '<div style="display:block;width:60px;height:60px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;"><img class="popimg" src="' + data.ImagePath + '" style="margin:2px;max-width:54px;cursor:pointer" onclick="showImage(this)" /></div>';
+                    },
+                },
+                {
+                    "sTitle": "点赞数量",
+                    "bSortable": false,
+                    "sName": "ApprovalCount",
+                    "mData": function (data) {
+                        return data.ApprovalCount;
+                    },
+                },
+                {
+                    "sTitle": "评论数量",
+                    "bSortable": false,
+                    "sName": "CommentCount",
+                    "mData": function (data) {
+                        return data.CommentCount;
+                    },
+                },
+                {
+                    "sTitle": "推送数量",
+                    "bSortable": false,
+                    "sName": "CommentCount",
+                    "mData": function (data) {
+                        if (data.RecommendMemberCount && data.RecommendMemberCount > 0) {
+
+                            return '<span class="label label-success" style="cursor:pointer;" onclick="pushRecommend('+data.Id+',1)">'+ data.RecommendMemberCount+'</span>';
+                        }
+                        return '<span class="label label-success" >' + data.RecommendMemberCount + '</span>';
+
+                    },
+                },
+                 {
+                     "sTitle": "推荐",
+                     "bSortable": false,
+                     "sName": "IsRecommend",
+                     "mData": function(data){
+                         if (data.IsRecommend==true) {
+                             return "是";
+                         } else {
+                             return "否";
+                         }
+                     },
+                 },
+                 {
+                     "sTitle": "创建时间",
+                     "bSortable": false,
+                     "sName": "CreatedTime",
+                     "mData": function (data) {
+                         return $.whiskey.tools.dateFormat(data.CreatedTime);
+                     },
+                 },
+                {
+                    "sTitle": "控制操作",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        //var controller = $.whiskey.datatable.controller(data);
+                        //return controller;
+                        var controller = $.whiskey.datatable.tplView(data.Id);
+                        controller += $.whiskey.datatable.tplComment(data.Id);
+                        controller += $.whiskey.datatable.tplApproval(data.Id);
+                        if (data.IsDeleted == true) {
+                            controller += $.whiskey.datatable.tplRecovery(data.Id);
+                        } else {
+                            controller += $.whiskey.datatable.tplRemove(data.Id);
+                        }
+                        controller += '<button title="推送搭配" type="button"  onclick="pushRecommend(' + data.Id + ')" class="btn-opt-box"><i class="btn-push-icon"></i></button>';
+                        controller += '<button title="修改数据" onclick="Update(this,'+data.Id+')" class="btn-opt-box"><i class="btn-setting-icon"></i></button>';
+                        return controller;
+                    }
+                }
+                ]
+
+            });
+            $('#addEle').on("click", function () {
+                $("#main").modal({ keyboard: false, backdrop: "static" });
+                $(this).attr("disabled", "disabled");
+            });
+
+            $("#Create").on("click", function () {
+                $("#productAddColl").remove()
+                var tpl = $('#productAddCollTpl').html();
+                var fn = _.template(tpl);
+                var html = fn();
+                $('body').append(html);
+
+                $("#productAddColl").modal({ keyboard: false, backdrop: "static" }).on('hide.bs.modal', function () {
+                    $("#Create").removeAttr("disabled");
+                    $("#moda_but_succ").removeAttr("disabled");
+                    $("[data-dismiss='modal']").removeAttr("disabled");
+                    $("#product_org_id").val("");
+
+                });
+                $(this).attr("disabled", "disabled");
+            });
+
+            $("#Print").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var printer = $.whiskey.printer.ajaxPreview({
+                        actionUrl: "@Url.Action("Print")",
+                        lockButton: $(this),
+                        topMargin: "2%",
+                        leftMargin: "4%",
+                        contentWidth: "93.5%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#Export").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var printer = $.whiskey.exporter.ajaxExport({
+                        actionUrl: "@Url.Action("Export")",
+                        lockButton: $(this),
+                        fileName: "新导出文件",
+                        topMargin: 10,
+                        leftMargin: 10,
+                        contentWidth: "98%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#RemoveAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据移至回收站吗？",
+                        notes: "提示：数据移动到回收站后，随时可以从回收站中将其恢复",
+                        actionUrl: "@Url.Action("Remove")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            //推荐
+            $("#Recommend").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据推荐到APP吗？",
+                        notes: "提示：数据设置为推荐，其他用户就可以访问了",
+                        actionUrl: "@Url.Action("Recommend")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+            //取消推荐
+            $("#CancleRecommend").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据取消推荐到APP吗？",
+                        notes: "提示：数据设置为取消推荐，其他用户就访问不到了",
+                        actionUrl: "@Url.Action("CancleRecommend")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#RecoveryAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据恢复吗？",
+                        notes: "提示：将数据从回收站移动至正常数据列表里",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#DeleteAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据彻底删除吗？",
+                        notes: "提示：数据删除后将不可能再恢复，请谨慎操作！",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+
+
+        });
+
+        function pushRecommend(id,isLimit = 0) {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "创建数据",
+                actionUrl: "@Url.Action("MemberSelect")",
+                lockButton: $(this),
+                formValidator: function () {
+                    //debugger
+                    vmRecommendMember.save();
+                    return false;
+                },
+                getParams: { id: id, isLimit: isLimit },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(false);
+                    return true;
+                },
+            });
+        }
+
+            function View(sender, Id) {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "详细信息",
+                    actionUrl: "@Url.Action("View")",
+                    params: { Id: Id },
+                    lockButton: $(sender),
+                });
+            }
+            function showImage(my) {
+                var src = $(my).attr('src');
+                var data = '<div style="text-align:center"><img src="' + src + '"/></div>';
+                bootbox.dialog({
+                    message: data,
+                    title: "查看",
+                });
+            }
+
+            function Update(sender, Id) {
+
+                //
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "修改信息",
+                    actionUrl: "@Url.Action("Update")",
+                    getParams: { Id: Id },
+                    lockButton: $(sender),
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(true);
+                        return true;
+                    },
+                });
+            }
+
+            //评论
+            function Comment(sender, Id) {
+                $.whiskey.ajaxLoading({
+                    // cache: false,
+                    type: "get",
+                    url: "@Url.Action("Comment")",// + "?r=" + Math.random()
+                    data: { Id: Id },
+                    success: function (data) {
+                        var formBody = data;
+                        bootbox.dialog({
+                            message: formBody,
+                            title: "查看评论",
+                            buttons: {
+                            }
+                        });
+
+                    }
+                });
+            }
+            //点赞
+            function Approval(sender, Id) {
+                $.whiskey.ajaxLoading({
+                    // cache: false,
+                    type: "get",
+                    url: "@Url.Action("Approval")",// + "?r=" + Math.random()
+                    data: { Id: Id },
+                    success: function (data) {
+                        var formBody = data;
+                        bootbox.dialog({
+                            message: formBody,
+                            title: "查看点赞",
+                            buttons: {
+                            }
+                        });
+
+                    }
+                });
+            }
+            function Remove(sender, Id) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要将这条数据移至回收站吗？",
+                    notes: "提示：数据移动到回收站后可从随时将其恢复",
+                    actionUrl: "@Url.Action("Remove")",
+                    params: { Id: Id },
+                    lockButton: $(sender),
+                    complete: function () {
+                        $.whiskey.datatable.reset(true);
+                    }
+                });
+            }
+
+            function Recovery(sender, Id) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要恢复这条数据吗？",
+                    notes: "提示：将数据从回收站移动至正常数据列表里",
+                    actionUrl: "@Url.Action("Recovery")",
+                    params: { Id: Id },
+                    lockButton: $(sender),
+                    complete: function () {
+                        $.whiskey.datatable.reset(true);
+                    }
+                });
+            }
+
+            function Delete(sender, Id) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要彻底删除这条数据吗？",
+                    notes: "提示：数据彻底删除后不可恢复，请谨慎操作！",
+                    actionUrl: "@Url.Action("Delete")",
+                    params: { Id: Id },
+                    lockButton: $(sender),
+                    complete: function () {
+                        $.whiskey.datatable.reset(true);
+                    }
+                });
+            }
+
+
+            function Enable(sender, Id) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要启用这条数据吗？",
+                    notes: "提示：启用才可以在任何地方使用",
+                    actionUrl: "@Url.Action("Enable")",
+                    params: { Id: Id },
+                    lockButton: $(sender),
+                    complete: function () {
+                        $.whiskey.datatable.reset(true);
+                    }
+                });
+            }
+
+            function Disable(sender, Id) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要禁用这条数据吗？",
+                    notes: "提示：禁用后数据将不在其他任何地方使用",
+                    actionUrl: "@Url.Action("Disable")",
+                    params: { Id: Id },
+                    lockButton: $(sender),
+                    complete: function () {
+                        $.whiskey.datatable.reset(true);
+                    }
+                });
+            }
+
+          
+
+    </script>
+
+    <script src="/Content/Scripts/fabric/fabric_with_gestures.js"></script>
+    <script src="/Content/Scripts/underscore/underscore.js"></script>
+    <script src="/Content/MemberCollocation/canvas.js"></script>
+    <script type="tpl" id="productTpl">
+        <li data-product-id=<%=obj.ProductId%> class="oneproduct" onclick="selectShopList(this)" >
+        <div class="all_info">
+            <div class="img_box">
+                <a class="single" href="javascript:;"><img src=<%=obj.ImagePath%> alt="png"/></a>
+            </div>
+            <div class="bt_gray">
+                <p class="title"><img class="money" src=<%=obj.ColorIconPath%> /><span class="dollor">￥<%=obj.Price%></span>&nbsp;<i class="clothing"><%=obj.CategoryName%></i>
+                    <i class="seasion"><%=obj.SeasonName%></i></p>
+
+
+
+
+            </div>
+        </div>
+    </li>
+    </script>
+    <script type="tpl" id="productAddCollTpl">
+        <div class="modal fade" id="productAddColl" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="min-width: 860px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            ×
+                        </button>
+                        <h4 class="modal-title" id="">
+                            <span style="font-size:15px">新增搭配</span>
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="webview webviewBlur">
+                            <!--<div id="pop-up_box">
+                                <ul>
+                                    <li id="wddp" class="border_rg">我的单品</li>
+                                    <li id="scdp" class="border_rg">商城单品</li>
+                                    <li id="close">取消</li>
+                                </ul>
+                            </div>-->
+                            <div class="pageone">
+                                <div class="header" style="z-index: 10000;">
+                                    <div class="contain">
+                                        <div class="save">
+                                            <ul>
+                                                <li id="save">保存</li>
+                                                <li class="cancel">取消</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="canvasBox contain">
+                                    <canvas id="c"></canvas>
+                                    <footer>
+                                        <div class="imgBox sucaibox">
+                                            <div class="clearfix sucai_img"></div>
+                                        </div>
+                                        <div class="imgBox back-img">
+                                            <div class="clearfix img-box"></div>
+                                        </div>
+
+                                        <div class="swiper-container">
+                                            <ul class="swiper-wrapper">
+                                                <li class="active swiper-slide addEle" id="addEle">
+                                                    <img src="/Content/Images/MemberCollocation/tab_1tj_pre_2x.png">
+                                                    <p>添加</p>
+                                                </li>
+                                                <li class="remove swiper-slide">
+                                                    <img src="/Content/Images/MemberCollocation/icon_m_delete_checked.png">
+                                                    <p>删除</p>
+                                                </li>
+                                                <li class="fanzhuan swiper-slide">
+                                                    <img src="/Content/Images/MemberCollocation/tab_3xz_pre_2x.png">
+                                                    <p>翻转</p>
+                                                </li>
+                                                <!--<li class="swiper-slide lock">
+                                                    <img src="../../img/tab_4sd_pre_2x.png" >
+                                                    <p>锁定</p>
+                                                </li>-->
+                                                <!--<li class="txt swiper-slide">
+                                                    <img src="/Content/Images/MemberCollocation/tab_5wz_pre_2x.png">
+                                                    <p>文字</p>
+                                                </li>-->
+                                                <li class="swiper-slide sucai">
+                                                    <img src="/Content/Images/MemberCollocation/tab_6sc_pre_2x.png">
+                                                    <p>素材</p>
+                                                </li>
+                                                <li class="addBackground swiper-slide">
+                                                    <img src="/Content/Images/MemberCollocation/tab_7bj_pre_2x.png" />
+                                                    <p>背景</p>
+                                                </li>
+                                                <input type="file" name="collFile" id="collFile" style="display: none;" />
+                                                <li class="addfromFile swiper-slide">
+                                                    <img src="/Content/Images/MemberCollocation/icon_m_album_check.png" />
+                                                    <p>相册</p>
+                                                </li>
+                                                <li class="swiper-slide" id="shangyi">
+                                                    <img src="/Content/Images/MemberCollocation/tab_8sy_pre_2x.png" />
+                                                    <p>上移</p>
+                                                </li>
+                                                <li class="swiper-slide" id="xiayi">
+                                                    <img src="/Content/Images/MemberCollocation/tab_9xy_pre_2x.png" />
+                                                    <p>下移</p>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </footer>
+                                </div>
+                                <div class="addCollcontent">
+                                    <div><span class="collAddTitle">* 搭配名称：</span><input type="text" placeholder="请填写搭配名称" /></div>
+                                    <div>
+                                        <span class="collAddTitle">* 颜色：</span>
+                                        <div class="btn-group bootstrap-select addSelect">
+                                            <button id="colorSelected" type="button" class="btn dropdown-toggle bs-placeholder btn-default" data-toggle="dropdown" role="button" data-id="-1" title="请选择"><span class="filter-option pull-left">请选择</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button>
+                                            <div class="dropdown-menu open" role="combobox" style="max-height: 200px; overflow: hidden; min-height: 0px;">
+                                                <ul class="dropdown-menu inner" role="listbox" aria-expanded="false" style="max-height: 195px; overflow-y: auto; min-height: 0px;"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="collAddTitle">* 季节：</span>
+                                        <div class="btn-group bootstrap-select addSelect">
+                                            <button type="button" id="sesonSelected" class="btn dropdown-toggle bs-placeholder btn-default" data-toggle="dropdown" role="button" data-id="-1" title="请选择"><span class="filter-option pull-left">请选择</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button>
+                                            <div class="dropdown-menu open" role="combobox" style="max-height: 200px; overflow: hidden; min-height: 0px;">
+                                                <ul class="dropdown-menu inner" role="listbox" aria-expanded="false" style="max-height: 195px; overflow-y: auto; min-height: 0px;"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="collAddTitle">* 风格：</span>
+                                        <div class="btn-group bootstrap-select addSelect">
+                                            <button type="button" id="fgSelected" class="btn dropdown-toggle bs-placeholder btn-default" data-toggle="dropdown" role="button" data-id="-1" title="请选择"><span class="filter-option pull-left">请选择</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button>
+                                            <div class="dropdown-menu open" role="combobox" style="max-height: 200px; overflow: hidden; min-height: 0px;">
+                                                <ul class="dropdown-menu inner" role="listbox" aria-expanded="false" style="max-height: 195px; overflow-y: auto; min-height: 0px;"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="collAddTitle">* 场合：</span>
+                                        <div class="btn-group bootstrap-select addSelect">
+                                            <button type="button" id="chSelected" class="btn dropdown-toggle bs-placeholder btn-default" data-toggle="dropdown" role="button" data-id="-1" title="请选择"><span class="filter-option pull-left">请选择</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button>
+                                            <div class="dropdown-menu open" role="combobox" style="max-height: 200px; overflow: hidden; min-height: 0px;">
+                                                <ul class="dropdown-menu inner" role="listbox" aria-expanded="false" style="max-height: 195px; overflow-y: auto; min-height: 0px;"></ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div><span class="collAddTitle">备注：</span><input type="text" placeholder="请填写备注" /></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="moda_but_succ" class="btn btn-primary">
+                            确定
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            关闭
+                        </button>
+
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+
+    </script>
+}
+

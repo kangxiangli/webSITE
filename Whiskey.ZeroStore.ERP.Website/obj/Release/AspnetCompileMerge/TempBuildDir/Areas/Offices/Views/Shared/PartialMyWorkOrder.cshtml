@@ -1,0 +1,28 @@
+﻿<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" id="createWorkOrder"><a href="#" aria-controls="home" role="tab" data-toggle="tab" onclick="getCreateWorkOrder()">我申请的工单</a></li>
+    <li role="presentation" id="DealtWith"><a href="#" aria-controls="home" role="tab" data-toggle="tab" onclick="getDealtWith()">指派给我的工单</a></li>
+</ul>
+<script type="text/javascript">
+    $(function () {
+        initTab();
+    })
+
+    function initTab() {
+        $('.nav-tabs li').removeClass("active");
+        var type = "@Model";
+        if (type == 2) {
+            $("#DealtWith").addClass("active");
+        } else {
+            $("#createWorkOrder").addClass("active");
+        }
+    }
+
+    //跳转到我申请的工单
+    function getCreateWorkOrder() {
+        location.href = "/Offices/MyWorkOrder/index";
+    }
+    //跳转到指派给我的工单
+    function getDealtWith() {
+        location.href = "/Offices/MyWorkOrderDealtWith/index";
+    }
+</script>

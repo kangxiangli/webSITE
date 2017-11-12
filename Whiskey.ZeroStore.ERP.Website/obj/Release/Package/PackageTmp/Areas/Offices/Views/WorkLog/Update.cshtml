@@ -1,0 +1,213 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model WorkLogDto
+
+
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+<link rel="stylesheet" href="/content/editor/themes/default/default.css" />
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<style>
+    .li_empt {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+</style>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#addCoverImage" data-toggle="tab">附件</a>
+    </li>
+</ul>
+@Html.HiddenFor(x=>x.Id)
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.WorkLogAttributeId) :
+            </label>
+            <div class="col-md-10">
+                <select name="WorkLogAttributeId" class="form-control selectpicker" id="WorkLogAttributeId"></select>  
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.WorkLogName) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.WorkLogName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Keys) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Keys , new Dictionary<string, object> { { "class", "form-control" }, { "data-role", "tagsinput" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Notes, new { @class = "article-editor", @style = "visibility:hidden;" })
+            </div>
+        </div>
+        @Html.HiddenFor(x => x.FilePath)
+    </div>
+
+    <div class="tab-pane fade clearfix" id="addCoverImage">
+        <label id="filename">未选择文件……</label><label id="up_state"></label>
+        <div class="form-group">
+
+            <div class="col-md-3">
+                <button id="browse" class="btn btn-default" style="display:inline;">选择文件</button>
+            </div>
+            <div class="col-md-3">
+                <a role="button" href="javascript:void(0)" id="start_upload" class="btn btn-default">开始上传</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="/Content/plupload-2.1.8/js/plupload.full.min.js"></script>
+<script src="/Content/plupload-2.1.8/js/jquery.plupload.queue/jquery.plupload.queue.min.js"></script>
+
+<script type="text/javascript" src="/content/editor/kindeditor-min.js"></script>
+<script type="text/javascript" src="/content/editor/lang/zh_CN.js"></script>
+@Scripts.Render("~/bundles/tags")
+<script>
+
+    $(function () {
+        var editor = KindEditor.create(".article-editor", {
+            width: "100%",
+            height: "400px",
+            resizeType: 1,
+            uploadJson: "/content/editor/upload_json.ashx",
+            fileManagerJson: "/content/editor/file_manager_json.ashx",
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            contentEditable: true,
+            filterMode: false,
+            items: [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink'
+            ],
+            afterCreate: function (id) {
+                this.focus(id);
+            },
+            afterChange: function (id) {
+                this.sync(id);
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+
+        //初始化上传控件
+        var uploader = new plupload.Uploader(
+        {
+            runtimes: 'silverlight,html4,html5,flash',
+            browse_button: 'browse',
+            url: '@Url.Action("UploadFiles")',
+            flash_swf_url: '/Content/plupload-2.1.8/js/Moxie.swf">/Content/plupload-2.1.8/js/Moxie.swf',
+            filters: {
+                mime_types: [
+                   { title: "txt", extensions: "txt" },
+                   { title: "excel", extensions: "xls,xlsx" },
+                   { title: "word", extensions: "doc,docx" }
+                ],
+                max_file_size: '4000kb',
+                prevent_duplicates: true
+            }
+
+        });
+
+        uploader.init();
+        uploader.bind('FilesAdded', function (uploader, files) {
+            $("#filename").html(files[0].name);
+            $("#up_state").html("");
+        });
+        uploader.bind('BeforeUpload', function (uploader, file) {
+            $("#up_state").html("正在上传……")
+        }); //
+        uploader.bind('FileUploaded', function (uploader, file, obj) {
+            var res = obj.response;
+            var txt = "上传失败";
+            if (res !=null && res!="" &&res!=undefined) {
+                txt = "上传成功";
+                $(".bootbox #FilePath").attr("value", res);
+            }
+            $("#up_state").html(txt);
+        });
+
+        $('#start_upload').click(function () {
+            uploader.start();
+        });
+
+        //初始化工作类型集合
+        var currentId = "@Model.WorkLogAttributeId";
+        initWorkLogAttribute(currentId);
+    });
+
+    //初始化工作类型集合
+    function initWorkLogAttribute(currentId) {
+        debugger
+        var $option = $(".bootbox #WorkLogAttributeId");
+        $option.empty();
+        var base = '<option  value="">请选择</option>';
+        $option.append(base);
+        $.ajax({
+            url: "@Url.Action("GetWorkLogAttributes")",
+            type: "POST",
+            success: function (data) {
+                var html = RecursiveData(data, $option, currentId);
+                $option.append(html);
+            }
+        });        
+    }
+
+    function RecursiveData(data, $option, currentId) {
+        debugger
+        var length = data.length;
+        var partHtml="";
+        for (var i = 0; i < length; i++) {
+            var entity = data[i];
+            var name = entity.WorkLogAttributeName;
+            var id = entity.Id;
+            //子集
+            var children = entity.Children;
+            if (id == null || id == "" || id == undefined) {
+                var optGroupStart = '<optgroup label="' + name + '">';
+                var optGroupEnd = '</optgroup>';
+                var chidData = RecursiveData(children, $option, currentId);
+                //拼接html                
+                partHtml += optGroupStart + chidData + optGroupEnd;
+            } else {
+                if (currentId==id) {
+                    partHtml += '<option value="' + id + '" selected="selected">' + name + '</option>';
+                } else {
+                    partHtml += '<option value="' + id + '">' + name + '</option>';
+                }                
+            }
+        }
+         
+        return partHtml;
+    }
+</script>
+
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

@@ -1,0 +1,301 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@model WorkTimeDto
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.WorkTimeName) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.WorkTimeName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsVacations) :
+    </label>
+    <div class="col-md-1">
+        @Html.CheckBoxFor(m => m.IsVacations, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsFlexibleWork) :
+    </label>
+    <div class="col-md-1">
+        @Html.CheckBoxFor(m => m.IsFlexibleWork, new { @class = "form-control", @onchange = "setFlexible()" })
+    </div>
+</div>
+<div class="form-group warning alert-danger" id="warn">
+    <label class="control-label col-md-3">
+        警告 :
+    </label>
+    <div class="col-md-5">
+        <label class="control-label col-md-8">
+            <i class="fa fa-warning"></i><span id="warnInfo">请选择</span>
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.WorkWeek) :
+    </label>
+    <div class="col-md-5">
+        <select class="form-control selectpicker bla bla bli" id="WorkWeek" name="WorkWeek" multiple data-live-search="true">
+            <option value="1">星期一</option>
+            <option value="2">星期二</option>
+            <option value="3">星期三</option>
+            <option value="4">星期四</option>
+            <option value="5">星期五</option>
+            <option value="6">星期六</option>
+            <option value="0">星期天</option>
+        </select>
+    </div>
+</div>
+<div class="form-group worktime">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.WorkTimeType) :
+    </label>
+    <div class="col-md-7" id="divAmStartTime">
+        <select class="form-control selectpicker" name="WorkTimeType" id="WorkTimeType" onchange="setTime()">
+            <option value="@((int)WorkTimeFlag.AllDay)">全天班</option>
+            <option value="@((int)WorkTimeFlag.HalfDay)">小时工</option>
+        </select>
+    </div>
+</div>
+<div class="form-group worktime">
+    <label class="control-label col-md-3" id="labAmStartTime">
+        @Html.DisplayNameFor(m => m.AmStartTime) :
+    </label>
+    <div class="col-md-7" id="divAmStartTime">
+        <div class="input-daterange input-group">
+            <select class="input-sm form-control hour" onchange="setTime()"></select>
+            <span class="input-group-addon">:</span>
+            <select class="input-sm form-control minute" onchange="setTime()"></select>
+        </div>
+    </div>
+    <input type="hidden" name="AmStartTime" id="AmStartTime" />    
+</div>
+<div class="form-group" style="display:none">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.AmEndTime) :
+    </label>
+    <div class="col-md-7" id="divAmEndTime">
+        <div class="input-daterange input-group">
+            <select class="input-sm form-control hour " onchange="setTime()"></select>
+            <span class="input-group-addon">:</span>
+            <select class="input-sm form-control minute" onchange="setTime()"></select>
+        </div>
+    </div>
+    <input type="hidden" name="AmEndTime" id="AmEndTime" />
+</div>
+<div class="form-group" style="display:none">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.PmStartTime) :
+    </label>
+    <div class="col-md-7" id="divPmStartTime">
+        <div class="input-daterange input-group">
+            <select class="input-sm form-control hour" onchange="setTime()"></select>
+            <span class="input-group-addon">:</span>
+            <select class="input-sm form-control minute" onchange="setTime()"></select>
+        </div>
+    </div>
+    <input type="hidden" name="PmStartTime" id="PmStartTime" />   
+</div>
+
+<div class="form-group worktime">
+    <label class="control-label col-md-3" id="labPmEndTime">
+        @Html.DisplayNameFor(m => m.PmEndTime) :
+    </label>
+    <div class="col-md-7" id="divPmEndTime">
+        <div class="input-daterange input-group">
+            <select class="input-sm form-control hour " onchange="setTime()"></select>
+            <span class="input-group-addon">:</span>
+            <select class="input-sm form-control minute " onchange="setTime()"></select>
+        </div>
+    </div>    
+    <input type="hidden" name="PmEndTime" id="PmEndTime" />
+</div>
+<div class="form-group worktime">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.WorkHour)（小时） :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.WorkHour, new { @class = "form-control",@readonly="readonly" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Summary) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextAreaFor(m => m.Summary, new { @class = "form-control" })
+    </div>
+</div>
+ 
+<link href="/Content/Styles/Bootstrap/BootstrapSelect/bootstrap-select.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/BootstrapSelect/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.selectpicker').selectpicker({
+            'selectedText': 'cat',
+            'noneSelectedText': "请选择",
+            'noneResultsText': '没有搜索到'
+        });
+
+        //初始化小时
+        initHour();
+        //初始化分钟
+        initMimute();
+        
+        $(".bootbox #WorkWeek").change(function () {
+            checkWorkweek();
+        });
+    })
+
+    function setTime() {
+        var workTimeType = $(".bootbox #WorkTimeType").val();
+        //文本显示对象
+        var $aftTime = $(".bootbox .aftTime");
+        var $labAmStartTime = $(".bootbox #labAmStartTime");
+        var $labPmEndTime = $(".bootbox #labPmEndTime");
+        //提交数据对象
+        var $amStartTime = $(".bootbox #AmStartTime");
+        var $amEndTime = $(".bootbox #AmEndTime");
+        var $aftStartTime = $(".bootbox #PmStartTime");
+        var $aftEndTime = $(".bootbox #PmEndTime");
+        var $workHour = $(".bootbox #WorkHour");
+        //获取设置的小时和分钟
+        var $morStartHour=$("#divAmStartTime .hour");
+        var $morStartMinute=$("#divAmStartTime .minute");
+        var $morEndHour=$("#divAmEndTime .hour");
+        var $morEndMinute = $("#divAmEndTime .minute");
+        var $aftStartHour = $("#divPmStartTime .hour");
+        var $aftStartMinute = $("#divPmStartTime .minute");
+        var $aftEndHour = $("#divPmEndTime .hour");
+        var $aftEndMinute = $("#divPmEndTime .minute");
+        //设置时间
+        var morStartHour = parseInt($morStartHour.val());
+        var morStartMinute = parseInt($morStartMinute.val());
+        var morEndHour = parseInt($morEndHour.val());
+        var morEndMinute = parseInt($morEndMinute.val());
+
+        var aftStartHour = parseInt($aftStartHour.val());
+        var aftStartMinute = parseInt($aftStartMinute.val());
+        var aftEndHour = parseInt($aftEndHour.val());
+        var aftEndMinute = parseInt($aftEndMinute.val());
+
+        var amStartTime = morStartHour + ":" + morStartMinute;
+        var pmEndTime = aftEndHour + ":" + aftEndMinute;
+        $amStartTime.attr("value", amStartTime);
+        $aftEndTime.attr("value", pmEndTime);
+
+        //设置工作时长
+        var sumMinute = 0;
+        var sumHour = 0;                
+        if (workTimeType == "@((int)WorkTimeFlag.AllDay)") {
+            //文本显示
+            $aftTime.css("display", "block");
+            $labAmStartTime.text("上班时间 :");
+            $labPmEndTime.text("下班时间 :");            
+            var aftStartTime = aftStartHour + ":" + aftStartMinute;
+            var amEndTime = morEndHour + ":" + morEndMinute;
+            $aftStartTime.attr("value", aftStartTime);
+            
+            $amEndTime.attr("value", amEndTime);
+            //设置工作时
+            if (morEndMinute - morStartMinute < 0) {
+                sumHour = morEndHour - 1 - morStartHour;
+                sumMinute = morEndMinute + 60 - morStartMinute;
+            } else {
+                sumHour = morEndHour - morStartHour;
+                sumMinute = morEndMinute - morStartMinute;
+            }
+            if (aftEndMinute - aftStartMinute < 0) {
+                sumHour += (aftEndHour - 1 - aftStartHour);
+                sumMinute += (aftEndMinute + 60 - aftStartMinute);
+            } else {
+                sumHour += (aftEndHour - aftStartHour);
+                sumMinute += (aftEndMinute - aftStartMinute);
+            }
+        } else {
+            //文本显示
+            $aftTime.css("display", "none");
+            $labAmStartTime.text("上班时间：");
+            $labPmEndTime.text("下班时间：");
+            $aftStartTime.attr("value", "0:0");
+            $amEndTime.attr("value", "0:0");
+            if (aftEndMinute - morStartMinute < 0) {
+                sumHour += (aftEndHour - 1 - morStartHour);
+                sumMinute += (aftEndMinute + 60 - morStartMinute);
+            } else {
+                sumHour += (aftEndHour - morStartHour);
+                sumMinute += (aftEndMinute - morStartMinute);
+            }
+        }         
+        $workHour.attr("value", sumHour + sumMinute / 60);
+    }
+
+
+    //初始化小时
+    function initHour() {
+        $(".bootbox .hour").empty();
+        for (var i = 0; i < 24; i++) {
+            var hour;
+            if (i<10) {
+                hour = '<option value="0' + i + '">0' + i + '</option>';
+            } else {
+                hour = '<option value="' + i + '">' + i + '</option>';
+            }
+            
+            $(".bootbox .hour").append(hour);
+        }
+    }
+
+    //初始化分钟
+    function initMimute() {
+        $(".bootbox .minute").empty();
+        for (var i = 0; i < 60; i++) {
+            var minute;
+            if (i < 10) {
+                minute = '<option value="0' + i + '">0' + i + '</option>';
+            } else {
+                minute = '<option value="' + i + '">' + i + '</option>';
+            }             
+            $(".bootbox .minute").append(minute);
+        }
+    }
+
+    //弹性工作时间
+    function setFlexible() {
+        var check = $(".bootbox #IsFlexibleWork").is(":checked");
+        if (check==true) {
+            $(".bootbox .worktime").css("display", "none");
+            $(".bootbox #AmStartTime").attr("value", "0:0");
+            $(".bootbox #AmEndTime").attr("value", "0:0");
+            $(".bootbox #PmStartTime").attr("value", "0:0");
+            $(".bootbox #PmEndTime").attr("value", "0:0");
+            $(".bootbox #WorkHour").attr("value", 0);
+        } else {
+            $(".bootbox #AmStartTime").attr("value", "0:0");
+            $(".bootbox #AmEndTime").attr("value", "0:0");
+            $(".bootbox #PmStartTime").attr("value", "0:0");
+            $(".bootbox #PmEndTime").attr("value", "0:0");
+            $(".bootbox .worktime").css("display", "block");
+        }
+    }
+
+    //校验工作周
+    function checkWorkweek() {
+        var workweek = $(".bootbox #WorkWeek").val();
+        if (workweek == null || WorkWeek == "") {
+            $("#warn").css("display", "block");
+            $(".btn-primary").attr("disabled", "disabled");
+        } else {
+            $("#warn").css("display", "none");
+            $(".btn-primary").removeAttr("disabled", "disabled");
+        }
+    }
+</script>
+
+ 

@@ -1,0 +1,137 @@
+﻿
+
+
+
+
+<div class="row">
+    <div class="panel">
+        <div class="panel-body">
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-2">商品流水号:</label>
+                        <div class="col-md-4" style="margin-left: 13px;">
+                            @Html.TextBox("ProductBarcode", "", new { @class = "form-control", @style = "text-align:center" })
+
+                        </div>
+                        <div>
+                            <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                            <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                        </div>
+                    </div>
+
+                </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list" id="storediv">
+
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+@section Scripts{
+
+    <script src="~/Content/Scripts/Common/comm.js"></script>
+    <script type="text/javascript">
+        var storeActivity;
+        var RuleType = 0;
+        $(document).ready(function () {
+            $(".panel-body").css("display","");
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "bScrollCollapse": false,
+                "bStateSave": true,
+                "sDom": '<"H clearfix datatable-header text-center"r>t<"F clearfix datatable-footer"<"col-md-5"<"col-md-6 info  text-left"i><"pcou col-md-7 text-left info">><"col-md-7 text-right"p>>',
+                "sAjaxSource": "@Url.Action("List")",
+                "aLengthMenu": [10],
+                "fnServerParams": function (aoData) {
+                    var typestr = $("#navTab").find(".active").find("a").attr("aria-controls");
+                    var conditions = new $.whiskey.filter.group();
+                    var name = $("#ProductBarcode").val();
+
+                    aoData.push({ name: "ProductBarcode", value: name });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    var isEnabled = aData.IsEnabled;
+                    if (isEnabled == false) {
+                        $(nRow).css({ "color": " #5ebd5e" });
+                    }
+                    $("td:eq(0)", nRow).text(iDisplayIndex + 1);
+                    $("td:eq(1)", nRow).css({ "width": "13%", "padding-left": "0" });
+                    $("td:last", nRow).addClass("text-middle").css({ "width": "15%" });
+                    return nRow;
+                },
+                "fnFooterCallback": function () {
+
+                },
+                "fnDrawCallback": function (da, json) {
+
+                },
+
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+			{
+			    "sTitle": "编号",
+			    "bSortable": false,
+			    "sName": "RowNumber",
+			    "mData": function (data) {
+			        debugger
+			        var index = data.iDisplayIndex + 1;
+			        return '' + index + '';
+			    }
+			},
+            {
+                "sTitle": "流水号",
+                "bSortable": false,
+                "sName": "ProductBarcode",
+                "mData": function (data) {
+                    return data.ProductBarcode;
+                },
+            },
+            {
+                "sTitle": "商品追踪信息",
+                "bSortable": false,
+                "sName": "Describe",
+                "mData": function (data) {
+                    return data.Describe;
+                },
+            },
+            {
+                "sTitle": "更新时间",
+                "bSortable": false,
+                "sName": "CreatedTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.CreatedTime);
+                }
+            },
+            {
+                "sTitle": "操作人员",
+                "bSortable": false,
+                "sName": "AdminName",
+                "mData": function (data) {
+                    debugger
+                    return data.Name;
+                },
+            }
+                ]
+
+            });
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+            $("#Clear").click(function () {
+                $("#ProductBarcode").val("");
+            });
+        });
+    </script>
+}

@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<!--[if IE 8]><html class="ie8"><![endif]-->
+<!--[if IE 9]><html class="ie9 gt-ie8"><![endif]-->
+<!--[if gt IE 9]><!-->
+<html class="gt-ie8 gt-ie9 not-ie">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    @if (string.IsNullOrEmpty(ViewBag.Title))
+    {
+        <title>零时尚买手商城</title>
+    }
+    else
+    {
+        <title>零时尚买手商城 - @ViewBag.Title</title>
+    }
+    <meta id="keywords" name="Keywords" content="零时尚,零时尚产品,在线商城,零时尚在线购物,零时尚买手商城,零时尚VIP,零时尚加盟,零时尚会员商城" />
+    <meta id="description" name="Description" content="零时尚是一家整合奢侈品资源的高端销售平台，期待你的加盟！" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <link rel="icon" href="~/favicon.ico" type="image/x-icon" />
+    @RenderSection("Styles", required: false)
+    @Styles.Render("~/bundles/styles_basic")
+    @Scripts.Render("~/bundles/scripts_basic")
+    @*<script src="~/signalr/hubs"></script>*@
+    @Html.Partial("_Head", ViewBag as object)
+    <script>
+        window.onpopstate = function () {
+            $("#main-wrapper").load(window.location.href, { _p_flag_popin: "1" }, function () {
+
+            });
+        }
+    </script>
+    <script>
+		var _hmt = _hmt || [];
+		(function() {
+		  var hm = document.createElement("script");
+		  hm.src = "https://hm.baidu.com/hm.js?deab4e15115b3ce8a8e4596f7c74d42c";
+		  var s = document.getElementsByTagName("script")[0]; 
+		  s.parentNode.insertBefore(hm, s);
+		})();
+	</script>
+</head>
+<body>
+    @Html.Partial("_Nav", ViewBag as object)
+    
+    <div id="main-wrapper">
+        @RenderBody()
+    </div>
+
+    @*@Html.Partial("_Footer")*@
+
+    @RenderSection("Scripts", required: false)
+
+    @*@Html.Partial("_AutoExit", new { AdminId = ViewBag.AdminId })*@
+</body>
+</html>

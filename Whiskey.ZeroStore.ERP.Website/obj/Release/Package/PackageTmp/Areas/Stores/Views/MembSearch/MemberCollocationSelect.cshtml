@@ -1,0 +1,230 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+<script src="~/Content/Scripts/Layer/layer.js"></script>
+<style>
+    .modal-content {
+        width: 1000px;
+        background: rgba(0,0,0,0.2);
+    }
+</style>
+<div id="app">
+
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    @*<input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">*@
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">搭配名</label>
+                            <div class="col-md-8">
+                                <input v-on:keyup.enter="search(null)" class="form-control" type="text" name="CollocationName" id="CollocationName" placeholder="请输入搭配名" />
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button v-on:click="search(null)" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button v-on:click="document.querySelector('.form-search').reset()" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+                        @*<button id="Create" v-on:click="add" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增数据</span></button>*@
+                        <button title="批量设置" type="button" v-on:click="batchRecommend" class="btn btn-facebook btn-padding-right">批量推荐</button>
+                        <button title="批量设置" type="button" v-on:click="batchRemoveRecommend" class="btn btn-danger btn-padding-right">批量不推荐</button>
+                        <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                        <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                        <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                    </div>
+                    <div class="button-recycle">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    @*<span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>*@
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>搭配名称</th>
+                        <th>封面</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{index+1}}</td>
+                        <td>{{item.CollocationName}}</td>
+                        <td>
+                            <div style="display:block;width:60px;height:60px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;">
+                                <img class="popimg" v-bind:src='item.ImagePath' style="margin:2px;max-width:54px;cursor:pointer" onclick="showImage(this)" />
+                            </div>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary" v-if="recommendIds.indexOf(item.Id)===-1" v-on:click="add(item.Id)">设置推荐</button>
+                            <button type="button" class="btn btn-danger" v-else v-on:click="remove(item.Id)">取消推荐</button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+    </div>
+
+
+</div>
+
+@{
+    Html.RenderPartial("Page", null);
+}
+<script>
+    var baseUrl = '/Stores/MembSearch';
+    var recommendColocationIds = JSON.parse( '@Html.Raw(ViewBag.RecommendIds)');
+    console.log(recommendColocationIds)
+    var vmRecommendMember = new Vue({
+        el: "#app",
+        data: {
+            memberId:'@ViewBag.MemberId',
+            isDeleted: false,
+            isEnabled: true,
+            recommendIds: recommendColocationIds,
+
+            numbers: [],
+            pageDatas: [], //分页数据
+            currentId: 0,
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            },
+            checkedIds: [],
+            currentId: 0,
+        },
+        mounted: function () {
+            this.search();
+        },
+        methods: {
+
+            search: function (filter) {
+
+                var _self = this;
+
+                var searchData = {
+
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+
+
+                }
+                var name = $("#CollocationName").val();
+                 //debugger
+                if (name && name.length > 0) {
+                    searchData.collocationName = name;
+
+                }
+
+                if (filter) {
+
+                    searchData = _.extend(searchData, filter)
+                }
+
+                $.getJSON(baseUrl + '/CollocationList', searchData).done(function (res) {
+                    if (res.ResultType !== 3) {
+                        //console
+                        return;
+                    }
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+                })
+            },
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            },
+            add: function (colloId) {
+                if (this.recommendIds.indexOf(colloId)===-1) {
+                    this.recommendIds.push(colloId);
+                }
+            },
+            remove: function (memberId) {
+                var index = this.recommendIds.findIndex(x => x == memberId);
+                if (index !== -1) {
+                    this.recommendIds.splice(index, 1);
+                }
+            },
+            batchRecommend: function () {
+                var ids = this.pageDatas.map(i => i.Id);
+                ids.forEach(id => this.add(id));
+
+            },
+            batchRemoveRecommend: function () {
+                //debugger
+                var ids = this.pageDatas.map(i => i.Id);
+                ids.forEach(id => this.remove(id));
+            },
+            save: function () {
+                //debugger
+                var data = {
+                    memberId: this.memberId,
+                    recommendCollocationIds: this.recommendIds
+                };
+                $.post(baseUrl + "/SaveCollocationId", data)
+                    .done(function (res) {
+                        if (res.ResultType !== 3) {
+                            alert(res.Message);
+                            return;
+                        }
+                        else {
+
+                        $("button[data-dismiss=modal]").trigger('click');
+                        }
+                    })
+            }
+
+        }
+
+    })
+</script>

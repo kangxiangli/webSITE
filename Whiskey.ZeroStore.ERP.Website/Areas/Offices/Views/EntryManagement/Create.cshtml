@@ -1,0 +1,609 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.Utility.Data
+@model Entry
+
+<style>
+    .clwid .modal-dialog {
+        min-width: 100%;
+        width: 100%;
+    }
+
+        .clwid .modal-dialog .modal-content {
+            width: 60%;
+            margin: 30px auto;
+        }
+
+    #base {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    #userdiv {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+        #userdiv .form-group {
+            width: 70%;
+            display: inline-block;
+        }
+</style>
+<ul class="nav nav-tabs" role="tablist" id="navTab">
+    <li role="presentation" class="active"><a href="#base" aria-controls="home" role="tab" data-toggle="tab">基本信息</a></li>
+    <li role="presentation"><a href="#userdiv" aria-controls="profile" role="tab" data-toggle="tab">相关证件</a></li>
+    <li role="presentation"><a href="#registForm" aria-controls="profile" role="tab" data-toggle="tab">登记表</a></li>
+</ul>
+<div class="tab-content">
+    <div id="base" class="tab-pane in active">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                手机 :
+            </label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBox("MobilePhone", "", new { @class = "form-control" })
+                    <span class="btn sel-btn input-group-addon" style="z-index: 1000">确认</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                入职人 :
+            </label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBox("RealName", "", new { @class = "form-control"})
+
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                性别 :
+            </label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" id="sexSpan" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                Mac地址 :
+            </label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" id="MacAddress" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                面试评价 :
+            </label>
+            <div class="col-md-9">
+                <textarea id="InterviewEvaluation" style="width:90%;min-height:280px;"></textarea>
+            </div>
+        </div>
+        <input type="hidden" id="MemberId" />
+    </div>
+    <div id="userdiv" class="tab-pane fade">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                银行卡:
+            </label>
+            <div class="col-md-10">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span>
+                <br />
+                <div class="dropzone-box detailImgs" id="BankcardDiv">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传图片<br>
+                    </div>
+                    <img src="" id="BankcardImgPath" style="float:right;width:50%; display:none;margin-right: 10%;margin-top: 10%;" />
+                    <div class="fallback">
+                        <input name="file" type="file" multiple="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                身份证:
+            </label>
+            <div class="col-md-10">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span>
+                <br />
+                <div class="dropzone-box detailImgs" id="IdCardDiv">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传图片<br>
+                    </div>
+                    <img src="" id="IdCardImgPath" style="float:right;width:50%; display:none;margin-right: 10%;margin-top: 10%;" />
+                    <div class="fallback">
+                        <input name="file" type="file" multiple="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                健康证:
+            </label>
+            <div class="col-md-10">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span>
+                <br />
+                <div class="dropzone-box detailImgs" id="HealthCertificateDiv">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传图片<br>
+                    </div>
+                    <img src="" id="HealthCertificateImgPath" style="float:right;width:50%; display:none;margin-right: 10%;margin-top: 10%;" />
+                    <div class="fallback">
+                        <input name="file" type="file" multiple="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                照片:
+            </label>
+            <div class="col-md-10">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span>
+                <br />
+                <div class="dropzone-box detailImgs" id="PhotoDiv">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传图片<br>
+                    </div>
+                    <img src="" id="PhotoImgPath" style="float:right;width:50%; display:none;margin-right: 10%;margin-top: 10%;" />
+                    <div class="fallback">
+                        <input name="file" type="file" multiple="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="registForm" class="tab-pane fade">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                登记表:
+            </label>
+            <div class="col-md-10">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span>
+                <br />
+                <div class="dropzone-box detailImgs" id="RegistFormDiv">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传图片<br>
+                    </div>
+                    <img src="" id="RegistFormPath" style="float:right;width:50%; display:none;margin-right: 10%;margin-top: 10%;" />
+                    <div class="fallback">
+                        <input name="file" type="file" multiple="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+    </div>
+</div>
+    <script type="text/javascript">
+        function isCheckChina(str) {
+            var reg = /^[u4E00-u9FA5]+$/;
+            if (!reg.test(str)) {
+                return false;
+            }
+            return true;
+        }
+
+        $(function () {
+            //$("#navTab li").click(function () {
+            //    if (!$(this).hasClass("active")) {
+            //        if ($(this).find("a").attr("aria-controls") == "home") { $("#base").css("display", ""); $("#userdiv").css("display", "none"); }
+            //        else { $("#userdiv").css("display", ""); $("#base").css("display", "none"); }
+            //    }
+            //});
+            $("#MacAddress").keyup(function () {
+                var valueStr = $(this).val();
+                if (isCheckChina(valueStr)) {
+                    $(this).val($(this).val().toUpperCase());
+                } else {
+                    var reg = /[^\w\.\/]/ig;
+                    var str = valueStr.replace(reg, '');
+                    $(this).val(str.toUpperCase());
+                }
+            });
+            $("#MacAddress").keydown(function () {
+                var valueStr = $(this).val();
+                if (isCheckChina(valueStr)) {
+                    $(this).val($(this).val().toUpperCase());
+                } else {
+                    var reg = /[^\w\.\/]/ig;
+                    var str = valueStr.replace(reg, '');
+                    $(this).val(str.toUpperCase());
+                }
+            });
+            $(".sel-btn").click(function () {
+
+                $.post("/Offices/EntryManagement/GetMemberInfoByMobilePhone", { MobilePhone: $(".modal-dialog #MobilePhone").val() }, function (da) {
+                    if (da.type == 1) {
+                        $(".modal-dialog #RealName").val(da.RealName);
+                        $(".modal-dialog #MemberId").val(da.Id);
+                        var Gender = da.Gender ? "男" : "女";
+                        $(".modal-dialog #sexSpan").val(Gender);
+                    }
+                    else {
+                        $.whiskey.web.alert({
+                            type: "error",
+                            content: da.errorMsg,
+                            callback: function () {
+
+                            }
+                        });
+                    }
+                });
+
+            });
+            $("#BankcardDiv").dropzone({
+                url: "/Upload/Multiple",
+                acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+                paramName: "file",
+                maxFilesize:0.5,
+                maxFiles: 1,
+                autoProcessQueue: true, //开启自动上传（默认为true）
+                init: function () {
+                    this.on("sending", function (file, xhr, formData) {
+                        formData.append("ExtType", "Image");
+                        formData.append("SaveDir", "BankcardImg");
+                    });
+                    this.on("addedfile", function (file) {
+                        var dropzone = this;
+                        file.previewElement.addEventListener("click", function () {
+                            dropzone.removeFile(file);
+                        });
+                    });
+                    //当上传完成后的事件，接受的数据为JSON格式
+                    this.on("success", function (file, data) {
+                        var dropzone = this;
+                        var arrFiles = data.files;
+                        var uploadPath = arrFiles[0];
+                        var choice = $("#choiceImg").val();
+
+                        var delimg = $("<div class='img-remove'></div>").click(function () {
+                            dropzone.emit("removedfile", file, choice, $(this));
+                        });
+                        $("#BankcardImgPath").css("display", "");
+                        $("#BankcardImgPath").attr("src", uploadPath);
+
+                    });
+                    this.on("complete", function (data) {
+                        if (data.status == "error") {
+                            var errorInfo = $(data.previewElement).find("span[data-dz-errormessage]").text();
+                            $.whiskey.web.alert({
+                                type: "info",
+                                content: errorInfo
+                            });
+                        }
+                    });
+                },
+                removedfile: function (file, choice, obj) {
+                    _this = this;
+                    if (confirm("确认要删除吗？")) {
+                        var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                        if (removeIndex >= 0) {
+                            _this.options.dictFiles.remove("img-" + removeIndex);
+                        }
+                        $("#BankcardImgPath").css("display", "none");
+                        $("#BankcardImgPath").attr("src", "");
+                        var _ref;
+                        if ((_ref = file.previewElement) != null) {
+                            _ref.parentNode.removeChild(file.previewElement);
+                        }
+                    }
+                    _this.files = [];
+                    return this._updateMaxFilesReachedClass();
+                }
+            });
+            $("#IdCardDiv").dropzone({
+                url: "/Upload/Multiple",
+                acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+                paramName: "file",
+                maxFilesize:0.5,
+                maxFiles: 1,
+                autoProcessQueue: true, //开启自动上传（默认为true）
+                init: function () {
+                    this.on("sending", function (file, xhr, formData) {
+                        formData.append("ExtType", "Image");
+                        formData.append("SaveDir", "IdCardImg");
+                    });
+                    this.on("addedfile", function (file) {
+                        var dropzone = this;
+                        file.previewElement.addEventListener("click", function () {
+                            dropzone.removeFile(file);
+                        });
+                    });
+                    //当上传完成后的事件，接受的数据为JSON格式
+                    this.on("success", function (file, data) {
+                        var dropzone = this;
+                        var arrFiles = data.files;
+                        var uploadPath = arrFiles[0];
+                        var choice = $("#choiceImg").val();
+
+                        var delimg = $("<div class='img-remove'></div>").click(function () {
+                            dropzone.emit("removedfile", file, choice, $(this));
+                        });
+                        $("#IdCardImgPath").css("display", "");
+                        $("#IdCardImgPath").attr("src", uploadPath);
+
+                    });
+                    this.on("complete", function (data) {
+                        if (data.status == "error") {
+                            var errorInfo = $(data.previewElement).find("span[data-dz-errormessage]").text();
+                            $.whiskey.web.alert({
+                                type: "info",
+                                content: errorInfo
+                            });
+                        }
+                    });
+                },
+                removedfile: function (file, choice, obj) {
+                    _this = this;
+                    if (confirm("确认要删除吗？")) {
+                        var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                        if (removeIndex >= 0) {
+                            _this.options.dictFiles.remove("img-" + removeIndex);
+                        }
+                        $("#IdCardImgPath").css("display", "none");
+                        $("#IdCardImgPath").attr("src", "");
+                        var _ref;
+                        if ((_ref = file.previewElement) != null) {
+                            _ref.parentNode.removeChild(file.previewElement);
+                        }
+                    }
+                    _this.files = [];
+                    return this._updateMaxFilesReachedClass();
+                }
+            });
+            $("#HealthCertificateDiv").dropzone({
+                url: "/Upload/Multiple",
+                acceptedFiles: "image/*",
+                paramName: "file",
+                maxFilesize:0.5,
+                maxFiles: 1,
+                autoProcessQueue: true, //开启自动上传（默认为true）
+                init: function () {
+                    this.on("sending", function (file, xhr, formData) {
+                        formData.append("ExtType", "Image");
+                        formData.append("SaveDir", "HealthCertificateImg");
+                    });
+                    this.on("addedfile", function (file) {
+                        var dropzone = this;
+                        file.previewElement.addEventListener("click", function () {
+                            dropzone.removeFile(file);
+                        });
+                    });
+                    //当上传完成后的事件，接受的数据为JSON格式
+                    this.on("success", function (file, data) {
+                        var dropzone = this;
+                        var arrFiles = data.files;
+                        var uploadPath = arrFiles[0];
+                        var choice = $("#choiceImg").val();
+
+                        var delimg = $("<div class='img-remove'></div>").click(function () {
+                            dropzone.emit("removedfile", file, choice, $(this));
+                        });
+                        $("#HealthCertificateImgPath").css("display", "");
+                        $("#HealthCertificateImgPath").attr("src", uploadPath);
+
+                    });
+                    this.on("complete", function (data) {
+                        if (data.status == "error") {
+                            var errorInfo = $(data.previewElement).find("span[data-dz-errormessage]").text();
+                            $.whiskey.web.alert({
+                                type: "info",
+                                content: errorInfo
+                            });
+                        }
+                    });
+                },
+                removedfile: function (file, choice, obj) {
+                    _this = this;
+                    if (confirm("确认要删除吗？")) {
+                        var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                        if (removeIndex >= 0) {
+                            _this.options.dictFiles.remove("img-" + removeIndex);
+                        }
+                        $("#HealthCertificateImgPath").css("display", "none");
+                        $("#HealthCertificateImgPath").attr("src", "");
+                        var _ref;
+                        if ((_ref = file.previewElement) != null) {
+                            _ref.parentNode.removeChild(file.previewElement);
+                        }
+                    }
+                    _this.files = [];
+                    return this._updateMaxFilesReachedClass();
+                }
+            });
+            $("#PhotoDiv").dropzone({
+                url: "/Upload/Multiple",
+                acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+                paramName: "file",
+                maxFilesize:0.5,
+                maxFiles: 1,
+                autoProcessQueue: true, //开启自动上传（默认为true）
+                init: function () {
+                    this.on("sending", function (file, xhr, formData) {
+                        formData.append("ExtType", "Image");
+                        formData.append("SaveDir", "PhotoImg");
+                    });
+                    this.on("addedfile", function (file) {
+                        var dropzone = this;
+                        file.previewElement.addEventListener("click", function () {
+                            dropzone.removeFile(file);
+                        });
+                    });
+                    //当上传完成后的事件，接受的数据为JSON格式
+                    this.on("success", function (file, data) {
+                        var dropzone = this;
+                        var arrFiles = data.files;
+                        var uploadPath = arrFiles[0];
+                        var choice = $("#choiceImg").val();
+
+                        var delimg = $("<div class='img-remove'></div>").click(function () {
+                            dropzone.emit("removedfile", file, choice, $(this));
+                        });
+                        $("#PhotoImgPath").css("display", "");
+                        $("#PhotoImgPath").attr("src", uploadPath);
+
+                    });
+                    this.on("complete", function (data) {
+                        if (data.status == "error") {
+                            var errorInfo = $(data.previewElement).find("span[data-dz-errormessage]").text();
+                            $.whiskey.web.alert({
+                                type: "info",
+                                content: errorInfo
+                            });
+                        }
+                    });
+                },
+                removedfile: function (file, choice, obj) {
+                    _this = this;
+                    if (confirm("确认要删除吗？")) {
+                        var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                        if (removeIndex >= 0) {
+                            _this.options.dictFiles.remove("img-" + removeIndex);
+                        }
+                        $("#PhotoImgPath").css("display", "none");
+                        $("#PhotoImgPath").attr("src", "");
+                        var _ref;
+                        if ((_ref = file.previewElement) != null) {
+                            _ref.parentNode.removeChild(file.previewElement);
+                        }
+                    }
+                    _this.files = [];
+                    return this._updateMaxFilesReachedClass();
+                }
+            });
+            $("#RegistFormDiv").dropzone({
+                url: "/Upload/Multiple",
+                acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+                paramName: "file",
+                maxFilesize:0.5,
+                maxFiles: 1,
+                autoProcessQueue: true, //开启自动上传（默认为true）
+                init: function () {
+                    this.on("sending", function (file, xhr, formData) {
+                        formData.append("ExtType", "Image");
+                        formData.append("SaveDir", "RegistFormImg");
+                    });
+                    this.on("addedfile", function (file) {
+                        var dropzone = this;
+                        file.previewElement.addEventListener("click", function () {
+                            dropzone.removeFile(file);
+                        });
+                    });
+                    //当上传完成后的事件，接受的数据为JSON格式
+                    this.on("success", function (file, data) {
+                        var dropzone = this;
+                        var arrFiles = data.files;
+                        var uploadPath = arrFiles[0];
+                        var choice = $("#choiceImg").val();
+
+                        var delimg = $("<div class='img-remove'></div>").click(function () {
+                            dropzone.emit("removedfile", file, choice, $(this));
+                        });
+                        $("#RegistFormPath").css("display", "");
+                        $("#RegistFormPath").attr("src", uploadPath);
+
+                    });
+                    this.on("complete", function (data) {
+                        if (data.status == "error") {
+                            var errorInfo = $(data.previewElement).find("span[data-dz-errormessage]").text();
+                            $.whiskey.web.alert({
+                                type: "info",
+                                content: errorInfo
+                            });
+                        }
+                    });
+                },
+                removedfile: function (file, choice, obj) {
+                    _this = this;
+                    if (confirm("确认要删除吗？")) {
+                        var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                        if (removeIndex >= 0) {
+                            _this.options.dictFiles.remove("img-" + removeIndex);
+                        }
+                        $("#PhotoImgPath").css("display", "none");
+                        $("#PhotoImgPath").attr("src", "");
+                        var _ref;
+                        if ((_ref = file.previewElement) != null) {
+                            _ref.parentNode.removeChild(file.previewElement);
+                        }
+                    }
+                    _this.files = [];
+                    return this._updateMaxFilesReachedClass();
+                }
+            });
+
+
+        });
+        function dataValiPost() {
+            var errcou = 0;
+            var da = [];
+            var MemberId = $(".modal-dialog #MemberId ").val();
+            var name = $(".modal-dialog #RealName ").val();
+            if (name.trim().length == 0) {
+
+                $(".modal-dialog #RealName ").css({ "border": "2px solid  #e5603b" }).attr("title", "请选择会员");
+                errcou += 1;
+            }
+            else {
+                $(".modal-dialog #RealName").css({ "border": "" });
+                da.push({ "MemberId": MemberId });
+            }
+
+
+            var MacAddress = $(".modal-dialog #MacAddress").val();
+            if (MacAddress.trim().length == 0) {
+                $(".modal-dialog #MacAddress ").css({ "border": "2px solid  #e5603b" }).attr("title", "请输入Mac地址");
+                errcou += 1;
+            }
+            else {
+                $(".modal-dialog #MacAddress").css({ "border": "" });
+                da.push({ "MacAddress": MacAddress });
+            }
+            var InterviewEvaluation = $(".modal-dialog #InterviewEvaluation").val();
+            if (InterviewEvaluation.trim().length == 0) {
+                $(".modal-dialog #InterviewEvaluation ").css({ "border": "2px solid  #e5603b" }).attr("title", "请填写面试评价");
+                errcou += 1;
+            }
+            else {
+                $(".modal-dialog #InterviewEvaluation").css({ "border": "" });
+                da.push({ "InterviewEvaluation": InterviewEvaluation });
+            }
+
+            var BankcardImgPath = $(".modal-dialog #BankcardImgPath").attr("src");
+            da.push({ "BankcardImgPath": BankcardImgPath });
+
+
+            var IdCardImgPath = $(".modal-dialog #IdCardImgPath").attr("src");
+            da.push({ "IdCardImgPath": IdCardImgPath });
+
+            var HealthCertificateImgPath = $(".modal-dialog #HealthCertificateImgPath").attr("src");
+            da.push({ "HealthCertificateImgPath": HealthCertificateImgPath });
+
+            var PhotoImgPath = $(".modal-dialog #PhotoImgPath").attr("src");
+            da.push({ "PhotoImgPath": PhotoImgPath });
+
+            var RegistFormPath = $(".modal-dialog #RegistFormPath").attr("src");
+            da.push({ "RegistFormPath": RegistFormPath });
+            if (errcou == 0) {
+                return { error: 0, data: da };
+            }
+            else {
+
+                return { error: 1 }
+            }
+        }
+    </script>

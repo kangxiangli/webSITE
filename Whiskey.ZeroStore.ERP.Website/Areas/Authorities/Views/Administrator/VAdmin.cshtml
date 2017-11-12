@@ -1,0 +1,296 @@
+﻿<style>
+    .VAdmin .modal-dialog {
+        width: 60% !important;
+        max-width: 95% !important;
+    }
+
+    #hoverStyle_8 span:hover {
+        width: 62px;
+        border-radius: 0%;
+        background: black !important;
+    }
+
+    #hoverStyle_8 {
+        width: 62px;
+        border-radius: 0% !important;
+    }
+
+        #hoverStyle_8 > i {
+            display: block;
+            width: 0px;
+            height: 0px;
+        }
+
+        #hoverStyle_8 span {
+            width: 62px;
+            display: inline-block;
+            height: 28px;
+            line-height: 25px;
+        }
+
+        #hoverStyle_8.btn-default {
+            background: #666;
+        }
+
+        #hoverStyle_8.btn-success {
+            background: #5ebd5e;
+        }
+
+</style>
+<div id="v_member_div">
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search text-left">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">昵称</label>
+                            <div class="col-md-9">
+                                @Html.TextBox("Member.MemberName", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">姓名</label>
+                            <div class="col-md-9">
+                                @Html.TextBox("Member.RealName", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">手机号码</label>
+                            <div class="col-md-9 ">
+                                @Html.TextBox("Member.MobilePhone", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">部门</label>
+                            <div class="col-md-9 ">
+                                @Html.TextBox("Department.DepartmentName", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">职位</label>
+                            <div class="col-md-9 ">
+                                @Html.TextBox("JobPosition.JobPositionName", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+                <div class="pull-left">
+                    <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>清除</span></button>
+                </div>
+                <div class="pull-right">
+                    <button id="SelectAll" type="button" class="btn btn-success btn-padding-right"><i class=""></i> <span>选择筛选</span></button>
+                    <button id="SelectPage" type="button" class="btn btn-success btn-padding-right"><i class=""></i> <span>选择本页</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%" id="dt_member">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#v_member_div .input-daterange").datepicker();
+
+        var _dt_member = $("#v_member_div #dt_member").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "AdminList",
+            "fnServerParams": function (aoData) {
+                aoData.push($.whiskey.web.formData("#v_member_div .form-search", "#v_member_div .panel-list").get());
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+            //{
+            //    "sTitle": "头像",
+            //    "bSortable": false,
+            //    "sName": "UserPhoto",
+            //    "mData": function (data) {
+            //        return '<div><img src="' + data.UserPhoto + '" style="margin:2px;max-width:40px;" class="img-circle" /></div>'
+            //    },
+            //},
+            {
+                "sTitle": "昵称",
+                "bSortable": false,
+                "sName": "MemberName",
+                "mData": function (data) {
+                    return data.MemberName;
+                },
+            },
+            {
+                "sTitle": "姓名",
+                "bSortable": false,
+                "sName": "RealName",
+                "mData": function (data) {
+                    return data.RealName;
+                },
+            },
+            {
+                "sTitle": "手机号",
+                "bSortable": false,
+                "sName": "MobilePhone",
+                "mData": function (data) {
+                    return data.MobilePhone;
+                },
+            },
+            {
+                "sTitle": "性别",
+                "bSortable": true,
+                "sName": "Member.Gender",
+                "mData": function (data) {
+                    return data.Gender;
+                },
+            },
+            {
+                "sTitle": "部门",
+                "bSortable": false,
+                "sName": "DepartmentName",
+                "mData": function (data) {
+                    return data.DepartmentName;
+                },
+            },
+            {
+                "sTitle": "职位",
+                "bSortable": true,
+                "sName": "JobPosition.JobPositionName",
+                "mData": function (data) {
+                    return data.JobPositionName;
+                },
+            },
+            {
+                "sTitle": "创建时间",
+                "bSortable": false,
+                "sName": "CreatedTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.CreatedTime);
+                },
+            },
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    var txt = "选择";
+                    var color = "default";
+                    if ($(".adminbatchconfig #AdminIds").find("option[value=" + data.Id + "]").length > 0) {
+                        color = "success ";
+                        txt = "已选择";
+                    }
+                    return '<button id="hoverStyle_8" type="button" onclick="choose(this,1)" class="btn btn-' + color + ' btn_select" data-name="' + data.RealName + '"  data-Id="' + data.Id + '"><span>' + txt + '</span></button>';
+                },
+            },
+            ]
+        });
+
+        $("#v_member_div #Search").on("click", function () {
+            $.whiskey.datatable.reset(false, _dt_member);
+        });
+
+        $("#v_member_div #Clear").on("click", function () {
+            $.whiskey.web.clearForm("#v_member_div .form-search");
+        });
+
+        $("#v_member_div #SelectPage").on("click", function () {
+            $("#v_member_div #dt_member .btn_select:not(.btn-success)").click();
+        });
+
+        $("#v_member_div #SelectAll").on("click", function () {
+            chooseAdmin_selectAll();
+        });
+
+    });
+
+    function choose(my,type) {
+        var $sel = $(".adminbatchconfig #AdminIds");
+        var name = $(my).attr("data-name");
+        var columnValue = $(my).attr("data-Id");
+        if ($sel.find("option[value='" + columnValue + "']").length > 0) {
+            $sel.find("option[value='" + columnValue + "']").remove();
+            $(my).text("选择").removeClass("btn-success").addClass("btn-default");
+        } else {
+            $(my).text("已选择").removeClass("btn-default").addClass("btn-success");
+            var option = '<option value="' + columnValue + '" selected="selected">' + name + '</option>';
+            $sel.append(option);
+        }
+        $sel.selectpicker('refresh');
+    }
+    function chooseAdmin_selectAll() {
+        $.whiskey.web.ajaxRequest({
+            actionUrl: "GetAdminSelectList",
+            method: "post",
+            params: { conditions: $.whiskey.web.formData("#v_member_div .form-search", "#v_member_div .panel-list").getJSON() },
+            lockButton: $(this),
+            complete: function (da) {
+                if (da && da.length > 0) {
+                    var $sel = $(".adminbatchconfig #AdminIds");
+                    var hasids = $sel.val();
+                    $(da).each(function (ind, item) {
+                        if ($.inArray(item.Id + "", hasids) == -1) {
+                            $sel.append("<option value='" + item.Id + "'>" + item.RealName + "</option>");
+                        }
+                    });
+                    $sel.selectpicker('refresh').selectpicker("selectAll");
+                    $("#v_member_div #dt_member .btn_select").text("已选择").removeClass("btn-default").addClass("btn-success");
+                }
+            }
+        });
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

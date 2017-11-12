@@ -1,0 +1,465 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Warehouse
+@using Whiskey.ZeroStore.ERP.Models
+<style>
+	#Clear {
+    background: #888 !important;
+}
+</style>
+<div class="row">
+    <div class="panel panel-search">
+        <input type="hidden" id="hid_checkitem_num" value="@ViewBag.CheckItemId" />
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">盘点编号</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("CheckGuid",  "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">盘点店铺</label>
+                        <div class="col-md-8">
+                            <select id="StoreId" name="StoreId" class="form-control"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">所属仓库</label>
+                        <div class="col-md-8">
+                            @Html.DropDownList("StorageId", (List<SelectListItem>)ViewBag.Storages, new { @class = "form-control selectpicker" })
+                            @*@Html.TextBox("StorageId","", new { @class = "form-control"})*@
+                        </div>
+                    </div>
+                </div>                 
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">创建日期</label>
+                        <div class="col-md-8">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", (string)ViewBag.StartDate, new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", (string)ViewBag.EndDate, new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div style="display:none" class="col-md-8 text-right">
+                <span><input class="enabler" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                <span style="margin-left:20px;"><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+    <script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+    <script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#StoreId").queryManageStore({selected:'@ViewBag.Stores'});
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("List")",
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var checkiteId = $("#hid_checkitem_num").val();
+                    //过滤条件，只有校验过的数据才显示
+                    conditions.Rules.push(new $.whiskey.filter.rule("CheckerState", "@((int)CheckerFlag.Proofreader)", "equal"));
+                    if (checkiteId != undefined && checkiteId != null && checkiteId != "" && checkiteId != -1) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("Id", checkiteId, "equal"));
+                    }
+                    else {
+                        var startDate = $(".start-date").val();
+                        var endDate = $(".end-date").val();
+                        if (startDate.length > 0 && endDate.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                            conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                        }
+                        var checknum = $("#CheckNum").val();
+
+                        conditions.Rules.push(new $.whiskey.filter.rule("CheckGuid", checknum, "equal"));
+
+
+                        $(".form-search select[name!='StartDate'][name!='EndDate']").each(function () {
+                            var field = $(this).attr("name");
+                            var value = $(this).val();
+                            if (value != null && value.length > 0) {
+                                conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                            }
+                        });
+                        $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                            var field = $(this).attr("name");
+                            var value = $(this).val();
+                            if (value != null && value.length > 0) {
+                                conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                            }
+                        });
+                    }
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    if (nRow != null) {
+                        var isEnabled = aData.IsEnabled;
+                        if (isEnabled == false) {
+                            $(nRow).css({ "color": " #5ebd5e" });
+                        }
+                        //$("td:eq(0)", nRow).addClass("text-right");
+                        $("td:eq(1)", nRow).addClass("text-left").css({ "width": "8%" });
+                        //$("td:last", nRow).addClass("text-middle").css({ "width": "10%" });
+                        $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                        var cheTxt = $("td:eq(0)", nRow).find(":checkbox").val();
+                        var reg = /^\d+$/g;
+                        if (reg.test(cheTxt)) {
+                            $(nRow).css({ "color": " #5ebd5e", "font-size": "small" });
+                        }
+                        $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+                        return nRow;
+                    }
+                },
+                "fnDrawCallback": function () {
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table-list tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+                    });
+
+                    $(".table-list").treegrid({
+                        saveState: true,
+                        treeColumn: 1,
+                        expanderExpandedClass: 'treegrid-expander-expanded',
+                        expanderCollapsedClass: 'treegrid-expander-collapsed'
+                    });
+
+                },
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Num);
+                    }
+                },
+                {
+                    "sTitle": "序号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        var index = data.iDisplayIndex + 1;
+                        return '' + index + '';
+                    }
+                },
+                {
+                    "sTitle": "盘点编号",
+                    "bSortable": false,
+                    "sName": "CheckGuid",
+                    "mData": function (data) {
+                        return data.CheckGuid;
+                    },
+                },
+
+                {
+                    "sTitle": "盘点标题",
+                    "bSortable": false,
+                    "sName": "CheckerName",
+                    "mData": function (data) {
+                        return data.CheckerName;
+                    },
+                },
+                {
+                    "sTitle": "所属店铺",
+                    "bSortable": false,
+                    "sName": "StorageName",
+                    "mData": function (data) {
+                        return data.StoreName;
+                    },
+                },
+                {
+                    "sTitle": "所属仓库",
+                    "bSortable": false,
+                    "sName": "StorageName",
+                    "mData": function (data) {
+                        return data.StorageName;
+                    },
+                },
+                 {
+                     "sTitle": "校对时间",
+                     "bSortable": false,
+                     "sName": "CheckCount",
+                     "mData": function (data) {
+                         return $.whiskey.tools.dateFormat(data.CreatedTime, "yyyy-MM-dd HH:mm:ss");
+                     },
+                 },
+                  {
+                      "sTitle": "操作人",
+                      "bSortable": false,
+                      "sName": "AdminName",
+                      "mData": function (data) {
+                          return data.MemberName;
+                      },
+                  },
+                  {
+                      "sTitle": "盘点前数量",
+                      "bSortable": false,
+                      "sName": "BeforeCheckQuantity",
+                      "mData": function (data) {
+                          return data.BeforeCheckQuantity;
+                      },
+                  },
+                  {
+                      "sTitle": "校对后数量",
+                      "bSortable": false,
+                      "sName": "AfterCheckQuantity",
+                      "mData": function (data) {
+                          return data.AfterCheckQuantity;
+                      },
+                  },
+
+                  // {
+                  //     "sTitle": "校对类型",
+                  //     "bSortable": false,
+                  //     "sName": "CheckedCount",
+                  //     "mData": function (data) {
+                  //         if (data.CheckType == "1") {
+                  //             return "缺货移除";
+                  //         }
+                  //         if (data.CheckType == "2") {
+                  //             return "余货录入";
+                  //         }
+                  //         else return "";
+                  //     },
+                  //},                
+                ]
+
+            });
+            var hid_id = $("#hid_checkitem_num").val();
+            if (hid_id != undefined && hid_id != null && hid_id != "" && hid_id != -1) {
+                //
+                $("#CheckNum").attr("disabled", "disabled").css("background-color", "#dddddd");
+                $("#StoreId").attr("disabled", "disabled").css("background-color", "#dddddd");
+                $("#StorageId").attr("disabled", "disabled").css("background-color", "#dddddd");
+                $("#CheckerName").attr("disabled", "disabled").css("background-color", "#dddddd");
+                $("#StartDate").attr("disabled", "disabled").css("background-color", "#dddddd");
+                $("#EndDate").attr("disabled", "disabled").css("background-color", "#dddddd");
+
+            }
+            $(document).delegate(".chestat-but", "click", function () {
+                var cl = $(this).attr("class");
+                if (cl.indexOf("fa-life-ring") > -1) {
+                    $(this).removeClass("fa-life-ring").addClass("fa-clipboard").css("color", "green").attr("title", "完成");
+                    $(this).parents("tr").children("td:last").html("<button class='btn checkup-but'>校对</button><button class='btn updateInfo-but'>修改</button>");
+                }
+                if (cl.indexOf("fa-clipboard") > -1) {
+                    $(this).removeClass("fa-clipboard").addClass("fa-life-ring").css("color", " #5ebd5e").attr("title", "中断");
+                    $(this).parents("tr").children("td:last").html("<button class='btn contin-but'>继续</button><button class='btn updateInfo-but'>修改</button>");
+                }
+            }).delegate(".contin-but", "click", function () {
+                var _id = $(this).parents("tr:first").children("td:first").find(":checkbox").val();
+                	$.whiskey.web.load({url: "/Warehouses/Checked/ContinuChecker?num=" + _id});
+               // location.href = "/Warehouses/Checked/ContinuChecker?num=" + _id;
+                // $.get("/Warehouses/Checked/ContinuChecker", { num: _id });
+
+            }).delegate(".checkup-but", "click", function () {
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "校对数据",
+                    actionUrl: "/Warehouses/Checkup/Checkup/",
+                    lockButton: $(this),
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+            }).delegate(".updateInfo-but", "click", function () {
+                var _num = $(this).parents("tr").children("td:first").find(":checkbox").val();
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "修改数据",
+                    actionUrl: "@Url.Action("Update")",
+                    lockButton: $(this),
+                    getParams: { num: _num },
+
+                    postComplete: function (da) {
+                        if (da.ResultType == 3) {
+                            $.whiskey.web.alert({
+                                type: "success",
+                                content: "修改成功!"
+                            });
+                        }
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+            })
+            $("#Create").on("click", function () {
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "创建数据",
+                    actionUrl: "@Url.Action("Create")",
+                    lockButton: $(this),
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+            });
+
+            $("#Print").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var printer = $.whiskey.printer.ajaxPreview({
+                        actionUrl: "@Url.Action("Print")",
+                        lockButton: $(this),
+                        topMargin: "2%",
+                        leftMargin: "4%",
+                        contentWidth: "93.5%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#Export").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var printer = $.whiskey.exporter.ajaxExport({
+                        actionUrl: "@Url.Action("Export")",
+                        lockButton: $(this),
+                        fileName: "新导出文件",
+                        topMargin: 10,
+                        leftMargin: 10,
+                        contentWidth: "98%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+
+
+        });
+
+    </script>
+    <!--yxk 2015-9-->
+    <script>
+        $(function () {
+            $("#StoreId").change(function () {
+                var _store = $("#StoreId option:selected").val();
+                if (_store == null || _store == "")
+                    _store = -1;
+                $.post("/Storage/GetStorage", { storeId: _store, title: "选择盘点仓库" }, function (da) {
+
+                    $("#StorageId").html("");
+                    $("#StorageId").append(getOptions(da, "该店铺下没有关联的仓库"));
+                })
+            });
+
+
+            $("body").delegate(".create-storeid", "change", function () {
+                var txt = $(this).val();
+                $.post("/Storage/GetStorage", { storeId: txt, title: "" }, function (da) {
+                    $(".create-storageid").html("");
+                    $(".create-storageid").append(getOptions(da, "没有可显示的仓库"));
+                })
+            })
+
+        })
+
+        function getOptions(da, emptyMess) {
+            var te = "";
+            if (da != null & da != "") {
+                $.each(da, function (i, v) {
+                    te += "<option value='" + da[i].Value + "'>" + da[i].Text + "</option>";
+                }
+               )
+            }
+            else {
+                if (emptyMess != "")
+                    te += "<option>" + emptyMess + "</option>";
+            }
+            return te;
+        }
+
+    </script>
+
+}
+

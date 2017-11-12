@@ -1,0 +1,52 @@
+﻿<style>
+    .div_inventoryinfo .img_box {
+        width: 80px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+        .div_inventoryinfo .img_box p {
+            margin: 1px;
+        }
+
+        .div_inventoryinfo .img_box img {
+            width: 60%;
+        }
+</style>
+<div class="div_inventoryinfo form-group">
+</div>
+
+<!--Clone开始-->
+<div id="div_clone_wrapper" style="display:none;">
+    <div class="col-md-2">
+        <div class="img_box">
+            <img src="" title='' alt="" class="img_color">
+            <p class="size">XXL</p>
+            <p class="invcount">0</p>
+        </div>
+    </div>
+</div>
+<!--Clone结束-->
+
+<script>
+    $(function () {
+        $.whiskey.web.ajaxRequest({
+            hideLoading: true,
+            actionUrl: "GetInventoryInfo",
+            params: { BigProdNum: "@Request["BigProdNum"]" },
+            complete: function (da) {
+                var $wrapper = $(".div_inventoryinfo");
+                var $div = $("#div_clone_wrapper>div:first");
+                $.each(da, function (ind, item) {
+                    $clone = $div.clone();
+                    var $box = $clone.find(".img_box");
+                    $box.find("img.img_color").attr({ alt: item.ColorName + item.SizeName, title: item.ColorName + item.SizeName, src: item.IconPath });
+                    $box.find(".size").text(item.SizeName);
+                    $box.find(".invcount").text(item.InvCount);
+
+                    $wrapper.append($clone);
+                });
+            }
+        });
+    });
+</script>

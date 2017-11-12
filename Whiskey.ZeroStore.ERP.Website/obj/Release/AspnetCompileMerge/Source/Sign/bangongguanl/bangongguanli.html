@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta id="viewport" name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <title>办公管理</title>
+    <script>
+        (function (w) {
+            s();
+            var e = ("onorientationchange" in w) ? "orientationchange" : "resize";
+            w.addEventListener(e, function () {
+                setTimeout(function () {
+                    s()
+                }, 200)
+            }, false);
+            function s() {
+                var a = w.innerWidth;
+                var b = 20 * (a / 320);
+                if (b > 40) {
+                    b = 40;
+                }
+                document.querySelector("html").style.fontSize = b + "px";
+            }
+        })(window);
+    </script>
+    <link href="../css/public.css" rel="stylesheet" />
+    <link href="css/bangongguanli.css" rel="stylesheet" />
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <!-- 头标题 -->
+    <div class="til_bak bangonggl">
+        <p class="back_tx back_ig"><img src="../img/nav_fh@2x.png" alt="png" /><span>返回</span></p>
+        办公管理
+    </div>
+    <!-- 六大模块 -->
+    <div class="sixBox">
+        <div>
+            <a href="gongzuorz.html">
+                <img src="imgAll/1gz@2x.png" alt="Alternate Text" />
+                <p>工作日志</p>
+            </a>
+        </div>
+        <div>
+            <a href="lizhi.html">
+                <img src="imgAll/2sh@2x.png" alt="Alternate Text" />
+                <p>申请离职</p>
+            </a>
+        </div>
+        <div class="topBot">
+            <a>
+                <img src="imgAll/3jk@2x.png" alt="Alternate Text" />
+                <p>审核管理</p>
+            </a>
+        </div>
+        <div class="topBot">
+            <a href="xinxijl.html">
+                <img src="imgAll/4lz@2x.png" alt="Alternate Text" />
+                <p>信息记录</p>
+            </a>
+        </div>
+        <div>
+            <a>
+                <img src="imgAll/5xx@2x.png" alt="Alternate Text" />
+                <p>监控视频</p>
+            </a>
+        </div>
+        <div>
+            <a href="fabutongz.html">
+                <img src="imgAll/6fb@2x.png" alt="Alternate Text" />
+                <p>发布通知</p>
+            </a>
+        </div>
+    </div>
+
+   
+    <script src="../js/global.js" type="text/javascript"></script>
+     <script src="../js/fastclick.js" type="text/javascript"></script>
+    <script src="js/bangonggl.js" type="text/javascript"></script>
+
+    <script>
+        $(function () {
+            FastClick.attach(document.body);
+        });
+    </script>
+</body>
+</html>

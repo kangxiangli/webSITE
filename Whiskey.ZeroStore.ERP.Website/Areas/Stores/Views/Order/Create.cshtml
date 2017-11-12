@@ -1,0 +1,239 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model OrderDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.StoreId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.StoreId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.MemberId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.MemberId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ExpressId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ExpressId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PaymentId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PaymentId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.OrderGuid) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.OrderGuid, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.OrderNumber) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.OrderNumber, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.OrderStatus) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.OrderStatus, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.DeliverType) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.DeliverType, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ExpressFee) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ExpressFee, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ExpressCompany) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ExpressCompany, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ExpressNumber) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ExpressNumber, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Receiver) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Receiver, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.CityName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.CityName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ProvinceName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ProvinceName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.HomeAddress) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.HomeAddress, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Telephone) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Telephone, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.MobilePhone) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.MobilePhone, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ZipCode) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ZipCode, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PaymentType) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PaymentType, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PaymentCompany) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PaymentCompany, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PaymentAccount) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PaymentAccount, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PaymentTradeNumber) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PaymentTradeNumber, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Cash) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Cash, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Card) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Card, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Score) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Score, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Balance) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Balance, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Coupon) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Coupon, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Change) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Change, new { @class = "form-control" })
+    </div>
+</div>

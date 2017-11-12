@@ -1,0 +1,248 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model StoreDto
+<style>
+        .modal-content{
+            width: 792px;
+        }
+</style>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.DepartmentId) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(x => x.DepartmentName, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+    <button title="选择部门" type="button" class="btn btn-success btn-padding-right" id="choiceDepart"><span>选择</span></button>
+    @*<div class="control-detail col-md-7">
+            @Html.ValidationMessageFor(m => m.DepartmentName)
+        </div>*@
+    @Html.HiddenFor(x => x.DepartmentId)
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StoreName) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.StoreName, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.StoreName)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsAttached) :
+    </label>
+    <div class="col-md-1">
+        @Html.CheckBoxFor(x => x.IsAttached, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StoreType) :
+    </label>
+    <div class="col-md-7" id="hid_storetype">
+        <input type="hidden" value="@Model.StoreType" />
+        <select name="StoreType" class="form-control selectpicker">
+            <option value="0">直营店</option>
+            <option value="1">加盟店</option>
+            <option value="2">股份制店</option>
+            <option value="3">虚拟店</option>
+        </select>
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.StoreType)
+    </div>
+</div>
+@*<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StoreMallType) :
+    </label>
+    <div class="col-md-7">
+        @Html.EnumDropDownListFor(m => m.StoreMallType, new { @class = "form-control" })
+    </div>
+</div>*@
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsMainStore) :
+    </label>
+    <div class="col-md-7" id="hid_ismainstore">
+        <input type="hidden" value="@Model.IsMainStore.ToString().ToLower()" />
+        <select name="IsMainStore" class="form-control selectpicker">
+            <option value="true">是</option>
+            <option value="false">否</option>
+        </select>
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.IsMainStore)
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StoreCredit) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.StoreCredit, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.StoreCredit)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Balance) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.Balance, new { @class = "form-control", @disabled= "disabled" })
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.Balance)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.ContactPerson) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.ContactPerson, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.ContactPerson)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.MobilePhone) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.MobilePhone, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.MobilePhone)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Telephone) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.Telephone, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.Telephone)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Province) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.Province, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.Province)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.City) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.City, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.City)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.ZipCode) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.ZipCode, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.ZipCode)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Description) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+       
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.Description)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Address) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.Address)
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-7">
+        @Html.ValidationMessageFor(m => m.Notes)
+    </div>
+</div>
+@Html.HiddenFor(m => m.Id)
+<script>
+    $(function() {
+        initData();
+        $("#choiceDepart").on("click", function () {
+            choiceDepart();
+        })
+    });
+
+    function initData() {
+        var ismain = $("#hid_ismainstore input:hidden").val();
+        if (ismain == "false") {
+            $("#hid_ismainstore select option[value='false']").attr("selected", "selected");
+        }
+
+        var storetype = $("#hid_storetype input:hidden").val();
+        $("#hid_storetype select option[value='" + storetype + "']").attr("selected", "selected");
+    }
+
+    //选择部门
+    function choiceDepart() {
+        $.ajax({
+            url: "@Url.Action("Department")",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "chooseIndex",
+                    title: "部门列表",
+                    buttons: {                        
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".chooseIndex").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>

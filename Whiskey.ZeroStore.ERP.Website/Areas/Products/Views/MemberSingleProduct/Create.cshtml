@@ -1,0 +1,453 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model MemberSingleProductDto
+@using Whiskey.Utility.Data
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+<link rel="stylesheet" href="/content/editor/themes/default/default.css" />
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<style>
+    .li_empt {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+</style>
+
+ 
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #5ebd5e"></span>
+</div>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">添加单品</a>
+    </li>
+    <li class="">
+        <a href="#addCoverImage" data-toggle="tab">上传封面</a>
+    </li>
+    <li class ="">
+        <a href="#addImage" data-toggle="tab">上传图片</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.ProductName):
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.ProductName, new { @class = "form-control" })
+            </div>
+        </div>   
+        <div class="form-group">
+            <label class="control-label col-md-2">
+               @Html.DisplayNameFor(m => m.Price):
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.ColorId) :
+            </label>
+            <div class="col-md-10 divName">
+                @Html.TextBoxFor(m => m.ColorId, new { @class = "form-control" })
+            </div>
+        </div>
+         
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.SeasonId) :
+            </label>
+            <div class="col-md-10 divMemberPass">
+                @Html.TextBoxFor(m => m.SeasonId, new { @class = "form-control" })
+            </div>
+        </div>
+         
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.SizeId) :
+            </label>
+            <div class="col-md-10 divMemberPass">
+                @Html.TextBoxFor(m => m.SizeId, new { @class = "form-control" })
+            </div>
+        </div>
+         
+         
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Brand) :
+            </label>
+            <div class="col-md-10 divMemberPass">
+                @Html.TextBoxFor(m => m.Brand, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Notes, new { @class = "form-control", @rel = "tooltip", @title = "", @onfocus = "removeTitle(this)" })
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade clearfix" id="addCoverImage">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                照片预览:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="/Content/Images/logo-_03.png" alt="会员照片" id="CoverImage" />
+                    </a>
+                </div>
+                <input type="hidden" name="CoverImage" id="hidCoverImage" />
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    上传:
+                </label>
+                <div class="col-md-10">
+                    <div class="dropzone-box uploadCoverImage">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传会员照片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file" multiple="multiple" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="addImage" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                照片预览:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="/Content/Images/logo-_03.png" alt="会员照片" id="Image" />
+                    </a>
+                </div>
+                <input type="hidden" name="Image" id="hidImage" />
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    上传:
+                </label>
+                <div class="col-md-10">
+                    <div class="dropzone-box uploadImage">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传会员照片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file" multiple="multiple" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        //初始化上传封面图片控件
+        var myDropzone = new Dropzone(".uploadCoverImage", {
+            url: "/Products/MemberCollocation/UploadImage",
+            acceptedFiles: "image/jpg,image/jpeg,image/png",
+            uploadMultiple: true,
+            parallelUploads: 1,
+            maxFilesize: 0.5,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (data.ResultType == 3) {
+                        $(".bootbox #CoverImage").attr("src", data.Path)
+                        $(".bootbox #hidCoverImage").attr("value", data.Path);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+
+                });
+            }
+        });
+        //初始化上传图片控件
+        var myDropzone = new Dropzone(".uploadImage", {
+            url: "/Products/MemberCollocation/UploadImage",
+            acceptedFiles: "image/jpg,image/jpeg,image/png",
+            uploadMultiple: true,
+            parallelUploads: 1,
+            maxFilesize: 0.5,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (data.ResultType == 3) {
+                        $(".bootbox #Image").attr("src", data.Path)
+                        $(".bootbox #hidImage").attr("value", data.Path);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+
+                });
+            }
+        });
+
+        //添加单品
+        $(".modal-footer .btn-primary").click(function () {
+            //店铺Id
+            var storeId = $(".divStoreId #StoreId").val();
+            //搭配师Id
+            var collocationId = $("#CollocationId").val();
+            //会员昵称
+            var memberName = $.trim($(".divName #MemberName").val());
+             
+            //会员密码
+            var memberPass = $(".divMemberPass #MemberPass").val();
+            //第二次输入密码
+            var secondPass = $("#SecondPass").val();
+            //会员类型
+            var memberType = $(".bootbox #MemberTypeId").val();
+            //性别
+            var gender = $(".bootbox #Gender").val();
+            //会员卡
+            var cardNumber = $.trim($(".bootbox #CardNumber").val());
+            //邮箱
+            var email = $.trim($(".bootbox #Email").val());
+            //手机号码
+            var mobilePhone = $.trim($(".bootbox #MobilePhone").val());
+            //真实姓名
+            var realName = $.trim($(".bootbox #RealName").val());
+            //身份证号
+            var IDCard = $.trim($(".bootbox #IDCard").val());
+            //用户头像
+            var userPhoto = $(".bootbox #UserPhoto").attr("src");
+            //推荐人
+            var recommendId = $(".bootbox #RecommendId").val();
+            //备注
+            var notes = $.trim($(".bootbox #Notes").val());
+
+            //#region 初始化提示框
+            //初始化提示框
+            $('.bootbox .btn-primary').popover({
+                trigger: "focus",
+                title: "警告！！！",
+                content: "",
+                placement: "top",
+                template: '<div class="popover" role="tooltip"><div class="arrow"></div><h2 class="popover-title"  style="background-color:#E66454;color:white"></h2><div class="popover-content"></div></div>',
+            });
+
+            $('#lableMember').popover({
+                trigger: "focus",
+                title: "警告！！！",
+                content: "请看这里。",
+                placement: "top",
+                template: '<div class="popover" role="tooltip"><div class="arrow"></div><h2 class="popover-title"  style="background-color:#E66454;color:white"></h2><div class="popover-content"></div></div>',
+            });
+            //#endregion
+            //获取两个切换按钮的状态
+            var lableMember = $("#lableMember").attr("class");
+            //#region 校验归属店铺
+            if (storeId == -1) {
+                $(".divStoreId #StoreId").addClass("input-validation-error tooltip-danger");
+                $(".modal-footer .btn-primary").attr("data-content", "请选择归属店铺!");
+                $(".modal-footer .btn-primary").popover('show');
+                if (lableMember.length <= 0) {
+                    $("#lableMember").popover('show');
+                }
+                return false;
+            }
+            //#endregion
+
+            //#region 校验搭配师
+            if (collocationId == -1) {
+                $("#CollocationId").addClass("input-validation-error tooltip-danger");
+                $(".modal-footer .btn-primary").attr("data-content", "请选择搭配师!");
+                $(".modal-footer .btn-primary").popover('show');
+                if (lableMember.length <= 0) {
+                    $("#lableMember").popover('show');
+                }
+                return false;
+            }
+            //#endregion
+
+            //#region 校验账号
+             
+             
+            //匹配中文
+            var rege = new RegExp("[^\x00-\xff]");
+            //匹配标点符号
+            //var regePun = new RegExp("[^\u4e00-\u9fa5\d\w\s]","gi");
+            var reg = /[^\u4e00-\u9fa5\d\w\s]/gi
+            //匹配英文
+            var regeEng = new RegExp("[a-zA-Z]"); 
+             
+            if (reg.test(memberName)) {
+                $(".divName #MemberName").addClass("input-validation-error tooltip-danger");
+                $(".modal-footer .btn-primary").attr("data-content", "会员账号禁止使用标点符号!");
+                $(".modal-footer .btn-primary").popover('show');
+                if (lableMember.length <= 0) {
+                    $("#lableMember").popover('show');
+                }
+                return false;
+            }
+             
+             
+             
+
+            //#endregion
+
+            //#region 密码校验
+            if (memberPass.length > 20 || memberPass.length < 6) {                 
+                $(".divMemberPass #MemberPass").addClass("input-validation-error tooltip-danger");                 
+                $(".modal-footer .btn-primary").attr("data-content", "密码长度为6-20个字符!");
+                $(".modal-footer .btn-primary").popover('show');
+                if (lableMember.length <= 0) {
+                    $("#lableMember").popover('show');
+                }
+                return false;
+            }
+            if (secondPass.length > 20 || secondPass.length < 6) {                
+                $("#SecondPass").addClass("input-validation-error tooltip-danger");                 
+                $(".modal-footer .btn-primary").attr("data-content", "密码长度为6-20个字符!");
+                $(".modal-footer .btn-primary").popover('show');
+                if (lableMember.length <= 0) {
+                    $("#lableMember").popover('show');
+                }
+                return false;
+            }
+            if (secondPass != memberPass) {                 
+                $(".divMemberPass #MemberPass").addClass("input-validation-error tooltip-danger");
+                $("#SecondPass").addClass("input-validation-error tooltip-danger");
+                $(".modal-footer .btn-primary").attr("data-content", "两次输出的密码不一致!");
+                $(".modal-footer .btn-primary").popover('show');
+                if (lableMember.length <= 0) {
+                    $("#lableMember").popover('show');
+                }
+                return false;
+            }
+            //#endregion
+
+            //#region 校验会员类型
+            if (memberType == -1) {
+                $(".bootbox #MemberType").addClass("input-validation-error tooltip-danger");                 
+                $(".modal-footer .btn-primary").attr("data-content", "请选择会员类型!");
+                $(".modal-footer .btn-primary").popover('show');
+                if (lableMember.length <= 0) {
+                    $("#lableMember").popover('show');
+                }
+                return false;
+            }
+            //#endregion
+
+            //#region 校验会员性别
+            if (gender == -1) {                
+                $(".bootbox #Gender").addClass("input-validation-error tooltip-danger");                 
+                $(".modal-footer .btn-primary").attr("data-content", "请选择会员性别!");
+                $(".modal-footer .btn-primary").popover('show');
+                if (lableMember.length <= 0) {
+                    $("#lableMember").popover('show');
+                }
+                return false;
+            }
+            //#endregion
+
+            //#region 校验邮箱
+            if (email != "") {
+                var regEmail = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
+                if (!regEmail.test(email)) {
+                    $(".bootbox #Email").addClass("input-validation-error tooltip-danger");
+                    $(".modal-footer .btn-primary").attr("data-content", "邮箱格式错误!");
+                    $(".modal-footer .btn-primary").popover('show');
+                    if (lableMember.length <= 0) {
+                        $("#lableMember").popover('show');
+                    }
+                    return false;
+                }
+            }
+
+            //#endregion
+
+            //#region 校验手机号码
+            var regMoblieNum = new RegExp("^(1(([35][0-9])|(47)|[8][0126789]))\\d{8}$");
+            if (!regMoblieNum.test(mobilePhone)) {
+                $(".bootbox #MobilePhone").addClass("input-validation-error tooltip-danger");
+                $(".modal-footer .btn-primary").attr("data-content", "请填写有效的11位手机号码!");
+                $(".modal-footer .btn-primary").popover('show');
+                if (lableMember.length <= 0) {
+                    $("#lableMember").popover('show');
+                }
+            }
+            //#endregion
+
+            //#region 提交数据
+            $.ajax({
+                url: "@Url.Action("Create")",
+                type: "POST",
+            data: {
+                StoreId: storeId, CollocationId: collocationId, MemberName: memberName,
+                MemberPass: memberPass, MemberTypeId: memberType, Gender: gender, CardNumber: cardNumber,
+                Email: email,MobilePhone:mobilePhone, RealName: realName, IDCard: IDCard, UserPhoto: userPhoto, recommendId: recommendId,
+                Notes: notes
+            },
+            success: function (data) {
+                if (data.ResultType == "@((int)OperationResultType.Success)") {
+                    $.whiskey.datatable.reset(false);
+                    $(".bootbox").modal('hide');
+                } else {
+                    var temp = data.Data
+                    if (temp!=null && temp != "" && temp.length > 0) {
+                        $(".bootbox #" + temp).addClass("input-validation-error tooltip-danger");
+                    }
+                    if (lableMember.length <= 0) {
+                        $("#lableMember").popover('show');
+                    }
+                    $(".modal-footer .btn-primary").attr("data-content", data.Message);
+                    $(".modal-footer .btn-primary").popover('show');
+                }
+            }
+        });
+        //#endregion
+    });
+    });
+    
+    
+</script>
+
+

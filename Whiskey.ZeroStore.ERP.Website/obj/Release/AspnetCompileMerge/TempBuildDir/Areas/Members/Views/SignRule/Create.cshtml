@@ -1,0 +1,171 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Member
+@model SignRuleDto
+
+	<style>
+        #clear_img_icon>.fa-building:before{
+            content: "";
+        }
+   	 </style>
+
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Week) :
+    </label>
+    <div class="col-md-10">
+        <select class="form-control selectpicker bla bla bli" id="Week" name="Week" data-live-search="true"></select>        
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SignRuleName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.SignRuleName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.PrizeType) :
+    </label>
+    <div class="col-md-10">
+        <select class="form-control selectpicker" name="PrizeType" id="PrizeType" onchange="initIndex()">
+            <option value="@((int)PrizeFlag.Score)">积分</option>
+            <option value="@((int)PrizeFlag.Coupon)">优惠券</option>
+            @*<option value="@((int)PrizeFlag.Res)">物品</option>*@
+        </select>
+    </div>
+</div>
+ 
+<div class="form-group divCoupon">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CouponId) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.CouponName, new { @class = "form-control" ,@readonly="readonly"})
+        @Html.HiddenFor(x=>x.CouponId)
+    </div>
+    <a id="clear_img_icon" class="btn btn-light-green" onclick="chooseCoupon()"> <span>选择</span></a>
+</div>
+<div class="form-group divPrize">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.PrizeId) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.PrizeName, new { @class = "form-control", @readonly = "readonly" })
+        @Html.HiddenFor(x => x.PrizeId)
+    </div>
+    <a class="btn btn-light-green" onclick="choosePrize()"> <span>选择</span></a>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<link href="/Content/Styles/Bootstrap/BootstrapSelect/bootstrap-select.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/BootstrapSelect/bootstrap-select.min.js"></script>
+
+
+
+<script type="text/javascript">
+    $(function () {
+        initWeek();
+        //初始化选择控件
+        $('.selectpicker').selectpicker({
+            'selectedText': 'cat',
+            'noneSelectedText': "请选择会员",
+            'noneResultsText': '没有搜索到'
+        });
+        //初始化添加界面
+        initIndex();
+    })
+    //选择优惠券
+    function chooseCoupon() {        
+        $.ajax({
+            url: "@Url.Action("Coupon")",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                        message: data,
+                        // message:formBody,
+                        className:"formCoupon",
+                        title: "优惠券列表",
+                        buttons: {                            
+                            cancel: {
+                                label: "关闭",
+                                icon: "fa-close",
+                                className: "btn-default",
+                                callback: function () {
+                                    $(".formCoupon").modal("hide");
+                                }
+                            }
+                        }
+                    });
+            }
+        })
+
+    }
+    //选择优惠券
+    function choosePrize() {
+        var prizeType = $(".bootbox #PrizeType").val();
+        $.ajax({
+            url: "@Url.Action("Prize")",
+            type: "get",
+            data:{PrizeType:prizeType},
+            success: function (data) {
+                bootbox.dialog({
+                        message: data,
+                        // message:formBody,
+                        className: "formPrize",
+                        title: "奖品列表",
+                        buttons: {                            
+                            cancel: {
+                                label: "关闭",
+                                icon: "fa-close",
+                                className: "btn-default",
+                                callback: function () {
+                                    $(".formCoupon").modal("hide");
+                                }
+                            }
+                        }
+                    });
+            }
+        })
+
+    }
+    //初始化添加界面
+    function initIndex() {
+        var prizeType = $(".bootbox #PrizeType").val();
+        if (prizeType == "@((int)PrizeFlag.Coupon)") {
+            $(".divCoupon").css("display", "block");
+            $(".divScore").css("display", "none");
+            $(".divPrize").css("display", "none");
+            $(".bootbox #PrizeName").attr("value", "请选择");
+            $(".bootbox #Score").attr("value", "0");
+        } else {
+            $(".divCoupon").css("display", "none");
+            $(".divPrize").css("display", "block");
+            $(".bootbox #CouponName").attr("value", "请选择");
+        }
+    }
+
+    //初始化星期
+    function initWeek() {
+        $(".bootbox #Week").empty();
+        for (var i = 1; i <= 7; i++) {
+            var option = '<option value="' + i + '">第' + i + '天</option>'
+            $(".bootbox #Week").append(option);
+        }
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

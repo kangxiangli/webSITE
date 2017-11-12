@@ -1,0 +1,16 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model ProvinceDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ProvinceName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ProvinceName, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m=> m.Id)

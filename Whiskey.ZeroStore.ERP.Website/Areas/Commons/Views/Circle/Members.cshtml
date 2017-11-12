@@ -1,0 +1,216 @@
+﻿@using Whiskey.Utility.Data
+
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                
+            </div>
+        </div>
+        <div class="panel-body" style="display:none">
+            <form class="form-horizontal form-search">
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">会员帐号</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("MemberName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                 
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">电子邮箱</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Email", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">手机号码</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("MobilePhone", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                 
+                  
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">                    
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+ 
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">                
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("List")",
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    }
+                    conditions.Rules.push(new $.whiskey.filter.rule("CircleId", "@ViewBag.CircleId", "equal"));
+                    if ($(".trusher").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                        if ($(".enabler").is(":checked")) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                        } else {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                        }
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                    }
+                    $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                        }
+                    });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        var index = data.iDisplayIndex + 1;
+                        return '' + index + '';
+                    }
+                },
+
+                {
+                    "sTitle": "归属店铺",
+                    "bSortable": false,
+                    "sName": "StoreName",
+                    "mData": function (data) {
+                        return data.StoreName;
+                    },
+                },
+                {
+                    "sTitle": "头像",
+                    "bSortable": false,
+                    "sName": "UserPhoto",
+                    "mData": function (data) {
+                        return '<div  ><img src="' + data.UserPhoto + '" style="margin:2px;max-width:40px;" class="img-circle" /></div>'
+                        //return '<img src="' + data.UserPhoto + '" alt="头像" id="UserPhoto" class="img-circle" style="width:270%"/>';
+                    },
+                },
+                {
+                    "sTitle": "帐号",
+                    "bSortable": false,
+                    "sName": "MemberName",
+                    "mData": function (data) {
+                        return data.MemberName;
+                    },
+                },
+                {
+                    "sTitle": "姓名",
+                    "bSortable": false,
+                    "sName": "RealName",
+                    "mData": function (data) {
+                        return data.RealName;
+                    },
+                },                
+                {
+                    "sTitle": "手机号码",
+                    "bSortable": false,
+                    "sName": "MobilePhone",
+                    "mData": function (data) {
+                        return data.MobilePhone;
+                    },
+                },
+
+                {
+                    "sTitle": "性别",
+                    "bSortable": false,
+                    "sName": "Gender",
+                    "mData": function (data) {
+                        var type = data.Gender;
+                        if (type == 0) {
+                            return "女";
+                        } else {
+                            return "男";
+                        }
+                    },
+                },
+                {
+                    "sTitle": "控制操作",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        //var controller = $.whiskey.datatable.controller(data);                         
+                        return controller;
+                    }
+                }
+                ]
+
+            });
+             
+
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+        });
+</script>
+

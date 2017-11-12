@@ -1,0 +1,148 @@
+﻿@{
+    string themePath = ViewBag.themePath ?? string.Empty;
+}
+@{
+    if (ViewBag.themeExist ?? false)
+    {
+        Html.RenderPartial(Path.Combine(themePath, "_Nav.cshtml"), ViewBag as object);
+    }
+    else
+    {
+        <div id="main-navbar" class="navbar navbar-inverse" role="navigation">
+            <button type="button" id="main-menu-toggle"><i class="navbar-icon fa fa-bars icon"></i><span class="hide-menu-text">隐藏菜单</span></button>
+            <div class="navbar-inner">
+                <div class="navbar-header">
+                    <a href="@Url.Action("Index", "Home", new { area = "Authorities" })" class="navbar-brand">
+                        <div><img alt="零时尚ERP管理平台V2" src="/content/images/common/main-navbar-logo.png"></div>
+                        零时尚ERP管理平台
+                    </a>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar-collapse"><i class="navbar-icon fa fa-bars"></i></button>
+                </div>
+                <div id="main-navbar-collapse" class="collapse navbar-collapse main-navbar-collapse">
+                    <div>
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#notifications" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-bullhorn"></i>
+                                    <span class="small-screen-text">系统通知</span>
+                                    <span class="label label-danger" id="allnotification">0</span>
+                                    <b class="caret"></b>
+                                </a>
+                                <div class="dropdown-menu widget-notifications no-padding" style="width: 300px">
+                                    <div class="notifications-list" id="main-navbar-notifications">
+                                        @*<div class="notification">
+                                                <div class="notification-title text-danger">管理员</div>
+                                                <div class="notification-description">感谢大家一直依赖的努力，辛勤工作，劳有所得！</div>
+                                                <div class="notification-ago">12小时前</div>
+                                                <div class="notification-icon fa fa-hdd-o bg-danger"></div>
+                                            </div>*@
+                                        @*<div class="notification">
+                                                <div class="notification-title text-info">店铺</div>
+                                                <div class="notification-description">库房已有6件超过15天未销售的衣服。</div>
+                                                <div class="notification-ago">24小时前</div>
+                                                <div class="notification-icon fa fa-truck bg-info"></div>
+                                            </div>*@
+                                    </div>
+                                    <a href="@Url.Action("Index", "NotificationView", new { area = "Notices" })" class="notifications-link">更多通知</a>
+                                </div>
+                            </li>
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <span class="small-screen-text">我的消息</span> <span class="label label-danger" id="msgCount">0</span> <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a title="发送新消息" href="javascript:void(0);" id="Send"><i class="fa fa-plus"></i> <span class="small-screen-text">发送新消息</span></a></li>
+                                    <li class="divider"></li>
+                                    <li><a title="我的收件箱" href="@Url.Action("Index", "Messager", new { area = "Notices", ActiveType="0" })" id="Inbox"><i class="fa fa-inbox"></i> <span class="small-screen-text">我的收件箱</span></a></li>
+                                    <li class="divider"></li>
+                                    <li><a title="我的发件箱" href="@Url.Action("Index", "Messager", new { area = "Notices", ActiveType="1" })" id="Outbox"><i class="fa fa-arrow-up"></i> <span class="small-screen-text">我的发件箱</span></a></li>
+                                    <li class="divider"></li>
+                                    @* <li><a title="消息回收站" href="javascript:void(0);" class="small-screen-text" id="Trush"><i class="fa fa-trash"></i><span class="small-screen-text"> 消息回收站</span></a></li>*@
+                                </ul>
+                            </li>
+
+
+                        </ul>
+
+                        <div class="right clearfix">
+                            <ul class="nav navbar-nav pull-right right-navbar-nav">
+                                <li><a title="我的采购车" href="@Url.Action("OrderCartIndex", "Online", new { Area = "Stores" })"><i class="fa fa-shopping-cart"></i> <span class="text purchase-cart">我的采购车</span> <span class="label label-info purchase-cart-item-count">0</span></a></li>
+                                <li>
+                                    <form class="navbar-form pull-left form-inline">
+                                        <div class="form-group">
+                                            <label class="sr-only" for="searchProduct">搜索产品</label>
+                                            <input type="text" id="searchProduct" class="form-control" placeholder="搜索产品">
+                                        </div>
+                                        <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                                    </form>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @Html.Partial("_AutoMessage", ViewBag as object)
+    }
+
+    <div id="modals-alerts-success" class="modal modal-alert modal-success fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="fa fa-check-circle"></i>
+                </div>
+                <div class="modal-title"></div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modals-alerts-danger" class="modal modal-alert modal-danger fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="fa fa-times-circle"></i>
+                </div>
+                <div class="modal-title"></div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modals-alerts-warning" class="modal modal-alert modal-warning fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="fa fa-warning"></i>
+                </div>
+                <div class="modal-title"></div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <div id="modals-alerts-info" class="modal modal-alert modal-info fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <i class="fa fa-info-circle"></i>
+                    </div>
+                    <div class="modal-title"></div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-info" data-dismiss="modal">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+}

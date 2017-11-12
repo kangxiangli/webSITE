@@ -1,0 +1,40 @@
+﻿
+<div class="row">
+    <div class="panel panel-list" style="max-height: 400px;overflow-y: scroll;">
+
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+                <tr><th>编号</th><th>日期</th><th>上午工作时间</th><th>下午工作时间</th></tr>
+            </thead>
+            <tbody id="managementScopeInfo"></tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+
+        //managementScopeInfo
+        $.ajax({
+            url: "@Url.Action("GetWorkWeekInfo")",
+            type: "post",
+            data: { id: "@ViewBag.WorkTimeId" },
+            success: function (msg) {
+                var data = eval(msg);
+                var htmlStr = "";
+                $(data).each(function (i) {
+                    var AmStartTime = this.AmStartTime || "";
+                    var AmEndTime = this.AmEndTime || "";
+                    var PmStartTime = this.PmStartTime || "";
+                    var PmEndTime = this.PmEndTime || "";
+                    AmEndTime = AmEndTime == "0:00" ? "" : AmEndTime;
+                    AmStartTime = AmStartTime == "0:00" ? "" : AmStartTime;
+                    PmEndTime = PmEndTime == "0:00" ? "" : PmEndTime;
+                    PmStartTime = PmStartTime == "0:00" ? "" : PmStartTime;
+                    htmlStr += "<tr><td>" + (i + 1) + "</td><td>" + this.weekday + "</td><td>" + AmStartTime + "--" + AmEndTime + "</td><td>" + PmStartTime + "--" + PmEndTime + "</td></tr>";
+                });
+                $("#managementScopeInfo").html(htmlStr);
+            }
+        });
+    });
+</script>
+

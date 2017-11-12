@@ -1,0 +1,342 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Member
+@using Whiskey.ZeroStore.ERP.Models
+
+@model Administrator
+<style>
+    /*#defaultrigh_tab ul li {
+        float: left;
+        margin-left: 5px;
+    }
+    #defaultrigh_tab li a {
+        padding: 7px 3px;
+    }*/
+    .permis-contain li {
+        border-left: 1px solid gray;
+        margin-left: 5px;
+    }
+    
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active"><a href="#baseinfo_tab" data-toggle="tab">基本信息</a></li>
+    <li><a href="#pwd_tab" data-toggle="tab">修改密码</a></li>
+    @*<li><a href="#defaultrigh_tab" id="defaultright_a" data-toggle="tab">默认用户权限</a></li>*@
+    <li><a href="#defaulrole_tab" data-toggle="tab">用户角色</a></li>
+    @*<li><a href="#defaulgroup_tab" data-toggle="tab">默认组</a></li>*@
+    <li><a href="#worktime_tab" data-toggle="tab">自定义工作时间</a></li>
+    @*<li><a href="#warhouse_tab" data-toggle="tab">仓库</a></li>*@
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        <input type="hidden" value="@Model.Id" name="Id" />
+        <input type="hidden" value="@Model.MemberId" name="MemberId" />
+        <div class="update-div">
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    员工编号 :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Member.UniquelyIdentifies, new { @class = "form-control", @readonly = "readonly", @style = "background-color:#dddddd" })
+                </div>
+                <div class="control-detail col-md-4">
+                    @Html.ValidationMessageFor(m => m.Member.UniquelyIdentifies)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    员工昵称(登录名) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Member.MemberName, new { @class = "form-control", })
+                </div>
+                <div class="control-detail col-md-4">
+                    @Html.ValidationMessageFor(m => m.Member.MemberName)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.DepartmentId) :
+                </label>
+                <div class="col-md-4">
+                    <input type="hidden" id="hid_depar" value="@Model.DepartmentId" /> 
+                    @Html.DropDownListFor(m => m.DepartmentId, (List<SelectListItem>)ViewBag.Departments, new { @class = "form-control cur_selectpicker " , data_live_search="true", @onchange = "getJobPosition()" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.JobPositionId) :
+                </label>
+                <div class="col-md-4">                    
+                    @Html.DropDownListFor(m => m.JobPositionId, (List<SelectListItem>)ViewBag.JobPositions, new { @class = "form-control cur_selectpicker" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.EntryTime) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(x => x.EntryTime, new { @class = "form-control datetime", @placeholder = "开始时间", @onchange = "computeDay()" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.MacAddress) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(x => x.MacAddress, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Member.Email) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Member.Email, new { @class = "form-control" })
+                </div>
+                <div class="control-detail col-md-4">
+                    @Html.ValidationMessageFor(m => m.Member.Email)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Member.MobilePhone) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Member.MobilePhone, new { @class = "form-control" })
+                </div>
+                <div class="control-detail col-md-4">
+                    @Html.ValidationMessageFor(m => m.Member.MobilePhone)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Member.RealName) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Member.RealName, new { @class = "form-control" })
+                </div>
+                <div class="control-detail col-md-4">
+                    @Html.ValidationMessageFor(m => m.Member.RealName)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Member.Gender) :
+                </label>
+                <div class="col-md-4">
+                    <input type="hidden" id="hid_gend" value="@Model.Member.Gender" />
+                    <select name="Member.Gender" id="Gender" class="form-control ">
+                        <option value="@((int)GenderFlag.Male)">男</option>
+                        <option value="@((int)GenderFlag.Female)">女</option>
+                    </select>
+                </div>
+                <div class="control-detail col-md-4">
+                    @Html.ValidationMessageFor(m => m.Member.Gender)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Notes) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+                </div>
+                <div class="control-detail col-md-4">
+                    @Html.ValidationMessageFor(m => m.Notes)
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="tab-pane fade" id="pwd_tab">
+        @*<label style="color: #e5603b">*原密码为空则认为不修改密码</label>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                请输入原密码 :
+            </label>
+            <div class="col-md-4">
+                <input type="text" name="origPass" id="pwd_up" class="form-control" />
+               
+            </div>
+           
+        </div>*@
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                请输入新密码 :
+            </label>
+            <div class="col-md-4">
+                <input type="password" class="form-control new_pwd" />
+            </div>
+            <label><input type="checkbox" id="show_word" />显示明文</label>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                请确认密码 :
+            </label>
+            <div class="col-md-4">
+                <input type="password" name="Member.MemberPass" class="form-control new_pwd" />
+            </div>
+
+        </div>
+    </div>
+    @*<div class="tab-pane fade" id="defaultrigh_tab">
+        @{Html.RenderAction("LoadPermissionTree", "Administrator");}
+    </div>*@
+    <div class="tab-pane fade" id="defaulrole_tab">
+
+        @foreach (var item in (Dictionary<int,string[]>)ViewBag.roles)
+        {
+            if(item.Value[1]=="1"){
+                <label style="padding-left:15px"><input name="role" type="checkbox" value="@item.Key" checked="checked" />@item.Value[0]</label>
+            }
+            else{
+                        <label style="padding-left:15px"><input name="role" type="checkbox" value="@item.Key" />@item.Value[0]</label>
+                 }
+        }
+    </div>
+    @*<div class="tab-pane fade" id="defaulgroup_tab">
+        @foreach (var item in (Dictionary<int, string[]>)ViewBag.groups)
+        {
+            if(item.Value[1] == "1") {
+            <label style="padding-left:15px"><input name="group" type="checkbox" value="@item.Key" checked="checked"/>@item.Value[0]</label>
+            }
+            else { 
+            <label style="padding-left:15px"><input name="group" type="checkbox" value="@item.Key" />@item.Value[0]</label>
+            }
+            
+        }
+    </div>*@
+
+    <div class="tab-pane fade" id="worktime_tab" style="height:auto">
+        @Html.Partial("WorkTime_Update", (WorkTime)ViewBag.WorkTime)
+    </div>
+</div>
+
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+    
+    var isexisTree = false;
+    $(function () {
+        $("#show_word").click(function () {
+            if ($(this).is(":checked")) {
+                $(".new_pwd").each(function () {
+                    var pwd = $(this).val();
+                    $(this).attr("type", "text").val(pwd);
+                });
+            }
+            else {
+                $(".new_pwd").each(function () {
+                    var pwd = $(this).val();
+                    $(this).attr("type", "password").val(pwd);
+                });
+            }
+        });
+        $("#MacAddress").val($("#MacAddress").val().toUpperCase());
+        $("#MacAddress").keyup(function () {
+            var valueStr = $(this).val();
+            if (isCheckChina(valueStr)) {
+                $(this).val($(this).val().toUpperCase());
+            } else {
+                var reg = /[^\w\.\/]/ig;
+               var  str = valueStr.replace(reg, '');
+               $(this).val(str.toUpperCase());
+            }
+        });
+        $("#MacAddress").keydown(function () {
+            var valueStr = $(this).val();
+            if (isCheckChina(valueStr)) {
+                $(this).val($(this).val().toUpperCase());
+            } else {
+                var reg = /[^\w\.\/]/ig;
+                var str = valueStr.replace(reg, '');
+                $(this).val(str.toUpperCase());
+            }
+        });
+
+        $(".new_pwd").change(function () {
+            var pwd = $(".new_pwd:first").val().trim();
+            var confpwd = $(".new_pwd:last").val().trim();
+            if (confpwd != pwd) {
+                $("button[data-bb-handler='success']").attr("disabled", "disabled");
+                $(".new_pwd:last").parents("div:first").addClass("has-error").attr("title", "两次密码输入不正确");
+
+            }
+            else {
+                $("button[data-bb-handler='success']").removeAttr("disabled");
+                $(".new_pwd:last").parents("div:first").removeClass("has-error").attr("title", "");
+
+            }
+        });
+        $(".update-div #Gender").val($("#hid_gend").val());
+
+        var departm = $("#hid_depar").val();
+        $(".update-div #DepartmentId option").each(function () {
+            if ($(this).val() == departm)
+                $(this).attr("selected", "selected");
+        });
+
+        //$("#defaultright_a").click(function () {
+
+        //    if (!isexisTree) {
+              
+        //    }
+        //})
+    })
+
+    //根据部门获取职位
+    function getJobPosition() {
+        var departmentId = $(".bootbox #DepartmentId").val();
+        $.ajax({
+            url: "@Url.Action("GetJobPosition")",
+            type: 'get',
+            data: { DepartmentId: departmentId },
+            success: function (data) {
+                $(".bootbox #JobPositionId").empty();
+                if (data != null && data != "") {                    
+                    for (var i = 0; i < data.length;i++){
+                        var option = '<option value="' + data[i].Id + '">' + data[i].JobPositionName + '</option>';
+                        $(".bootbox #JobPositionId").append(option);
+                         
+                    }
+                           $('#JobPositionId').selectpicker();
+						$('#JobPositionId').selectpicker('refresh');  
+                }
+            }
+            
+        });
+    }
+
+    function isCheckChina(str) {
+        var reg = /^[u4E00-u9FA5]+$/;
+        if (!reg.test(str)) {
+            return false;
+        }
+        return true;
+    }
+
+    //获取当前时期并赋值给日期控件
+    var myDate = new Date();
+    var date = myDate.toLocaleDateString();
+    //$(".datetime").attr("value", date);
+    //初始化日期控件
+    $(".datetime").datetimepicker({
+        startDate: date,
+        format: 'yyyy/mm/dd',
+        autoclose: false,
+        minView: 'month',
+        todayBtn: true,
+        //forceParse:false
+    });
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+  $('.cur_selectpicker').selectpicker();
+$('.cur_selectpicker').selectpicker('refresh');
+ $('#Gender').selectpicker();
+$('#Gender').selectpicker('refresh');
+//      $('.cur_selectpicker').selectpicker();
+    })
+</script>

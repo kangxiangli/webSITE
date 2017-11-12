@@ -1,0 +1,333 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+<style>
+     .dataTables_wrapper tbody > tr > td:nth-last-child(1)>button.btn-default>span:hover {
+      	display: inline-block;
+  		width: 62px;
+    	height: 25px;
+   		 line-height: 25px;
+        border-radius: 0% !important;
+        background: black ;
+    }
+    #hoverStyle_1 {
+        width: 62px;
+        border-radius: 0% !important;
+    }
+    #SelectAll>span{
+    		height: 20px !important;
+    		line-height: 20px;
+    }
+  .dataTables_wrapper tbody > tr > td:nth-last-child(1)>button.btn-default>span{
+  	display: inline-block;
+  	width: 62px;
+
+    	height: 25px;
+    line-height: 25px;
+    }
+  #hoverStyle_1.btn-success span {
+    background: #5ebd5e;
+    display: inline-block;
+    width: 62px;
+    border-radius: 0% !important;
+    height: 25px;
+    line-height: 25px;
+}
+    #hoverStyle_1.btn-default span{
+    	  background: #888 ;
+    display: inline-block;
+    width: 62px;
+    border-radius: 0% !important;
+    height: 25px;
+    line-height: 25px;
+    }
+     #hoverStyle_1>i {
+     	display: block;
+     	width: 0px;
+     	height: 0px;
+     }
+     
+     .modal-content {
+     	width: 1041px;
+     }
+     
+     #Clear {
+     	background: #e5603b !important;
+     }
+     
+     #DataTables_Table_2_wrapper>.datatable-footer>.text-right {
+     margin-top: -39px; 
+    width: 68%;
+}
+</style>
+<div id="department_div">
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search second-form">
+                    <div class="col-md-5">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">部门名称：</label>
+                            <div class="col-md-7">
+                                @Html.TextBox("DepartmentName", "", new { @class = "form-control", placeholder = "部门名称" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">部门类型：</label>
+                            <div class="col-md-7">
+                                @Html.DropDownList("DepartmentType",EnumHelper.GetSelectList(typeof(DepartmentTypeFlag)),"请选择",new { @class = "form-control selectpicker _select_input" })
+                                @*@Html.TextBox("DepartmentName", "", new { @class = "form-control", placeholder = "部门名称" })*@
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                    <button id="SelectAll" title="全部选择" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-refresh"></i> <span>全部选择</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+                    </div>
+                    <div class="button-recycle">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Content/Scripts/Common/comm.js"></script>
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%" id="departList">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+@*<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>*@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var department_div_dt = $("#department_div #departList").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("List", "Department", new { area = "Authorities" })",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var startDate = $(".start-date").val();
+                var endDate = $(".end-date").val();
+                if (startDate.length > 0 && endDate.length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                }
+
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+
+                $(".second-form input[name!='StartDate'][name!='EndDate'],.second-form select").each(function () {
+                    var field = $(this).attr("Id");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, $(this).hasClass("_select_input") ? "equal" : "contains"));
+                    }
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                $("#department_div #SelectAll").unbind("click.selectall").bind("click.selectall", function () {
+                    chooseDepart_selectAll(aoData);
+                });
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+
+                //$(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".table-list").treegrid({
+                    saveState: true,
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "自增编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    return '';
+                }
+            },
+            {
+                "sTitle": "部门名称",
+                "bSortable": false,
+                "sName": "DepartmentName",
+                "mData": function (data) {
+                    return data.DepartmentName;
+                }
+            },
+            //{
+            //    "sTitle": "部门负责人",
+            //    "bSortable": false,
+            //    "sName": "DepartmentName",
+            //    "mData": function (data) {
+            //        return data.RealName;
+            //    }
+            //},
+             {
+                 "sTitle": "员工数量",
+                 "bSortable": false,
+                 "sName": "DepartmentName",
+                 "mData": function (data) {
+                     if (data.userCoun != "") {
+                         return data.userCoun;
+                     }
+                     return "";
+                 }
+             },
+            {
+                "sTitle": "创建时间",
+                "bSortable": false,
+                "sName": "RealName",
+                "mData": function (data) {
+                    if (data.UpdatedTime != "")
+                        return $.whiskey.tools.dateFormat(data.CreatedTime, "yyyy-MM-dd HH:mm");
+                    return "";
+                },
+            },
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    var txt = "选择";
+                    var color = "default";
+                    if ($("#divDepartment #DepartmentIds option[value='" + data.Id + "']").length > 0) {
+                        txt = "已选择";
+                        color = "success";
+                    }
+                    return '<button id="hoverStyle_1" title="选择" type="button" class="btn btn-' + color + ' btn-toolbar btn_select" data-id="' + data.Id + '" data-name="' + data.DepartmentName + '" onclick="chooseDepart(this)"><i class="fa fa-"></i> <span>' + txt + '</span></button>';
+                },
+            },
+            ]
+
+        });
+        $("#department_div #Search").on("click", function () {
+            $.whiskey.datatable.reset(false, department_div_dt);
+        });
+
+        $("#department_div #Clear").on("click", function () {
+            $.whiskey.web.clearForm("#department_div .form-search");
+        });
+
+    });
+
+    //选择部门
+    function chooseDepart(option) {
+        var id = $(option).attr("data-id");
+        var name = $(option).attr("data-name");
+        if ($(option).parents(".departlist_Notic").length > 0) {
+            var $span = $(option).find("span");
+            var spanTxt = $span.text();
+            var issel = spanTxt == "已选择";
+            chooseDepart_Notic(id, name, issel);
+            $span.text(issel ? "选择" : "已选择");
+            if (issel) {
+               $(option).removeClass("btn-success").addClass("btn-default");
+            } else {
+            	 $(option).removeClass("btn-default").addClass("btn-success");
+                
+            }
+        } else {
+            $(".bootbox #DepartmentId").attr('value', id);
+            $("#DepartmentName").attr('value', name);
+            $(".chooseIndex").modal("hide");
+        }
+    }
+
+    function chooseDepart_Notic(id, value, deslect) {
+        var $sel = $("#divDepartment #DepartmentIds");
+        if (deslect) {
+            $sel.find("option[value='" + id + "']").remove();
+        } else {
+            if ($sel.find("option[value='" + id + "']").length == 0) {
+                $sel.append("<option value='" + id + "'>" + value + "</option>");
+            }
+        }
+        $sel.selectpicker('refresh').selectpicker("selectAll");
+    }
+
+    function chooseDepart_selectAll(data) {
+        $.whiskey.web.ajaxRequest({
+            actionUrl: "/Authorities/Department/GetDepartmentSelectList",
+            method: "post",
+            params: data,
+            lockButton: $(this),
+            complete: function (da) {
+                if (da && da.length > 0) {
+                    var $sel = $("#divDepartment #DepartmentIds");//.empty();
+                    $(da).each(function (ind, item) {
+                        if ($sel.find("option[value='" + item.Value + "']").length == 0) {
+                            $sel.append("<option value='" + item.Value + "'>" + item.Text + "</option>");
+                        }
+                    });
+                    $sel.selectpicker('refresh').selectpicker("selectAll");
+                    $("#department_div #departList .btn_select span").text("已选择");
+                }
+            }
+        });
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

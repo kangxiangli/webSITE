@@ -1,0 +1,107 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model Brand
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.ParentId) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Parent != null ? Model.Parent.BrandName : "无")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.BrandName) :
+    </label>
+    <div class="col-md-10">
+		@Model.BrandName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.BrandCode) :
+    </label>
+    <div class="col-md-10">
+        @Model.BrandCode
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.DefaultDiscount) :
+    </label>
+    <div class="col-md-10">
+        @Model.DefaultDiscount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        商品数量 :
+    </label>
+    <div class="col-md-10">
+        @Model.Products.Count
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IconPath) :
+    </label>
+    <div class="col-md-1">
+        <div style="display:block;width:80px;height:80px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;">
+            <img src="@Model.IconPath" style="margin:2px;max-width:74px;" />
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-10">
+		@Model.Description
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+		@Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+		@Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+		@Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+		@Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		操作人员 :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

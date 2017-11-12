@@ -1,0 +1,395 @@
+﻿
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">可查看部门：</label>
+                        <div class="col-md-7">
+                            @Html.DropDownList("Administrator.DepartmentId", (List<SelectListItem>)ViewBag.depList, new { @class = "form-control ser_sel selectpicker", data_live_search="true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">创建日期：</label>
+                        <div class="col-md-7">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                @*@Html.TextBox("datetimepicker", "", new { @class = "input-sm form-control", @placeholder = "开始日期" })*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+
+        </div>
+        <table id="mainTable" class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+<link href="~/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="~/Content/Scripts/Layout/DataHelper.js"></script>
+@section Scripts{
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            //    $('#datetimepicker').datetimepicker({
+            //        format: 'yyyymm',
+            //        weekStart: 1,
+            //        autoclose: true,
+            //        startView: 3,
+            //        minView: 3,
+            //        forceParse: false,
+            //        language: 'zh-CN'
+            //    });
+            $("#EndDate").val($DataHelper.getNowFormatDate("/", true));
+            $("#StartDate").val($DataHelper.year + "/" + $DataHelper.longMonth() + "/01");
+            $mainTable = $("#mainTable").dataTable({
+                "sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-3 info"l><"col-md-3 info"i><"col-md-6 text-right"p>>',
+                //"bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("List")",
+                "aLengthMenu": [10, 20, 50],
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $("#StartDate").val();
+                    var endDate = $("#EndDate").val();
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("AttendanceTime", startDate + " 00:00:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("AttendanceTime", endDate + " 23:59:59", "less"));
+                        aoData.push({ name: "startDate", value: startDate });
+                        aoData.push({ name: "endDate", value: endDate });
+                    }
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                    aoData.push({ name: "SelDepartmentId", value: $("#Administrator_DepartmentId").val() });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $("td:eq(0)", nRow).html('<input type="hidden" value="' + aData.Id + '" />' + (iDisplayIndex + 1));
+                    $("td:eq(1)", nRow).css({ "float": "left", "width": "100%" });
+                    $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                    return nRow;
+                },
+                "fnDrawCallback": function (da, json) {
+                    $.whiskey.tools.json("");
+                    var inistat = "collapsed";
+
+                    $(".table-list").treegrid({
+                        initialState: inistat,
+                        treeColumn: 1,
+                        expanderExpandedClass: 'treegrid-expander-expanded',
+                        expanderCollapsedClass: 'treegrid-expander-collapsed',
+
+                    });
+                    var tds = $(".treegrid-expander-expanded, .treegrid-expander-collapsed, .treegrid-expander").parents("tr").find("td:eq(2)");
+
+                    var cou = 0;
+                    if (tds.length > 0) {
+                        for (var i = 0; i < tds.length; i++) {
+                            var te = $(tds[i]).text();
+                            if (te != "")
+                                cou += parseInt(te);
+                        }
+
+                        if (cou > 0) {
+                            $(".pcou").html("当前页总数:" + cou);
+                        }
+
+                    } else
+                        $(".pcou").html("");
+                    $(".table-list .checked-all").click();
+
+                },
+
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+
+                        return '';
+                    }
+                },
+               {
+                   "sTitle": "部门",
+                   "bSortable": false,
+                   "sName": "Date",
+                   "mData": function (data) {
+                       return data.DepartmentName;
+                   },
+               },
+                 {
+                     "sTitle": "统计日期",
+                     "bSortable": false,
+                     "sName": "Date",
+                     "mData": function (data) {
+                         if (data.Id.indexOf("par") < 0) {
+                             return data.Date;
+                         } else {
+                             return '';
+                         }
+                     },
+                 },
+                //{
+                //    "sTitle": "正常上班人数",
+                //    "bSortable": false,
+                //    "sName": "NormalDays",
+                //    "mData": function (data) {
+                //        return '<a style="color:green;cursor:pointer"  data-date="' + data.Date + '" onclick="getNormal(this)">' + data.NormalDays + '</a>' + "人";
+                //    },
+                //},
+                {
+                    "sTitle": "迟到次数",
+                    "bSortable": false,
+                    "sName": "LateCount",
+                    "mData": function (data) {
+                        if (data.Id.indexOf("par") < 0)
+                        { return '<a style="color: #e5603b;cursor:pointer" data-DepartmentId="' + data.DepartmentId + '" data-date="' + data.Date + '" onclick="getLate(this)">' + data.LateCount + '</a>' + "次"; }
+                        else {
+                            return '';
+                        }
+
+                    },
+                },
+                {
+                    "sTitle": "早退次数",
+                    "bSortable": false,
+                    "sName": "LeaveEarlyCount",
+                    "mData": function (data) {
+                        if (data.Id.indexOf("par") < 0) {
+                            return '<a style="color: #e5603b;cursor:pointer" data-DepartmentId="' + data.DepartmentId + '"  data-date="' + data.Date + '" onclick="getLeaveEarly(this)">' + data.LeaveEarlyCount + '</a>' + "次";
+                        } else {
+                            return '';
+                        }
+                    },
+                },
+                {
+                    "sTitle": "未签退次数",
+                    "bSortable": false,
+                    "sName": "NoSignOutCount",
+                    "mData": function (data) {
+                        if (data.Id.indexOf("par") < 0) {
+                            return '<a style="color: #e5603b;cursor:pointer" data-DepartmentId="' + data.DepartmentId + '"  data-date="' + data.Date + '" onclick="getNoSignOut(this)">' + data.NoSignOutCount + '</a>' + "次";
+                        } else {
+                            return '';
+                        }
+                    },
+                },
+                {
+                    "sTitle": "请假时长",
+                    "bSortable": false,
+                    "sName": "LeaveDays",
+                    "mData": function (data) {
+                        if (data.Id.indexOf("par") < 0) {
+                            return '<a style="color: #e5603b;cursor:pointer" data-DepartmentId="' + data.DepartmentId + '" data-date="' + data.Date + '" onclick="getLeave(this)" >' + data.LeaveDays + '</a>' + "小时";
+                        } else {
+                            return '';
+                        }
+                    },
+                },
+                 {
+                     "sTitle": "加班时长",
+                     "bSortable": false,
+                     "sName": "LeaveDays",
+                     "mData": function (data) {
+                         if (data.Id.indexOf("par") < 0) {
+                             return '<a style="color: #e5603b;cursor:pointer" data-DepartmentId="' + data.DepartmentId + '" data-date="' + data.Date + '" onclick="getOver(this)" >' + data.LeaveDays + '</a>' + "小时";
+                         } else {
+                             return '';
+                         }
+                     },
+                 },
+                    {
+                        "sTitle": "外勤时长",
+                        "bSortable": false,
+                        "sName": "LeaveDays",
+                        "mData": function (data) {
+                            if (data.Id.indexOf("par") < 0) {
+                                return '<a style="color: #e5603b;cursor:pointer" data-DepartmentId="' + data.DepartmentId + '" data-date="' + data.Date + '" onclick="getFile(this)" >' + data.LeaveDays + '</a>' + "小时";
+                            } else {
+                                return '';
+                            }
+                        },
+                    },
+                //{
+                //    "sTitle": "加班天数",
+                //    "bSortable": false,
+                //    "sName": "OvertimeDays",
+                //    "mData": function (data) {
+                //        return '<a style="cursor:pointer;color: #e5603b" onclick="getOverTime(\'' + data.Date + '\')">' + data.OvertimeDays + '</a>' + "天";
+                //    },
+                //},
+
+                {
+                    "sTitle": "控制操作",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        if (data.Id.indexOf("par") < 0) {
+                            var controller = "<button id=\"View\"  title=\"查看详细信息\" type=\"button\"  onclick=\"View(this,'" + data.Date + "','" + data.DepartmentId + "');\" class=\"btn btn-xs  btn-padding-right\"><i class=\"fa fa-eye\"></i> </button>";
+                            return controller;
+                        } else {
+                            return '';
+                        }
+                    }
+                }
+                ]
+
+            });
+
+            $("#Search").click(function () {
+                $.whiskey.datatable.reset(true, $mainTable);
+            });
+        });
+
+
+        //查看详情
+        function View(sender, date, DepartmentId) {
+            var year = $DataHelper.getYearOrMonth(date, 1);
+            var month = $DataHelper.getYearOrMonth(date, 2);
+            var view = new $.whiskey.web.ajaxView({
+                caption: "详细信息",
+                className: "diaclg",
+                actionUrl: "@Url.Action("Detail")",
+                params: { year: year, month: month, DepartmentId: DepartmentId },
+                lockButton: $(sender),
+            });
+        }
+        //获取迟到数据
+        function getLate(my) {
+            var date = $(my).attr("data-date");
+            var departmentId = $(my).attr("data-DepartmentId");
+            var year = $DataHelper.getYearOrMonth(date, 1);
+            var month = $DataHelper.getYearOrMonth(date, 2);
+            var view = new $.whiskey.web.ajaxView({
+                caption: "迟到信息",
+                className: "diaclg",
+                actionUrl: "@Url.Action("Late")",
+                params: { year: year, month: month, DepartmentId: departmentId },
+            });
+        }
+        //获取早退数据
+        function getLeaveEarly(my) {
+
+            var date = $(my).attr("data-date");
+            var departmentId = $(my).attr("data-DepartmentId");
+            var year = $DataHelper.getYearOrMonth(date, 1);
+            var month = $DataHelper.getYearOrMonth(date, 2);
+            var view = new $.whiskey.web.ajaxView({
+                caption: "早退信息",
+                className: "diaclg",
+                actionUrl: "@Url.Action("LeaveEarly")",
+                params: { year: year, month: month, DepartmentId: departmentId },
+            });
+        }
+        //获取未签退数据
+        function getNoSignOut(my) {
+
+            var date = $(my).attr("data-date");
+            var departmentId = $(my).attr("data-DepartmentId");
+            var year = $DataHelper.getYearOrMonth(date, 1);
+            var month = $DataHelper.getYearOrMonth(date, 2);
+            var view = new $.whiskey.web.ajaxView({
+                caption: "未签退信息",
+                className: "diaclg",
+                actionUrl: "@Url.Action("NoSignOut")",
+                params: { year: year, month: month, DepartmentId: departmentId },
+        });
+        }
+        //获取请假数据
+        function getLeave(my) {
+            var date = $(my).attr("data-date");
+            var departmentId = $(my).attr("data-DepartmentId");
+            var year = $DataHelper.getYearOrMonth(date, 1);
+            var month = $DataHelper.getYearOrMonth(date, 2);
+            var view = new $.whiskey.web.ajaxView({
+                caption: "请假信息",
+                className: "diaclg",
+                actionUrl: "@Url.Action("Leave")",
+                params: { year: year, month: month, DepartmentId: departmentId },
+            });
+        }
+        //正常上班信息
+        function getNormal(my) {
+            var date = $(my).attr("data-date");
+            var view = new $.whiskey.web.ajaxView({
+                caption: "正常上班信息",
+                actionUrl: "@Url.Action("Normal")",
+                params: { Date: date },
+            });
+        }
+
+        //获取外勤数据
+        function getFile(my) {
+            var date = $(my).attr("data-date");
+            var departmentId = $(my).attr("data-DepartmentId");
+            var year = $DataHelper.getYearOrMonth(date, 1);
+            var month = $DataHelper.getYearOrMonth(date, 2);
+            var view = new $.whiskey.web.ajaxView({
+                caption: "外勤信息",
+                className: "diaclg",
+                actionUrl: "@Url.Action("File")",
+                params: { year: year, month: month, DepartmentId: departmentId },
+            });
+        }
+
+        //获取加班数据
+        function getOver(my) {
+            var date = $(my).attr("data-date");
+            var departmentId = $(my).attr("data-DepartmentId");
+            var year = $DataHelper.getYearOrMonth(date, 1);
+            var month = $DataHelper.getYearOrMonth(date, 2);
+            var view = new $.whiskey.web.ajaxView({
+                caption: "加班信息",
+                className: "diaclg",
+                actionUrl: "@Url.Action("OverTime")",
+                params: { year: year, month: month, DepartmentId: departmentId },
+        });
+        }
+    </script>
+}

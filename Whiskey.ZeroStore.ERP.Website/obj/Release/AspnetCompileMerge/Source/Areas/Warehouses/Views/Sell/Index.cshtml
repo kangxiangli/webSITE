@@ -1,0 +1,353 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using System.Collections
+<div class="row">
+    <div class="col-md-7">
+        <div class="panel panel-warning panel-dark widget-profile">
+            <div class="panel-heading">
+                <div class="widget-profile-bg-icon"></div>
+                <div class="widget-profile-header text-center">
+                    <h3>请使用扫码枪将商品货号扫入下边文本框</h3>
+                </div>
+            </div>
+            <div class="list-group-item no-border-hr clearfix valign-middle">
+                <div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6 text-center" style="height: 88px;">
+                        @Html.TextBox("ScanNumber", "", new { @placeholder = "", @class = "scan-number form-control text-center", @style = "ime-mode:disabled;height:45px;margin-top:20px;", @onkeyup = "this.value=this.value.toUpperCase().replace(/[\u4e00-\u9fa5]/g,'')" })
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+            </div>
+            <div class="widget-profile-counters clearfix">
+                <div class="col-xs-4"><label class="label label-info scan-queue-count">0</label><br />队列数量</div>
+                <div class="col-xs-4"><label class="label label-success scan-valid-count">@ViewBag.ScanValidCount</label><br />有效数量</div>
+                <div class="col-xs-4"><label class="label label-danger scan-invalid-count">@ViewBag.ScanInvalidCount</label><br /><a href="javascript:" class="scan-invalid">无效数量</a></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="stat-panel">
+            <div class="stat-row">
+                <div class="stat-cell padding-sm-hr bordered valign-top" style="padding: 17px 0;">
+                    <ul class="list-group no-margin">
+
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4">购入店铺</label>
+                            <div class="col-md-8">
+                                @Html.DropDownList("StoreID", (List<SelectListItem>)ViewBag.StoreList, new { @class = "form-control receive-store" })
+                            </div>
+                        </li>
+
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4">入库日期</label>
+                            <div class="col-md-8">
+                                <div class="input-group date purchase-date">
+                                    @Html.TextBox("CreateTime", "", new { @class = "form-control", @placeholder = DateTime.Now.ToString("yyyy年MM月dd日"), @style = "height:35px;font-size:12px;" })
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4">备注信息</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("Notes", "", new { @class = "form-control" })
+                            </div>
+                        </li>
+
+                        <li class="list-group-item no-border-hr no-border-b padding-xs-vr no-bg no-border-radius clearfix">
+                            <div style="margin-top:15px;">
+                                <button id="Create" type="button" class="btn btn-success  btn-padding-right"><i class="fa fa-arrow-right"></i> 保存采购订单</button>
+                                <button id="RemoveAll" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-trash"></i> 移除所选商品</button>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-12">
+        <div class="panel  panel-list">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <h5><i class="fa fa-list"></i> 已选择的商品</h5>
+                </div>
+                <span class="text-right list-info"></span>
+            </div>
+            <div>
+                <table class="table table-list table-hover valign-middle" width="100%">
+                    <thead>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+    var hashlist = new $.whiskey.hashtable();
+    $(document).ready(function () {
+
+        $("#Create").on("click", function () {
+
+        });
+
+        $(".scan-invalid").on("click", function () {
+            var view = new $.whiskey.web.ajaxView({
+                caption: "商品无效码列表",
+                actionUrl: "@Url.Action("Invalid")",
+                lockButton: $(this),
+            });
+        });
+
+        $("#RemoveAll").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要移除这些商品吗？",
+                    notes: "提示：此操作会将商品从服务器缓存中移除",
+                    actionUrl: "@Url.Action("Remove")",
+                    params: list,
+                    complete: function () {
+                        $.whiskey.datatable.reset(true);
+                    }
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+    $("#CreateTime").datepicker();
+
+    $.whiskey.datatable.instance=$(".table-list").dataTable({
+        "aaSorting": [[0, 'desc']],
+        "sAjaxSource": "@Url.Action("List")",
+        "sDom": 't<"F clearfix datatable-footer"<"col-md-2"l><"col-md-3"f><"col-md-7 text-right"p>>',
+        "fnDrawCallback": function () {
+            $('.edit-text').editable({
+                type: "text",
+                pk: "",
+                tpl: "<input type='text' class='text-center' style='width: 80px'>",
+                ajaxOptions: {
+                    dataType: 'json'
+                },
+                url: "@Url.Action("SetAmount")",
+                validate: function(value) {
+                    if ($.trim(value) == '') return '提示：商品数量不能为空！';
+                },
+                title: "请输入新的商品数量",
+                success: function (data, newValue) {
+                    if (data.ResultType == 3) {
+                        $(".scan-valid-count").text(data.Data.validCount);
+                        $.whiskey.datatable.reset(true);
+                    }
+                },
+                error: function (errors) {
+                }
+            });
+            $(".checked-all").click(function () {
+                var checkedStatus = this.checked;
+                $(".table tr td input[type=checkbox]").each(function () {
+                    this.checked = checkedStatus;
+                });
+            });
+        },
+        "aoColumns": [{
+            "bVisible": false,
+            "bSearchable": false,
+            "sName": "UpdateTime",
+            "mData": "UpdateTime"
+        },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "bSortable": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            }, {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },{
+                "sTitle": "图片",
+                "sName": "Thumbnail",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplThumbnail(data.Thumbnail);
+                }
+            }, {
+                "sTitle": "名称",
+                "sName": "ProductName",
+                "bSortable": false,
+                "mData": "ProductName",
+            }, {
+                "sTitle": "货号",
+                "sName": "ProductNumber",
+                "bSortable": false,
+                "mData": "ProductNumber",
+            }, {
+                "sTitle": "季节",
+                "bSortable": false,
+                "sName": "Season",
+                "mData": "Season",
+            }, {
+                "sTitle": "颜色",
+                "bSortable": false,
+                "sName": "Color",
+                "mData": "Color",
+            }, {
+                "sTitle": "尺码",
+                "bSortable": false,
+                "sName": "Size",
+                "mData": "Size",
+            }, {
+                "sName": "WholesalePrice",
+                "sTitle": "进货价",
+                "mData": function (data) {
+                    return '<div>￥' + data.WholesalePrice.toFixed(2) + '<div>（' + $.whiskey.tools.numberToChinese(Math.round(data.WholesalePrice / data.TagPrice * 100)) + '）';
+                },
+            }, {
+                "sTitle": "数量",
+                "sName": "Amount",
+                "mData": function (data) {
+                    return "<a href=\"#\" class=\"edit-text\" data-name='" + data.ProductNumber + "'>" + data.Amount + "</a>";
+                },
+
+            }, {
+                "sTitle": "操作",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplDelete(data.Id);
+                }
+            }
+        ]
+
+    });
+
+    $(".scan-number").blur(function () {
+        $(this).addClass("input-validation-error");
+    }).focus(function () {
+        $(this).removeClass("input-validation-error");
+    });
+
+    $(".scan-number").keyup(function (event) {
+        if (event.keyCode == 13) {
+            var scanNumber = $(this).val().trim();
+            if (scanNumber.length > 0) {
+                var barcodeArr = scanNumber.split(',');
+                if (barcodeArr.length <= 0) {
+                    return;
+                }
+                barcodeArr.forEach(function (value, index, arr) {
+                    var uuid = $.whiskey.tools.UUID(32, 16);
+                    hashlist.put(uuid, value);
+                    $(".scan-queue-count").text(hashlist.size());
+                    $(".scan-number").val("");
+                    $(".scan-number").focus();
+                });
+
+            }
+        }
+    }).focus();
+
+    setInterval(function () {
+        sendToQueue();
+    }, 1000);
+
+    $(window).on('beforeunload', function (e) {
+        if (hashlist.size() > 0) {
+            var message = "系统检测到队列中有（" + hashlist.size() + "条数据）还未提交到服务器，刷新或关闭浏览器会导致这些数据丢失！！";
+            e.returnValue = message;
+            return message;
+        }
+    });
+    });
+
+    function sendToQueue() {
+        if (hashlist.size() > 0) {
+            var globalUUID = hashlist.getFirst(0);
+            var scanNumber = hashlist.getFirst(1);
+            $.ajax({
+                type: "POST",
+                data: {uuid:globalUUID, number: scanNumber },
+                async: false,
+                url: "@Url.Action("AddToScan")",
+                success: function (data) {
+                    if (data.ResultType == 3) {
+                        $(".scan-queue-count").animate({
+                            opacity: "0.3",
+                        }, 'slow', function () {
+                            $(".scan-queue-count").animate({
+                                opacity: "1.0",
+                            }, 'fast', function () {
+                                $(".scan-queue-count").text(hashlist.size());
+                            });
+                        });
+
+                        if ($(".scan-valid-count").text() != data.Data.validCount) {
+                            $(".scan-valid-count").animate({
+                                opacity: "0.3",
+                            }, 'slow', function () {
+                                $(".scan-valid-count").animate({
+                                    opacity: "1.0",
+                                }, 'fast', function () {
+                                    $(".scan-valid-count").text(data.Data.validCount);
+                                });
+                            });
+                        }
+
+                        if ($(".scan-invalid-count").text() != data.Data.invalidCount) {
+                            $(".scan-invalid-count").animate({
+                                opacity: "0.3",
+                            }, 'slow', function () {
+                                $(".scan-invalid-count").animate({
+                                    opacity: "1.0",
+                                }, 'fast', function () {
+                                    $(".scan-invalid-count").text(data.Data.invalidCount);
+                                });
+                            });
+                        }
+                        hashlist.remove(data.Data.UUID);
+                        $.whiskey.datatable.reset(true);
+                    }
+                }
+            });
+
+        }
+
+    }
+
+    function Delete(sender,Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要移除这件商品吗？",
+            notes: "提示：此操作会将缓存中的指定货号的商品移除",
+            actionUrl: "@Url.Action("Remove")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function (data) {
+                $(".scan-valid-count").text(data.Data.validCount);
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    </script>
+}

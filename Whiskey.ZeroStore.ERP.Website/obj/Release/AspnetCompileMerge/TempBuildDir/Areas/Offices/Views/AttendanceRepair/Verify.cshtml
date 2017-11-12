@@ -1,0 +1,90 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+
+
+@model  AttendanceRepairDto
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.AdminId) :
+    </label>
+    <div class="col-md-7">
+        @Model.RealName
+    </div>
+</div>
+@*<div class="form-group">
+        <label class="control-label col-md-3">
+            @Html.DisplayNameFor(m => m.VerifyType) :
+        </label>
+        <div class="col-md-4">
+            <select class="form-control selectpicker " id="option" name="VerifyType">
+                <option value="@((int)VerifyFlag.Pass)">通过</option>
+                <option value="@((int)VerifyFlag.NoPass)">不通过</option>
+            </select>
+        </div>
+    </div>*@
+<div class="form-group">
+    <label class="control-label col-md-3">
+        处罚选项 :
+    </label>
+    <div class="col-md-4">
+        <select class="form-control selectpicker " id="option" name="RepairPayType">
+            <option value="@((int)RepairPayFlag.Score)">积分</option>
+            @*<option value="@((int)RepairPayFlag.Money)">罚款</option>*@
+        </select>
+    </div>
+</div>
+<div class="form-group divScore">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.PaidScore) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(x => x.PaidScore, new { @class = "form-control" })
+    </div>
+</div>
+@*<div class="form-group dicMoney">
+        <label class="control-label col-md-3">
+            @Html.DisplayNameFor(m => m.PaidMoney) :
+        </label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(x => x.PaidMoney, new { @class = "form-control" })
+        </div>
+    </div>*@
+@Html.HiddenFor(x => x.Id)
+@Html.HiddenFor(x => x.ApiAttenFlag)
+@Html.Hidden("VerifyType", (int)VerifyFlag.Waitting)
+@Html.HiddenFor(x => x.IsDoubleScore)
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker('refresh');
+    })
+</script>
+@*<script type="text/javascript">
+        $(document).ready(function () {
+            showOption();
+            //罚款选项改变时
+            $("#option").change(function () {
+                showOption();
+            })
+        })
+
+        //根据罚款选项的展示不同
+        function showOption() {
+            var option = $("#option").val();
+            //0表示扣积分，1标识罚款
+            if (option==parseInt("@((int)RepairPayFlag.Score)")) {
+                $(".bootbox #Score").attr("value", "");
+                $(".bootbox #Money").attr("value", 0);
+                $(".divScore").show();
+                $(".dicMoney").hide();
+            } else {
+                $(".bootbox #Score").attr("value", 0);
+                $(".bootbox #Money").attr("value", "");
+                $(".divScore").hide();
+                $(".dicMoney").show();
+            }
+        }
+    </script>*@

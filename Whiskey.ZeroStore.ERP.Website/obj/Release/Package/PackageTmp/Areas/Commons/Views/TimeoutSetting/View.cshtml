@@ -1,0 +1,81 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model TimeoutSetting
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.Name) :
+    </label>
+    <div class="col-md-6">
+		@Model.Name
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.Desc) :
+    </label>
+    <div class="col-md-6">
+        @Model.Desc
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.TimeSpan) :
+    </label>
+    <div class="col-md-6">
+        @Model.TimeSpan
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.DeductScore) :
+    </label>
+    <div class="col-md-6">
+        @Model.DeductScore
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.UpdatedTime) :
+    </label>
+    <div class="col-md-6">
+		@Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.CreatedTime) :
+    </label>
+    <div class="col-md-6">
+		@Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-6">
+		@Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-6">
+		@Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		操作人员 :
+    </label>
+    <div class="col-md-6">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

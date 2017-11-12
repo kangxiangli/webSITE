@@ -1,0 +1,714 @@
+﻿@using Whiskey.ZeroStore.ERP.Models.Entities;
+@using Whiskey.ZeroStore.ERP.Models.Enums;
+@model string
+<!-- #region 步骤3 使用各种支付方式完成支付 -->
+<style>
+	.dropdown-toggle{
+		width: 100px !important;
+	}
+
+</style>
+<div class="panel-heading clearfix">
+    <div class="col-md-5 panel-title">
+        <h5><i class="fa fa-list"></i> <span>结算</span><span style="margin-left:30px"><i class="memb_i fa fa-chevron-right"></i></span></h5>
+    </div>
+</div>
+<div>
+
+
+
+    <!--不同支付方式输入区-->
+    <div class="col-md-11" style="margin-bottom:2px">
+        <div class="mes_warn"><span style="color: #e5603b;font-size:12px;margin:10px 120px">*如果选择积分消费，则本次交易不会获取积分</span></div>
+        <div>
+            <label class="control-label col-md-3">现金消费：</label>
+            <div class="col-md-2"><input type="text" class="form-control cash_consum" value="0" /></div>
+        </div>
+        <div>
+            <label class="control-label col-md-1">刷卡：</label>
+            <div class="col-md-2"style="width:132px;margin-right: 11%; display: flex;flex-direction: row;" >
+                <input class="form-control swipcard_consum" value="0" style="width: 100px;"/> 
+                <select name="SwipeCardType" id="SwipeCardType" class="form-control selectpicker" style="position: relative; left: 103%; z-index: 999; top: -32px;width: 100px;">
+                    <option value="@((int)SwipeCardType.银行卡)">@SwipeCardType.银行卡.ToString()</option>
+                    <option value="@((int)SwipeCardType.微信)">@SwipeCardType.微信.ToString()</option>
+                    <option value="@((int)SwipeCardType.支付宝)">@SwipeCardType.支付宝.ToString()</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="memb-cl">
+            <label class="control-label col-md-1">积分：</label>
+            <div class="col-md-2"><input class="form-control score_consum" value="0" readonly /></div>
+        </div>
+    </div>
+    <div class="col-md-11" style="margin-bottom:10px">
+        <div class="memb-cl">
+            <label class="control-label col-md-3">储值：</label>
+            <div class="col-md-2"><input type="text" class="form-control cardmoney_consum" value="0" readonly /></div>
+        </div>
+        <div>
+            <label class="control-label col-md-1 lab-mi">抹去：</label>
+            <div class="col-md-2"><input class="form-control erase_consum" value="0" /></div>
+        </div>
+        <div>
+            <label class="control-label col-md-1" style="margin-left: 3%;">找零：</label>
+            <div class="col-md-2"><input class="form-control retumoney_consum" style="background-color:#dddddd" disabled="disabled" value="0" /></div>
+        </div>
+    </div>
+    <hr style="clear:both;margin-top:10px" />
+
+
+
+    <!--收款信息显示区-->
+    <div class="col-md-11  " style="margin-top: 15px; margin-bottom: 10px">
+        <div class="col-md-8 cou-consum" style="text-align:right;">
+            积分规则 @ViewBag.ConsumScore
+            <a id="getScore" tabindex="0" class="fa fa-info" role="button" data-toggle="popover" data-placement="top" data-trigger="hover">
+            </a>
+
+        </div>
+        <div class="col-md-3">
+            <label class="control-label col-md-7" style="padding: 2px 8px 1px 0;">总消费金额(元):</label>
+            <div class="col-md-5" style="padding:0">
+                <input type="text" style="color: #e5603b" class="form-control consume_count" disabled="disabled" />
+            </div>
+        </div>
+    </div>
+
+    <hr style="clear:both" />
+
+    <!--备注信息区-->
+    <div>
+        <div class="col-md-11" style="margin-bottom:2px">
+            <label class="control-label col-md-3">出库时间：</label>
+            <div class="col-md-2 input-daterange">
+                <input type="text" placeholder="选择时间" class="form-control prod_outdate" value="" onload="$(this).val(new Date())" />
+            </div>
+
+            <label class="control-label col-md-1" style="padding:4px 0">经办人：</label>
+            <div class="col-md-2" style="width:132px">
+                @Html.DropDownList("adminis", (List<SelectListItem>)ViewBag.adminis, new { @class = "form-control retail_admi selectpicker" })
+
+            </div>
+        </div>
+        <div class="col-md-11" style="margin-bottom:2px">
+            <div><label class="control-label col-md-3">备注：</label></div>
+            <div class="col-md-5">
+                <textarea class="form-control retail_notes"></textarea>
+            </div>
+        </div>
+        <hr style="clear:both;border:0" />
+    </div>
+
+    <!--表单提交区-->
+    <div class="panel-heading clearfix">
+        <div class="col-md-4">
+            <a href="javascript:;" id="btnStepTwo" class="btn btn-success pull-left">
+                <span class="fa fa-arrow-left"></span>上一步
+            </a>
+        </div>
+        <div class="col-md-5 panel-title pull-right">
+            <button class="btn btn-success fa fa-clipboard  saleok">确认销售</button><button style="margin-left:30px;" onclick="clear_context(this)" class="clear_conte btn btn-danger ">清空</button>
+        </div>
+    </div>
+
+    <div class="col-md-11">
+
+    </div>
+    <div id="pop_content" style="display:none;">
+        <ul></ul>
+    </div>
+</div>
+
+<script>
+    $('body,html').animate({ scrollTop: 0 }, 10);
+    function getState() {
+        var state = JSON.parse('@Html.Raw(Model)');
+
+        return function () {
+            return state;
+        }
+    }
+    // 当前消费是否能取得积分
+    function getScoreRule() {
+        var isConsumeCardMoneyGetScore = '@ViewBag.isConsumeCardMoneyGetScore';
+        var isConsumeScoreGetScore = '@ViewBag.isConsumeScoreGetScore';
+        var CanUseScoreWhenNotBelongToStore = '@ViewBag.CanUseScoreWhenNotBelongToStore';
+        var CanGetScoreWhenNotBelongToStore = '@ViewBag.CanGetScoreWhenNotBelongToStore';
+
+
+        return function () {
+            var flag = false;
+            // get cardmoney_consum
+            var cardmoney_consum = $(".cardmoney_consum").val();
+
+            // get score_consum
+            var score_consum = $(".score_consum").val();
+
+            // get cash_consum
+            var cash_consum = $(".cash_consum").val();
+
+            // get swipcard_consum
+            var swipcard_consum = $(".swipcard_consum").val();
+
+            if (!getState()().isMember) {
+                flag = false;
+            }
+            else {
+                var memberStoreId = getState()().memberInfo.StoreId;
+                var currentStoreId = getState()().currentStoreId;
+                if (memberStoreId != currentStoreId && CanGetScoreWhenNotBelongToStore == 0) {
+                    flag = false;
+                }
+                else {
+                    if (isConsumeCardMoneyGetScore == 0 && cardmoney_consum > 0) {
+                        flag = false;
+                    } else if (isConsumeScoreGetScore == 0 && score_consum > 0) {
+                        flag = false;
+                    }
+                    else if (cash_consum > 0 || swipcard_consum > 0) {
+                        flag = true;
+                    }
+                }
+            }
+
+
+
+
+            // display
+
+            var str = "<ul class='list-group'>";
+            str += "<li class='list-group-item'>"
+            str += " [消费储值获得积分]:";
+            str += isConsumeCardMoneyGetScore == 1 ? "是" : "否";
+            str += "</li>"
+            str += "<li class='list-group-item'>"
+            str += " [消费积分获得积分]:";
+            str += isConsumeScoreGetScore == 1 ? "是" : "否";
+            str += "</li>"
+            str += "<li class='list-group-item'>"
+            str += " [是否本店会员]:";
+            str += memberStoreId == currentStoreId ? "是" : "否";
+            str += "</li>"
+            str += "<li class='list-group-item'>"
+            str += "[本次消费是否获得积分]:";
+            str += flag ? "是" : "否";
+            str += "</li>"
+            str += "</ul>";
+            $("#pop_content").html(str);
+
+        };
+    }
+    // 支付金额校验
+    function datavalid(send) {
+        // 消费总金额
+        var state = getState()();
+        var M = state.afterDiscountMoney //总消费金额(去除优惠券金额和店铺活动优惠后的总金额)
+        var Cm = state.memberInfo.Balance; // 现有储值
+        var S = state.memberInfo.Score; // 现有积分
+        var E = $(".erase_consum").val(); // 抹去
+        var _isMemb = state.isMember;
+
+        if (E == undefined || E.trim() == "") E = 0;
+        M = parseFloat(M);
+        //C = parseFloat(C);
+        Cm = parseFloat(Cm);
+        S = parseFloat(S);
+        E = parseFloat(E);
+
+        //M = M - C - E;
+        M = M - E;
+        var cardmoneyConsum = $(".cardmoney_consum").val(); // 储值消费
+        var score = $(".score_consum").val(); // 消费积分；
+        var money = $(".cash_consum").val(); // 现金
+        var swipcard = $(".swipcard_consum").val(); // 刷卡
+
+        if (cardmoneyConsum == undefined || cardmoneyConsum.trim() == "") cardmoneyConsum = 0;
+        if (score == undefined || score.trim() == "") score = 0;
+        if (money == undefined || money.trim() == "") money = 0;
+        if (swipcard == undefined || swipcard.trim() == "") swipcard = 0;
+
+        cardmoneyConsum = parseFloat(cardmoneyConsum);
+        score = parseInt(score);
+        money = parseFloat(money);
+        swipcard = parseFloat(swipcard);
+        if (M <= 0) {
+            // 总价格<0
+            resetPayControl();
+            return;
+        }
+        // 现金消费
+        if (send == ".cash_consum") {
+            if (_isMemb) { // 会员
+
+                // 现金消费>=总消费金额
+                if (money >= M) {
+                    var ret = money - M;
+                    $(".retumoney_consum").val(parseFloat(ret).toFixed(2));
+                    $(".cardmoney_consum").val(0);
+                    $(".swipcard_consum").val(0);
+                    $(".score_consum").val(0);
+                }
+                else {
+                    // 现金消费<总消费金额
+
+                    // 1.现金不够,储值来凑
+                    var leftMoney = M - money;
+                    leftMoney = leftMoney < 0 ? 0 : leftMoney;
+
+
+                    if (Cm >= leftMoney) {
+                        $(".cardmoney_consum").val(leftMoney.toFixed(2));
+                        $(".score_consum").val(0);
+                        $(".swipcard_consum").val(0);
+                        $(".retumoney_consum").val(0);
+                    }
+                    else  // 储值不够,积分来凑
+                    {
+                        var leftMoneyToScore = leftMoney - Cm;
+                        leftMoneyToScore = leftMoneyToScore < 0 ? 0 : leftMoneyToScore;
+                        if (S >= leftMoneyToScore) {
+                            $(".cardmoney_consum").val(Cm.toFixed(2));
+                            $(".score_consum").val(leftMoneyToScore.toFixed(2));
+                            $(".retumoney_consum").val(0);
+                            $(".swipcard_consum").val(0);
+                        } else {
+                            // 积分不够,刷卡来凑
+                            var leftMoneyToSwipCard = leftMoneyToScore - S;
+                            leftMoneyToSwipCard = leftMoneyToSwipCard < 0 ? 0 : leftMoneyToSwipCard;
+                            $(".cardmoney_consum").val(Cm.toFixed(2));
+                            $(".score_consum").val(S.toFixed(2));
+                            $(".swipcard_consum").val(leftMoneyToSwipCard.toFixed(2));
+                            $(".retumoney_consum").val(0);
+                        }
+                    }
+                }
+            } else {
+                // 非会员
+                if (money >= M) {
+                    $(".swipcard_consum").val("0.00");
+                    $(".cash_consum").val(parseFloat(M).toFixed(2));
+                } else {
+                    M = M - money;
+                    $(".swipcard_consum").val(parseFloat(M).toFixed(2));
+                }
+            }
+        }
+            // 刷卡
+        else if (send == ".swipcard_consum") {
+            if (_isMemb) {
+                if (swipcard >= M) {
+                    // 刷卡消费>=总消费金额
+                    var ret = swipcard - M;
+                    $(".retumoney_consum").val(parseFloat(ret).toFixed(2));
+                    $(".cardmoney_consum").val(0);
+                    $(".cash_consum").val(0);
+                    $(".score_consum").val(0);
+                } else {
+                    // 刷卡消费<总消费金额
+
+                    // 1.储值来凑
+                    var leftMoney = Math.max(M - swipcard, 0);
+                    if (Cm >= leftMoney) {
+                        // 储值足够
+                        $(".cardmoney_consum").val(parseFloat(leftMoney).toFixed(2));
+                        $(".score_consum").val(0);
+                        $(".cash_consum").val(0);
+                        $(".retumoney_consum").val(0);
+                    }
+                    else {
+                        // 储值不够,积分来凑
+                        var leftMoneyToScore = Math.max(leftMoney - Cm, 0);
+                        if (S >= leftMoneyToScore) {
+                            // 积分足够
+                            $(".cardmoney_consum").val(parseFloat(Cm).toFixed(2));
+                            $(".score_consum").val(leftMoneyToScore.toFixed(2));
+                            $(".cash_consum").val(0);
+                            $(".retumoney_consum").val(0);
+                        } else {
+                            // 积分不够,现金来凑
+                            var leftMoneyToCash = Math.max(leftMoneyToScore - S, 0);
+                            $(".cardmoney_consum").val(parseFloat(Cm).toFixed(2));
+                            $(".score_consum").val(S.toFixed(2));
+                            $(".cash_consum").val(leftMoneyToCash.toFixed(2));
+                            $(".retumoney_consum").val(0);
+
+                        }
+                    }
+
+                }
+            } else {
+                // 非会员
+                if (swipcard >= M) {
+                    $(".cash_consum").val("0.00");
+                    $(".swipcard_consum").val(parseFloat(M).toFixed(2));
+                } else {
+                    M = M - swipcard;
+                    $(".cash_consum").val(parseFloat(M).toFixed(2));
+                }
+            }
+        } else if (send == ".erase_consum") {
+            if (_isMemb) {
+                datavalid(".cash_consum");
+            } else {
+                if (money >= M) {
+                    $(".swipcard_consum").val("0.00");
+                    $(".cash_consum").val(parseFloat(M).toFixed(2));
+                } else {
+                    M = M - money;
+                    $(".swipcard_consum").val(parseFloat(M).toFixed(2));
+                }
+            }
+        }
+
+        getScoreRule()();
+
+    }
+
+    // 获取消费信息
+    function getConsumeInfo() {
+        var state = getState()();
+        var consume_count = state.beforeDiscountMoney //商品总金额(第一步中计算得到的商品总金额)
+        if (consume_count == "") consume_count = 0;
+        var levelDiscount = state.levelDiscount;
+        var cash = $(".cash_consum").val().trim(); // 现金消费
+        if (cash == "") cash = 0;
+        else cash = parseFloat(cash);
+        var swipcard = $(".swipcard_consum").val().trim(); // 刷卡
+        if (swipcard == "") swipcard = 0;
+        else swipcard = parseFloat(swipcard);
+        var swipeCardType = parseInt($("#SwipeCardType").val());
+        var score = $(".score_consum").val().trim(); // 积分
+        if (score == "") score = "0";
+        else score = parseFloat(score);
+        var cardmoney = $(".cardmoney_consum").val().trim(); // 储值
+        if (cardmoney == "") cardmoney = "0";
+        else cardmoney = parseFloat(cardmoney);
+        var erase = $(".erase_consum").val().trim(); // 抹去
+        if (erase == "") erase = "0";
+        else erase = parseFloat(erase);
+
+        var couponMon = state.couponMoney; // 优惠券优惠金额
+        if (couponMon == "") couponMon = 0;
+        else couponMon = parseFloat(couponMon);
+
+        var storeActivityDiscountMoney = state.storeActivityDiscountMoney;
+        var storeActivityId = state.storeActivityId;
+
+
+        var returnmon = $(".retumoney_consum").val().trim(); // 找零
+        if (returnmon == "") returnmon = 0;
+        else returnmon = parseFloat(returnmon);
+        var couponnum = $(".hideda_coupon").val().trim(); // 优惠券编号
+
+        var outstoragetime = $(".prod_outdate").val().trim(); // 出库时间
+        var note = $(".retail_notes").val().trim();
+
+        var ismem = state.isMember;
+
+        //得到 [储值+积分+优惠券优惠+店铺活动优惠+抹去]
+        var cou = parseFloat(erase) + parseFloat(storeActivityDiscountMoney); // 非会员,仅可参加店铺活动优惠
+        if (ismem) {
+            cou = parseFloat(cardmoney) + parseFloat(score) + parseFloat(erase) + parseFloat(couponMon) + parseFloat(storeActivityDiscountMoney);
+        }
+
+        var mes = ""; //校验错误信息
+        var operat = $(".retail_admi option:selected").val();
+        if (operat == null || operat == "") {
+            mes = "必须选择经办人";
+        }
+
+        // 出货店铺
+        var outstore = $("#outstoreid option:selected").val().trim();
+        if (outstore == "") {
+            mes = "出货店铺不为空";
+        }
+        if (ismem && parseFloat(consume_count) < cou) {
+            mes = "积分、储值、优惠券、抹去累计已超过消费总金额，不需要现金和刷卡";
+        }
+     
+        var afterLevelDiscountMoney = parseFloat((consume_count * levelDiscount).toFixed(2));
+        if (parseFloat((cou + cash + swipcard - returnmon).toFixed(2)) != parseFloat(afterLevelDiscountMoney))
+            mes = "各项消费总计和‘总消费金额’不一致";
+        if (consume_count == "0" || consume_count == "")
+            mes = "'总消费金额'为0";
+        if (returnmon < 0) {
+            mes = "实际付款小于应付款";
+        }
+        if ((cash + swipcard == 0) && returnmon > 0) {
+            mes = "现金和刷卡消费为0的情况下，找零不应该大于0";
+        } else if (outstore.trim() == "") {
+            mes = "选择出货店铺";
+        }
+        if (mes.length > 0) {
+            $.whiskey.web.alert({
+                type: "info",
+                content: mes + ",请更正"
+            });
+            return null;
+        }
+        else {
+
+            return {
+                ConsumeCoun: consume_count,                           // 总金额
+                Cash: cash,                                           // 现金消费
+                SwipCard: swipcard,                                   // 刷卡消费
+                CardMoney: cardmoney,                                 // 储值消费
+                Score: score,                                         // 积分消费
+                Erase: erase,                                         // 抹去
+                ReturnMoney: returnmon,                               // 找零
+                CouponNum: couponnum,                                 // 优惠券号码
+                CouponMoney: couponMon,                                 // 优惠券优惠
+                storeActivityDiscountMoney: storeActivityDiscountMoney,// 店铺活动优惠
+                storeActivityId: storeActivityId,                      //店铺活动id
+                OutStoreId: outstore,                                 // 店铺id
+                OutStoragTime: outstoragetime,                        // 下单时间
+                Note: note,                                           // 备注
+                Operat: operat,                                        // 经办人
+                SwipeCardType: swipeCardType,
+                LevelDiscount: levelDiscount
+            };
+        }
+    };
+
+    // 积分和储值的消费计算
+    function refreConsumeMon() {
+        // 消费总金额
+        var state = getState()();
+        var cou = state.afterDiscountMoney; //去掉优惠券和活动优惠之后的消费金额
+        $(".consume_count").val(cou.toFixed(2));
+        resetPayControl();
+        // 填充付款控件
+        if (!state.isMember || !state.memberInfo) {
+            // 非会员默认使用现金消费
+            $(".cash_consum").val(cou.toFixed(2));
+
+        }
+        else {
+            // 获取当前会员的储值和积分余额
+            var curr_mon = parseFloat(state.memberInfo.Balance); // 可用储值
+            var curr_score = parseFloat(state.memberInfo.Score); // 可用积分
+
+            if (curr_mon == 0 && curr_score == 0) {
+
+                // 储值积分均为0的情况,默认只使用现金消费
+                //$(".cash_consum").val(cou);
+
+            }
+            else {
+
+                // 计算能消耗多少储值
+                var memberBalanceUse = Math.min(cou, curr_mon);
+                $(".cardmoney_consum").val(memberBalanceUse.toFixed(2)); //应消费储值
+
+                // 计算能消耗多少积分
+                var leftMoney = cou - memberBalanceUse;
+                var memberScoreUse = Math.min(leftMoney, curr_score);
+                $(".score_consum").val(memberScoreUse); //应消费积分
+                //默认使用现金消费
+                //var cashUse = cou - memberBalanceUse - memberScoreUse;
+                //$(".cash_consum").val(cashUse);
+
+            }
+        }
+
+        // consumeRule();
+    }
+
+    // 重置输入框
+    function resetPayControl() {
+        $(".cash_consum").val(0);
+        $(".swipcard_consum").val(0);
+        $(".erase_consum").val(0);
+        $(".cardmoney_consum").val(0);
+        $(".score_consum").val(0);
+        $(".retumoney_consum").val(0);
+    }
+
+
+
+
+    function retailed() {
+        $(".memb-cu").find("input").not(".prod_outdate").val("");
+        $('#prodlis_tab tbody').html("");
+        $(".remove_ico").parents("tr").remove();
+        $("#membNum").removeAttr("datnum");
+        $(".moncou_span").html("");
+        codelist = [];
+        // 清除倒计时
+        if (window["GLOBAL_RETAIL_TIMER_HANDLE"]) {
+            clearInterval(window["GLOBAL_RETAIL_TIMER_HANDLE"]);
+            $("#timer").hide();
+        }
+    }
+
+    // 找零计算
+    function returnMoney() {
+        var cash = $(".cash_consum").val().trim();
+        cash = cash == "" ? "0" : cash;
+        var cash_consum = parseFloat(cash); // 现金
+
+        var swipmon = $(".swipcard_consum").val().trim();
+        swipmon = swipmon == "" ? "0" : swipmon;
+        var swipcard_consum = parseFloat(swipmon); // 刷卡
+
+        var score = $(".score_consum").val().trim();
+        score = score == "" ? "0" : score;
+        var score_consum = parseFloat(score); // 积分
+
+        var cardmon = $(".cardmoney_consum").val().trim();
+        cardmon = cardmon == "" ? "0" : cardmon;
+        var cardmoney_consum = parseFloat(cardmon); // 储值
+
+        var erasemon = $(".erase_consum").val().trim();
+        erasemon = erasemon == "" ? "0" : erasemon;
+        var erase_consum = parseFloat(erasemon); // 抹去
+
+        var couponMon = $(".couponMon").val().trim(); // 优惠券
+        if (couponMon == "")
+            couponMon = 0;
+        else couponMon = parseFloat(couponMon);
+        var consume_count = parseFloat($(".consume_count").val()); // 总计金额
+        var consume_pl = score_consum + cardmoney_consum + erase_consum + couponMon; // 不找零消费
+        var res = 0;
+        if (consume_pl >= consume_count) {
+            res = cash_consum + swipcard_consum;
+        } else {
+            res = cash_consum + swipcard_consum + consume_pl - consume_count;
+
+        }
+        if (parseFloat(res) < 0)
+            $(".retumoney_consum").css("color", " #e5603b").val(res.toFixed(2));
+        else {
+            $(".retumoney_consum").css("color", "blue").val(res.toFixed(2));
+        }
+        return res;
+    }
+
+</script>
+
+
+<script>
+
+    (function () {
+        $("[data-toggle=popover]").popover({
+            html: true,
+            content: function () {
+                return $("#pop_content").html();
+            }
+        });
+        getScoreRule()();
+        $(".cash_consum").keydown(function (e) {
+            return Number(e.keyCode);
+        }).change(function () {
+            datavalid(".cash_consum");
+        });
+        $(".swipcard_consum").keydown(function (e) {
+            return Number(e.keyCode);
+        }).change(function () {
+            datavalid(".swipcard_consum");
+        });
+        $(".erase_consum").keydown(function (e) {
+            return Number(e.keyCode);
+        }).change(function () {
+            datavalid(".erase_consum");
+        });
+
+        // 初始化[出库时间]日期值
+        var da = new Date();
+        var datetime = da.getFullYear() + "/" + (da.getMonth() + 1) + "/" + da.getDate();
+        $(".input-daterange input").val(datetime);
+        refreConsumeMon();
+
+
+        $("#btnStepTwo").click(function () {
+            $(".step2").show();
+            $(".step3").empty();
+        });
+
+        // 确认销售
+        $(".saleok").click(function () {
+            var _self = this
+            if ($(_self).prop("disabled")) {
+                alert("请不要频繁点击");
+                return;
+            }
+            // 基本校验
+            var state = getState()();
+            var ismemb = state.isMember;
+            var membinfo = null;
+            debugger;
+            if (state.isMember) {
+                membinfo = {
+                    MemberNum: state.memberInfo.MembNum,
+                    CollNum: state.CollNum,
+                    MemberId: state.memberInfo.Id
+                }
+            }
+            var consumeinfo = getConsumeInfo();
+            if (consumeinfo == null) return false;
+            var products = getProductsInfo();
+            $(_self).prop("disabled", true);
+
+            if (products != null) {
+                var postData = {
+                    Products: products,
+                    IsMember: ismemb,
+                    MemberInfo: membinfo,
+                    ConsumeInfo: consumeinfo
+                };
+                $.post("/Stores/Retail/Create", {
+                    orderInfo: JSON.stringify(postData) 
+                }, function (da) {
+                    if (da.ResultType == 3) {
+
+                        retailed();
+                        var confirm = new $.whiskey.web.ajaxConfirm({
+                            question: "操作成功",
+                            notes: "提示：商品零售完成，是否打印小票？",
+                            lockButton: $("#outstoreid"),
+                            success_event: function () {
+                                // 打印小票
+                                var view = new $.whiskey.web.ajaxView({
+                                    caption: "打印购物凭证",
+                                    actionUrl: "@Url.Action("PrintReceipt")",
+                                    params: { numb: da.Data },
+                                    close: function () {
+                                    	$.whiskey.web.load({url:'/Stores/RetailDetail/Index'})
+                                      //  location.href = "/Stores/RetailDetail/Index";
+                                    }
+
+                                });
+                            },
+                            cancel_event: function () {
+                                // alert("未实现");
+                                $.whiskey.web.load({url:'/Stores/RetailDetail/Index'})
+                              //  location.href = "/Stores/RetailDetail/Index";
+                            }
+                        });
+                    } else {
+                        $(_self).prop("disabled", false);
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: da.Message + ",请更正"
+                        });
+                    }
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请选择商品"
+                });
+            }
+
+        });
+
+    })();
+</script>
+<!-- #endregion -->
+	<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

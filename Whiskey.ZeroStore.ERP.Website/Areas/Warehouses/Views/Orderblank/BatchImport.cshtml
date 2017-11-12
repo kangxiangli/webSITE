@@ -1,0 +1,133 @@
+﻿<p>
+    <button id="browse" class="form-control" style="display:inline;width:30%;margin-right:10px">选择文件</button><label id="filename">未选择文件……</label><label id="up_state"></label>
+    <button id="start_upload" class="form-control btn btn-success" style="margin-top:10px;">开始上传</button>
+
+</p>
+<table class="nwe_table_ra table-list table table-striped table-bordered" width="100%">
+    <thead>
+        <tr>
+            <th>序号</th>
+            <th>流水号</th>
+        </tr>
+
+    </thead>
+</table>
+<style>
+    .modal-dialog {
+        width: 75% !important;
+        max-width: 75%;
+    }
+
+    .sorting_desc {
+        background: white !important;
+    }
+</style>
+<script src="~/Content/plupload-2.1.8/js/plupload.full.min.js"></script>
+<script src="~/Content/plupload-2.1.8/js/jquery.plupload.queue/jquery.plupload.queue.min.js"></script>
+<script>
+    debugger
+    var gloablDataTableObj = null;
+    $(function () {
+       
+        gloablDataTableObj = $(".nwe_table_ra").DataTable({
+            data: [],
+            "aaSorting": [[0, 'asc']],
+            "sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-2"l><"col-md-3 info"i><"col-md-7 text-right"p>>',
+            'bPaginate': true,
+            'bFilter': true,
+            'bLengthChange': true,
+            'sPaginationType': 'full_numbers',
+            "aLengthMenu": [[5, 10, 25, 50], ["5条", "10条", "25条", "50条"]],
+            'bSort': true,
+            "autoWidth": true,
+            "iDisplayLength": 10,
+            "bServerSide": false,
+            "bProcessing": false,
+            "sServerMethod": "post",
+            "fnRowCallback": null,
+            "fnDrawCallback": null,
+            "fnServerData": null,
+            "oLanguage": {
+                "sProcessing": "<img style='width:100px;height:100px;position:absoulte;z-index:9990;margin-top:220px' src='/content/images/status.gif'/><p style='font-size:16px;margin-top:50px;'>正在加载……</p>",
+                "sLengthMenu": "显示： _MENU_ ",
+                "sZeroRecords": "查询不到相关数据！",
+                "sEmptyTable": "表中无数据存在！",
+                "sInfo": "总计：_TOTAL_条",//_START_ /
+                "sInfoEmpty": "当前显示0到0条，共0条记录",
+                "sInfoFiltered": "当前共有 _MAX_ 条记录",
+                "sSearch": "搜索：",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上一页",
+                    "sNext": "下一页",
+                    "sLast": "末页"
+                }
+            },
+            columns: [
+                { data: 'key' },
+                { data: 'value' }
+            ]
+        });
+        var uploader = new plupload.Uploader(
+        {
+            runtimes: 'silverlight,html4,html5,flash',
+            browse_button: 'browse',
+            url: '/Warehouses/Orderblank/ExcelFileUpload',
+            flash_swf_url: '~/Content/plupload-2.1.8/js/Moxie.swf">~/Content/plupload-2.1.8/js/Moxie.swf',
+            filters: {
+                mime_types: [
+                    { title: "txt", extensions: "txt" },
+                    { title: "excel", extensions: "xls,xlsx" }
+                ],
+                max_file_size: '400kb',
+                prevent_duplicates: true
+            }
+
+        });
+
+        uploader.init();
+        uploader.bind('FilesAdded', function (uploader, files) {
+            $("#filename").html(files[0].name);
+            $("#up_state").html("");
+        });
+        uploader.bind('BeforeUpload', function (uploader, file) {
+            $("#up_state").html("正在上传……")
+        }); //
+        uploader.bind('FileUploaded', function (uploader, file, obj) {
+            $("#up_state").html("上传成功");
+            console.log(obj);
+            var res = JSON.parse($(obj.response).text());
+            if (res.ResultType === 3 && res.Data.length > 0) {
+                debugger;
+                console.log(res.Data);
+                var arr = [];
+                for (var i = 0; i < res.Data.length; i++) {
+                    var rowData = { key: i, value: res.Data[i] };
+                    arr.push(rowData);
+
+                }
+                gloablDataTableObj.rows.add(arr).draw();
+            }
+            //$.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+        });
+
+        $('#start_upload').click(function () {
+            uploader.start();
+        });
+    });
+
+</script>
+
+
+<script>
+    debugger
+    var dts = null;
+
+    $(function () {
+
+        $("body").delegate(".batch_td_ch", "click", function () {
+
+            $(".td_lef").prop("checked", $(this).is(":checked"));
+        })
+    })
+</script>

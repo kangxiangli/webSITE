@@ -1,0 +1,236 @@
+﻿<style>
+    .modal-dialog {
+    width:70%;
+    max-width:70%;
+    }
+    .datepicker {
+        z-index: 9999;
+    }
+       #Detail_Clear {
+   	background: #e5603b !important;
+   	}
+</style>
+<div class="row">
+    <div class="panel panel-search">
+       
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+               
+
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">是否结算：</label>
+                        <div class="col-md-7">
+                            <select id="IsCloseAnAccount" name="IsCloseAnAccount" class="form-control selectpicker">
+                                <option value="">选择</option>
+                                <option value="true">已结算</option>
+                                <option value="false">未结算</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">创建日期：</label>
+                        <div class="col-md-7">
+                            <div class="mode-date Detail_datetime input-daterange input-group">
+                                <span style="position: relative; z-index: 9999;">
+                                    @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                </span><span class="input-group-addon">至</span>
+                                   <span style="position:relative;z-index:9999">
+                                       @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                   </span>
+                                    
+                                   
+</div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="hid_collid" value="@ViewBag.collId"/>
+               
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Detail_Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Detail_Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+         
+        </div>
+        <table class="table table-list detail-table valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("button[data-bb-handler='success']").remove();
+        $(".mode-date input").datepicker({
+            //showOtherMonths: true,
+        });
+        $.whiskey.datatable.instances[0]= $(".detail-table").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("DetailList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var startDate = $(".start-date").val();
+                var endDate = $(".end-date").val();
+                if (startDate.length > 0 && endDate.length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                }
+                var val = $(".form-search #Notes").val().trim();
+                conditions.Rules.push(new $.whiskey.filter.rule("Notes", val, "contains"));
+
+                var IsCloseAnAccount = $("#IsCloseAnAccount option:selected").val();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsCloseAnAccount", IsCloseAnAccount, "equal"));
+                var collId = $("#hid_collid").val();
+                
+                aoData.push({ name: "Id", value: collId });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "自增编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data + 1;
+                    return '' + index + '';
+                }
+            },
+
+            {
+                "sTitle": "搭配师编号",
+                "bSortable": false,
+                "sName": "Numb",
+                "mData": function (data) {
+                    return data.Numb;
+                },
+            },
+            {
+                "sTitle": "真实姓名",
+                "bSortable": false,
+                "sName": "RealName",
+                "mData": function (data) {
+                    return data.RealName;
+                },
+            }
+            , {
+                "sTitle": "收益产生时间",
+                "bSortable": false,
+                "sName": "time",
+                "mData": function (data) {
+                    return data.ConsumeDateTime;
+                },
+            },
+            {
+                "sTitle": "收益类型",
+                "bSortable": false,
+                "sName": "EarningsType",
+                "mData": function (data) {
+                    switch (data.EarningsType) {
+                        case 1:return "推荐会员";
+                        case 2:return "为会员推荐搭配";
+                        case 3: return "被会员预约";
+                        default: return "";
+                    }
+                     
+                },
+            },
+             {
+                 "sTitle": "消费来自",
+                 "bSortable": false,
+                 "sName": "MemberName",
+                 "mData": function (data) {
+                     return data.MemberName;
+                 },
+             }
+             , {
+                 "sTitle": "消费总额",
+                 "bSortable": false,
+                 "sName": "RealName",
+                 "mData": function (data) {
+                     return data.Totalexpendamount;
+                 },
+             }
+             , {
+                "sTitle": "收益提成",
+                "bSortable": false,
+                "sName": "EarningsPercent",
+                "mData": function (data) {
+                    return data.EarningsPercent;
+                },
+             },
+             , {
+                 "sTitle": "收益金额",
+                 "bSortable": false,
+                 "sName": "EarningsPercent",
+                 "mData": function (data) {
+                    var cou= data.Totalexpendamount;
+                    var per = data.EarningsPercent;
+                     if(cou!=""&&per!="")
+                     return cou*per;
+                 },
+             },
+              {
+                  "sTitle": "是否已结算",
+                  "bSortable": false,
+                  "sName": "RealName",
+                  "mData": function (data) {
+                      return data.IsCloseAnAccount;
+                  },
+              },
+            {
+                "sTitle": "备注",
+                "bSortable": false,
+                "sName": "RealName",
+                "mData": function (data) {
+                    return data.EarningsNotes;
+                },
+                }
+
+            ]
+        })
+        $("#Detail_Search").click(function () {
+            $.whiskey.datatable.instances[0].fnDraw(false);
+        });
+        $("#Detail_Clear").click(function () {
+            $("#IsCloseAnAccount option:first").attr("selected", "selected");
+            $("#Detail_datetime input").val("");
+        });
+    });
+    
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

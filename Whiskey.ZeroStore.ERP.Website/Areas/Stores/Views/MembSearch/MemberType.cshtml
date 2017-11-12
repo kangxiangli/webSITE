@@ -1,0 +1,18 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Member
+<div class="form-group">
+    <label class="control-label col-md-2">
+        会员类型 :
+    </label>
+    <div class="col-md-10">        
+        @Html.DropDownList("MemberTypeId", (List<SelectListItem>)ViewBag.ListItem, new { @class = "form-control selectpicker" })
+    </div>
+</div>
+
+<input type="hidden" value="@ViewBag.MemberId" name="MemberId" />
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

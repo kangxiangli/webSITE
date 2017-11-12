@@ -1,0 +1,110 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model Whiskey.ZeroStore.ERP.Models.Entities.Properties.MaintainExtend
+
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+<link rel="stylesheet" href="/content/editor/themes/default/default.css" />
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<style>
+
+</style>
+
+
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #5ebd5e"></span>
+</div>
+
+<input type="hidden" name="Id" value="@Model.Id" />
+<div>
+    <div class="">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.ExtendName) :
+            </label>
+            <div class="col-md-10">
+                @Model.ExtendName
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Descript) :
+            </label>
+            <div class="col-md-10" id="descriptInfo" style="">
+                @*@if (Model.Descript!=null&&Model.Descript.Trim() == "")
+                {
+                    <span>无</span>
+                }
+                else
+                {
+                    Html.Raw(Model.Descript);
+                }*@
+
+                @Html.Raw(Model.Descript)
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                是否父级 :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.ParentId==null? "是" : "不是")
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                是否可用 :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsEnabled ? "可用" : "不可用")
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                添加时间 :
+            </label>
+            <div class="col-md-10">
+                @Model.CreatedTime.ToString()
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                修改时间 :
+            </label>
+            <div class="col-md-10">
+                @Model.UpdatedTime.ToString()
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                图片 :
+            </label>
+            <div class="col-md-10">
+                @if (Model.ImgPath == "")
+                {
+                    <span>无</span>
+                }
+                else
+                {
+                    <img src="@Model.ImgPath " style="max-width: 100px" />
+                }
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function() {
+            //border:
+            var tx = $("#descriptInfo").html();
+            if (tx.trim() != "") {
+                $("#descriptInfo").css("border", "1px solid #c2c2c2");
+            }
+        })
+    </script>
+</div>

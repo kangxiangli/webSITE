@@ -1,0 +1,1179 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model ProductDto
+
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+<link rel="stylesheet" href="/content/editor/themes/default/default.css" />
+<style>
+    #buysaid li {
+        list-style-type: none;
+    }
+
+    #collocPirc li {
+        list-style-type: none;
+        float: left;
+        width: 30%;
+    }
+
+    #collocPirc :after {
+        clear: both;
+        content: '';
+        visibility: hidden;
+        display: block;
+    }
+
+    #collocPirc li img {
+        margin-left: 15px;
+        margin-top: 10px;
+        width: 120px;
+    }
+
+    .fa-circle-sy {
+        font-size: 50px;
+        color: #9ed441;
+        position: relative;
+    }
+
+    .child li {
+        float: left;
+        margin-left: 20px;
+    }
+
+    .child:after {
+        clear: both;
+        content: "";
+        visibility: hidden;
+        display: block;
+    }
+
+    #maintainUl li {
+        list-style-type: none;
+    }
+</style>
+<ul id="product" class="nav nav-tabs">
+    <div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+        <span style="color: #5ebd5e"></span>
+    </div>
+    <li class="active">
+        <a href="#base" data-toggle="tab">商品属性</a>
+    </li>
+    <li class="">
+        <a href="#attach" data-toggle="tab">商城属性</a>
+    </li>
+    <li class="">
+        <a href="#imagesTab" data-toggle="tab">主图和搭配图</a>
+    </li>
+    <li class="">
+        <a href="#dresser" data-toggle="tab">搭配属性</a>
+    </li>
+    <li class="">
+        <a href="#prodDescri" data-toggle="tab">商品描述</a>
+    </li>
+    <li class="">
+        <a href="#othdresser" data-toggle="tab">相关搭配</a>
+    </li>
+    <li class="">
+        <a href="#buysaid" data-toggle="tab">买手说</a>
+    </li>
+    <li class="">
+        <a href="#other" data-toggle="tab">其他</a>
+    </li>
+</ul>
+@Html.HiddenFor(m => m.Id)
+<div class="tab-content">
+    <div class="tab-pane fade active in base " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOrigNumber)</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOrigNumber, new { @class = "form-control", disabled = "disabled", style = "background-color:#dddddd" })
+
+            </div>
+            <input type="hidden" name="ProductNumber" value="@Model.ProductNumber" />
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductNumber)</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductNumber, new { @class = "form-control", @readonly = "true", style = "background-color:#dddddd", disabled = "disabled", })
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.BrandId)</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(m => m.BrandId, (List<SelectListItem>)ViewBag.Brand, new { @class = "form-control selectpicker", @onchange = "GetProductNumber()", disabled = "disabled", style = "background-color:#dddddd" })
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.CategoryId)</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(m => m.CategoryId, (List<SelectListItem>)ViewBag.Category, new { @class = "form-control selectpicker", @onchange = "GetProductNumber()", disabled = "disabled", style = "background-color:#dddddd" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.SizeId)</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(m => m.SizeId, (List<SelectListItem>)ViewBag.Size, new { @class = "form-control selectpicker", @onchange = "GetProductNumber()", disabled = "disabled", style = "background-color:#dddddd" })
+            </div>
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.SeasonId)</label>
+            <div class="col-md-4" id="div">
+                @Html.DropDownListFor(m => m.SeasonId, (List<SelectListItem>)ViewBag.Season, new { @class = "form-control selectpicker", @onchange = "GetProductNumber()", disabled = "disabled", style = "background-color:#dddddd" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductColor)</label>
+            <div class="col-md-4">
+                <input type="text" value="@ViewBag.Color" class="form-control" disabled="disabled" style="background-color:#dddddd" />
+                @* @Html.DropDownListFor(m => m.ColorId, (List<SelectListItem>)ViewBag.Color, new { @class = "form-control selectpicker", disabled = "disabled", style = "background-color:#dddddd" })*@
+            </div>
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.TagPrice)</label>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="hidden" value="@ViewBag.isAllowEditPrice.ToString()" id="isalloweditprice" />
+                    <span class="input-group-addon bg-primary no-border">￥</span>
+                    @Html.TextBoxFor(m => m.TagPrice, new { @class = "form-control", @onkeyup = "SetPrice();" })
+                    <span class="input-group-addon bg-primary no-border">元</span>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+        @*<div class="form-group">
+
+                <label class="control-label col-md-2">零售折扣</label>
+                <div class="col-md-4">
+                    @Html.DropDownList("WholesaleDiscount", (List<SelectListItem>)ViewBag.Discount, new { @class = "form-control", @onchange = "SetPrice();" })
+                </div>
+
+                <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.RetailPrice)</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon bg-default no-border">￥</span>
+                        @Html.TextBoxFor(m => m.RetailPrice, new { @class = "form-control" })
+                        <span class="input-group-addon bg-default no-border">元</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <label class="control-label col-md-2">进货折扣</label>
+                <div class="col-md-4">
+                    @Html.DropDownList("RetailDiscount", (List<SelectListItem>)ViewBag.Discount, new { @class = "form-control", @onchange = "SetPrice();" })
+                </div>
+
+                <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.WholesalePrice)</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon bg-default no-border">￥</span>
+                        @Html.TextBoxFor(m => m.WholesalePrice, new { @class = "form-control" })
+                        <span class="input-group-addon bg-default no-border">元</span>
+                    </div>
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.Notes)</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+            </div>
+            <div><label title="替换吊牌价、备注"><input type="checkbox" class="base_repl" name="base_repl" value="1" />全部替换</label></div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade clearfix" id="attach">
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductName)</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.ProductName, new { @class = "form-control", @onclick = "GetProductName();" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.Summary)</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Summary, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.TemplateId)</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.TemplateId, (List<SelectListItem>)ViewBag.Templates, new { @class = "form-control selectpicker " })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.JumpLink)</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.JumpLink, new { @class = "form-control" })                
+            </div>
+        </div>
+        @*<div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductCollocationImg)</label>
+            <div class="col-md-8">
+                <input type="text" class="form-control prodCollImg" style="background-color:#eeeeee" name="ProductCollocationImg" value="@Model.ProductCollocationImg">
+            </div>
+            <div class="col-md-2" style="margin-left:0;padding-left:0"><button id="browse" class="form-control">选择……</button></div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.OriginalPath)</label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.OriginalPath, new { @class = "form-control", @readonly = "true", @placeholder = "请先上传下边的细节组图，再点击选择一张作为商品主图..." })
+            </div>
+            <div class="col-md-2" style="margin-left:0;padding-left:0"><button id="path_copy" class="form-control">复制为商品搭配图↑</button></div>
+        </div>*@
+
+        <div class="form-group">
+            <label class="control-label col-md-2">细节组图</label>
+            <div class="col-md-10">
+                <div class="dropzone-box">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                    </div>
+                    <div class="fallback">
+                        <input name="file" type="file" multiple="" accept="image/jpeg,image/gif,image/png,image/jpg" />
+                    </div>
+                </div>
+            </div>
+            @Html.HiddenFor(m => m.Images)
+        </div>
+        <div>
+            <label title="替换模板、主图、搭配图、细节图">
+                <input type="checkbox" class="repl_all" name="atta_repl" value="1" />全部替换
+            </label>
+        </div>
+    </div>
+
+    <div id="imagesTab" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.ProductCollocationImg)
+            </label>
+            <div class="col-md-8">
+                <img class="img-thumbnail" src="@Model.ProductCollocationImg" id="imgProductCollocation" style="max-width:90px" />
+                <input type="hidden" name="ProductCollocationImg" value="@Model.ProductCollocationImg" id="ProductCollocationImg">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.OriginalPath)
+            </label>
+            <div class="col-md-8">
+                @Html.HiddenFor(m => m.OriginalPath)
+                <img class="img-thumbnail" src="@Model.ThumbnailPath" id="imgOriginalPath" style="max-width:90px" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                上传类型
+            </label>
+            <div class="col-md-5">
+                <select class="form-control" id="choiceImg">
+                    <option value="0">搭配图</option>
+                    <option value="1">主图</option>                                        
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">细节组图</label>
+            <div class="col-md-10">
+                <div class="dropzone-box uploadImage">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                    </div>
+                    <div class="fallback">
+                        <input name="file" accept="image/jpeg,image/gif,image/png,image/jpg" type="file" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <label title="替换模板、主图、搭配图、细节图">
+                <input type="checkbox" class="repl_all" name="atta_repl" value="1" />全部替换
+            </label>
+        </div>
+    </div>
+
+
+    <div class="tab-pane fade clearfix" id="dresser">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                图片属性 :
+            </label>
+            <div class="col-md-10">
+                <div class="attribute-wrapper left">
+                    <ul class="Attributes ztree"></ul>
+                </div>
+            </div>
+            @Html.HiddenFor(m => m.Attributes)
+        </div>
+        <div><label title="替换图片属性"><input type="checkbox" id="attr_repl" class="attr_repl" name="attr_repl" value="1" />全部替换</label></div>
+    </div>
+    <div class="tab-pane fade clearfix" id="prodDescri">
+        @Html.TextAreaFor(m => m.Description, new { @class = "article-editor", @style = "visibility:hidden;" })
+        <div><label title="替换商品描述"><input type="checkbox" class="repl_all" name="descr_repl" value="1" />全部替换</label></div>
+    </div>
+    <div class="tab-pane fade clearfix" id="othdresser">
+        <div class="row">
+            <div class="panel panel-search">
+                <div class="panel-heading clearfix">
+                    <div class="col-md-4 panel-title">
+                        <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal form-search text-left">
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-4">会员昵称</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("membName", "", new { @class = "form-control", @placeholder = "会员昵称/会员账号" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <input type="hidden" class="hid_da" value="@ViewBag.colloColor" />
+                                <label class="control-label col-md-4">搭配名称</label>
+                                <div class="col-md-8 ">
+                                    @Html.TextBox("collocationName", "", new { @class = "form-control", @placeholder = "搭配名称" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="control-label col-md-4">颜色</label>
+                            <div class="col-md-8">
+                                <div class="dropdown">
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2"></ul>
+                                    <button type="button" daval="-1" style='border:1px solid #c2c2c2;width:100%;background-color:white' class="btn dropdown-toggle btnbc" id="dropdownMenu2"
+                                            data-toggle="dropdown">
+                                        <span class="bttit">——下拉选择——</span>
+                                        <span class="caret right"></span>
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-4">风格</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("collocationStyles", (List<SelectListItem>)ViewBag.Styles, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-4">场合</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("collocationSituation", (List<SelectListItem>)ViewBag.Situation, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+                <div class="panel-footer text-right clearfix ">
+
+                    <div class="pull-left panel-search">
+                        <button id="CollocationSearch" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                        <button id="CollocationClear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                    </div>
+
+                </div>
+
+            </div>
+            <div id="collocPirc" style="border:1px solid #c2c2c2">
+                <input type="hidden" id="otherCollPicIds" value="@Model.OtherColloIds" />
+                <input type="hidden" name="OtherColloIds" id="OtherColloIds">
+                <div id="otherpicshow">
+
+                </div>
+            </div>
+        </div>
+        <div><label title="替换相关搭配"><input type="checkbox" class="othdresser_repl" name="othdresser_repl" value="true" />全部替换</label></div>
+    </div>
+
+    <div class="tab-pane fade clearfix" id="buysaid">
+        <input type="hidden" value="@Model.BuysaidAttrIds" id="BuysaidAttrIds" name="BuysaidAttrIds" />
+        <div class="buysaidsel">
+            <ul>
+                <li><label><input type="checkbox" value="1" /><span>单品来历：表达单品象征意味或含义，单品故事描述或点开链接相关专题</span></label></li>
+                <li><label><input type="checkbox" value="2" /><span>色彩分析：色彩所传达的气质</span></label></li>
+                <li><label><input type="checkbox" value="3" /><span>面料分析：面料的质感、考究、贵重、舒适</span></label></li>
+                <li><label><input type="checkbox" value="4" /><span>款式分析：设计细节分析</span></label></li>
+                <li><label><input type="checkbox" value="5" /><span>做工：工艺的复杂性、精妙</span></label></li>
+                <li><label><input type="checkbox" value="6" /><span>试穿体验：版型、舒适度</span></label></li>
+                <li><label><input type="checkbox" value="7" /><span>扬长避短：塑造体型、掩饰特型、凸显优势</span></label></li>
+                <li><label><input type="checkbox" value="8" /><span>实用性：方便实用、易搭配、造型丰富、不挑体型</span></label></li>
+            </ul>
+        </div>
+        @Html.TextAreaFor(m => m.BuysaidText, new { @class = "article-editorbuysaid", @style = "visibility:hidden;" })
+        <div><label title="替换买手说以及标签"><input type="checkbox" id="buysaid_repl" class="buysaid_repl" name="buysaid_repl" value="true" />全部替换</label></div>
+    </div>
+
+    <div id="other" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <div id="maintainUl"></div>
+            @Html.HiddenFor(m => m.MaintainIds)
+        </div>
+
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true" style="overflow: hidden;">
+        <div class=" modal-dialog img_show_view">
+            <div style="position:absolute; top:50%;right:20%">
+                <img style="" src="www.baidu.com">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/content/editor/kindeditor-min.js"></script>
+<script type="text/javascript" src="/content/editor/lang/zh_CN.js"></script>
+
+<script src="/content/scripts/jquery/jquery.ztree.core-3.5.min.js"></script>
+<script src="/content/scripts/jquery/jquery.ztree.excheck-3.5.js"></script>
+
+<script type="text/javascript">
+    debugger
+    var dropper;
+    $(document).ready(function () {
+        var editor = KindEditor.create(".article-editor", {
+            width: "100%",
+            height: "400px",
+            resizeType: 1,
+            uploadJson: "/content/editor/upload_json.ashx",
+            fileManagerJson: "/content/editor/file_manager_json.ashx",
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            contentEditable: true,
+            filterMode: false,
+            items: [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink'
+            ],
+            afterCreate: function (id) {
+                this.focus(id);
+            },
+            afterChange: function (id) {
+                this.sync(id);
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+        var editor1 = KindEditor.create(".article-editorbuysaid", {
+            width: "100%",
+            height: "400px",
+            resizeType: 1,
+            uploadJson: "/content/editor/upload_json.ashx",
+            fileManagerJson: "/content/editor/file_manager_json.ashx",
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            contentEditable: true,
+            filterMode: false,
+            items: [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink'
+            ],
+            afterCreate: function (id) {
+                this.focus(id);
+            },
+            afterChange: function (id) {
+                this.sync(id);
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+
+        $(".checked-all").click(function () {
+            var checkedStatus = this.checked;
+            var checkbox = $(this).parents('.tab-pane').find('input:checkbox');
+            checkbox.each(function () {
+                this.checked = checkedStatus;
+            });
+        });
+
+        dropper = new Dropzone(".dropzone-box", {
+            url: "/Upload/Multiple",
+            init: function () {
+
+                $.whiskey.web.ajaxRequest({
+                    actionUrl: "/Products/Product/Thumbnails",
+                    params: { Id: "@Model.Id" },
+                    lockButton: $(".modal-footer .btn-primary"),
+                    complete: function (data) {
+                        if ((typeof data == 'object')) {
+                            $.each(data, function (index, item) {
+                                var loadFile = {
+                                    name: item.FileName.toString(),
+                                    size: item.FileSize
+                                }
+                                dropper.emit("addedfile", loadFile);
+                                dropper.emit("thumbnail", loadFile, item.FilePath.toString());
+                                dropper.emit("success", loadFile);
+                                dropper.options.dictFiles.put("img-" + dropper.options.dictCounter, item.FilePath);
+                                dropper.options.dictCounter++;
+                            });
+                        }
+                    }
+                });
+
+                this.on("successmultiple", function (file, data) {
+                    for (i = 0; i < data.files.length; i++) {
+                        dropper.options.dictFiles.put("img-" + this.options.dictCounter, data.files[i].toString());
+                        this.options.dictCounter++;
+                    }
+                    SetImages();
+                    if (dropper.getUploadingFiles().length === 0 && dropper.getQueuedFiles().length === 0) {
+                        if ($("#Description").val().indexOf("img") == -1) {
+                            var editorHtml = "";
+                            for (i = 0; i <= dropper.options.dictFiles.size() ; i++) {
+                                if (dropper.options.dictFiles.get("img-" + i) != null) {
+                                    editorHtml += "<img title='" + i + "' src='" + dropper.options.dictFiles.get("img-" + i) + "' /><br /><br />";
+                                }
+                            }
+                           // KindEditor.html("#Description", editorHtml);
+                        }
+                    }
+                });
+                this.on("errormultiple", function (file, data) {
+                });
+                this.on("removedfile", function (file) {
+                    dropper.options.dictCounter--;
+                    SetImages();
+                });
+                this.on("sendingmultiple", function (file, xhr, formData) {
+                    formData.append("ExtType", "Image");
+                    formData.append("SaveDir", "Products");
+                })
+            }
+        });
+
+        //初始化上传主图和搭配图
+        var myDropzone = new Dropzone(".uploadImage", {
+            url: "/Upload/Multiple",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            paramName: "file",
+            maxFilesize: 0.5,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    debugger
+                    var arrFiles = data.files;
+                    var uploadPath = arrFiles[0];
+                    var choice = $("#choiceImg").val();
+                    //上传搭配图时
+                    if (choice == 0) {
+                        $(".bootbox #ProductCollocationImg").attr("value", uploadPath);
+                        $(".bootbox #imgProductCollocation").attr("src", uploadPath);
+                    } else if (choice == 1) { //上传主图时
+                        $(".bootbox #OriginalPath").attr("value", uploadPath);
+                        $(".bootbox #imgOriginalPath").attr("src", uploadPath);
+                    } else { //未知操作时
+
+                    }
+                });
+                this.on("complete", function (file) {
+                    ths.remove(file);
+                });
+            }
+        });
+
+        SetEnabled();
+
+        var setting = {
+            check: {
+                enable: true,
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+                    idKey: "id",
+                    pIdKey: "pid",
+                    rootPId: null
+                }
+            },
+            async: {
+                enable: true,
+                url: "@Url.Action("TreeList", "ProductAttribute")",
+                autoParam: ["id", "name"],
+            },
+            callback: {
+                onCheck: onTreeChecked,
+                onAsyncSuccess: function (event, treeId, treeNode, msg) {
+                    //tree.expandAll(true);
+                    var categories = "@Model.Attributes";
+                    if (categories.length > 0) {
+                        var ids = categories.split(",");
+                        for (var i = 0; i < ids.length; i++) {
+                            tree.checkNode(tree.getNodeByParam("id", ids[i], null), true, false);
+                        }
+                    }
+                }
+            }
+        };
+
+        tree = $.fn.zTree.init($(".Attributes"), setting);
+
+        tree.setting.check.chkboxType = { "Y": "ps", "N": "ps" };
+        tree.setting.view.fontCss["font-size"] = "14px";
+        tree.setting.view.fontCss["line-height"] = "20px";
+
+        $("#TagPrice").change(function () {
+            var te = $(this).val();
+            var reg = /\d+\.?\d+/;
+            if (!reg.test(te)) {
+                $(this).val("");
+            }
+        });
+        $(".repl_all").click(function () {
+            if ($(this).is(":checked")) {
+                $(this).val(1);
+            } else {
+                $(this).val(0);
+            }
+        });
+        //
+        var t = $("#otherCollPicIds").val();
+        if (t != undefined && t.length > 0) {
+            $.post("GetCollocationByIds", { ids: t }, function (da) {
+                var resul = "";
+                if (da != "") {
+                    for (var i = 0; i < da.length; i++) {
+                        var t = da[i];
+
+                        var picpath = t.ImagePath;
+                        var pictit = t.TextInfo;
+                        var id = t.Id;
+                        resul += "<li><img class='othdresser-img' data-col='" + id + "' src='" + picpath + "' title='" + pictit + "'/></li>";
+                    }
+                }
+                resul += "</ul>";
+                $("#otherpicshow").html("").html(resul);
+                $(".othdresser-img").click();
+            });
+        }
+
+
+        $("#CollocationSearch").click(function () {
+            var membName = $("#membName").val().trim();
+            var collocationName = $("#collocationName").val().trim();
+            var collocationColorId = $("#dropdownMenu2").attr("daval");
+            var collocationStyles = $("#collocationStyles option:selected").val();
+            var collocationSituation = $("#collocationSituation option:selected").val();
+
+            var conditions = new $.whiskey.filter.group();
+            conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+            if (collocationName != "")
+                conditions.Rules.push(new $.whiskey.filter.rule("CollocationName", collocationName, "contains"));
+            if (collocationStyles != "" && collocationStyles != "-1")
+                conditions.Rules.push(new $.whiskey.filter.rule("ProductAttrId", collocationStyles, "equal"));
+            if (collocationSituation != "" && collocationSituation != "-1")
+                conditions.Rules.push(new $.whiskey.filter.rule("SituationId", collocationSituation, "equal"));
+            if (collocationColorId != "-1" && collocationColorId != "")
+                conditions.Rules.push(new $.whiskey.filter.rule("ColorId", collocationColorId, "equal"));
+            if (membName != "") {
+                var group = new $.whiskey.filter.group();
+                group.Operate = "or";
+                group.Rules.push(new $.whiskey.filter.rule("Member.MemberName", membName, "contains"));
+                group.Rules.push(new $.whiskey.filter.rule("Member.UniquelyIdentifies", membName, "contains"));
+
+                conditions.Groups.push(group);
+            }
+
+
+            $.post("GetCollocationInfo", { "Conditions": JSON.stringify(conditions) }, function (da) {
+                var resul = "<ul>";
+                if ($("#collocPirc ul").length > 0) {
+                    resul = "";
+                }
+
+                if (da != "") {
+                    for (var i = 0; i < da.length; i++) {
+                        var t = da[i];
+                        var li = t.collpics;
+                        for (var j = 0; j < li.length; j++) {
+                            var picpath = li[j].ImagePath;
+                            var pictit = li[j].TextInfo;
+                            var id = li[j].Id;
+                            resul += "<li><img class='othdresser-img' data-col='" + id + "' src='" + picpath + "' title='" + pictit + "'/></li>";
+                        }
+                    }
+                }
+
+                if ($("#collocPirc ul").length == 0) {
+                    resul += "</ul>";
+                    $("#otherpicshow").append(resul);
+                } else {
+                    $("#otherpicshow ul").append(resul);
+                }
+
+            });
+
+        });
+        $("#CollocationClear").click(function () {
+            $("#membName").val("");
+            $("#collocationName").val("");
+            $("#collocationStyles option:eq(0)").attr("selected", "selected");
+            $("#collocationSituation option:eq(0)").attr("selected", "selected");
+            $("#dropdownMenu2").attr("daval", "-1").find(".bttit").html("——下拉选择——");
+        });
+
+        $("#collocPirc").delegate("img", "mouseenter", function () {
+            $(this).css("cursor", "pointer");
+        }).delegate("img", "mouseleaver", function () {
+            $(this).css("cursor", "default");
+        }).delegate("img", "click", function (e) {
+            var sou = e.target;
+            if (sou.tagName == "IMG" || sou.tagName == "I") {
+                if ($(sou).parent().find("i").length != 0) {
+                    $(sou).parent().find("i").remove();
+                }
+                else {
+                    var _left = -(sou.width / 2 + 20) + "px";
+
+                    var i = $('<i class="fa fa-check-circle-o fa-circle-sy"></i>').css("left", _left);
+                    $(sou).after(i);
+                    var idarr = [];
+                    var lis = $("#otherpicshow .fa-circle-sy").parent("li");
+                    if (lis.length > 0) {
+                        for (var j = 0; j < lis.length; j++) {
+                            var _id = $(lis[j]).find("img").attr("data-col");
+                            if (idarr.indexOf(_id) == -1) {
+                                idarr.push(_id);
+                            }
+                        }
+                        $("#OtherColloIds").val("," + idarr.join(",") + ",");
+                    }
+
+                }
+            }
+
+        });
+
+        requireValid();
+        $("#path_copy").click(function () {
+            //$(".prodCollImg").val($("#OriginalPath").val());
+            $(".prodCollImg").change();
+            return false;
+        });
+
+    });
+
+    function GetProductNumber() {
+        var categoryId = $(".tab-content #CategoryId ").val();
+        var brandId = $(".tab-content #BrandId ").val();
+        var sizeId = $(".tab-content #SizeId ").val();
+        var seasonId = $("#div #SeasonId ").val();
+        $.ajax({
+            url: "@Url.Action("GetProductNumber")",
+            type: "Post",
+            data: { categoryId: categoryId, brandId: brandId, sizeId: sizeId, seasonId: seasonId },
+            success: function (data) {
+                $(".tab-content #ProductNumber").attr("value", data);
+            }
+        });
+    }
+
+    //function requireValid() {
+    //    $("#attach #TemplateId").change(function () {
+    //        var val = $("#attach #TemplateId option:selected").val();
+    //        if (val == undefined || val == "" || val == "-1") {
+    //            var mes = "*模板不为空，请在“商城属性”下选择模板";
+    //            dataVal(true, mes);
+    //        } else {
+    //            dataVal(false);
+    //        }
+    //    });
+    //    $("#OriginalPath").change(function () {
+    //        if ($(this).val().length > 100) {
+    //            var err = "商品主图路径长度不能超过100字符";
+    //            dataVal(true, err);
+    //        } else {
+    //            dataVal(false);
+    //        }
+    //    });
+    //    $(".prodCollImg").change(function () {
+    //        if ($(this).val().length > 100) {
+    //            var err = "商品搭配图路径长度不能超过100字符";
+    //            dataVal(true, err);
+    //        } else {
+    //            dataVal(false);
+    //        }
+    //    });
+    //}
+    //function dataVal(iserr, errMes) {
+    //    if (iserr) {
+    //        $("button[data-bb-handler='success']").attr("title", errMes).attr("disabled", "disabled");
+    //        $("button[data-bb-handler='success']").parent("div").addClass("has-error");
+
+    //        $("#error_info_sh span").html(errMes);
+    //        alert(errMes);
+    //        return false;
+    //    } else {
+    //        $("button[data-bb-handler='success']").attr("title", "").removeAttr("disabled");
+    //        $("button[data-bb-handler='success']").parent("div").removeClass("has-error");
+    //        $("#error_info_sh span").html("");
+    //        return true;
+    //    }
+
+    //}
+
+    function SetMajorImage(wrapper) {
+        var imageIndex = $(wrapper).children().children("img").attr("title");
+        if (typeof (dropper.options.dictFiles) != "undefined" && imageIndex >= 0) {
+            $("#OriginalPath").animate({
+                opacity: "0.1",
+            }, 'slow', function () {
+                $("#OriginalPath").animate({
+                    opacity: "1.0",
+                });
+            });
+            //$("#OriginalPath").val(dropper.options.dictFiles.get("img-" + imageIndex));
+        }
+    }
+
+    function SetDiscount(Id) {
+        if (typeof (Id) == "undefined" || Id.length == 0) {
+            $("#RetailDiscount").find("option[value='1.0']").attr("selected", true);
+            $("#WholesaleDiscount").find("option[value='1.0']").attr("selected", true);
+            SetPrice();
+        } else {
+            $.whiskey.web.ajaxRequest({
+                actionUrl: "@Url.Action("Discount")",
+                params: { Id: Id },
+                lockButton: $("#BrandId"),
+                complete: function (data) {
+                    if ((typeof data == 'object')) {
+                        if (typeof (data.RetailDiscount) != "undefined") {
+                            $("#RetailDiscount").find("option[value='" + data.RetailDiscount + "']").attr("selected", true);
+                        }
+                        if (typeof (data.WholesaleDiscount) != "undefined") {
+                            $("#WholesaleDiscount").find("option[value='" + data.WholesaleDiscount + "']").attr("selected", true);
+                        }
+                        SetPrice();
+                    }
+                }
+            });
+        }
+
+    }
+
+    function onTreeChecked(event, treeId, treeNode) {
+        var nodes = tree.getCheckedNodes(true);
+        var ids = "";
+        for (var n = 0; n < nodes.length; n++) {
+            ids.length == 0 ? ids = nodes[n].id : ids += "," + nodes[n].id;
+        }
+        $("#Attributes").val(ids);
+        SetPopover(treeNode.id);
+    }
+
+    @*function SetPopover(id) {
+        $.whiskey.web.ajaxRequest({
+            actionUrl: "@Url.Action("Tooltip", "GalleryAttribute", new { area="Galleries" })",
+            params: { Id: id },
+            method: "POST",
+            lockButton: null,
+            complete: function (data) {
+                if (typeof (data) == 'object') {
+                    if (data.ResultType == 3) {
+                        $(".attribute-wrapper").popover('destroy').popover({
+                            content: data.Data.Description,
+                            trigger: "manual",
+                            placement: "top"
+                        }).popover('show');
+                    }
+                }
+            }
+        });
+    }*@
+    function SetPrice() {
+        var tagPrice = $("#TagPrice");
+        var reg = /^\d+\.?\d*$/;
+        var tx = tagPrice.val();
+        if (!reg.test(tx)) {
+            tagPrice.val(tx.substr(0, tx.length - 1));
+        }
+        var pric = parseInt(tagPrice.val());
+        if (pric >= 0) {
+            if (pric > 1000000) {
+                $("#TagPrice").parent("div").addClass("has-error").attr("title", "吊牌价在0-1000000之间");
+                $("button[data-bb-handler='success']").attr("disabled", "disabled");
+            } else {
+                $("#TagPrice").parent("div").removeClass("has-error");
+                $("button[data-bb-handler='success']").removeAttr("disabled");
+            }
+            var retailPrice = $("#RetailPrice");
+            var wholesalePrice = $("#WholesalePrice");
+            var retailDiscount = $("#RetailDiscount");
+            var wholesaleDiscount = $("#WholesaleDiscount");
+            if (retailDiscount.val() > 0 && retailDiscount.val() < 1) {
+                retailPrice.val((tagPrice.val() * retailDiscount.val()).toFixed(2));
+                retailPrice.attr("readonly", true);
+            } else {
+                retailPrice.attr("readonly", false);
+            }
+            if (wholesaleDiscount.val() > 0 && wholesaleDiscount.val() < 1) {
+                wholesalePrice.val((tagPrice.val() * wholesaleDiscount.val()).toFixed(2));
+                wholesalePrice.attr("readonly", true);
+            } else {
+                wholesalePrice.attr("readonly", false);
+            }
+        }
+    }
+
+    function SetEnabled() {
+        var tagPrice = $("#TagPrice");
+        if (tagPrice.val() >= 0) {
+            var retailPrice = $("#RetailPrice");
+            var wholesalePrice = $("#WholesalePrice");
+            var retailDiscount = $("#RetailDiscount");
+            var wholesaleDiscount = $("#WholesaleDiscount");
+            if (retailDiscount.val() > 0 && retailDiscount.val() < 1) {
+                retailPrice.attr("readonly", true);
+            } else {
+                retailPrice.attr("readonly", false);
+            }
+            if (wholesaleDiscount.val() > 0 && wholesaleDiscount.val() < 1) {
+                wholesalePrice.attr("readonly", true);
+            } else {
+                wholesalePrice.attr("readonly", false);
+            }
+        }
+    }
+
+    function SetImages() {
+
+        var detailImages = "";
+        var dictLength = dropper.options.dictFiles.size();
+        for (i = 0; i <= dictLength ; i++) {
+            if (dropper.options.dictFiles.get("img-" + i) != null) {
+                detailImages += dropper.options.dictFiles.get("img-" + i) + ",";
+            }
+        }
+        $("#Images").val(detailImages);
+    }
+
+    function GetProductName() {
+        var categoryName = $("#base #CategoryID").find("option:selected").text();
+        var colorName = $("#base #ColorID").find("option:selected").text();
+        var brandName = $("#base #BrandID").find("option:selected").text();
+        var sizeName = $("#base #SizeID").find("option:selected").text();
+        var seasonName = $("#base #SeasonID").find("option:selected").text();
+        var styleName = $("#base #StyleID").find("option:selected").text();
+        var materialName = $("#base #MaterialID").find("option:selected").text();
+        var occasionName = $("#base #OccasionID").find("option:selected").text();
+        var productName = "";
+        if ($("#attach #ProductName").val().length <= 0) {
+            if (categoryName != "选择分类") productName += categoryName;
+            if (colorName != "选择颜色") productName += colorName;
+            if (brandName != "选择品牌") productName += brandName;
+            if (sizeName != "选择尺码") productName += sizeName;
+            if (seasonName != "选择季节") productName += seasonName;
+            if (styleName != "选择风格") productName += styleName;
+            if (materialName != "选择面料") productName += materialName;
+            if (occasionName != "选择场合") productName += occasionName;
+            $("#attach #ProductName").val(productName.replace(/[^\u4e00-\u9fa5]/gi, ""));
+        }
+    }
+</script>
+
+<script src="~/Content/plupload-2.1.8/js/plupload.full.min.js"></script>
+<script src="~/Content/plupload-2.1.8/js/jquery.plupload.queue/jquery.plupload.queue.min.js"></script>
+<script>
+    $(function () {
+        debugger
+        initColor1();
+        initMaintain();
+
+      
+        //买手说标签
+        var attr = $("#BuysaidAttrIds").val();
+        if (attr != undefined && attr != "") {
+            var attids = attr.split(",");
+            for (var i = 0; i < attids.length; i++) {
+                var vl = attids[i];
+                $("#buysaid input[value='" + vl + "']").attr("checked", "checked");
+            }
+        }
+        $("#BuysaidAttrIds").val(attr);
+        $("#buysaid input").click(function () {
+            var cheatt = $("#buysaid .buysaidsel input:checked");
+            var res = ",";
+            for (var i = 0; i < cheatt.length; i++) {
+                res += $(cheatt[i]).val() + ",";
+            }
+            $("#BuysaidAttrIds").val(res);
+        });
+
+        var isalloweditprice = $("#isalloweditprice").val();
+        if (isalloweditprice == "False")
+            $("#TagPrice").prop("disabled", "disabled").attr("title","商品已经开始了打印，不支持修改价格");
+
+        var imgsr = $("input[name='ProductCollocationImg']").val();
+        $(".prodCollImg").text(imgsr.substr(0, 40) + "...");
+        $(".prodCollImg").dblclick(function () {
+            var imgsrc = $("input[name='ProductCollocationImg']").val();
+
+            if (imgsrc.length > 0) {
+                $(".img_show_view img").attr("src", imgsrc);
+                $("#myModal").modal();
+            }
+
+        });
+        var uploader = new plupload.Uploader({
+            browse_button: 'browse',
+            url: '/Products/Product/CollocationImgUpload',
+            flash_swf_url: '~/Content/plupload-2.1.8/js/Moxie.swf">~/Content/plupload-2.1.8/js/Moxie.swf',
+            filters: {
+                mime_types: [
+                    { title: "*.png", extensions: "png" }, { title: "*.jpg", extensions: "jpg" }
+                ],
+                max_file_size: '400kb',
+                prevent_duplicates: true
+            }
+        });
+
+        uploader.init();
+        uploader.bind('FilesAdded', function (uploader, files) {
+
+            $(".prodCollImg").text("开始上传");
+            uploader.start();
+
+        });
+        uploader.bind('BeforeUpload', function (uploader, file) {
+            $(".prodCollImg").text("正在上传");
+        }); //
+        uploader.bind('FileUploaded', function (uploader, file, obj) {
+
+            $(".prodCollImg").text(file.name);
+            if (obj.response != null && obj.response.length > 0) {
+                var res = $.parseJSON(obj.response);
+                if (res.ResultType == 3) {
+                    $(".prodCollImg").text(res.Data.substr(0, 40) + "...");
+                    $(".prodCollImg").attr("title", res.Data);
+                    //$("input[name='ProductCollocationImg']").val(res.Data);
+                    $(".prodCollImg").change();
+                } else {
+                    $("input[name='ProductCollocationImg']").val("");
+                    $(".prodCollImg").text("上传失败");
+                }
+
+
+            }
+        });
+
+        function initColor1() {
+            var t = JSON.parse($(".hid_da").val());
+            var opt = "<li role='presentation' title='——下拉选择——' value='-1' style='text-align:center;margin-bottom:5px'><span>——下拉选择——</span></li>";
+            for (var i = 0; i < t.length; i++) {
+                var arr = t[i].Text.split('|');
+                if (arr.length == 2) {
+                    if (i == 0) {
+                        opt += "<li role='presentation' title='" + arr[1] + "' value='" + t[i].Value + "' style='margin-top:-5px;background: url(" + arr[0] + ") 0 0 repeat'>&nbsp;</li>";
+
+                    } else if (i == t.length - 1)
+                        opt += "<li role='presentation' title='" + arr[1] + "' value='" + t[i].Value + "' style='margin-bottom:-5px;background: url(" + arr[0] + ") 0 0 repeat'>&nbsp;</li>";
+                        // opt += "<option arda='" + arr[0] + "' value='" + t[i].Value + "'>" + arr[1] + "</option>";
+                        // opt += "<li role='presentation' title='" + arr[1] + "' rda='" + t[i].Value + "' style='background: url('" + arr[0] + "') 0 0 repeat'>&nbsp;</li>";
+                        //opt += "<li role='presentation' title='" + arr[1] + "' rda='" + t[i].Value + "' style='background: url('\'"+arr[0]+"\'') 0 0 repeat'>&nbsp;</li>";
+                    else
+                        opt += "<li role='presentation' title='" + arr[1] + "' value='" + t[i].Value + "' style='background: url(" + arr[0] + ") 0 0 repeat'>&nbsp;</li>";
+                }
+            }
+            if (opt.length > 0) {
+                var tx = t[0].Text.split('|')[1];
+                // $(".showcol").attr("clda", t[0].Value).text(tx);
+                $("ul[aria-labelledby='dropdownMenu2']").html(opt);
+                $("ul[aria-labelledby='dropdownMenu2'] li").click(function () {
+                    var t = $(this).attr("title");
+                    var val = $(this).attr("value");
+                    $("#dropdownMenu2 .bttit").html(t);
+                    $("#dropdownMenu2").attr("daval", val);
+                });
+            }
+        }
+
+
+    });
+    //加载保养维护
+    function initMaintain() {
+        var ids = $("#MaintainIds").val();
+
+        $.post("/Properties/Maintain/GetMaintainByIds", { ids: "" }, function (da) {
+            if (da.ResultType == 3) {
+                var resu = "<ul class='pare'>";
+                var t = da.Data;
+                for (var i = 0; i < t.length; i++) {
+                    if (ids != undefined) {
+                        resu += "<li><label><input value=" + t[i].Id + " type='checkbox'>" + t[i].ExtendName + "</label>";
+                        if (t[i].childrens != undefined && t[i].childrens.length > 0) {
+                            resu += "<ul class='child'>";
+                            for (var j = 0; j < t[i].childrens.length; j++) {
+                                var chil = t[i].childrens[j];
+                                resu += "<li><label><input value=" + chil.Id + " type='checkbox'>" + chil.ExtendName + "</label></li>";
+                            }
+                            resu += "</ul>";
+                        }
+                        resu += "</li>";
+                    }
+
+                }
+                resu += "</ul>";
+                $("#maintainUl").html(resu);
+                var _ids = ids.split(",");
+                for (var i = 0; i < _ids.length; i++) {
+                    $("#maintainUl input[value='" + _ids[i] + "']").prop("checked", "checked");
+                }
+                $("#maintainUl input").click(function () {
+                    if ($(this).is(":checked")) {
+                        $(this).parents("li").parents("li").children("label").find("input").prop("checked", "checked");
+
+                    } else {
+                        var len = $(this).parents("li:first").siblings("li").find("input:checked").length;
+                        if (len == 0)
+                            $(this).parents("li").parents("li").children("label").find("input").removeAttr("checked");
+                    }
+                    var chec = $(this).is(":checked");
+                    $(this).parents("li:first").find("li").find("input").prop("checked", chec);
+
+                });
+            }
+        });
+
+        $("#maintainUl").delegate("input", "click", function () {
+            var res = ",";
+            $("#maintainUl input:checked").each(function () {
+                res += $(this).val() + ",";
+            });
+            $("#MaintainIds").val(res);
+        });
+    }
+
+</script>
+
+

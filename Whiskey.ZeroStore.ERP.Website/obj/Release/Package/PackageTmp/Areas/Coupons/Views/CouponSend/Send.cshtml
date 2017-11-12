@@ -1,0 +1,123 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Data
+@model ProductDiscountDto
+<style>
+        
+        /*#DataTables_Table_0>tbody> tr > td:nth-child(7)>button:hover {
+            width: 62px;
+            height: 32px;
+            background-color: #000 !important;
+        }*/
+    </style>
+<link href="/Content/Styles/Bootstrap/BootstrapSelect/bootstrap-select.min.css" rel="stylesheet" />
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-arrow-circle-left"></i> <a href="@Url.Action("Index")">优惠券发送</a></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <h5><i class="fa fa-credit-card"></i> <span>基本信息</span></h5>               
+            </div>
+        </div>
+        <br />
+        <br />
+        @using (Ajax.BeginForm("SendCoupon", new { }, new AjaxOptions() { HttpMethod = "post", OnSuccess = "afterFun(data)" }, new { id = "form1" }))
+        {
+            <div class="valign-middle">
+                <div class="form-group">
+                    <label class="control-label col-md-3">优惠卷名称：</label>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" readonly="readonly" name="CouponName" id="CouponName"/>
+                        <input type="hidden" name="CouponId" id="CouponId" />
+                    </div>
+                    <div>
+                        <a class="btn btn-success btn-dark-gray" onclick="chooseCoupon()">选择优惠卷</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">会员：</label>
+                    <div class="col-md-5">                         
+                        <select class="form-control selectpicker bla bla bli" id="MemberIds" name="MemberIds" multiple data-live-search="true"></select>
+                    </div>
+                    <div>
+                        <a class="btn btn-success btn-dark-gray" onclick="chooseMember()">选择会员</a>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-4 text-right">
+                    <button type="submit" id="btnAdd" class="btn btn-success">
+                        添加
+                    </button>
+                </div>
+                <div class="col-md-3 text-right">
+                    <button type="button" class="btn btn-primary" onclick="getBack()">
+                        返回
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<script src="/Content/Scripts/Bootstrap/BootstrapSelect/bootstrap-select.min.js"></script>
+
+<script type="text/javascript">
+    $(window).on('load', function () {
+        $('.selectpicker').selectpicker({
+            'selectedText': 'cat',
+            'noneSelectedText': "请选择会员",
+            'noneResultsText':'没有搜索到'
+        });
+    });
+          
+   //返回结果
+   function afterFun(data) {
+       if (data.ResultType =="@((int)OperationResultType.Success)") {
+           location.href = "@Url.Action("Index")";
+       } else {
+           $.whiskey.web.alert({
+               type: "danger",
+               content: data.Message,
+               callback: function () {
+               }
+           });
+       }
+   }
+
+
+   //选择优惠券
+   function chooseCoupon() {
+       var view = new $.whiskey.web.ajaxView({
+           caption: "优惠券列表",
+           actionUrl: "@Url.Action("Coupon")"
+       });
+   }
+
+   //选择店铺
+   function chooseMember() {
+       var couponId = $("#CouponId").val();
+       if (couponId==null || couponId=="") {
+           $.whiskey.web.alert({
+               type: "danger",
+               content: "请先选择优惠券，再选择会员",
+               callback: function () {
+               }
+           });
+       } else {
+           var view = new $.whiskey.web.ajaxView({
+               caption: "会员列表",
+               actionUrl: "@Url.Action("Member")",
+               params: { CouponId: couponId },
+           });
+       }
+       
+   }
+
+
+   //返回折扣列表
+   function getBack() {
+       location.href = "@Url.Action("Index")";
+   }
+
+</script>

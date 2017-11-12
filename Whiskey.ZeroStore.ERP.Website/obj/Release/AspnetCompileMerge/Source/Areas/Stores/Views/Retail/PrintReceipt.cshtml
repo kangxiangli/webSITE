@@ -1,0 +1,162 @@
+﻿@using NPOI.SS.Formula.Functions
+@using Whiskey.ZeroStore.ERP.Models.Entities
+
+@model Retail
+
+<title>- 打印</title>
+
+<script src="~/Content/Scripts/Jquery/jquery-barcode.js"></script>
+<link rel="stylesheet" href="~/Content/Styles/Layout/receipt.css">
+<div class="mainprint" align="center">
+    <div width="95%" border="0" align="center" cellpadding="0" cellspacing="0" style="font-size: 22px;">
+        <div height="25" align="center">
+            <h1 class="print_logo">
+                <img src="~/wwwroot/logo.png" width="250" />
+            </h1>
+        </div>
+    </div>
+
+    <div width="95%" border="0" align="center" style="font-size: 22px;">
+        <strong height="25">订单编号 : </strong>
+        <strong height="25" id="orderID">@Model.RetailNumber</strong>
+    </div>
+    <div class="print_detail">
+        @if (Model.ConsumerId.HasValue)
+        {
+            <strong class="print_member">会员</strong>
+            <strong class="usname customerName">@Model.Consumer.MemberName</strong>
+            <strong class="userId customerId">@Model.Consumer.UniquelyIdentifies</strong>
+            <span id="print_tip"><input name="isprintname" type="checkbox" checked="checked" id="isprintname" value="1"><label style="color: #000;">打印姓名</label></span>
+        }
+    </div>
+    <!--商品的明细-->
+    <div class="product_contain">
+        @foreach (var item in Model.RetailItems)
+        {
+            <div class="product_details">
+                <div class="details_left">
+                    <table>
+                        <tr>
+                            <td class="product_id">@item.Product.ProductNumber</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @if (string.IsNullOrEmpty(item.Product.ProductOriginNumber.ProductName))
+                                {
+                                    <br />
+                                }
+                                else
+                                {
+                                    @item.Product.ProductOriginNumber.ProductName
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>@item.Product.Color.ColorName</td>
+                            <td>@item.Product.Size.SizeName</td>
+                        </tr>
+                        <tr>
+                            <td>数量</td>
+                            <td>@item.RetailCount</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="details_right">
+                    <table>
+                        <tr><td>吊牌价:</td><td>@item.ProductTagPrice</td></tr>
+                        <tr>
+                            <td>
+                                折扣:
+                            </td>
+                            <td>
+                                @if (item.SalesCampaignId.HasValue && item.SalesCampaignId.Value != 0)
+                                {
+                                    @item.SalesCampaignDiscount  @:折
+                                }
+                                else
+                                {
+                                    @(item.BrandDiscount * 10)  @:折
+                                }
+                            </td>
+                        </tr>
+                        <tr><td>单价:</td><td>@item.ProductRetailPrice</td></tr>
+                        <tr><td>小计:</td><td>@item.ProductRetailItemMoney</td></tr>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        }
+
+    </div>
+    <!--明细结尾-->
+    <!--结算-->
+
+    <div class="print_list_detail">
+        <div id="account_detalis" class="account_detalis"><span class="amount_total">合计金额</span><span>@Model.ConsumeCount</span></div>
+        <div class="parting_line">...................................................</div>
+        @if (Model.LevelDiscount.HasValue && Model.LevelDiscountAmount > 0)
+        {
+            <div class="account_detalis"><span>等级折扣</span><span>@Model.LevelDiscount</span></div>
+            <div class="account_detalis"><span>等级折扣优惠</span><span>@Model.LevelDiscountAmount</span></div>
+        }
+        <div class="account_detalis"><span>抹去</span><span>@Model.EraseConsume</span></div>
+        <div class="account_detalis"><span>积分消费</span><span>@Model.ScoreConsume</span></div>
+        <div class="account_detalis"><span>储值卡消费</span><span>@Model.StoredValueConsume</span></div>
+        <div class="account_detalis"><span>店铺活动减免</span><span>@Model.StoreActivityDiscount</span></div>
+        <div class="account_detalis"><span>优惠券活动</span><span>@Model.CouponConsume</span></div>
+        <div class="parting_line">...................................................</div>
+        <div class="account_detalis"><span>银行卡支付</span><span>@Model.SwipeConsume</span></div>
+        <div class="account_detalis"><span>现金支付</span><span>@Model.CashConsume</span></div>
+        <div class="account_detalis"><span>找零</span><span>@Model.ReturnMoney</span></div>
+        <div class="parting_line">...................................................</div>
+        <div class="account_detalis"><span>实收金额</span><span>@(Model.CashConsume + Model.SwipeConsume)</span></div>
+        <div class="account_detalis"><span>获得积分</span><span>@Model.GetScore</span></div>
+    </div>
+
+    <div class="important_information">
+
+        <div class="account_detalis"><span>@Model.Store.StoreName</span><span>@Model.CreatedTime.ToString("yyyy-MM-dd HH:mm")</span></div>
+        <div class="account_detalis"><span>@Model.Operator.Member.RealName</span><span>@Model.Store.MobilePhone</span></div>
+        <div class="account_detalis"><span>@Model.Store.Address</span></div>
+
+    </div>
+    <div id="barcode" class="print_tarcode">
+
+
+    </div>
+    <div class="print_remind_me">温馨提示:请您妥善保管购物小票，凭票退换商品，最终解释权归领时尚所有，谢谢合作。想了解更多时尚资讯，服饰养护知识欢迎登录零时尚官方网站0-Fashion.com或下载零时尚APP</div>
+</div>
+<iframe id="contfram" src="about:blank" style="display:none"></iframe>
+<script>
+ var sibling_x=$("#account_detalis").parents(".modal-body").next(".modal-footer")
+    sibling_x.prepend('<a class="btn btn-primary" href="javascript:void(0)" onclick="preview()" title="打印凭证" id="print"><span class="fa fa-print"></span>打印</a>');
+</script>
+<script>
+    $(function () {
+        var item = $('#orderID').text()
+        $("#barcode").barcode(item, "code128", { barWidth: 1, barHeight: 20, showHRI: true });
+
+    });
+
+    $(function () {
+        $("#isprintname").click(function () {
+            if (!$(this).is(":checked")) {
+                $(".usname").hide();
+            } else {
+                $(".usname").show();
+            }
+        });
+        $("#print").click(function () {
+            // preview(1);
+            preview();
+        });
+    });
+
+    function preview(oper) {
+        var frm = window.frames[0].window;
+        var cont = $(".mainprint").html().replace($("#print_tip").html(), "").replace($("#print").parents("tr:eq(0)", ""));
+        frm.document.body.innerHTML = cont;
+        frm.print();
+    }
+
+</script>

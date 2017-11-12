@@ -1,0 +1,119 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model ScoreRule
+
+
+<style>
+    .clre {
+        color:  #5ebd5e;
+        padding: 6px;
+        border: 1px solid #cecece;
+    }
+
+    .clwid .modal-content {
+        width: 700px;
+    }
+</style>
+<link href="~/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<div class="ruleCreat" id="base">
+    @Html.HiddenFor(c => c.Id)
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-5">积分规则名称:</label>
+        <div class="col-md-4" style="z-index:9999">
+            @Html.TextBoxFor(c => c.ScoreName, "", new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label id="" class="control-label col-md-5">最低消费:</label>
+        <div class="col-md-4">
+            <div class="input-group  ">
+                <span class="input-group-addon">￥</span>
+                @Html.TextBoxFor(c => c.MinConsum, "", new { @class = "form-control" })
+
+
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-5">消费金额：积分:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input class="form-control" type="number" name="ConsumeUnit" id="ConsumeUnit" min="1" value="@Model.ConsumeUnit" />
+                <span class="input-group-addon">:</span>
+                <input class="form-control" type="number" name="ScoreUnit" id="ScoreUnit" min="1" value="@Model.ScoreUnit" />
+
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-5">消费积分是否获取积分:</label>
+        <div class="col-md-4">
+            <select name="IsConsumeScoreGetScore" class="form-control selectpicker">
+                @{
+                    if (Model.IsConsumeScoreGetScore)
+                    {
+                        <option value="true" selected="selected">获取</option>
+                        <option value="false">不获取</option>
+                    }
+                    else
+                    {
+                        <option value="true">获取</option>
+                        <option value="false" selected="selected">不获取</option>
+                    }
+                }
+
+            </select>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-5">消费储值是否获取积分:</label>
+        <div class="col-md-4">
+            <select name="IsConsumeCardMoneyGetScore" class="form-control selectpicker">
+                @{
+                    if (Model.IsConsumeCardMoneyGetScore)
+                    {
+                        <option value="true" selected="selected">获取</option>
+                        <option value="false">不获取</option>
+                    }
+                    else
+                    {
+                        <option value="true">获取</option>
+                        <option value="false" selected="selected">不获取</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-5">@Html.DisplayNameFor(m => m.CanUseScoreWhenNotBelongToStore):</label>
+        <div class="col-md-4">
+           @Html.CheckBoxFor(m=>m.CanUseScoreWhenNotBelongToStore)
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-5">@Html.DisplayNameFor(m => m.CanGetScoreWhenNotBelongToStore):</label>
+        <div class="col-md-4">
+            @Html.CheckBoxFor(m=>m.CanGetScoreWhenNotBelongToStore)
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-5">规则描述:</label>
+        <div class="col-md-7">
+            @Html.TextAreaFor(c => c.Descrip, @Html.TextBoxFor(c => c.ConsumeUnit, "", new { @class = "form-control" }))
+        </div>
+    </div>
+</div>
+
+<script>
+	 // selectpicker_b 初始化
+    $(function () {
+        	 $('.selectpicker').selectpicker();
+    })
+  
+</script>
+
+
+
+
+

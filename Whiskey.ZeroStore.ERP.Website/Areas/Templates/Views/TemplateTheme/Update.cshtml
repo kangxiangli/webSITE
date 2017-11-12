@@ -1,0 +1,261 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Data
+@model TemplateThemeDto
+<style>
+    .modal-dialog {
+        width: 900px;
+    }
+
+    .div-content > .control-label {
+        margin-left: -32px;
+    }
+
+    .div-content > .pull-right {
+        margin-top: -25px;
+        margin-right: 30px;
+        position: relative !important;
+        z-index: 999999 !important;
+    }
+
+    .div-content .form-control {
+        margin-bottom: 30px;
+    }
+</style>
+@Html.HiddenFor(m => m.Id)
+@Html.HiddenFor(m => m.IsDefault)
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Name)：
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @onchange = "CheckTemplateName(this," + Model.Id + ")" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Path)：
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Path, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.ThemeFlag)：
+    </label>
+    <div class="col-md-8">
+        @Html.EnumDropDownListFor(f => f.ThemeFlag, new { @class = "form-control selectpicker" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Notes)：
+    </label>
+    <div class="col-md-8">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.ThemeLogo)：
+    </label>
+    <div class="col-md-6">
+        <select class="form-control selectpicker" id="selectImage" onchange="GetImagePath(this,1)"></select>
+    </div>
+    <div style="">
+        <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseImage" aria-expanded="false" aria-controls="collapseExample" onclick="setText(this)">
+            添加
+        </a>
+        <div class="collapse" id="collapseImage">
+            <div class="well">
+                <div class="dropzone-box uploadImage">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                    </div>
+                    <div class="fallback">
+                        <input name="file" type="file" id="file" multiple="multiple" accept="image/jpeg,image/gif,image/png,image/jpg" />
+                    </div>
+                </div>
+                <br />
+            </div>
+        </div>
+    </div>
+    <div class="form-group" style="display:none;">
+        <label class="control-label col-md-3">
+            Logo路径：
+        </label>
+        <div class="col-md-8">
+            @Html.TextBoxFor(m => m.ThemeLogo, new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.BackgroundImg)：
+    </label>
+    <div class="col-md-6">
+        <select class="form-control selectpicker" id="selectImage2" onchange="GetImagePath(this,2)"></select>
+    </div>
+    <div class="form-group" style="display:none;">
+        <label class="control-label col-md-3">
+            背景图片路径：
+        </label>
+        <div class="col-md-8">
+            @Html.TextBoxFor(m => m.BackgroundImg, new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        Logo：
+    </label>
+    <div class="col-md-3">
+        <div class="col-md-1">
+            <div style="display:block;width:80px;height:80px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;">
+                <img style="margin:2px;max-width:74px;" class="img-responsive" id="image" src="@Model.ThemeLogo">
+            </div>
+        </div>
+    </div>
+    <label class="control-label col-md-3">
+        背景：
+    </label>
+    <div class="col-md-3">
+        <div class="col-md-1">
+            <div style="display:block;width:80px;height:80px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;">
+                <img style="margin:2px;max-width:74px;" class="img-responsive" id="image_bg" src="@Model.BackgroundImg">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="well">
+        1、@@Model.adminId 用户Id <br />
+        2、@@Model.adminName 用户名称 <br />
+        3、@@Model.adminImg 用户头像 <br />
+        4、@@Model.Menu 菜单项 {ModuleName:"模块名称",Icon:"模块图标",PageUrl:"页面路径",PageController:"页面控制器",Children:"子模块是集合"}<br />
+        5、@@Model.BreadCrumb 当前菜单项{ModuleName:"模块名称",Icon:"模块图标",PageUrl:"页面路径",PageController:"页面控制器",Children:"子模块是集合"}<br />
+        6、@@Html.Partial("_QrLogin") 扫码登录Js，img的父级div class='qr_code'(必须)<br />
+    </div>
+</div>
+
+<script type="text/javascript">
+    //初始化
+    $(function () {
+        GetImageList();
+        //初始化上传图片控件
+        var myDropzone = new Dropzone(".uploadImage", {
+            url: "@Url.Action("Create","Image")",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            parallelUploads: 100,
+            init: function () {
+                myDropzone = this; // closure
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].ResultType == "@((int)OperationResultType.Success)") {
+                            var message;
+                            if (file.name == data[i].Data) {
+                                message = data[i].Message;
+                            }
+                            else {
+                                message = "服务器忙，请稍后重试";
+                            }
+                        }
+                        else {
+                            message = data[i].Message;
+                            var node, _i, _len, _ref, _results;
+                            file.previewElement.classList.remove("dz-success");
+                            file.previewElement.classList.add("dz-error");
+                            if (typeof message !== "String" && message.error) {
+                                message = message.error;
+                            }
+                            _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                            _results = [];
+                            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                                node = _ref[_i];
+                                _results.push(node.textContent = message);
+                            }
+                            return _results;
+                        }
+                    }
+                });
+                //记录次数
+                var count = 0;
+                this.on("complete", function (data) {
+                    if (count == 0) {
+                        GetImageList();
+                    }
+                    ++count;
+                })
+            }
+        });
+
+        $(".btn-check").click(function () {
+            ValidateTemplateContent(this);
+        });
+    });
+    //获取图片路径
+    function GetImagePath(option, type) {
+        var obj = (type || 1) == 1 ? "#ThemeLogo" : "#BackgroundImg";
+        var objimg = (type || 1) == 1 ? "#image" : "#image_bg";
+        if (option.value == null) {
+            $(obj).attr('value', '');
+        } else {
+            $(obj).attr('value', option.value);
+            $(objimg).attr('src', option.value);
+        }
+    };
+    //获取图片集合
+    function GetImageList() {
+        $.ajax({
+            url: '@Url.Action("GetImageList","Image")',
+            type: 'post',
+            success: function (data) {
+                $("#selectImage,#selectImage2").empty();
+                $("#selectImage,#selectImage2").append("<option value=''>请选择图片文件</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#selectImage,#selectImage2").append("<option value='" + data[i].ImagePath + "'>" + data[i].ImageName + "</option>");
+                }
+                $("#selectImage").val($("#ThemeLogo").val());
+                $("#selectImage2").val($("#BackgroundImg").val());
+            }
+        });
+    };
+    //设置显示文本
+    function setText(my) {
+        var text = $(my).html();
+        var rex = new RegExp("添加");
+        $(my).popover('show');
+        if (rex.test(text)) {
+            $(my).text("收起");
+        }
+        else {
+            $(my).text("添加");
+        }
+    };
+    function CheckTemplateName(obj, id) {
+        $("button[data-bb-handler='success']").attr("disabled", "disabled");
+        var $obj = $(obj);
+        $.post("@Url.Action("CheckTemplateName")", { themeName: $obj.val(), Id: id }, function (data) {
+            if (data) {
+                $obj.parents("div:first").addClass("has-error").attr("title", "主题已存在");
+            }
+            else {
+                $obj.parents("div:first").removeClass("has-error").attr("title", "");
+                $("button[data-bb-handler='success']").removeAttr("disabled");
+            }
+        });
+    }
+</script>
+<script>
+	 // selectpicker_b 初始化
+    $(function () {
+        setTimeout(function(){
+        	 $('.selectpicker').selectpicker();
+        },500);
+    })
+  
+</script>

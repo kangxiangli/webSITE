@@ -1,0 +1,111 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@model WorkOrder
+
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.WorkOrderTitle) ：
+    </label>
+    <div class="col-md-10">
+        @Model.WorkOrderTitle
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        申请人：
+    </label>
+    <div class="col-md-10">
+        @ViewBag.ApplicantName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        部门 ：
+    </label>
+    <div class="col-md-10">
+        @ViewBag.DepartmentName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        类别 ：
+    </label>
+    <div class="col-md-10">
+        @ViewBag.WorkOrderCategoryName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        提交时间 ：
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(x => x.CreatedTime, new { @class = "form-control datetime", @placeholder = "提交时间", @readonly = "readonly" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        工单内容 ：
+    </label>
+    <div class="col-md-10">
+        @Model.Content
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        上传图片 ：
+    </label>
+    <div class="col-md-10">
+        <img id="ImgWorkOrder" src="@Model.ImgAddress"  style="max-height:400px;max-width:400px" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        状态 ：
+    </label>
+    <div class="col-md-10">
+        @ViewBag.Status
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        当前处理人员 ：
+    </label>
+    <div class="col-md-10">
+        @ViewBag.HandlerName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        处理时间 ：
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(x => x.DealtTime, new { @class = "form-control datetime", @placeholder = "待处理", @readonly = "readonly" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        完成时间 ：
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(x => x.FinishTime, new { @class = "form-control datetime", @placeholder = "未完成", @readonly = "readonly" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        操作人员 ：
+    </label>
+    <div class="col-md-10">
+        @ViewBag.OperatorName
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+
+    });
+</script>
+
+
+

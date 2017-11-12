@@ -1,0 +1,219 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model StorageDto
+<style>
+    .diacl .modal-dialog {
+        width: 60%;
+    }
+</style>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StoreId) :
+    </label>
+    <div class="col-md-6 storage-update">
+        <select id="StoreId" name="StoreId" class="form-control"></select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StorageType) :
+    </label>
+    <div class="col-md-6">
+        <input id="storagetype_sel" type="hidden" value="@Model.StorageType" />
+        <select class="form-control selectpicker" id="StorageTypeSel" name="StorageType">
+            <option value="0">线上店铺仓库</option>
+            <option value="1">线下店铺仓库</option>
+        </select>
+        @*@Html.TextBoxFor(m=> m.StorageType, new { @class = "form-control" })*@
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StorageCategory)：
+    </label>
+    <div class="col-md-6">
+        <select id="StorageType" name="StorageType" class="form-control selectpicker">
+            @{
+                if (Model.StorageCategory == 0)
+                {
+                    <option value="0" selected="selected">商品仓(可零售)</option>
+                    <option value="1">设备仓(不可零售)</option>
+                }
+                else
+                {
+                    <option value="0">商品仓(可零售)</option>
+                    <option value="1" selected="selected">设备仓(不可零售)</option>
+                }
+            }
+        </select>
+        @*@Html.TextBoxFor(m=> m.StorageType, new { @class = "form-control" })*@
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StorageName) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.StorageName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.TelePhone)：
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.TelePhone, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StorageAddress) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.StorageAddress, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Description) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+
+    </div>
+</div>
+@*<div class="form-group">
+        <label class="control-label col-md-3">
+            @Html.DisplayNameFor(m => m.IsVestIn) :
+        </label>
+        <div class="col-md-6">
+            <label class="radio-inline">是<input type="radio" value="true" name="IsVestIn" id="isVestIn_true" /></label>
+            <label class="radio-inline">否<input type="radio" value="false" name="IsVestIn" id="isVestIn_false" /></label>
+        </div>
+    </div>*@
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsOrderStorage) :
+    </label>
+    <div class="col-md-6">
+        <label class="radio-inline">是<input type="radio" value="true" name="IsOrderStorage" id="isOrderStorage_true" onchange="orderStorageChange(this);" /></label>
+        <label class="radio-inline">否<input type="radio" value="false" name="IsOrderStorage" id="isOrderStorage_false" /></label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsDefaultStorage) :
+    </label>
+    <div class="col-md-6">
+        <label class="radio-inline">是<input type="radio" name="IsDefaultStorage" id="isDefaultStorage_true" value="true" /></label>
+        <label class="radio-inline">否<input type="radio" name="IsDefaultStorage" id="isDefaultStorage_false" value="false" /></label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsTempStorage) :
+    </label>
+    <div class="col-md-6">
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.IsTempStorage, true)是</label>
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.IsTempStorage, false)否</label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsForAddInventory) :
+    </label>
+    <div class="col-md-6">
+
+        <label class="radio-inline">是<input type="radio" name="IsForAddInventory" id="IsForAddInventory_true" value="true" @(Model.IsForAddInventory ? "checked" : "") /></label>
+        <label class="radio-inline">否<input type="radio" name="IsForAddInventory" id="IsForAddInventory_false" value="false" @(!Model.IsForAddInventory ? "checked" : "") /></label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-6">
+        <label class="radio-inline">是<input type="radio" value="true" name="IsEnabled" id="isenable_true" /></label>
+        <label class="radio-inline">否<input type="radio" value="false" name="IsEnabled" id="isenable_false" /></label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsPublicInfo) :
+    </label>
+    <div class="col-md-6">
+        <label class="radio-inline">是<input type="radio" value="true" id="ispublicinfo_true" name="IsPublicInfo" /></label>
+        <label class="radio-inline">否<input type="radio" value="false" id="ispublicinfo_false" name="IsPublicInfo" /></label>
+    </div>
+</div>
+<div>
+    <label id="public_info_lab" style="display:none">@Model.IsPublicInfo</label>
+    <label id="IsDefaultStorage_lab" style="display:none">@Model.IsDefaultStorage</label>
+    <label id="IsVestIn_lab" style="display:none">@Model.IsVestIn</label>
+    <label id="IsOrderStorage_lab" style="display:none">@Model.IsOrderStorage</label>
+    <label id="IsEnabled_lab" style="display:none">@Model.IsEnabled</label>
+
+</div>
+<script>
+    
+    $(function () {
+        $(".selectpicker").selectpicker();
+
+        $(".storage-update #StoreId").queryManageStore({selected:'@Model.StoreId'});
+        if ($("#public_info_lab").text() == "True") {
+
+            $("#ispublicinfo_true").attr("checked", "checked");
+        }
+        else {
+
+            $("#ispublicinfo_false").attr("checked", "");
+        }
+
+        if ($("#IsDefaultStorage_lab").text() == "True") {
+            $("#isDefaultStorage_true").attr("checked", "checked")
+        }
+        else
+            $("#isDefaultStorage_false").attr("checked", "");
+
+        if ($("#IsVestIn_lab").text() == "True") {
+            $("#isVestIn_true").attr("checked", "checked");
+        }
+        else {
+            $("#isVestIn_false").attr("checked", "");
+        }
+        if ($("#IsOrderStorage_lab").text() == "True") {
+            $("#isOrderStorage_true").attr("checked", "checked");
+        }
+        else {
+            $("#isOrderStorage_false").attr("checked", "");
+        }
+
+        if ($("#IsEnabled_lab").text() == "True") {
+            $("#isenable_true").attr("checked", "checked");
+        }
+        else {
+            $("#isenable_false").attr("checked", "");
+        }
+
+        var t = $("#storagetype_sel").val();
+        if (t == "1") {
+            $("#StorageTypeSel option[value='1']").attr("selected", "selected");
+        }
+    })
+
+    function orderStorageChange(sender) {
+        var $this = $(sender);
+        $.whiskey.web.ajaxConfirm({
+            question: "提示",
+            notes: "作为订购仓库后，其它仓库将会取消成为订购仓库",
+            success_event: function () {
+
+            },
+            cancel_event: function () {
+                $("#isOrderStorage_false").prop("checked", true);
+                $this.prop("checked", false);
+            }
+        });
+    }
+
+</script>
+@Html.HiddenFor(m => m.Id)

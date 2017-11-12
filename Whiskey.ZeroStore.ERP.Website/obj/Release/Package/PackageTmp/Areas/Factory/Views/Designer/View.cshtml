@@ -1,0 +1,163 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Member
+@model Designer
+
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+    <li><a href="#role_tab" data-toggle="tab">用户角色</a></li>
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(f => f.FactoryId)
+            </label>
+            <div class="col-md-8">
+                @Model.Factory.FactoryName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(f => f.Factory.DepartmentId)
+            </label>
+            <div class="col-md-8">
+                @Model.Factory.Department.DepartmentName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(f => f.Factory.StoreId)
+            </label>
+            <div class="col-md-8">
+                @Model.Factory.Store.StoreName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(f => f.Factory.StorageId)
+            </label>
+            <div class="col-md-8">
+                @Model.Factory.Storage.StorageName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(f => f.Factory.BrandId)
+            </label>
+            <div class="col-md-8">
+                @Model.Factory.Brand.BrandName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                员工编号 :
+            </label>
+            <div class="col-md-8">
+                @Model.Admin.Member.UniquelyIdentifies
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                员工昵称(登录名) :
+            </label>
+            <div class="col-md-8">
+                @Model.Admin.Member.MemberName
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.Admin.Member.Email) :
+            </label>
+            <div class="col-md-8">
+                @Model.Admin.Member.Email
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.Admin.Member.MobilePhone) :
+            </label>
+            <div class="col-md-8">
+                @Model.Admin.Member.MobilePhone
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.Admin.Member.RealName) :
+            </label>
+            <div class="col-md-8">
+                @Model.Admin.Member.RealName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.Admin.Member.Gender) :
+            </label>
+            <div class="col-md-8">
+                @Html.Raw(Model.Admin.Member.Gender == (int)GenderFlag.Male ? "男" : "女")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.Admin.Notes) :
+            </label>
+            <div class="col-md-8">
+                @Model.Admin.Notes
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.UpdatedTime) :
+            </label>
+            <div class="col-md-8">
+                @Model.Admin.UpdatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.CreatedTime) :
+            </label>
+            <div class="col-md-8">
+                @Model.CreatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.IsEnabled) :
+            </label>
+            <div class="col-md-8">
+                @UiHelper.showEnabled(Model.IsEnabled)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.IsDeleted) :
+            </label>
+            <div class="col-md-8">
+                @UiHelper.showDeleted(Model.IsDeleted)
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-pane fade" id="role_tab">
+        <div style="margin-left:40px">
+            @if (((List<string>)ViewBag.roles) == null || ((List<string>)ViewBag.roles).Count() == 0)
+            {
+                <span style="text-align:center">无数据……</span>
+            }
+            else
+            {
+                foreach (var item in (List<string>)ViewBag.roles)
+                {
+                    <label style="margin-left:15px;font-weight:normal">@item<input type="checkbox" checked="checked" disabled="disabled" /></label>
+                }
+            }
+
+        </div>
+
+    </div>
+</div>

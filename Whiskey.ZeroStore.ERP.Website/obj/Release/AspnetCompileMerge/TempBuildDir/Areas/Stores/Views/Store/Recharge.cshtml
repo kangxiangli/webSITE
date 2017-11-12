@@ -1,0 +1,106 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model StoreDepositDto
+
+@Html.HiddenFor(x => x.StoreId)
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(f=>f.DepositType) :
+    </label>
+    <div class="col-md-8">
+        @Html.EnumDropDownListFor(f => f.DepositType, new { @class = "form-control selectpicker" })
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Cash) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Cash, new { @class = "form-control", @autocomplete = "off" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Card) :
+    </label>
+    <div class="col-md-8 div1">
+        @Html.TextBoxFor(x => x.Card, new { @class = "form-control", @autocomplete = "off" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Remit) :
+    </label>
+    <div class="col-md-8 div1">
+        @Html.TextBoxFor(x => x.Remit, new { @class = "form-control", @autocomplete = "off" })
+    </div>
+</div>
+
+<div class="form-group priceRemainder">
+    <label class="control-label col-md-3">
+        总计 :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Price, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<input type="hidden" id="hidCard" />
+<script type="text/javascript">
+    $(function () {
+        $(".bootbox #Cash,.bootbox #Card,.bootbox #Remit").keyup(function (event) {
+            calueValue(event);
+        });
+    });
+
+    //人工充值储值时
+    function calueValue(event) {
+        var keyCode = event.which;
+        var cash = $(".bootbox #Cash").val();
+        var card = $(".bootbox #Card").val();
+        var Remit = $(".bootbox #Remit").val();
+        if (cash == "" || card == "" || Remit == "") {
+            return false;
+        }
+        if (cash < 0 || card < 0 || Remit < 0) {
+            $(".btn-primary").attr("disabled", "disabled");
+            $.whiskey.web.alert({
+                type: "danger",
+                content: "禁止填写负数！",
+                callback: function () {
+                }
+            });
+            return false;
+        } else {
+            $(".btn-primary").removeAttr("disabled");
+        }
+        var total = 0;
+        if (card.length > 0) {
+            var floCard = parseFloat(card);
+            total = total + floCard
+        }
+        if (cash.length > 0) {
+            var floCash = parseFloat(cash);
+            total = total + floCash;
+        }
+        if (Remit.length > 0) {
+            var floRemit = parseFloat(Remit);
+            total = total + floRemit;
+        }
+        $(".bootbox #Price").val(total);
+    }
+   
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

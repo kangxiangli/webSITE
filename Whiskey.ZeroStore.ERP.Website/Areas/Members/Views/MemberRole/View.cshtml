@@ -1,0 +1,119 @@
+
+@using Whiskey.ZeroStore.ERP.Website.Areas.Authorities.Models;
+@using Whiskey.ZeroStore.ERP.Models
+@model MemberRole
+
+<style>
+
+</style>
+
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+    <li><a href="#roleright_tab" data-toggle="tab">角色默认权限</a></li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Name) :
+            </label>
+            <div class="col-md-10">
+                @Model.Name
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Weight) :
+            </label>
+            <div class="col-md-10">
+                @Model.Weight
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Description) :
+            </label>
+            <div class="col-md-10">
+                @Model.Description
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.UpdatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.UpdatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CreatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.CreatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsEnabled) :
+            </label>
+            <div class="col-md-10">
+                @UiHelper.showEnabled(Model.IsEnabled)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsDeleted) :
+            </label>
+            <div class="col-md-10">
+                @UiHelper.showDeleted(Model.IsDeleted)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.OperatorId) :
+            </label>
+            <div class="col-md-10">
+                @UiHelper.showOperator(Model.Operator)
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="roleright_tab">
+        <div>
+            @if (((List<ModuPermission>)ViewBag.da) == null || ((List<ModuPermission>)ViewBag.da).Count() == 0)
+            {
+                <span>无数据</span>}
+            else
+            {
+                <ul>
+                    @foreach (var item in (List<ModuPermission>)ViewBag.da)
+                    {
+                        <li>
+                            <span style="font-weight:bold">@item.Name.Trim()</span>
+                            <div style="margin-left:10px;">
+                                @foreach (var t in item.Child)
+                                {
+                                    <label style="font-weight:500" title="@t.Description">
+                                        @t.Name<input type="checkbox" checked="checked" disabled="disabled" />
+                                    </label>
+                                }
+                            </div>
+                        </li>}
+                </ul>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+
+    });
+</script>
+

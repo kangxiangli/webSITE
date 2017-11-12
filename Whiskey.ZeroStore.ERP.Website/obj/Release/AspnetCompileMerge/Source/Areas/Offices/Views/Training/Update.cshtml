@@ -1,0 +1,54 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model ExamEntity
+
+@*<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />*@
+
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.HiddenFor(m=>m.Id)
+                @Html.DisplayNameFor(m => m.Name) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.TotalScore) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.TotalScore, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.PassLine) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(x => x.PassLine, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.RetryCostScore) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.RetryCostScore, new { @class = "form-control" })
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<script type="text/javascript">
+
+
+</script>

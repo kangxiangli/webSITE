@@ -1,0 +1,418 @@
+﻿
+<style>
+	
+	#store-memu{width: 280px !important;margin-left: 0;}
+	#store-memu li{float: left;}
+	.child_memu{width: 163px !important;padding: 7px 0;margin-top: 6px;min-width:86px}
+	.child_memu li a{text-align: center;max-width: 163px;}
+	.memu{width: 307px !important;min-width: 86px !important;padding: 7px 0;margin-top: 6px;}
+	.dropdown_sale{margin-right:10px;height: 100%;}
+	.bootstrap-select{height:100%}
+	.bootstrap-select button{background: rgba(0,0,0,.1);padding: 10px 38px;}
+	.bootstrap-select .open{margin-top:15px}
+	.open .dropdown-toggle.btn-default{background-color:rgba(0,0,0,.1) !important;}
+	.btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default{
+		background-color: rgba(0,0,0,0.1)!important;
+	}
+	#OutStoreId{
+		min-width: 100px;
+		min-height: 100%;
+		padding:10px 20px
+	}
+	.dropdown_sale>a{background: rgba(0,0,0,.2);}
+	.dropdown_sale>a:focus{background: rgba(0,0,0,.2);}
+	.dropdown_sale>a:active{color: #fff !important;}
+	.memu li:hover{background: rgba(0,0,0,.4);}
+	.memu li a:hover{background: none;}
+	.memu li{float: left;max-width: 101px;cursor: pointer;}
+	.child_memu li{cursor: pointer;}
+    .memu li a{max-width: 100px;}
+	.time button{background: rgba(0,0,0,.2); padding: 20px 23px;line-height: 0px;}
+	.time button:active,.time button:focus{background: rgba(0,0,0,.2);}
+	 .saledetails{top:6%;right:19%;width: 300px;background: rgba(0,0,0,.2);border-radius: 4px;display: none;min-width: 345px;}
+     .SaleData li{color:#fff;font-size: 14px;text-decoration: none;list-style-type: none;float: left;margin:5px;padding:5px}
+     .SaleData li:hover{cursor: pointer;background: rgba(0,0,0,.2);}
+     .datepicker-dropdown{background: rgba(0,0,0,1) !important;}
+     #Search{float:left;height:40px;margin-left:5px}
+     .nodataDiv{position: absolute;top: 43%;left: 22%;width: 59px;height: 20px;border: 1px solid #ccc;color: #ccc;border-radius: 4px;line-height: 17px;display: none;}
+.sale_content{width: 100%;height: 40px;position: absolute;top: 9%;left:2%;}
+.sale_content>div{float: left;margin:0;}
+</style>
+<div id="saleStatistics" style="width: 100%;height:800px;position:relative;">
+	<!-- Single button -->
+
+</div>
+ <div class="nodataDiv">暂无销售</div>
+
+<div class="sale_content">
+	<div class="dropdown dropdown_sale" style="z-index: 999;">
+          <select id="OutStoreId" class="form-control"></select>
+</div>
+
+<div class="dropdown  dropdown_sale dropdown_brand" style="z-index: 999;">
+            <a class="btn dropdown-toggle switch_store" data-toggle="dropdown" href="#">
+                <i class="icon-font"></i>&nbsp;
+                <span id="big-brand" class="current-font">全部品牌</span>&nbsp;
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu memu" id="erji-memu-brand"  data-type="BrandId">
+            	 <li><a href="javascript:;" unselectable="on" data-value="">全部品牌</a></li>
+            </ul>
+</div>
+
+<div class="dropdown  dropdown_sale dropdown_category" style="z-index: 999;">
+            <a class="btn dropdown-toggle switch_store" data-toggle="dropdown" href="#">
+                <i class="icon-font"></i>&nbsp;
+                <span id="big-category" class="current-font">全部品类</span>&nbsp;
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu memu" id="erji-memu-category"  data-type="CategoryId">
+            	 <li><a href="javascript:;" unselectable="on" data-value="">全部品类</a></li>
+            </ul>
+</div>
+<div class="dropdown  dropdown_sale dropdown_category" style="z-index: 999;">
+            <a class="btn dropdown-toggle switch_store" data-toggle="dropdown" href="#"  disabled="disabled">
+                <i class="icon-font"></i>&nbsp;
+                <span id="big-category-child" class="current-font">子品类</span>&nbsp;
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu child_memu" id="erji-memu-category-child"  data-type="CategoryId">
+            	
+            </ul>
+</div>
+<div class="dropdown  dropdown_sale dropdown_category" style="z-index: 999;">
+            <a class="btn dropdown-toggle switch_store" data-toggle="dropdown" href="#" disabled="disabled">
+                <i class="icon-font"></i>&nbsp;
+                <span id="big-category-size" class="current-font">尺码</span>&nbsp;
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu child_memu_size" id="erji-memu-category-size"  data-type="SizeId">
+            </ul>
+</div>
+<div class="dropdown  dropdown_sale dropdown_color" style="z-index: 999;">
+            <a class="btn dropdown-toggle switch_store" data-toggle="dropdown" href="#">
+                <i class="icon-font"></i>&nbsp;
+                <span id="big-color" class="current-font">全部颜色</span>&nbsp;
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu memu" id="erji-memu-color" data-type="ColorId">
+            <li><a href="javascript:;" unselectable="on" data-value="">全部颜色</a></li>
+            </ul>
+</div>
+<div class="dropdown dropdown_sale dropdown_color" style="z-index: 999;">
+            <a class="btn dropdown-toggle switch_store" data-toggle="dropdown" href="#">
+                <i class="icon-font"></i>&nbsp;
+                <span id="big-season" class="current-font">全部季节</span>&nbsp;
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu memu" id="erji-memu-season" data-type="SeasonId">
+       <li><a href="javascript:;" unselectable="on" data-value="">全部季节</a></li>
+            </ul>
+</div>
+<div class="btn-group time" role="group" aria-label="..." style="z-index: 999;margin-left: 5px;">
+  <button type="button" class="btn btn-default" time-data="7" style="background: rgba(0,0,0,.9);">前7天</button>
+  <button type="button" class="btn btn-default" time-data="30">前30天</button>
+  <button type="button" class="btn btn-default" time-data="90">前90天</button>
+  <button type="button" class="btn btn-default" time-data="other">其他</button>
+  <div class="col-md-12 timeRange" style="position: absolute;right:3.5%;top: 111%;z-index: 999;display: none;">
+                    <div class="form-group no-margin-hr">
+                        <div class="col-md-12">
+                            <div class="input-daterange input-daterange_sale input-group">
+                                <input class="start-date  form-control" id="StartDate" name="StartDate" placeholder="开始日期" type="text" value="">
+                                <span class="input-group-addon">至</span>
+                                <input class="end-date  form-control" id="EndDate" name="EndDate" placeholder="结束日期" type="text" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+</div>
+<button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+
+<div  id="saleSwicher" style="z-index: 999;">
+                                 <span class="changeDate_swicher saleSwicher"> 
+                                 <input class="saleReturn" type="checkbox" data-class="switcher-default" checked="checked">
+                                 </span>
+ </div>
+
+</div>
+
+<script type="text/javascript" src="/Content/scripts/echart/echarts.js"></script>
+<script type="text/javascript">
+	var StoreId=-1;
+	var allData={};
+	var json={};
+	json.Days=7;
+	json.StatType=0;
+	var CountFromAllStore,CountFromCurrentStore;
+	var dataName='';
+	var templateIdBig=null;
+    var templateId=null;
+      	$(function(){
+      		require.config({
+            paths: {
+                echarts: '/content/scripts/echart/'
+            }
+        });
+      		plotWithOptions();
+      	})
+                      /*initdata*/
+                function init(StoreId){
+      		  $.get("/datastat/sale/query",json,function(da){
+      		 	console.log("初始化参数:"+JSON.stringify(json));
+		                		if(da.ResultType==3){
+		                			var data=da.Data;
+		                		
+		                			if(data.CountFromAllStore==0){
+		                				$(".nodataDiv").fadeIn();
+		                			}else{
+		                				$(".nodataDiv").hide();
+		                			}
+		                			CountFromAllStore=data.CountFromAllStore;	//总销售
+		                			CountFromCurrentStore=data.CountFromCurrentStore;	//当前
+		                		console.log("初始化数据:"+CountFromAllStore,CountFromCurrentStore);
+		                		  reloadSaleChart(CountFromAllStore,CountFromCurrentStore,dataName);
+		                		}  
+		          })
+                }  
+                /*点击查询重新渲染 数据*/
+                function reloadSaleChart(CountFromAllStore,CountFromCurrentStore,dataName){
+                	 require(
+                     [
+            'echarts',
+            'echarts/chart/pie',
+                  ],
+            function (ec) {
+            var  saleChart = ec.init(document.getElementById('saleStatistics'));
+            var saleoOption = {
+
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    calculable : true,
+    series : [
+        {
+        	
+            name:'销售情况:',
+            type:'pie',
+            radius : '50%',
+            center: ['45%', '60%'],
+            data:[
+                {value:CountFromCurrentStore, name:dataName==''?'全部':dataName },
+                {value:CountFromAllStore, name:'总销售数'},
+            ],
+            itemStyle:{
+            	 normal : {
+                    label : {
+                    	textStyle:{
+                    		fontSize:20,
+                    	},
+                        show : true,
+                         position: 'outside',
+                             formatter: "{b} :  ({d}%)"
+                    },
+                    labelLine : {
+                        show : true,
+                        length:'60'
+                    },
+                },
+            }
+        }
+    ]
+};
+                saleChart.setOption(saleoOption);
+            }
+        );
+     }
+      	function plotWithOptions(){
+      		  /*获得所有品牌、品类、颜色、季节*/
+      		   $.get("/datastat/sale/queryoptions",function(da){
+      		   	  if (da.ResultType == 3) {       
+      		   	   allData = da.Data;
+      		   	  
+      		   	   console.log("所有数据:"+JSON.stringify(allData));
+      		   	  $.each(allData.Brand,function(i,item){
+      		   	   $("#erji-memu-brand").append("<li data-id="+item.Id+"><a>"+item.Name+"</a></li>");
+      		   	  });
+      		   	  $.each(allData.Category,function(i,item){
+      		   	   $("#erji-memu-category").append("<li data-id="+item.Id+"><a>"+item.Name+"</a></li>");
+      		   	  });
+      		   	  $.each(allData.Color,function(i,item){
+      		   	   $("#erji-memu-color").append("<li data-id="+item.Id+"><a>"+item.Name+"</a></li>");
+      		   	  });
+      		   	  $.each(allData.Season,function(i,item){
+      		   	   $("#erji-memu-season").append("<li data-id="+item.Id+"><a>"+item.Name+"</a></li>");
+      		   	  });
+      		   	  
+      		   	  
+      		   	  function selectCAtegory(titel){	//筛选出小品类
+      		   	  	
+      		   	  	$.each(allData.Category,function(i,item){
+      		   	 		  		if(item.Name==titel){
+      		   	 		  			$('#erji-memu-category-child').siblings("a").removeAttr("disabled");
+      		   	 		  			$('#erji-memu-category-child').append('<li><a href="javascript:;" unselectable="on" data-value="">全部</a></li>');
+      		   	 		  			$.each(item.Children,function(i,items){
+      		   	 		  				$('#erji-memu-category-child').append("<li data-id="+items.Id+"><a>"+items.Name+"</a></li>");
+      		   	 		  			});
+      		   	 		  		}
+      		   	   });
+      		   	    $('.child_memu li a').unbind("click").bind('click',function(){
+      		   	 		 var activeoptions=$(this).text();	//回填字段
+      		   	 		 var activeoptionsId =$(this).parents("ul").attr("data-type");///四种ID，让下面的json，判断存取那个ID
+      		   	 		 var current_font=$(this).parents(".child_memu").siblings().find(".current-font");	//回填字段的dom
+      		   	 		 var current_Id=$(this).parent().attr('data-id');	//对应的ID号
+      		   	 		  current_font.html(activeoptions);
+      		   	 		   if(activeoptionsId=="CategoryId"){
+      		   	 		  	selectSzie(activeoptions);
+      		   	 		  }
+      		   	 		  json[activeoptionsId]=current_Id||templateIdBig;
+      		   	 	      $(this).parent().css("background","rgba(0,0,0,.9)").siblings().css("background","none");
+      		   	 		
+      		   	 });
+      		   	  }
+      		   	  function selectSzie(titel){	//筛选小品类对应的尺码
+      		   	 	$.each(allData.Category,function(i,item){
+      		   	  		
+      		   	  		$.each(item.Children,function(i,items){
+      		   	  			if(items.Name==titel){
+      		   	  				$('#erji-memu-category-size').empty();
+      		   	  				$('#erji-memu-category-size').siblings("a").removeAttr("disabled");
+      		   	  				$('#erji-memu-category-size').siblings().find('.current-font').html("尺码");
+      		   	  				$('#erji-memu-category-size').append('<li><a href="javascript:;" unselectable="on" data-value="">全部</a></li>');
+      		   	  				$.each(items.Sizes,function(i,itemss){
+      		   	  					$('#erji-memu-category-size').append("<li data-id="+itemss.Id+"><a>"+itemss.Name+"</a></li>");
+      		   	  				});
+      		   	  				return;
+      		   	  			}
+      		   	  		})
+      		   	    });
+      		   	    $('.child_memu_size li a').unbind("click").bind('click',function(){
+      		   	 		 var activeoptions=$(this).text();	//回填字段
+      		   	 		 var activeoptionsId =$(this).parents("ul").attr("data-type");///四种ID，让下面的json，判断存取那个ID
+      		   	 		 var current_font=$(this).parents(".child_memu_size").siblings().find(".current-font");	//回填字段的dom
+      		   	 		 var current_Id=$(this).parent().attr('data-id');	//对应的ID号
+      		   	 		  current_font.html(activeoptions);
+      		   	 		  if(current_Id){
+      		   	 		  	 json[activeoptionsId]=current_Id;
+      		   	 		  }else{
+      		   	 		  	delete json[activeoptionsId];
+      		   	 		  }
+      		   	 		  
+      		   	 		 
+      		   	 	      $(this).parent().css("background","rgba(0,0,0,.9)").siblings().css("background","none");
+      		   	 		
+      		   	 });
+      		   	    
+      		   	  }
+      		   	  
+      		   	  	/*为所有下拉绑定事件*/	
+      		   	 $('.memu li a').bind('click',function(){
+      		   	 		 var activeoptions=$(this).text();	//回填字段
+      		   	 		 var activeoptionsId =$(this).parents("ul").attr("data-type");///四种ID，让下面的json，判断存取那个ID
+      		   	 		 var current_font=$(this).parents(".memu").siblings().find(".current-font");	//回填字段的dom
+      		   	 		 var current_Id=$(this).parent().attr('data-id');	//对应的ID号
+      		   	 		  current_font.html(activeoptions);
+      		   	 		  templateIdBig=current_Id;
+      		   	 		  if(activeoptionsId=="CategoryId"){
+      		   	 		  	        $('#erji-memu-category-child,#erji-memu-category-size').empty();
+      		   	 		  			$('#erji-memu-category-child').siblings().find('.current-font').html("子品类");
+      		   	 		  			$('#erji-memu-category-size').siblings().find('.current-font').html("尺码");
+      		   	 		  			delete json['SizeId'];
+      		   	 		  			delete json['CategoryId'];
+      		   	 		  		if(activeoptions=="全部品类"){
+      		   	 		  			$('#erji-memu-category-child,#erji-memu-category-size').siblings("a").attr("disabled","disabled");
+      		   	 		  		}else{
+      		   	 		  	selectCAtegory(activeoptions);
+      		   	 		  	}
+      		   	 		  }
+      		   	 		  json[activeoptionsId]=current_Id;
+      		   	 	      $(this).parent().css("background","rgba(0,0,0,.9)").siblings().css("background","none");
+      		   	 });
+      		   	  }
+               })
+ 
+					 $(".dropdown_sale #OutStoreId").queryManageStore({ defaultSelect:true,callback:function(){
+					 	  json.StoreId = $("#OutStoreId").val();
+					       init(json.StoreId);
+					 }});
+					     
+					  $('#OutStoreId').change(function () {
+					            json.StoreId = $("#OutStoreId").val();
+					 });
+				
+                     $('.time button').bind('click',function(){
+                            var activetime=$(this).attr('time-data');
+                            if(activetime=='other'){
+                            	$(".timeRange").fadeIn();
+                            	delete json.Days;
+                            }else{
+                            	$(".timeRange").hide();
+                            	    delete json['StartDate'];
+                            		delete json['EndDate'];
+                            		json.Days=activetime;
+                            }
+                            $(this).css("background","rgba(0,0,0,.9)").siblings("button").css("background","rgba(0,0,0,.2)");
+                      });
+                      
+                      $('#Search').click(function(){
+                      	if(!json.Days){
+                      		var StartDate=$('#StartDate').val();
+                      		var EndDate=$('#EndDate').val();
+                      		
+                      		json.StartDate=StartDate||$.whiskey.web.alert({
+                        type: "warning",
+                        content: "请选择开始时间",
+                        callback: function () {
+                 
+                        }
+                    });
+                      		json.EndDate=EndDate||$.whiskey.web.alert({
+                        type: "warning",
+                        content: "请选择结束时间！",
+                        callback: function () {
+                 
+                        }
+                    });
+                      	}
+                         	var len = $('.saleSwicher input:checked').length;
+		                    if( len == 0){
+		                    	//1==退
+		                    	json.StatType=1;
+		                    }else if( len == 1){
+		                    	//0==售
+		                    	json.StatType=0;
+		                    }
+		                   var childCategoryText=$('#big-category-child').text();
+		                    var childSizeText=$('#big-category-size').text();
+		                   var category='';
+		                if(childCategoryText!='子品类' && childCategoryText!='全部'){
+		                	 category=childCategoryText ;  
+		                }
+		                if(childSizeText!='尺码' && childSizeText!='全部'){
+		                	 category=category+"&"+childSizeText;  
+		                }
+		         
+         var allDataName=$("#big-brand").text()+"&"+$("#big-category").text()+"("+category+")"+"&"+$("#big-color").text()+"&"+$("#big-season").text();
+		                    console.log("新的参数:"+JSON.stringify(json));
+		                    $.get("/datastat/sale/query",json,function(da){
+		                		if(da.ResultType==3){
+		                			var data=da.Data;
+		                			if(data.CountFromAllStore==0){
+		                				$(".nodataDiv").fadeIn();
+		                			}else{
+		                				$(".nodataDiv").hide();
+		                			}
+		                				
+		                			CountFromAllStore=data.CountFromAllStore;	//总销售
+		                		    CountFromCurrentStore=data.CountFromCurrentStore;	//当前
+		                		   console.log("新的数据:"+CountFromAllStore,CountFromCurrentStore);
+		                		   reloadSaleChart(CountFromAllStore,CountFromCurrentStore,allDataName);
+		                		}
+		                    })
+                      })
+                      
+        
+       
+           		
+      	}
+    </script>

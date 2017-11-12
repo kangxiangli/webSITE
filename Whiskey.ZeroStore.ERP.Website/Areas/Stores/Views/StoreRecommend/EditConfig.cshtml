@@ -1,0 +1,37 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Whiskey.ZeroStore.ERP.Models.BigProdNumStateConfigEntry
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ClassicProductTime) :
+    </label>
+    <div class="col-md-10">
+        <input type="text" class="form-control form-datetime" name="ClassicProductTime" id="ClassicProductTime" value="@Model.ClassicProductTime.ToString("yyyy-MM-dd")" />
+
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.NewProductTime) :
+    </label>
+    <div class="col-md-10">
+        <input type="text" class="form-control form-datetime" name="NewProductTime" id="NewProductTime" value="@Model.NewProductTime.ToString("yyyy-MM-dd")" />
+        
+    </div>
+</div>
+
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<script>
+    $(function () {
+        //初始化日期控件
+        $(".form-datetime").datetimepicker({
+            //startDate: $.whiskey.tools.dateFormat(new Date(), "yyyy-MM-dd HH:mm"),
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            minView: 'month',
+            todayBtn: true
+        });
+    })
+</script>

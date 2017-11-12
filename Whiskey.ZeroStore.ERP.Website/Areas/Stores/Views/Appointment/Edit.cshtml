@@ -1,0 +1,214 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Appointment
+<div id="app-appointment-edit">
+    <div class="form-group">
+        <label class="control-label col-md-3">预购件数：</label>
+        <div class="col-md-9">
+            <span>{{Quantity}}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">上装：</label>
+        <div class="col-md-9">
+            <span>{{Top}}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">下装：</label>
+        <div class="col-md-9">
+            <span>{{Bottom}}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">连体：</label>
+        <div class="col-md-9">
+            <span>{{Jumpsuit}}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">中意单品：</label>
+        <div class="col-md-9">
+            <span>{{ProductNumber}}</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-3">不中意单品：</label>
+        <div class="col-md-9">
+            <span>{{DislikeProductNumbers}}</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-3">总预算：</label>
+        <div class="col-md-9">
+            <span>{{Budget}}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">场合：</label>
+        <div class="col-md-9">
+            <span>{{Situation}}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">风格：</label>
+        <div class="col-md-9">
+            <span>{{Style}}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">色彩偏好：</label>
+        <div class="col-md-9">
+            <span>{{Color}}</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-3">面料偏好：</label>
+        <div class="col-md-9">
+            <span>{{Fabric}}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">季节：</label>
+        <div class="col-md-9">
+            <span>{{Season}}</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-3">顾客留言：</label>
+        <div class="col-md-9">
+            <textarea style="height:80px" disabled class="form-control">@Model.Notes</textarea>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-3">搭配方案：{{selectedPlan.length}}</label>
+        <div class="col-md-9">
+            <button class="btn btn-primary" type="button" v-on:click="showCollocationPlan(@Model.Id)">选择</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    let selectedPlans = []
+
+    try {
+        selectedPlans =     JSON.parse('@Html.Raw(ViewBag.selectedPlans)')
+    } catch (e) {
+
+    }
+    let selectIds =  selectedPlans.map(i=>parseInt(i))
+    var appAppointmentEditVM = new Vue({
+        el: '#app-appointment-edit',
+        data: {
+            dict: [],
+            selectedPlan: selectIds,
+            Notes: `@Model.Notes`,
+            init: false,
+            ProductNumber: '@Model.ProductNumber',
+            DislikeProductNumbers:'@Model.DislikeProductNumbers'
+        },
+        methods: {
+            showCollocationPlan(appointmentId) {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "处理预约",
+                    actionUrl: '@Url.Action("CollocationPlanSelect")',
+                    getParams: { id: appointmentId, selectedIds: this.selectedPlan.join(',') },
+                    lockButton: $(this),
+                    formValidator: function () {
+                        var selected = planSelectVM.selected.concat([])
+                        _self.selectedPlan = selected
+                        planSelectVM.closeDialog()
+                    }
+                });
+            }
+        },
+        mounted() {
+            _self = this;
+            $.getJSON('/stores/Appointment/getOptions')
+                .done(function (res) {
+                    _self.dict = res.Data;
+                    _self.init = true;
+                })
+        },
+        computed: {
+            Quantity: function () {
+                if (!this.init) {
+                    return ''
+                }
+
+                var arr = '@Model.Quantity'.split(',').map(i => this.dict["Quantity"].Options[i]);
+
+                return arr.join(",");
+            },
+            Top: function () {
+                if (!this.init) {
+                    return ''
+                }
+                return '@Model.Top'.split(',').map(i => this.dict["Top"].Options[i]).join(",");
+            },
+            Bottom: function () {
+                if (!this.init) {
+                    return ''
+                }
+                return '@Model.Bottom'.split(',').map(i => this.dict["Bottom"].Options[i]).join(",");
+
+            },
+            Jumpsuit: function () {
+                if (!this.init) {
+                    return ''
+                }
+
+                return '@Model.Jumpsuit'.split(',').map(i => this.dict["Jumpsuit"].Options[i]).join(",");
+
+            },
+
+            Budget: function () {
+                if (!this.init) {
+                    return ''
+                }
+
+                return '@Model.Budget'.split(',').map(i => this.dict["Budget"].Options[i]).join(",");
+            },
+            Situation: function () {
+                if (!this.init) {
+                    return ''
+                }
+                return '@Model.Situation'.split(',').map(i => this.dict["Situation"].Options[i]).join(",");
+            },
+            Style: function () {
+                if (!this.init) {
+                    return ''
+                }
+
+                return '@Model.Style'.split(',').map(i => this.dict["Style"].Options[i]).join(",");
+            },
+            Color: function () {
+                if (!this.init) {
+                    return ''
+                }
+
+                return '@Model.Color'.split(',').map(i => this.dict["Color"].Options[i]).join(",");
+            },
+            Fabric: function () {
+                if (!this.init) {
+                    return ''
+                }
+                return '@Model.Fabric'.split(',').map(i => this.dict["Fabric"].Options[i]).join(",");
+            },
+            Season: function () {
+                if (!this.init) {
+                    return ''
+                }
+                return '@Model.Season'.split(',').map(i => this.dict["Season"].Options[i]).join(",");
+            }
+        }
+
+
+    })
+</script>

@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Article>
+  <!--type:0表示参数只有1个，1表示参数至少有2个或者多个-->
+  <Parameter type="0" name="文章标题">    
+    <lable>$title</lable>
+    <lable>$hits</lable>
+  </Parameter>
+  <Parameter type="0" name="发布人">    
+    <lable>$publisher</lable>
+  </Parameter>
+  <Parameter type="0" name="发布日期">    
+    <lable>$time</lable>
+  </Parameter>
+  <Parameter type="0" name="文章内容">
+    <lable>$content</lable>
+  </Parameter>
+  <Parameter type="0" name="header">    
+    <lable>$header</lable>
+  </Parameter>
+  <Parameter type="0" name="footer">    
+    <lable>$footer</lable>
+  </Parameter>
+  <Parameter type="0" name="点击率">    
+    <lable>$hits</lable>
+  </Parameter>
+  <Parameter type="1" name="上一篇文章">    
+    <lable>$last{}</lable>
+    <innerLable>
+       <innerName>$last_name</innerName>
+       <innerPath>$last_path</innerPath>
+    </innerLable>
+  </Parameter>
+  <Parameter type="1" name="下一篇文章">    
+    <lable>$next{}</lable>
+    <innerLable>
+       <innerName>$next_name</innerName>
+       <innerPath>$next_path</innerPath>  
+    </innerLable> 
+  </Parameter>
+</Article>

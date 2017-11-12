@@ -1,0 +1,174 @@
+﻿
+
+
+
+<style>
+    .diacl .modal-dialog {
+        width: 80% !important;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-4">
+                <h5><span class="invent_cou"></span></h5>
+            </div>
+
+        </div>
+        <table class="table table-list-pv table-hover valign-middle" width="100%">
+            <thead>
+                <tr></tr>
+            </thead>
+        </table>
+        <input type="hidden" id="storeid_pv" value="@ViewBag.id" />
+        <input type="hidden" id="startDate_pv" value="@ViewBag.startDate" />
+        <input type="hidden" id="endDate_pv" value="@ViewBag.endDate" />
+    </div>
+</div>
+<script>
+    $(function () {
+       $(".table-list-pv").dataTable({
+            "bPaginate": true,
+            "bFilter": true,
+            "bLengthChange": 20,
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("GetScorRechang")",
+            "oLanguage": {
+                "sZeroRecords": "对不起，查询不到任何相关数据",
+                "sInfoEmtpy": "找不到相关数据"
+            },
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var storeid = $("#storeid_pv").val();
+                var startDate = $("#startDate_pv").val();
+                var endDate = $("#endDate_pv").val();
+
+                if (startDate.length > 0 && endDate.length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("Member.StoreId", storeid, "equal"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate, "greater"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate, "less"));
+                }
+
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+                $("td", nRow).css({ "text-align": "left" });
+                return nRow;
+            },
+            "fnDrawCallback": function (osetting) {
+                $(".table-list").treegrid({
+                    initialState: "collapsed",
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed',
+
+                });
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+
+                });
+                $(".table tr td input[type=checkbox]").checked = true;
+                $(".treegrid-expander").css({ "margin-left": 0, "float": "left" });
+            },
+            "aoColumns": [
+                {
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "序号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        return "1";
+                    }
+                },
+                {
+                    "sTitle": "会员名",
+                    "bSortable": false,
+                    "sName": "MemberName",
+                    "mData": function (data) {
+                        return data.MemberName;
+                    }
+                },
+
+                 {
+                     "sTitle": "充值积分",
+                     "bSortable": false,
+                     "sName": "num",
+                     "mData": function (data) {
+                         return data.Score;
+                     }
+                 },
+                 //{
+                 //    "sTitle": "赠送积分",
+                 //    "bSortable": false,
+                 //    "sName": "Coupon",
+                 //    "mData": function (data) {
+                 //        return data.Coupon;
+                 //    }
+                 //},
+                  {
+                      "sTitle": "充值前",
+                      "bSortable": false,
+                      "sName": "BeforeBalance",
+                      "mData": function (data) {
+                          return data.BeforeScore;
+                      }
+                  },
+                   {
+                       "sTitle": "充值后",
+                       "bSortable": false,
+                       "sName": "BeforeBalance",
+                       "mData": function (data) {
+                           return data.AfterScore;
+                       }
+                   },
+
+                  {
+                      "sTitle": "充值时间",
+                      "bSortable": false,
+                      "sName": "StoreId",
+                      "mData": function (data) {
+                          return $.whiskey.tools.dateFormat(data.CreatedTime);
+                      }
+                  },
+                  {
+                      "sTitle": "充值类型",
+                      "bSortable": false,
+                      "sName": "StoreId",
+                      "mData": function (data) {
+                          return data.DepositContext;
+                      }
+                  },
+                    {
+                        "sTitle": "操作人",
+                        "bSortable": false,
+                        "sName": "StoreId",
+                        "mData": function (data) {
+                            return data.AdminName;
+                        }
+                    }
+            ]
+        });
+    });
+</script>

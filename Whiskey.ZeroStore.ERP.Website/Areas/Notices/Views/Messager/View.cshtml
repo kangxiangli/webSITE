@@ -1,0 +1,110 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Notices
+@using Whiskey.ZeroStore.ERP.Models
+@model Messager
+<div id="msgView">
+    @*<div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m=>m.ReceiverId) :
+            </label>
+            <div class="col-md-10">
+                @Model.ReceiverId
+            </div>
+        </div>*@
+    @*<div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m=>m.MessageType) :
+            </label>
+            <div class="col-md-10">
+                @Model.MessageType
+            </div>
+        </div>*@
+    <div class="form-group hidden">
+        <label class="control-label col-md-2">
+            @Html.DisplayNameFor(m => m.MessageTitle) :
+        </label>
+        <div class="col-md-10">
+            @Model.MessageTitle
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2 hidden">
+            @Html.DisplayNameFor(m => m.Description) :
+        </label>
+        <div class="col-md-10">
+            @Html.Raw(Model.Description)
+        </div>
+    </div>
+    @*<div class="form-group">
+        <label class="control-label col-md-2">
+            @Html.DisplayNameFor(m => m.Status) :
+        </label>
+        <div class="col-md-10">
+            @Html.Raw(Request.QueryString["ActivityType"] == "1" ? (Model.IsDeleted ? "已撤回" : "未撤回") : Model.Status == (int)MessagerStatusFlag.Read ? "已读" : "未读")
+        </div>
+    </div>*@
+    <div class="form-group hidden">
+        <label class="control-label col-md-2">
+            发送时间 :
+        </label>
+        <div class="col-md-10">
+            @Model.UpdatedTime
+        </div>
+    </div>
+    @*<div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m=>m.CreatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.CreatedTime
+            </div>
+        </div>*@
+    @*<div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m=>m.IsEnabled) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsEnabled==true?"是":"否")
+            </div>
+        </div>*@
+    @*<div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m=>m.IsDeleted) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsDeleted==true?"是":"否")
+            </div>
+        </div>*@
+    <div class="form-group hidden">
+        <label class="control-label col-md-2">
+            @Html.Raw(Request.QueryString["ActivityType"] == "1" ? "接收人" : "发送人") :
+        </label>
+        <div class="col-md-10">
+            @Html.Raw(Request.QueryString["ActivityType"] == "1" ? Model.Receiver.Member.RealName : Model.Sender.Member.RealName)
+        </div>
+    </div>
+    <iframe id="contfram" style="display:none"></iframe>
+</div>
+<style>
+    .messager_view .modal-body {
+        width: 650px;
+        min-height: 250px;
+    }
+
+    .messager_view .modal-footer span {
+        float: left;
+    }
+    .hidden {
+        display:none;
+    }
+</style>
+<script>
+    $(function () {
+        setbootboxinfo();
+    });
+    function setbootboxinfo() {
+        var sendpeo = '<span>@Html.Raw(Request.QueryString["ActivityType"] == "1" ? "接收人" : "发送人")：@Html.Raw(Request.QueryString["ActivityType"] == "1" ? Model.Receiver.Member.RealName : Model.Sender.Member.RealName)</span><br/>';
+        var sendtime = '<span>发送时间：@Model.UpdatedTime</span>';
+        $(".messager_view .modal-footer").prepend(sendpeo, sendtime);
+        $(".messager_view .modal-header .modal-title").text('@Model.MessageTitle');
+    }
+</script>

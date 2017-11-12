@@ -1,0 +1,63 @@
+﻿<link rel="stylesheet" href="/Content/chatOnline/Styles/index.css" />
+
+<audio id="getMsgAudio" src="../../Content/chatOnline/Images/msg.mp3" ></audio>
+<!--<input id="chatbar" hidden>-->
+<!--<button class="chatbtn" data-clipboard-action="copy" data-clipboard-target="#chatbar">Copy</button>-->
+<div class="Conversation">
+	<div class="notRead">发起会话</div>
+	<img class="letter" src="/Content/chatOnline/Images/chat.png" />
+</div>
+<div class="chatBox">
+	<div class="peopleList">
+		<div class="search">
+			<input type="text" placeholder="搜索 职位或姓名" />
+			<i class=" icon-remove-sign close"><img class="searchBtn" src="/Content/chatOnline/Images/gb.png"  /></i>
+			<img class="searchBtn" src="/Content/chatOnline/Images/search.png" alt="" title="点击搜索"  />
+		</div>
+		<div class="peopleBox">
+			<ul>
+				<li class="noLogin">暂无登陆用户</li>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="chating notChating">
+		<div class="close"><img src="/Content/chatOnline/Images/Arrow_Down.png" /></div>
+		<div class="chatingPeopleName">
+			选择用户，发起会话
+		</div>
+		<div class="chatList">
+			<div class="nochat">您还未选中或发起聊天</div>
+			<div class="listBox" id="listBox">
+				<div class="list">
+				
+				</div>
+			</div>
+		</div>
+		<div class="textEnterBox">
+			<div class="emBox emotion">
+				<div class="artlist">
+					
+				</div>
+				<img title="发送表情" class="embtn" src="/Content/chatOnline/Images/em.png" /><span>表情</span>
+			</div>
+			
+			
+			<div class="textEnter">
+				<div class="clearfix" id="textEdit">
+					<i class="textEditCopy chatbtn" data-clipboard-action="copy" data-clipboard-target="#chatbar">复制</i>
+					<!--<i class="textEditprase">粘贴</i>-->
+				</div>
+				<!--<div class="textarea" contenteditable="true"></div>-->
+				<textarea class="textarea" contenteditable="true" id="saytext"></textarea>
+				<!--<div class="zdyCopy"><img src="/Content/chatOnline/Images/paste.png" alt="粘贴" title="粘贴"/></div>-->
+			</div>
+			<span class="enterTitle">Enter键发送内容/Ctrl+Enter换行</span>
+		</div>
+	</div>
+</div>
+
+<!--<script src="/Content/chatOnline/Scripts/clipboard.js"></script>-->	
+<script src="/Content/chatOnline/Scripts/jquery.qqFace.js"></script>
+<script src="/Content/chatOnline/Scripts/notify.js"></script>
+<script src="/Content/chatOnline/Scripts/saveChat.js"></script>

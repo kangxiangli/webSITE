@@ -1,0 +1,269 @@
+﻿<div id="app">
+
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    <switcher-search></switcher-search>
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">姓名</label>
+                            <div class="col-md-8">
+                                <input v-on:keyup.enter="search({pageIndex:1})" class="form-control" type="text" name="name" id="name" placeholder="请输入姓名" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">手机号</label>
+                            <div class="col-md-8">
+                                <input v-on:keyup.enter="search({pageIndex:1})" class="form-control" type="text" name="MobilePhone" id="MobilePhone" placeholder="请输入手机号" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-5">创建日期：</label>
+                            <div class="col-md-7">
+                                <div class="input-daterange input-group">
+                                    @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                    <span class="input-group-addon">至</span>
+                                    @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button v-on:click="search(null)" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button v-on:click="document.querySelector('.form-search').reset()" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+                        @*<button v-on:click="importMember" title="导入数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>生成数据</span></button>*@
+                    </div>
+                    <div class="button-recycle">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    @*<span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>*@
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>所属部门</th>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>职位</th>
+                        <th>员工类型</th>
+                        <th>入职时间</th>
+                        <th>登记表</th>
+                        <th>简历</th>
+                        <th>相关证件</th>
+                        <th>劳动合同</th>
+                        <th>操作</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{index+1}}</td>
+                        <td>{{item.DepartmentName}}</td>
+                        <td>{{item.RealName}}</td>
+                        <td>{{item.Gender===0?'女':'男'}}</td>
+                        <td>{{item.JobPositionName}}</td>
+                        <td>{{item.TypeName}}</td>
+                        <td>{{item.EntryTime|datetime}}</td>
+                        <td>
+                            <label v-if="item.HasRegistForm" class="text text-success">有</label>
+                            <label v-else class="text text-danger">无</label>
+                            
+                        </td>
+                        <td>
+                            <label v-if="item.HasResume" class="text text-success">有</label>
+                            <label v-else class="text text-danger">无</label>
+                        </td>
+                        <td>
+                            <label v-if="(item.HasCertificate)" class="text text-success">有</label>
+                            <label v-else class="text text-danger">无</label>
+                        </td>
+                        <td>
+                            <label v-if="item.HasLaborContract" class="text text-success">有</label>
+                            <label v-else class="text text-danger">无</label>
+
+                        </td>
+                       
+                        <td>
+                            <button type="button" title="查看详细信息" v-on:click="view(item.Id)" class="btn-opt-box"><i class="btn-view-icon"></i></button>
+                            <button title="修改数据" v-on:click="update(item.Id)" class="Update btn-opt-box"><i class="btn-setting-icon"></i></button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+
+    var vm;
+    $(function () {
+        var baseUrl = '/Offices/AdminProfile';
+        var memberIds = [];
+        vm = new Vue({
+            el: "#app",
+            data: {
+                pageFlags: @Html.Raw(ViewBag.PageFlags),
+                isDeleted: false,
+                isEnabled: true,
+                pageDatas: [], //分页数据
+                currentId: 0,
+                pageInfo: {
+                    pageIndex: 1,
+                    pageSize: 10,
+                    pageCount: 0,
+                    totalCount: 0
+                },
+                checkedIds: []
+            },
+            mounted: function () {
+                this.search();
+
+
+                this.$nextTick(function () {
+                    $(".input-daterange").datepicker();
+                })
+
+            },
+            updated() {
+                this.pageFlags.forEach(selector => $(selector).remove());
+            },
+            methods: {
+                view: function (id) {
+                    var _self = this;
+                    var dialog = new $.whiskey.web.ajaxView({
+                        caption: "查看数据",
+                        actionUrl: "@Url.Action("View")",
+                        lockButton: $(this),
+                        params: { Id:id}
+
+                    });
+                },
+                 update(id) {
+                    var _self = this;
+                    var dialog = new $.whiskey.web.ajaxDialog({
+                        caption: "修改数据",
+                        actionUrl: "@Url.Action("Update")",
+                        lockButton: null,
+                        getParams: { Id: id },
+                        formValidator: function () {
+                            return true;
+                        },
+                        postComplete: function () {
+                            vm.search();
+                            return true;
+                        }
+                    });
+                 },
+
+
+                 search: function (filter) {
+
+                     var _self = this;
+
+                     var searchData = {
+
+                         pageIndex: this.pageInfo.pageIndex,
+                         pageSize: this.pageInfo.pageSize,
+                     }
+                     var startDate = $("#StartDate").val();
+                     var endDate = $("#EndDate").val();
+                     var name = $("#name").val();
+                     var mobilePhone = $("#MobilePhone").val();
+
+                     if (name && name.length > 0) {
+                         searchData.name = name;
+
+                     }
+                     if (mobilePhone && mobilePhone.length > 0) {
+                         searchData.mobilePhone = mobilePhone;
+
+                     }
+                     if (startDate) {
+                         searchData.startDate = startDate;
+                     }
+                     if (endDate) {
+                         searchData.endDate = endDate;
+                     }
+
+
+                     if (filter) {
+
+                         searchData = _.extend(searchData, filter)
+                     }
+
+                     $.getJSON(baseUrl + '/List', searchData).done(function (res) {
+                         if (res.ResultType !== 3) {
+                             //console
+                             return;
+                         }
+                         var pageInfo = res.Data.pageInfo;
+                         var pageData = res.Data.pageData;
+                         //判断是否已在列表中
+
+                         _self.pageDatas = pageData;
+                         _self.pageInfo = pageInfo;
+                     })
+                 },
+                 changePage: function (page) {
+                     this.pageInfo.pageIndex = page;
+                     this.search();
+                 },
+                 changePageSize: function (newSize) {
+
+                     this.pageInfo.pageSize = newSize;
+                     this.pageInfo.pageIndex = 1;
+                     this.search();
+                 }
+            }
+
+        })
+    })
+
+</script>

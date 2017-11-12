@@ -1,0 +1,343 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model CouponDto
+
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+ 
+<style>
+    .li_empt {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+</style>
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #e5603b"></span>
+</div>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#addImage" data-toggle="tab">上传图片</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <input type="hidden" id="hidQuantity" value="0" />
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.CouponName) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.CouponName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsForever) :
+            </label>
+            <div class="col-md-1">
+                @Html.CheckBoxFor(m => m.IsForever, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsRecommend) :
+            </label>
+            <div class="col-md-1">
+                @Html.CheckBoxFor(m => m.IsRecommend, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsPartner) :
+            </label>
+            <div class="col-md-1">
+                @Html.CheckBoxFor(m => m.IsPartner, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+        </div>
+        <div class="form-group warning alert-danger" id="warn" style="display:none">
+            <label class="control-label col-md-3">
+                警告 :
+            </label>
+            <div class="col-md-7">
+                <label class="control-label col-md-10">
+                    <i class="fa fa-warning"></i><span id="warnText">请选择供应商</span>
+                </label>
+            </div>
+        </div>
+        <div class="form-group" id="divPartner" style="display:none">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.PartnerId) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(x => x.PartnerName, new { @class = "form-control", @readonly = "readonly" })
+                @Html.HiddenFor(x=>x.PartnerId)                
+            </div>             
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.CouponPrice) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.CouponPrice, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Quantity) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group" id="divTime">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.StartDate) :
+            </label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBoxFor(x => x.StartDate, new { @class = "form-control datetime", @placeholder = "开始时间" })
+                    <span class="input-group-addon">至</span>
+                    @Html.TextBoxFor(x => x.EndDate, new { @class = "form-control datetime", @placeholder = "结束时间" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group showSection">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.UniqueNum) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(x => x.RealName, new { @class = "form-control", @readonly = "readonly" })
+                @Html.HiddenFor(x => x.UniqueNum)
+            </div>
+            <a onclick="chooseAdmin()" class="btn btn-success btn-label">选择</a>
+        </div>
+        <div class="form-group showSection">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextAreaFor(x => x.Notes, new { @class = "form-control" })                 
+            </div>             
+        </div>
+    </div> 
+    <div class="tab-pane fade clearfix" id="addImage">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                图片预览:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="/Content/Images/logo-_03.png" alt="" id="CouponImagePath" />
+                    </a>
+                </div>
+                <input type="hidden" name="CouponImagePath" id="hidCouponImagePath" value="/Content/Images/logo-_03.png" />
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    上传:
+                </label>
+                <div class="col-md-10">
+                    <div class="dropzone-box uploadImage">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file" multiple="multiple" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+
+    $(function () {
+        //根据角色加载选项
+        var isShow = "@ViewBag.IsShow";
+        if (isShow==true) {
+            $("showSection").css("display", "block");
+        } else {
+            $("showSection").css("display", "none");
+        }
+
+
+        //初始化上传封面图片控件
+        var myDropzone = new Dropzone(".uploadImage", {
+            url: "@Url.Action("UploadImage")",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            maxFiles: 1,
+            paramName: "file",
+            maxFilesize: 0.5,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (data.ResultType == 3) {
+                        $(".bootbox #CouponImagePath").attr("src", data.Data)
+                        $(".bootbox #hidCouponImagePath").attr("value", data.Data);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+
+                });
+            }
+        });
+
+        $("#IsForever").on("click", function () {
+            setDate()
+        });
+
+        $(".bootbox #Quantity").on("keyup", function () {
+            var res = $("#IsPartner").is(":checked");
+            if (res) {
+                var quantity = $(".bootbox #Quantity").val();
+                var hidQuantity = $(".bootbox #hidQuantity").val();
+                var count = quantity - hidQuantity;
+                //debugger
+                if (count < 0) {
+                    $(".bootbox .btn-primary").removeAttr("disabled", "disabled");
+                    $("#warnText").html("请选择供应商")
+                    $("#warn").css("display", "none");
+                    return false;
+                } else {
+                    $("#warnText").html("允许发送优惠券数量超过了"+count)
+                    $("#warn").css("display", "block");
+                    $(".bootbox .btn-primary").attr("disabled", "disabled");
+                }
+            } else {
+                return false;
+            }
+        });
+    })
+
+    //获取当前时期并赋值给日期控件
+    var myDate = new Date();
+    var date = myDate.toLocaleDateString();
+    //$(".datetime").attr("value", date);
+    //初始化日期控件
+    $(".datetime").datetimepicker({
+        startDate: date,
+        format: 'yyyy/mm/dd',
+        autoclose: false,
+        minView: 'month',
+        todayBtn: true,
+        //forceParse:false
+    });
+    
+     
+    //是否为合作商优惠券
+    function checkPartner(option){
+        var res = $(option).is(":checked");
+        if (res == true) {             
+            var partnerId = $("#PartnerId").val();            
+            if (partnerId == null || partnerId=="") {
+                $("#warn").css("display", "block");
+                $(".bootbox .btn-primary").attr("disabled", "disabled");
+            } else {
+                $("#warn").css("display", "none");
+                $(".bootbox .btn-primary").remove("disabled", "disabled");
+            }
+            $("#divPartner").css("display", "block");
+            $(".showSection").css("display", "none");
+        } else {
+            $("#divPartner").css("display", "none");
+            $("#warn").css("display", "none");
+            $(".showSection").css("display", "block");
+            $(".bootbox .btn-primary").removeAttr("disabled", "disabled");                        
+            $("#PartnerId").val("");
+            $("#PartnerName").val("");
+        }
+    }
+    //选择合作商
+    function choosePartner() {
+        $.ajax({
+            url: "@Url.Action("ChooseIndex", "Partner", new { area="offices"})",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "chooseIndex",
+                    title: "供应商列表",
+                    buttons: {                        
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".chooseIndex").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+
+    //选择员工
+    function chooseAdmin() {
+        $.ajax({
+            url: "@Url.Action("Admin")",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "adminlist",
+                    title: "会员列表",
+                    buttons: {                        
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".memberlist").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    
+    
+
+    function setDate() {
+        var isForever = $("#IsForever").is(" :checked");
+        if (isForever == true) {
+            var date = new Date();
+            var currentDate = date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay();            
+            $(".datetime").attr("value", currentDate);
+            $("#divTime").css("display", "none");
+        } else {
+            $(".datetime").attr("value", "");
+            $("#divTime").css("display", "block");
+        }        
+    }
+</script>

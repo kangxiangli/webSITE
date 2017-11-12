@@ -1,0 +1,243 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Warehouse
+@using Whiskey.Utility.Data
+@using Whiskey.ZeroStore.ERP.Transfers
+@model OrderblankDto
+<style>
+    #left_content {
+        opacity: 0.5;
+    }
+
+    .modal-dialog {
+        width: 750px;
+    }
+</style>
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<div class="row">
+    <div class="col-md-7">
+        <div id="left_content" title="请选择右侧的下拉菜单以激活当前区域">
+            <div class="panel panel-primary panel-dark widget-profile">
+                <div class="panel-heading">
+                    <div class="widget-profile-bg-icon"></div>
+                    <div class="widget-profile-header text-center">
+                        <h3>请使用扫码枪将商品货号扫入下边文本框</h3>
+                    </div>
+                </div>
+                <div class="list-group-item no-border-hr clearfix valign-middle">
+                    <div>                        
+                        <div class="" style="padding-left:0;margin-bottom:10px">
+                            @Html.TextBox("ScanNumber", "", new { @placeholder = "", @class = "scan-number  text-center input-lg form-control", @style = "ime-mode:disabled;margin-top:15px;display:inline;width:75%;height:30%", @onkeyup = "this.value=this.value.toUpperCase().replace(/[\u4e00-\u9fa5]/g,'')",@disabled= "disabled" })
+                            <input id="sear-ok" class="input-lg form-control" style="display:inline;width:16%;margin-left:auto" type="button" value="&raquo" />
+                        </div>
+                        <div class="col-md-3"></div>
+                        <div style=" padding: 24px 0;">
+                            <input class="form-control" id="selec_prod_list" type="button" value="选择商品……" style="font-weight: bold;height: 37px;" />
+                            <input class="form-control" id="selec_prodBatch_list" type="button" value="批量导入……" style="margin-top:10px;font-weight: bold;height: 37px;" />
+                        </div>
+                    </div>
+                </div>                
+                <div class="widget-profile-counters clearfix">
+                    <div class="col-xs-4"><label class="label label-info scan-queue-count">0</label><br />队列数量</div>
+                    <div class="col-xs-4">
+                        <a href="javascript:void(0)" class="scan-valid" style="cursor:default">
+                            <label class="label label-success scan-valid-count" style="cursor:default">0</label>
+                            <br />有效数量
+                        </a>
+                    </div>
+                    <div class="col-xs-4">
+                        <a href="javascript:void(0)" class="scan-invalid" style="cursor:pointer">
+                            <label class="label label-danger scan-invalid-count" style="cursor:pointer">0</label>
+                            <br />无效数量
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="stat-panel">
+            <div class="stat-row">
+                @using (Ajax.BeginForm("Create", new { }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "createSuccess(data)" }, new  {id="frmOrderblank" }))
+                {
+                    <div class="stat-cell padding-sm-hr bordered valign-top" style="padding-top:0;padding-bottom:3px">
+                    
+                        <ul id="whestr" class="list-group no-margin">
+
+                            <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                                <label class="control-label col-md-4">发货店铺：</label>
+                                <div class="col-md-8">
+                                    <select id="outStoreId" name="outStoreId" class="form-control "></select>
+                                </div>
+                            </li>
+                            <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                                <label class="control-label col-md-4">发货仓库：</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(x => x.OutStorageId, new List<SelectListItem>(), new { @class = "form-control  selectpicker receive-store", style = "padding:1px;" })
+                                </div>
+                            </li>
+                            <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                                <label class="control-label col-md-4">收货店铺：</label>
+                                <div class="col-md-8">
+                                    <select id="ReceiverStoreId" name="ReceiverStoreId" class="form-control"></select>
+                                </div>
+                            </li>
+                            <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                                <label class="control-label col-md-4">收货仓库：</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(x => x.ReceiverStorageId, new List<SelectListItem>(), new { @class = "form-control receive-store selectpicker", style = "float:right" })
+                                </div>
+                            </li>
+                            @if (ViewBag.HasPermisstion)
+                            {
+                                <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                                    <label class="control-label col-md-4">入库时间：</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control form-datetime" name="CreatedTime" id="CreatedTime" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm")" />
+                                    </div>
+                                </li>
+                            }
+                            <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                                <label class="control-label col-md-4">备注信息：</label>
+                                <div class="col-md-8">
+                                    @Html.TextAreaFor(x => x.Notes, new { @class = "form-control" })
+                                </div>
+                            </li>
+
+                            <li>
+                                <div style="margin-top:10px;">
+                                    <button id="create" type="button" style="padding:4px 0" class="btn btn-success  btn-padding-right"><i class="fa fa-arrow-right"></i> 创建配货单</button>
+                                    <a href="javascript:void(0);" onclick="$.whiskey.web.load({url:'/Warehouses/Purchase/Index'})" class="btn btn-success">返回配货管理</a>
+                                    @*<button id="removeall_ord" style="padding: 4px 0" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-trash"></i> 配货完成</button>*@
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+    <input type="hidden"  id="orderblankId" value="0"/>
+</div>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="~/wwwroot/built/StoreSelect.js"></script>
+
+<script type="text/javascript">
+    var hashlist = new $.whiskey.hashtable();
+    //显示日期控件
+    function showDate(option) {
+        $(option).datetimepicker('show');
+    };
+
+    $(document).ready(function () {
+        // 店铺列表初始化
+        $("#outStoreId").queryManageStore({ context: 'orderblank'})
+        $("#ReceiverStoreId").queryAllStore({ context: 'orderblank' })
+        //初始化日期控件
+        $(".form-datetime").datetimepicker({
+            //startDate: $.whiskey.tools.dateFormat(new Date(), "yyyy-MM-dd HH:mm"),
+            format: 'yyyy-mm-dd hh:ii',
+            autoclose: true,
+            minView: 'hour',
+            todayBtn: true
+        });
+        //禁用左侧
+        disabledLeft();
+
+        //创建配货单
+        $("#create").click(function () {
+            $("#frmOrderblank").submit();
+        })
+
+        //初始化出货仓库
+        $("#outStoreId").change(function () {
+            var storeId = $(this).val();
+            $("#ReceiverId option").show();
+            $("#ReceiverId option[value=" + storeId + "]").hide();
+            var st = storeWithStorage(storeId, $("#OutStorageId"));
+            $("#OutStorageId").html("").html(st);
+            $('.selectpicker').selectpicker();
+						$('.selectpicker').selectpicker('refresh');
+            
+        });
+
+        //初始化收货仓库
+        $("#ReceiverStoreId").change(function () {
+            var storeId = $(this).val();
+            $("#outStoreId option").show();
+            $("#outStoreId option[value=" + storeId + "]").hide();
+            var st = storeWithStorage(storeId, $("#ReceiverStorageId"));
+            $("#ReceiverStorageId").html("").html(st);
+            $('.selectpicker').selectpicker();
+						$('.selectpicker').selectpicker('refresh');
+        })
+
+    })
+
+    //提交成功后
+    function createSuccess(data) {
+        var result = data;
+        if (result.ResultType === parseInt("@((int)OperationResultType.Success)")) {
+            //跳转
+            var orderblankNum = result.Data;
+            $.whiskey.web.load({url:"/Warehouses/Orderblank/StartOrderblank?_num=" + orderblankNum});
+            //var id = result.Data[0];
+            //$("#orderblankId").attr("value",id);
+            //disabledRightDiv();
+            //enableRight();
+            //$("#create").attr("disabled", "disabeld");
+        } else {
+            $.whiskey.web.alert({
+                type: "danger",
+                content: result.Message,
+                callback: function () {
+                    return false;
+                }
+            });
+        }
+    }
+
+    //禁用右侧状态栏
+    function disabledRightDiv() {
+        $(".valign-top select").animate({
+            disabled: true
+        }, "slow");
+        $(".valign-top textarea").animate({
+            disabled: true
+        }, 1500)
+    }
+
+    //禁用左侧
+    function disabledLeft() {
+        $("#left_content input").attr("disabled", true);
+    }
+
+    //启用左侧
+    function enableRight() {
+        $("#left_content input").removeAttr("disabled");
+        $("#left_content").css("opacity", 1);
+    }
+
+    //根据店铺获取仓库
+    function storeWithStorage(storeId, bindstorage) {
+        if (storeId !== undefined && storeId !== null && storeId !== "") {             
+            $.post("@Url.Action("GetStorages")", { storeId: storeId }, function (data) {
+                var opts = "<option value=''>选择仓库</option>";
+                if (data != null && data != "") {
+                    $.each(data, function () {                        
+                        var id = this.Id;
+                        var name = this.Name;
+                        opts += "<option value=" + id + ">" + name + "</option>";
+                    })                     
+                }
+                $(bindstorage).html("").html(opts);
+                        $('.selectpicker').selectpicker();
+						$('.selectpicker').selectpicker('refresh');
+            })
+
+        }
+    }
+
+
+</script>

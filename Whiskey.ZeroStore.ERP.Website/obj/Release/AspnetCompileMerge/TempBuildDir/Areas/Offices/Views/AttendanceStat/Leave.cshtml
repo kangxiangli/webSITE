@@ -1,0 +1,176 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+<style>
+    .diaclg .modal-dialog {
+        width: 80%;
+        max-width: 80%;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="LeaveList">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $("#LeaveList").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("LeaveList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("StartTime", "@ViewBag.StartTime", "greater"));
+                conditions.Rules.push(new $.whiskey.filter.rule("EndTime", "@ViewBag.EndTime", "less"));
+                //获取当前用户
+                conditions.Rules.push(new $.whiskey.filter.rule("AdminId", "@ViewBag.AdminId", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("VerifyType", "1", "equal"));
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                $("td:eq(2)", nRow).css({ "float": "left", "width": "100%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".table-list").treegrid({
+                    saveState: true,
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+			{
+			    "sTitle": "编号",
+			    "bSortable": false,
+			    "sName": "RowNumber",
+			    "mData": function (data) {
+			        return '';
+			    }
+			},
+            {
+                "sTitle": "休假类型",
+                "bSortable": false,
+                "sName": "VacationType",
+                "mData": function (data) {
+                    if (data.VacationType == "@((int)VacationFlag.Leave)") {
+                        return "事假";
+                    } else if (data.VacationType == "@((int)VacationFlag.SickLeave)") {
+                        return "病假";
+                    } else {
+                        return "";
+                    }
+                },
+            },
+            {
+                "sTitle": "开始时间",
+                "bSortable": false,
+                "sName": "StartTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.StartTime, "yyyy-MM-dd HH:mm");
+                },
+            },
+            {
+                "sTitle": "结束时间",
+                "bSortable": false,
+                "sName": "EndTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.EndTime, "yyyy-MM-dd HH:mm");
+                },
+            },
+            {
+                "sTitle": "请假时长",
+                "bSortable": false,
+                "sName": "LeaveDays",
+                "mData": function (data) {
+                   
+                    if (data.LeaveMethod == "1") {
+                        return data.LeaveDays + "小时";
+                    } else {
+                        return data.UseAnnualLeaveDay + "天";
+                    }
+                },
+            },
+                {
+                    "sTitle": "请假方式",
+                    "bSortable": false,
+                    "sName": "PaidLeaveDays",
+                    "mData": function (data) {
+                        if (data.LeaveMethod == "1")
+                        {
+                            return "普通请假";
+                        } else if (data.LeaveMethod == "0") {
+                            return "年假";
+                        } else {
+                            return "带薪休假";
+                        }                        
+                    },
+                },
+                {
+                    "sTitle": "使用调休",
+                    "bSortable": false,
+                    "sName": "ChangeRestDays",
+                    "mData": function (data) {
+                        return data.ChangeRestDays + "天";
+                    },
+                },
+            {
+                "sTitle": "审核状态",
+                "bSortable": false,
+                "sName": "VerifyType",
+                "mData": function (data) {
+                    if (data.VerifyType == "@((int)VerifyFlag.Verifing)") {
+                        return "审核中";
+                    } else if (data.VerifyType == "@((int)VerifyFlag.Pass)") {
+                        return "审核通过";
+                    } else {
+                        return "审核不通过";
+                    }
+                },
+            }
+            ]
+        });
+    });
+</script>

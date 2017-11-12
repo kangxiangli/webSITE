@@ -1,0 +1,152 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+<style>
+    .diaclg .modal-dialog {
+        width: 70%;
+        max-width: 70%;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="NormalList">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+@*<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>*@
+
+
+ <script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $("#NormalList").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("NormalList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("AttendanceTime", "@ViewBag.StartTime", "greater"));
+                conditions.Rules.push(new $.whiskey.filter.rule("AttendanceTime", "@ViewBag.EndTime", "less"));
+                //获取当前用户
+                conditions.Rules.push(new $.whiskey.filter.rule("AdminId", "@ViewBag.AdminId", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));                                  
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                $("td:eq(2)", nRow).css({ "float": "left","width":"100%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".table-list").treegrid({
+                    saveState: true,
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+			{
+			    "sTitle": "编号",
+			    "bSortable": false,
+			    "sName": "RowNumber",
+			    "mData": function (data) {
+			        return '';
+			    }
+			},
+            {
+                "sTitle": "考勤日期",
+                "bSortable": false,
+                "sName": "AttendanceTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.AttendanceTime);
+                },
+            },            
+            {
+                "sTitle": "上班时间",
+                "bSortable": false,
+                "sName": "AmStartTime",
+                "mData": function(data){
+                    return data.AmStartTime;
+                },
+            },
+            {
+                "sTitle": "下班时间",
+                "bSortable": false,
+                "sName": "PmEndTime",
+                "mData": function (data) {
+                    return data.PmEndTime
+                },
+            },
+            {
+                "sTitle": "早到分钟",
+                "bSortable": false,
+                "sName": "ArrivalEarlyMinutes",
+                "mData": function (data) {
+                    return data.ArrivalEarlyMinutes + "分钟";
+                },
+            },
+             {
+                 "sTitle": "晚退分钟",
+                 "bSortable": false,
+                 "sName": "LeaveLateMinutes",
+                 "mData": function (data) {
+                     return data.LeaveLateMinutes + "分钟";
+                 },
+             },
+            {
+                "sTitle": "考勤状态",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    var word="正常";
+                    return word;
+                },
+            }             
+            ]
+
+        });
+
+         
+
+
+    });
+
+     
+    </script>

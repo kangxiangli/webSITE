@@ -1,0 +1,828 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Warehouse
+<style>
+	span.treegrid-expander {
+    margin: 0 auto !important;
+    position: absolute;
+}
+</style>
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">盘点店铺</label>
+                        <div class="col-md-8">
+                            <select class="form-control" id="StoreId" name="StoreId"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">所属仓库</label>
+                        <div class="col-md-8">
+                            @Html.DropDownList("StorageId", new List<SelectListItem>(), "请选择仓库", new { @class = "form-control cur_selectpicker" })
+                            @*@Html.TextBox("StorageId","", new { @class = "form-control"})*@
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">盘点编号</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("CheckGuid", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">创建日期</label>
+                        <div class="col-md-8">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                    <button id="Create" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增数据</span></button>
+                    <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                    <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                    <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <span><input class="enabler" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                <span style="margin-left:20px;display:none">
+                    <input class="trusher" type="checkbox" data-class="switcher-default" checked="checked">
+                </span>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<!--<div class="modal fade" id="modal_di" aria-labelledby="myModalLabel" aria-hidden="true">
+    <img style="position:fixed;top:40%;left:45%" class="modal-body" src="/content/images/ajax_loader.gif">
+</div>-->
+
+@section Scripts{
+    <link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+    <script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+    <script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#StoreId").queryManageStore();
+
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("List")",
+                "fnServerParams": function (aoData) {
+
+                    aoData.push($.whiskey.web.formData().get());
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    if (nRow != null) {
+                        var isEnabled = aData.IsEnabled;
+                        if (isEnabled == false) {
+                            $(nRow).css({ "color": " #5ebd5e" });
+                        }
+                        //$("td:eq(0)", nRow).addClass("text-right");
+                        //$("td:eq(1)", nRow).addClass("text-left").css({ "width": "15%" });
+                        $("td:last", nRow).addClass("text-middle").css({ "width": "10%" });
+                        $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                        var cheTxt = $("td:eq(0)", nRow).find(":checkbox").val();
+                        var reg = /^\d+$/g;
+                        if (reg.test(cheTxt)) {
+                            $(nRow).css({ "color": " #5ebd5e", "font-size": "small" });
+                        }
+                        return nRow;
+                    }
+                },
+                "fnDrawCallback": function () {
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table-list tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+                    });
+
+                    $(".table-list").treegrid({
+                        saveState: true,
+                        treeColumn: 1,
+                        expanderExpandedClass: 'treegrid-expander-expanded',
+                        expanderCollapsedClass: 'treegrid-expander-collapsed'
+                    });
+
+                },
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        return data.Id.toUpperCase();
+                    }
+                },
+                {
+                    "sTitle": "盘点店铺",
+                    "bSortable": false,
+                    "sName": "StoreName",
+                    "mData": function (data) {
+                        return data.StoreName;
+                    },
+                },
+                {
+                    "sTitle": "所属仓库",
+                    "bSortable": false,
+                    "sName": "StorageName",
+                    "mData": function (data) {
+                        return data.StorageName;
+                    },
+                },
+                {
+                    "sTitle": "品牌",
+                    "bSortable": false,
+                    "sName": "BrandName",
+                    "mData": function (data) {
+                        return data.BrandName;
+                    },
+                },
+                {
+                    "sTitle": "品类",
+                    "bSortable": false,
+                    "sName": "CategoryName",
+                    "mData": function (data) {
+                        return data.CategoryName;
+                    },
+                },
+                {
+                    "sTitle": "库存",
+                    "bSortable": false,
+                    "sName": "BeforeCheckQuantity",
+                    "mData": function (data) {
+                        return data.BeforeCheckQuantity;
+                    },
+                },
+                 {
+                     "sTitle": "总盘",
+                     "bSortable": false,
+                     "sName": "CheckCount",
+                     "mData": function (data) {
+                         var aparams = '<a style="cursor:default;color: #5ebd5e " href="javascript:void(0)" >' + data.CheckedQuantity + '</a>';
+                         return aparams;
+                     },
+                 },
+                 @*{
+                 "sTitle": "待盘",
+                 "bSortable": false,
+                 "sName": "CheckCount",
+                 "mData": function (data) {
+                     var aparams = '<a style="cursor:pointer;color: #4c94c8" href="javascript:void(0)" class="showCount" data-flag="@((int)CheckerItemFlag.Check)">' + data.CheckCount + '</a>';
+                     return aparams;
+                 },
+             },*@
+                      @*{
+                      "sTitle": "已盘",
+                      "bSortable": false,
+                      "sName": "CheckedCount",
+                      "mData": function (data) {
+                          var aparams = '<a style="cursor:pointer;color: #4c94c8" href="javascript:void(0)" class="showCount" data-flag="@((int)CheckerItemFlag.Checked)">' + data.CheckedCount + '</a>';
+                          return aparams;
+                      },
+                  },*@
+                       {
+                           "sTitle": "有效",
+                           "bSortable": false,
+                           "sName": "CheckedCount",
+                           "mData": function (data) {
+                               var aparams = '<a style="cursor:pointer;color: #4c94c8"  onclick="showCount(this)" data-flag="@((int)CheckerItemFlag.Valid)" data-id="' + data.Id + '">' + data.ValidCount + '</a>';
+                               return aparams;
+                           },
+                       },
+                       @*{
+                       "sTitle": "无效",
+                       "bSortable": false,
+                       "sName": "InvalidCount",
+                       "mData": function (data) {
+
+                           var aparams = '<a style="cursor:pointer;color: #4c94c8" href="javascript:void(0)" class="showCount" data-flag="@((int)CheckerItemFlag.Invalid)">' + data.InvalidCount + '</a>';
+                           return aparams;
+                       },
+                   },*@
+
+                    {
+                        "sTitle": "缺货",
+                        "bSortable": false,
+                        "sName": "MissingCount",
+                        "mData": function (data) {
+                            var aparams = '<a style="cursor:pointer;color: #4c94c8" onclick="showCount(this)"  data-flag="@((int)CheckerItemFlag.Lack)" data-id="' + data.Id + '">' + data.MissingCount + '</a>';
+                            return aparams;
+                        },
+                    },
+                    {
+                        "sTitle": "余货",
+                        "bSortable": false,
+                        "sName": "ResidueCount",
+                        "mData": function (data) {
+                            var aparams = '<a style="cursor:pointer;color: #4c94c8" onclick="showCount(this)" data-flag="@((int)CheckerItemFlag.Surplus)" data-id="' + data.Id + '">' + data.ResidueCount + '</a>';
+                            return aparams;
+                        },
+                    },
+                    {
+                        "sTitle": "时间",
+                        "bSortable": false,
+                        "sName": "CreatedTime",
+                        "mData": function (data) {
+                            return $.whiskey.tools.dateFormat(data.CreatedTime, "yyyy-MM-dd HH:mm:ss");
+                        }
+                    },
+                    {
+                        "sTitle": "盘点状态",
+                        "bSortable": false,
+                        "sName": "CheckerState",
+                        "mData": function (data) {
+                            //不设置button;
+                            if (false) {
+                                if (data.CheckerState == 1) {
+                                    var t = "<button title='盘点中' style='color: #5ebd5e' class='chestat-but btn  fa fa-life-ring'></button>";
+                                    return t;
+                                }
+                                else if (data.CheckerState == 2) {
+                                    var t = "<button title='中断' style='color: #5ebd5e' class='chestat-but btn fa fa-life-ring'></button>";
+                                    return t;
+
+                                }
+                                else if (data.CheckerState == 3) {
+                                    var t = "<button title='盘点完成' style='color: #5ebd5e ' class='chestat-but btn  fa fa-clipboard '></button>";
+                                    return t;
+                                }
+                                else if (data.CheckerState == 4) {
+                                    var t = "<button title='完成校对' style='color: #5ebd5e ' class='chestat-but btn  fa fa-lock'></button>";
+                                    return t;
+                                }
+                                else
+                                    return "";
+                            }
+                            else {
+                                if (data.CheckerState == 1)
+                                    return "盘点中";
+                                else if (data.CheckerState == 2)
+                                    return "中断";
+                                else if (data.CheckerState == 3)
+                                    return "盘点完成";
+                                else if (data.CheckerState == 4)
+                                    return "完成校对";
+                                else if (data.CheckerState == 5) {
+                                    return "完成校对"
+                                }
+                                else return "";
+                            }
+                        }
+                    },
+
+                    {
+                        "sTitle": "操作人",
+                        "bSortable": false,
+                        "sName": "AdminName",
+                        "mData": function (data) {
+                            return data.AdminName;
+                        },
+                    },
+
+                    {
+                        "sTitle": "操作",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            var reg = /^\d+$/;
+                            var remove = $.whiskey.datatable.tplRemove(data.Id);
+                            var view = '<button title="查看详细信息" type="button"  class="btn btn-xs  btn-padding-right" onclick="View(this,\'' + data.Id + '\')"><i class="fa fa-eye"></i> </button>';
+                            var update = '<button id="View" title="修改数据" type="button"  class="btn btn-xs  btn-padding-right updateInfo-but"><i class="fa fa-pencil"></i> </button>';
+                            var verity = '<button id="Verify" title="校对数据" type="button"  class="btn btn-xs  btn-padding-right checkup-but"><i class="fa fa-key"></i> </button>';
+                            var go = '<button id="Verify" title="继续盘点" type="button"  class="btn btn-xs  btn-padding-right contin-but"><i class="fa fa-bookmark"></i> </button>';
+                            if (data.IsIndex == true) {
+                                if (data.CheckerState == 3) {
+                                    return verity + update + remove;
+                                }
+                                if (data.CheckerState == 4) {
+                                    return update + view + remove;
+                                }
+                                else {
+                                    return go + update + remove;
+                                }
+                            } else {
+                                return view + remove;
+                            }
+
+                        }
+                    }
+                ]
+
+            });
+            $(document).delegate(".chestat-but", "click", function () {
+                var cl = $(this).attr("class");
+                if (cl.indexOf("fa-clipboard") > -1) {
+                    $(this).removeClass("fa-clipboard").addClass("fa-clipboard").css("color", " #5ebd5e ").attr("title", "完成");
+                    $(this).parents("tr").children("td:last").html("<button class='btn checkup-but'>校对</button><button class='btn updateInfo-but'>修改</button>");
+                    var _num = $(this).parents("tr").children("td:first").find(":checkbox").val();
+                    UpdateState(_num, 1);
+
+                }
+                if (cl.indexOf("fa-clipboard") > -1) {
+
+                    var _num = $(this).parents("tr").children("td:first").find(":checkbox").val();
+                    UpdateStateTemp(_num, 2, this);
+
+                }
+            }).delegate(".contin-but", "click", function () {
+
+                var _id = $(this).parents("tr:first").children("td:first").find(":checkbox").val();
+                $.whiskey.web.load({ url: "/Warehouses/Checker/index?IsContinute=" + true + "&CheckGuid=" + _id })
+                //location.href = "/Warehouses/Checker/index?IsContinute=" + true + "&CheckGuid=" + _id;
+                // $.get("/Warehouses/Checked/ContinuChecker", { num: _id });
+
+            }).delegate(".checkup-but", "click", function () {
+                var _num = $(this).parents("tr").children("td:first").find(":checkbox").val();
+                $(this).attr("disabled", "disabled");
+                $("#modal_di").modal({ keyboard: false, backdrop: "static" });
+                //location.href = "/Warehouses/Checkup/Checkup?num=" + _num;
+                //只有最新的才可以校对
+                isIndex(_num);
+                return;
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "校对数据",
+                    actionUrl: "/Warehouses/Checkup/Checkup",
+                    getParams: { num: _num },
+                    lockButton: $(this),
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+            }).delegate(".updateInfo-but", "click", function () {
+                var _num = $(this).parents("tr").children("td:first").find(":checkbox").val();
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "修改数据",
+                    actionUrl: "@Url.Action("Update")",
+                    lockButton: $(this),
+                    getParams: { num: _num },
+
+                    postComplete: function (da) {
+                        if (da.ResultType == 3) {
+                            $.whiskey.web.alert({
+                                type: "success",
+                                content: "修改成功!"
+                            });
+                        }
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+            }).delegate(".view-but", "click", function () {
+                $("#modal_di").modal({ keyboard: false, backdrop: "static" });
+                var _id = $(this).parents("tr:first").find(":checkbox").val();
+                View(this, _id);
+                //location.href = "/Warehouses/Checkup/Index?chitnum=" + _id;
+            })
+            $("#Create").on("click", function () {
+                $.whiskey.web.load({ url: "/Warehouses/Checker/Index" })
+                // location.href = "/Warehouses/Checker/Index";
+                @*var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "创建数据",
+                    actionUrl: "@Url.Action("Create")",
+                    lockButton: $(this),
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });*@
+            });
+
+            //查看详细数量
+
+
+
+
+            $("#Print").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var printer = $.whiskey.printer.ajaxPreview({
+                        actionUrl: "@Url.Action("Print")",
+                        lockButton: $(this),
+                        topMargin: "2%",
+                        leftMargin: "4%",
+                        contentWidth: "93.5%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#Export").on("click", function () {
+                var printer = $.whiskey.exporter.ajaxExport({
+                    actionUrl: "@Url.Action("Export")",
+                    lockButton: $(this),
+                    version: 2,
+                    params: {
+                        conditions: $.whiskey.web.formData().getJSON()
+                    }
+                });
+            });
+
+            $("#RemoveAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据移至回收站吗？",
+                        notes: "提示：数据移动到回收站后，随时可以从回收站中将其恢复",
+                        actionUrl: "@Url.Action("Remove")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#RecoveryAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据恢复吗？",
+                        notes: "提示：将数据从回收站移动至正常数据列表里",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#DeleteAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据彻底删除吗？",
+                        notes: "提示：数据删除后将不可能再恢复，请谨慎操作！",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+
+
+        });
+        //查看盘点数据数量
+        function showCount(options) {
+            var flag = $(options).attr("data-flag");
+            var id = $(options).attr("data-id");
+
+            if (flag == "" || flag == null || flag == undefined) {
+                return false;
+            } else {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "详细信息",
+                    actionUrl: "@Url.Action("ShowQuantity")",
+                    params: { Flag: flag, Id: id },
+                    lockButton: $(this),
+                });
+            }
+        }
+
+
+
+        function View(sender, Id) {
+            var view = new $.whiskey.web.ajaxView({
+                caption: "详细信息",
+                actionUrl: "@Url.Action("View")",
+                params: { number: Id },
+                lockButton: $(sender),
+            });
+        }
+        ///修改盘点状态
+        function UpdateState(num, stat) {
+            //1:成功 2：中断
+            if (stat != undefined && stat != null && num != undefined && num != null)
+                $.post("/Warehouses/Checked/UpdateState", { num: num, stat: stat }, function (data) {
+                    if (data.ResultType == 3) {
+                        $(this).removeClass("fa-clipboard").addClass("fa-clipboard").css("color", " #5ebd5e").attr("title", "中断");
+                        $(this).parents("tr").children("td:last").html("<button class='btn contin-but'>继续</button><button class='btn updateInfo-but'>修改</button>");
+                    } else {
+                        $.whiskey.web.alert({
+                            type: "danger",
+                            content: data.Message,
+                            callback: function () {
+                            }
+                        });
+                        return false;
+                    }
+
+                })
+
+        }
+        ///修改盘点状态
+        function UpdateStateTemp(num, stat, option) {
+            //1:成功 2：中断
+            if (stat != undefined && stat != null && num != undefined && num != null)
+                $.post("/Warehouses/Checked/UpdateState", { num: num, stat: stat }, function (data) {
+                    if (data.ResultType == 3) {
+                        $(option).removeClass("fa-clipboard").addClass("fa-clipboard").css("color", " #5ebd5e").attr("title", "中断");
+                        $(option).parents("tr").children("td:last").html("<button class='btn contin-but'>继续</button><button class='btn updateInfo-but'>修改</button>");
+                    } else {
+                        $.whiskey.web.alert({
+                            type: "danger",
+                            content: data.Message,
+                            callback: function () {
+                            }
+                        });
+                        return false;
+                    }
+
+                })
+
+        }
+
+        function Update(sender, Id) {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "修改信息",
+                actionUrl: "@Url.Action("Update")",
+                getParams: { Id: Id },
+                lockButton: $(sender),
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(true);
+                    return true;
+                },
+            });
+        }
+
+        function Remove(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要将这条数据移至回收站吗？",
+                notes: "提示：数据移动到回收站后可从随时将其恢复",
+                actionUrl: "@Url.Action("Remove")",
+                params: { CheckGuids: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Recovery(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要恢复这条数据吗？",
+                notes: "提示：将数据从回收站移动至正常数据列表里",
+                actionUrl: "@Url.Action("Recovery")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Delete(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要彻底删除这条数据吗？",
+                notes: "提示：数据彻底删除后不可恢复，请谨慎操作！",
+                actionUrl: "@Url.Action("Delete")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+
+        function Enable(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要启用这条数据吗？",
+                notes: "提示：启用才可以在任何地方使用",
+                actionUrl: "@Url.Action("Enable")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Disable(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要禁用这条数据吗？",
+                notes: "提示：禁用后数据将不在其他任何地方使用",
+                actionUrl: "@Url.Action("Disable")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+        //判断要校验的数据是否为最新的
+        function isIndex(num) {
+            $.ajax({
+                url: "@Url.Action("IsIndex")",
+                type: "post",
+                data: { CheckerUid: num },
+                success: function (data) {
+                    if (data.ResultType == 3) {
+                        //$.whiskey.web.load({url:"/Warehouses/Checkup/Checkup?num=" + num})
+                        location.href = "/Warehouses/Checkup/Checkup?num=" + num;
+                    } else {
+                        $.whiskey.web.alert({
+                            type: "danger",
+                            content: data.Message,
+                            callback: function () {
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+    <!--yxk 2015-9-->
+    <script>
+        $(function () {
+            $("#StoreId").change(function () {
+                var _store = $("#StoreId option:selected").val();
+                if (_store == null || _store == "")
+                    _store = -1;
+                $.post("/Storage/GetStorage", { storeId: _store, title: "选择盘点仓库" }, function (da) {
+
+                    $("#StorageId").html("");
+                    $("#StorageId").append(getOptions(da, "该店铺下没有关联的仓库"));
+                    $('.cur_selectpicker').selectpicker('refresh');
+                })
+            });
+            numValid();
+
+            $("body").delegate(".create-storeid", "change", function () {
+                var txt = $(this).val();
+                $.post("/Storage/GetStorage", { storeId: txt, title: "" }, function (da) {
+                    $(".create-storageid").html("");
+                    $(".create-storageid").append(getOptions(da, "没有可显示的仓库"));
+                     $('.cur_selectpicker').selectpicker('refresh');
+                })
+            })
+
+        })
+
+        function getOptions(da, emptyMess) {
+            var te = "";
+            if (da != null & da != "") {
+                $.each(da, function (i, v) {
+                    te += "<option value='" + da[i].Value + "'>" + da[i].Text + "</option>";
+                }
+               )
+            }
+            else {
+                if (emptyMess != "")
+                    te += "<option>" + emptyMess + "</option>";
+            }
+            return te;
+        }
+        //数据校验
+        function numValid() {
+            $("[name='AbsentAmount'],[name='SurplusAmount']").blur(function () {
+                var reg = /^\d+\.?\d+$/;
+                var tex = $(this).val();
+                if (!reg.test(tex)) {
+                    if (tex.length > 0) {
+                        $(this).parent().addClass("has-error");
+                        $.whiskey.web.alert({ type: "warning", content: "输入的内容只能为数字", callback: function () { } })
+                    }
+                    else {
+                        $(this).parent().removeClass("has-error");
+                    }
+                }
+                else {
+                    $(this).parent().removeClass("has-error");
+                }
+            });
+        }
+
+    </script>
+
+}
+

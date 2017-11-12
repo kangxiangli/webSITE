@@ -1,0 +1,120 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model PartnerManage
+
+<style>
+    .modal-content {
+        width: 1100px;
+    }
+    .thisimg {
+        width:400px;
+    }
+</style>
+
+<div class="form-group">
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.MemberName) :
+    </label>
+    <div class="col-md-5">
+        @Model.MemberName
+    </div>
+
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.Gender) :
+    </label>
+    <div class="col-md-5">
+        @Model.Gender.ToString()
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.MobilePhone) :
+    </label>
+    <div class="col-md-5">
+        @Model.MobilePhone
+    </div>
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.Email) :
+    </label>
+    <div class="col-md-5">
+        @Model.Email
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.ZipCode) :
+    </label>
+    <div class="col-md-5">
+        @Model.ZipCode
+    </div>
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.CheckStatus) :
+    </label>
+    <div class="col-md-5">
+        @Model.CheckStatus.ToString()
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.Address) :
+    </label>
+    <div class="col-md-10">
+        @Model.Province@Model.City@Model.Address
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", @readonly = "readonly", @resize = "none" })
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.LicencePhoto) :
+    </label>
+    <div class="col-md-5">
+        <img src="@Model.LicencePhoto" class="popimg thisimg" />
+    </div>
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.StorePhoto) :
+    </label>
+    <div class="col-md-5">
+        <img src="@Model.StorePhoto" class="popimg thisimg" />
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.IDCard_Front) :
+    </label>
+    <div class="col-md-5">
+        <img src="@Model.IDCard_Front" class="popimg thisimg" />
+    </div>
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.IDCard_Reverse) :
+    </label>
+    <div class="col-md-5">
+        <img src="@Model.IDCard_Reverse" class="popimg thisimg" />
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-1">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.CreatedTime
+    </div>
+</div>

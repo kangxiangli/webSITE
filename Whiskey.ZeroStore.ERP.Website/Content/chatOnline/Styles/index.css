@@ -1,0 +1,587 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+i {
+	font-style: normal;
+}
+.chatBox img{
+	-moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+}
+.clear {
+	clear: both;
+	height: 0;
+	overflow: hidden;
+	display: block;
+	line-height: 0
+}
+.qqFace tr>td{
+	padding:1px ;
+}
+.clearfix:after {
+	clear: both;
+	font-size: 0;
+	height: 0;
+	display: block;
+	visibility: hidden;
+	content: "";
+	line-height: 0
+}
+
+.clearfix {
+	zoom: 1
+}
+
+.chating .close {
+    width: 40px;
+    padding: 10px;
+    position: absolute;
+    top: 0;
+    right: 5px;
+    cursor: pointer;
+}
+
+.chating .close img {
+	width: 100%;
+}
+
+.chatBox {
+	display: none;
+	position: fixed;
+	bottom: 0;
+	right: 6px;
+	z-index: 10000;
+	width: 550px;
+	height: 400px;
+	/*background: #FFF;*/
+	border-radius: 3px 3px 0 0;
+	overflow: hidden;
+	font-family: "microsoft yahei", sans-serif;
+	box-shadow: 0px 0px 5px #000;
+}
+
+ul,
+li {
+	list-style: none;
+}
+
+.peopleList {
+	width: 30%;
+	height: 100%;
+	font-size: 14px;
+	box-sizing: border-box;
+	background: #555;
+	color: #FFF;
+	overflow: hidden;
+	position: relative;
+	-moz-user-select:none;/*火狐*/
+	-webkit-user-select:none;/*webkit浏览器*/
+	-ms-user-select:none;/*IE10*/
+	-khtml-user-select:none;/*早期浏览器*/
+	user-select:none;
+}
+.peopleList .search{
+	margin: 5px 0 2px 0;
+	z-index: 10000;
+	position: relative;
+}
+.peopleBox{
+	height: 350px;
+	overflow: hidden;
+	position: relative;
+}
+.peopleList .search input{
+	width: 100%;
+	margin: 0 auto;
+	height: 30px;
+	padding: 15px 25px;
+	box-shadow: none;
+    font-family: "microsoft yahei", sans-serif;
+	/*background: rgba(0,0,0,.5);*/
+}
+.search .close{
+	display: none;
+	position: absolute;
+	top: 0px;
+	right: 23px;
+	font-weight:normal;
+	color: #AAA;
+	text-shadow: none;
+}
+.searchBtn{
+	width: 13px;
+	position: absolute;
+	top: 9px;
+	left: 5px;
+	cursor: pointer;
+}
+.peopleList ul {
+	position: absolute;
+	top: 0px;
+	left: 0;
+	width: 100%;
+}
+
+.groupadd {
+	width: 50px;
+	padding: 10px;
+	float: left;
+}
+
+.chating {
+	width: 70%;
+	height: 100%;
+	background: #eee;
+	position: relative;
+	color: #000;
+}
+
+.nochat {
+	text-align: center;
+	line-height: 200px;
+	font-size: 16px;
+	color: #999;
+}
+
+.peopleList,
+.chating {
+	float: left;
+}
+.chatBox h2{
+    font-size: 14px;
+    width: 100%;
+    padding: 0 15px;
+    height: 32px;
+    line-height: 30px;
+    background: rgba(0,0,0,.2);
+    position: relative;
+    margin: 0;
+}
+.peopleList .bm{
+	border-bottom: 2px solid #555;
+}
+.bmOpen{
+	width: 15px;
+	position: absolute;
+	top: 10px;
+    right: 12px;
+    cursor: pointer;
+    
+}
+.bmOpen img{
+	width: 100px;
+}
+.people {
+	cursor: pointer;
+	padding: 5px 10px;
+	zoom: 1;
+	position: relative;
+    border-bottom:1px solid rgba(0, 0, 0, .1);
+}
+.peoples{
+	display: none;
+}
+.peopleChating {
+	border-left: 5px solid #9ac847;
+	background: rgba(0, 0, 0, .35);
+}
+.bnNotRead{
+	padding: 3px;
+	position: absolute;
+	top: 10px;
+	left: 5px;
+	background: #e5603b;
+	border-radius: 50%;
+	/*font-size: 12px;
+	color: red;
+	padding: 3px;
+	position: absolute;
+	top: 10px;
+	right: 30px;*/
+}
+.people img.photo {
+	vertical-align: middle;
+	width: 35px;
+	height: 35px;
+	float: left;
+	border-radius: 50%;
+}
+
+.people:after {
+	clear: both;
+	font-size: 0;
+	height: 0;
+	display: block;
+	visibility: hidden;
+	content: " ";
+	line-height: 0
+}
+
+.people .peopleName {
+	display: block;
+	margin-left: 5px;
+	width: 90px;
+	padding-bottom: 3px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.jobname{
+    color: orange;
+}
+.peoples .outLine{
+	filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+	-webkit-filter: grayscale(100%);
+	opacity: .5;
+}
+.delBox {
+	display: none;
+	height: 100%;
+	width: 100%;
+	font-size: 14px;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	text-align: center;
+	line-height: 52px;
+	background: rgb(250, 108, 108);
+	color: #FFF;
+	box-sizing: content-box;
+	padding-right: 5px;
+	z-index: 100;
+}
+.delBox span{
+	display: block;
+    width: 50%;
+    float: left;
+    height: 100%;
+}
+.delBox span img{
+    display: block;
+    width: 35%;
+    margin: 10px auto;
+}
+.disturbpeople{
+    width: 20px;
+    position: absolute;
+    top: 5px;
+    left: 2px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.25);
+}
+.delBox span:nth-child(1){
+	background: #AAA;
+}
+.peopleName {
+	float: left;
+	font-size: 14px;
+}
+
+.people .lately {
+	float: left;
+	font-size: 12px;
+	color: #999;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 80px;
+	padding-left: 5px;
+}
+
+.chatingPeopleName {
+	text-align: center;
+	padding: 10px;
+	color: #999;
+	font-size: 14px;
+	border-bottom: 1px solid rgba(0, 0, 0, .2);
+}
+.textEnterBox{
+	display: none;
+	width: 100%;
+	height: 120px;
+   	padding: 0 5px;
+	box-sizing: border-box;
+	border-top: 1px solid rgba(0, 0, 0, .2);
+	position: relative;
+}
+.textEnter {
+	width: 100%;
+	height: 80px;
+	overflow: auto;
+	margin: 10px auto;
+	margin-top: 20px;
+	position: relative;
+}
+
+.textEnter .textarea {
+	border: 0px;
+	box-shadow: none;
+	min-height: 80px;
+	display: block;
+	background: transparent;
+	width: 100%;
+	outline: none;
+	font-family: "microsoft yahei", sans-serif;
+	color: #000;
+}
+
+.chatBox .time {
+	text-align: center;
+	width: 100%;
+	color: #AAA;
+	margin: 5px 0;
+	letter-spacing: 1px;
+}
+
+.chatList {
+	height: 235px;
+	padding: 10px;
+	font-size: 12px;
+	/*overflow-y: hidden;*/
+}
+.listBox{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+}
+.chatList a{
+	color: blue;
+}
+.enterTitle {
+	position: absolute;
+	bottom: 2px;
+	right: 5px;
+	color: #AAA;
+	font-size: 12px;
+}
+
+.chatList .list>div {
+	margin-bottom: 15px;
+	position: relative;
+}
+
+.chatList .mineSpeak,
+.chatList .friendSpeak {
+	min-height: 25px;
+}
+
+.chatList .mineSpeak>img,
+.chatList .friendSpeak>img {
+	width: 30px;
+	height: 30px;
+}
+
+.chatList .mineSpeak>img {
+	float: right;
+}
+
+.chatList .mineSpeak span {
+	display: block;
+	float: right;
+	margin: 0 10px;
+	padding: 5px 10px;
+	max-width: 290px;
+	background: #9ac847;
+	border-radius: 5px;
+	position: relative;
+}
+
+.chatList .friendSpeak>img {
+	float: left;
+}
+
+.chatList .friendSpeak span {
+	margin: 0 10px;
+	max-width: 290px;
+	float: left;
+	display: block;
+	padding: 5px 10px;
+	border-radius: 5px;
+	background: rgba(0, 0, 0, .1);
+	position: relative;
+}
+
+.notReadNum {
+	/*display: none;*/
+	position: absolute;
+	top: 5px;
+	right: 10px;
+	font-size: 12px;
+	background: #e5603b;
+	text-align: center;
+	min-width: 20px;
+	height: 20px;
+	padding: 2.5px 5px;
+	line-height: 16px;
+	border-radius: 15px;
+}
+
+.noLogin {
+	padding: 50px 10px;
+	text-align: center;
+}
+
+
+/*Conversation*/
+
+.Conversation {
+    box-shadow: 0 0 2px #000;
+    width: 150px;
+    height: 37px;
+    background: rgba(52,53,54,.9);
+    position: fixed;
+    bottom: 0;
+    right: 10px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.letter {
+	width: 20px;
+	position: absolute;
+	bottom: 7px;
+	right: 10px;
+}
+
+.Conversation .notRead {
+	font-size: 12px;
+	padding: 10px;
+	font-family: "microsoft yahei", sans-serif;
+}
+
+.Conversation .notRead span {
+	color: #eb7350;
+	margin: 0 2px;
+	font-weight: bold;
+}
+
+.envelope {
+	width: 20px;
+	position: absolute;
+	top: 50%;
+	margin-top: -7.5px;
+	left: 5px;
+}
+.copyBtn{
+    padding: 5px 20px;
+    border: 1px solid #CCC;
+    background: #FFF;
+    color: #000;
+    width: 66px;
+    cursor: pointer;
+    font-size: 12px;
+    z-index: 9999999;
+    box-shadow: 2px 2px 3px rgba(0,0,0,.5);
+}
+.bmOpen{
+	transition: .35s all;
+	-webkit-transition: .35s all;
+	transform-origin: center;
+}
+.bmOpenActive{
+	transform: rotateZ(-180deg);
+	-webkit-transform: rotateZ(-180deg);
+}
+.zdyCopy{
+	width: 15px;
+	position: absolute;
+	top: 2px;
+	left: 5px;
+	cursor: pointer;
+}
+.zdyCopy img{
+width: 100%;
+}
+#textEdit{
+	display: none;
+	padding: 5px;
+	width: 50px;
+	font-size: 12px;
+	border: 1px solid #AAA;
+	box-shadow: 2px 2px 3px rgba(0,0,0,.5);
+    position: absolute;
+    top: 5px;
+    left: 30px;
+    background: #FFF;
+    z-index: 10000;
+    cursor: pointer;
+}
+#textEdit i{
+	cursor: default;
+	width: 100%;
+	float: left;
+	text-align: center;
+}
+#textEdit i:nth-child(1){
+	/*border-right:1px solid #AAA;*/
+}
+.chating .nochat{
+	display: none;
+}
+.chating .textEnter{
+	display: block;
+}
+.chating .chatingPeopleName{
+	display: block;
+	cursor: default;
+}
+.chating .chatList .list{
+	display: block;
+}
+.notChating .nochat{
+	display: block;
+}
+.notChating .textEnter{
+	display: none;
+}
+.notChating .chatingPeopleName{
+	display: none;
+}
+.notChating .chatList .list{
+	display: none;
+}
+#chatbar{
+	/*opacity: 0;*/
+}
+.emBox{
+	position: absolute;
+	top: 0;
+	left: 5px;
+}
+.emBox{
+	color: #AAA;
+	font-size: 12px;
+	cursor: default;
+}
+.emBox:hover{
+	color:orange;
+	
+}
+.emBox>img,.emBox>span{
+	display: inline-block;
+	vertical-align: middle;
+}
+.emBox>span{
+	margin: 3px;
+}
+.embtn{
+	width: 15px;
+	
+}
+#facebox{
+	position: absolute;
+	z-index: 1000;
+    top: -160px;
+    border: 1px solid #ccc;
+    background: #fff;
+    padding: 5px;
+    left:2px;
+    box-shadow: 0 0 5px #ccc;
+}

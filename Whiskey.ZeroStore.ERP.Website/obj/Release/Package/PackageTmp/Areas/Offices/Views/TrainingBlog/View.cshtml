@@ -1,0 +1,65 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model TrainingBlogEntity
+<link href="~/Content/editor.md/css/editormd.min.css" rel="stylesheet" />
+<style>
+    .modal-content {
+        width: 1200px !important;
+        height: 800px;
+    }
+
+    #editormd .editormd-preview ul li {
+        list-style: disc !important;
+    }
+
+    #editormd .editormd-preview ol li {
+        list-style: decimal !important;
+    }
+</style>
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#baseInfo" data-toggle="tab">基础信息</a></li>
+    @*<li><a href="#editor" data-target-id="editor" data-toggle="tab">内容</a></li>*@
+</ul>
+<div class="tab-content">
+    <div id="baseInfo" class="tab-pane active">
+        <div class="form-group">
+            <label class="control-label col-md-1">
+                @Html.LabelFor(m => m.Title)
+            </label>
+            <div class="col-md-11">
+                @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-1">
+                @Html.LabelFor(m => m.Content)
+            </label>
+            <div class="col-md-11">
+
+                <div id="editormd">
+                    @Html.TextAreaFor(m => m.Content, new { style = "display:none;" })
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="~/Content/editor.md/editormd.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        setTimeout(function () {
+
+            var editor = editormd({
+                id: 'editormd',
+                height: 500,
+                readOnly: true,
+                emoji: true,
+                htmlDecode: true,
+                styleActiveLine: false,   // disable active line
+                path: "/Content/editor.md/lib/", // Autoload modules mode, codemirror, marked... dependents libs path
+
+            });
+        }, 200)
+    })
+</script>

@@ -1,0 +1,36 @@
+﻿
+   @ViewBag.OrderNo
+
+
+<input type="button" value="付款" id="fq" />
+<script type="text/javascript">
+    $("#fq").click(function () {
+        $.ajax({
+            url: "@Html.Action("TestAPP")",
+            type: "post",
+            async: false,
+            dataType: "json",
+            success:function(data)
+            {
+                location.reload();
+            }
+        })
+    })
+</script>
+
+<form id='alipaysubmit' name='alipaysubmit' action='https://openapi.alipaydev.com/gateway.do?charset=utf-8' method='POST'>
+    <input name='app_id' value='2014072300007148' />
+    <input name='biz_content' value='{    "body":"Iphone6 16G",    "subject":"Iphone6 16G",    "out_trade_no":"20150320010101001",    "total_amount":88.88,    "product_code":"FAST_INSTANT_TRADE_PAY"  }' />
+    <input name='charset' value='utf-8' />
+    <input name='format' value='json' />
+    <input name='method' value='alipay.trade.page.pay' />
+    <input name='notify_url' value='notify_url' />
+    <input name='return_url' value='return_url' />
+    <input name='sign_type' value='RSA' />
+    <input name='timestamp' value='2017-07-14 10:25:46' />
+    <input name='version' value='1.0' />
+    <input name='sign' value='X60XrCx7H51kHpZ08v3fwa4pPWJ3axidOnD+xH96VjP/c95fwAKbxAdH8NrYMaw9+ucrIRQLMS7+qL5xTnH9THt+N5rnb0fkHYU8/EHqKXZSyQbg2LSfE6wrOTh0dPOaXE4boPfW/UvlQLdvg0WaIErEMDg7cuc7XFRh9qGO/Fz//c/kPyEi3gSJcr8HbIKsxF5JMPUQwoyX2oPHPF6NRdYnIxVm3f5KJEc0/CoQogvldpE5b1yaZBGlpDBBZht6PY6kzSH0OnRu/UDFgV37ub6PlkGuz8cZuYe96e82Dny24OhvxOrZOmn8lAhY5IUlHlDqcD3serytQMQOe7fRww==' />
+    <input type='submit' value='POST' style='display:none;'>
+</form>
+<script>document.forms['alipaysubmit'].submit();</script>
+

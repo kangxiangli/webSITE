@@ -1,0 +1,240 @@
+﻿<style>
+	#hoverStyle_01:hover {
+		width: 62px;
+		border-radius: 0%;
+		background: black !important;
+	}
+	
+	#SelectAll {
+		background: #5ebd5e;
+	}
+	
+	.datatable-footer .info {
+		width: 125px !important;
+	}
+	
+	.datatable-footer .text-right {
+		width: 67% !important;
+	}
+	#Clear {
+	background: #e5603b !important;
+}
+</style>
+
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search second-form">
+                <div class="col-md-10">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">工厂名称：</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("FactoryName", "", new { @class = "form-control", placeholder = "工厂名称" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                <button id="SelectAll" title="全部选择" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>全部选择</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                </div>
+                <div class="button-recycle">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/Scripts/Common/comm.js"></script>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="departList">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<style>
+
+    .dataTables_wrapper tbody > tr > td:nth-last-child(1)>button:hover{
+        background: rgba(0,0,0,.4) important;
+    }
+</style>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $.whiskey.datatable.instance = $("#departList").dataTable({
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("FactoryList")",
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    }
+                    if ($(".trusher").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                        if ($(".enabler").is(":checked")) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                        } else {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                        }
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                    }
+                    $(".second-form input[name!='StartDate'][name!='EndDate']").not(0).each(function () {
+                        var field = $(this).attr("Id");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                        }
+                    });
+                    $(".second-form input[name!='StartDate'][name!='EndDate']").eq(0).each(function () {
+                        var field = $(this).attr("Id");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                        }
+                    });
+                     
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                    return nRow;
+                },
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "自增编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        return '';
+                    }
+                },
+                {
+                    "sTitle": "工厂名称",
+                    "bSortable": false,
+                    "sName": "FactoryName",
+                    "mData": function (data) {
+                        return data.FactoryName;
+                    }
+                },
+                {
+                    "sTitle": "工厂地址",
+                    "bSortable": false,
+                    "sName": "FactoryName",
+                    "mData": function (data) {
+                        return data.FactoryAddress;
+                    }
+                },
+                {
+                    "sTitle": "负责人",
+                    "bSortable": false,
+                    "sName": "Leader",
+                    "mData": function (data) {
+                        return data.Leader;
+                    }
+                },
+                {
+                    "sTitle": "选择",
+                    "bSortable": false,
+                    "sName": "",
+                    "mData": function (data) {
+                        return '<button id="hoverStyle_01" title="选择" type="button" class="btn" style="width:62px;border-radius:0;background:#4cb64c;padding:0 6%!important" data-id="' + data.Id + '" data-name="' + data.FactoryName + '" onclick="chooseFactory(this)"> <span>选择</span></button>';
+                    },
+                },
+                ]
+            });
+            $(".chooseIndex #Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+
+            $(".chooseIndex #Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+            $(".chooseIndex #SelectAll").on("click", function () {
+                $.whiskey.web.ajaxRequest({
+                    actionUrl: "@Url.Action("GetAllFactorySelectList")",
+                    params: {},
+                    complete: function (data) {
+                        if (data) {
+                            var eles = "";
+                            $.each(data, function (index, item) {
+                                eles += '<option value="' + item.Value + '" selected="selected">' + item.Text + '</option>';
+                            });
+                            $("#FactoryIds").append(eles);
+                            $('.selectpicker').selectpicker('refresh');
+                            $(".chooseIndex").modal("hide");
+                        } else {
+                            $.whiskey.web.alert({
+                                content:"没有数据"
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        //选择工厂
+        function chooseFactory(option) {
+            var id = $(option).attr("data-id");
+            var name = $(option).attr("data-name");
+            var index = 0;
+            $("#FactoryIds option").each(function () {
+                var temp = $(this).val();
+                if (temp == id) {
+                    index = 1;                  
+                } 
+            });
+            $(option).html("已选择");
+            if (index==1) {
+                return false;
+            } else {
+                var ele = '<option value="' + id + '" selected="selected">' + name + '</option>';
+                $("#FactoryIds").append(ele);
+            }
+            $('.selectpicker').selectpicker('refresh');
+            //$(".chooseIndex").modal("hide");
+        }
+</script>

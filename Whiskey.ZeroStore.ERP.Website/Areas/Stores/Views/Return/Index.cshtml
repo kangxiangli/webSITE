@@ -1,0 +1,606 @@
+﻿
+
+<input type="hidden" id="hidRetailId" value="" />
+
+
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher hid_sh" type="checkbox" data-class="switcher-default">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+
+                <div class="col-md-12">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">订单编号：</label>
+                        <div class="col-md-4">
+                            @Html.TextBox("RetailNumber", "", new { placeholder = "请输入订单编号", @class = "form-control", style = "text-align:center" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                    <button id="Return" title="退货" type="button" class="btn btn-facebook btn-padding-right" onclick="Return(this)"><i class="fa fa-mail-forward"></i> <span>退货</span></button>
+                    <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                    <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                    <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+
+        </div>
+        <table class="table table-list table_list_retu table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+
+@section Scripts{
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(".hid_sh").nextAll(".switcher-inner:eq(0)").find(".switcher-state-off").click();
+            $.whiskey.datatable.instances[0] = $(".table_list_retu").dataTable({
+                "bScrollCollapse": false,
+                "sAjaxSource": "/",
+                "oLanguage": { "sProcessing": "" },
+                "fnServerParams": function (aoData) {
+
+
+                    var conditions = new $.whiskey.filter.group();
+                    var RetailNumber = $("#RetailNumber").val().trim();
+                    conditions.Rules.push(new $.whiskey.filter.rule("RetailNumber", RetailNumber, "equal"));
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+
+                },
+
+
+                "fnDrawCallback": function () {
+                    $(".table-list").treegrid({
+                        saveState: true,
+                        treeColumn: 2,
+                        expanderExpandedClass: 'treegrid-expander-expanded',
+                        expanderCollapsedClass: 'treegrid-expander-collapsed'
+                    });
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+
+                    });
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                    $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+                    $("td:last", nRow).css({ "width": "10%" });
+                    if (aData.ParentId == "")
+                        $("td:eq(2)", nRow).css({ "text-align": "left" });
+                    else {
+                        $("td:eq(2)", nRow).css({ "text-align": "left", "padding-left": "60px" });
+
+                    }
+
+                    return nRow;
+                },
+
+                "aoColumns": [
+                    {
+                        "bVisible": false,
+                        "bSearchable": false,
+                        "sName": "Id",
+                        "mData": "Id"
+                    },
+                    {
+                        "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                        "sName": "Id",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            return $.whiskey.datatable.tplListCheckbox(data.Id);
+                        }
+                    },
+                    {
+                        "sTitle": "编号",
+                        "bSortable": false,
+                        "sName": "RowNumber",
+                        "mData": function (data) {
+                            var index = data.iDisplayIndex + 1;
+                            return '' + index + '';
+                        }
+                    },
+
+                    {
+                        "sTitle": "<span style='color:blue'>零售订单号</span>/商品流水号",
+                        "bSortable": false,
+                        "sName": "RetailNumber",
+                        "mData": function (data) {
+                            if (data.RetailNumber.length > 0)
+                                return "<span style='color:blue'>" + data.RetailNumber + "</span>";
+                            return data.ProductNumber;
+                        },
+                    },
+                    {
+                        "sTitle": "店铺",
+                        "bSortable": false,
+                        "sName": "StoreName",
+                        "mData": function (data) {
+                            return data.StoreName;
+                        },
+                    },
+                    {
+                        "sTitle": "图片",
+                        "bSortable": false,
+                        "sName": "ProductNumber",
+                        "mData": function (data) {
+                            if (data.ProductPic && data.ProductPic.length > 0)
+
+                    		return "<div class='thumbnail-img_five_box'><div class='thumbnail-img_five'><div class='thumbnail-img_f'><img onerror='imgloaderror(this);'  class='popimg' src='" + data.ProductPic + "'/>";
+
+                                //return "<img style='width:50px' src='" + data.ProductPic + "'>";
+                            return "";
+                        },
+                    },
+                    {
+                        "sTitle": "出库时间",
+                        "bSortable": false,
+                        "sName": "OutStorageTime",
+                        "mData": function (data) {
+                            var t = $.whiskey.tools.dateFormat(data.OutStorageTime, "yyyy-MM-dd");
+                            if (t == "1970-01-01") return "";
+                            return t;
+                        },
+                    },
+                    {
+                        "sTitle": "会员",
+                        "bSortable": false,
+                        "sName": "Member",
+                        "mData": function (data) {
+                            if (data.ParentId != "") return "";
+                            return data.ConsumerId > 0 ? data.MemberName : "非会员";
+                        },
+                    },
+                    {
+                        "sTitle": "数量",
+                        "bSortable": false,
+                        "sName": "Count",
+                        "mData": function (data) {
+                            return data.ProductCount;
+                        },
+                    },
+                    {
+                        "sTitle": "单价(￥)",
+                        "bSortable": false,
+                        "sName": "Count",
+                        "mData": function (data) {
+                            return data.RetailPrice;
+                        },
+                    },
+                    {
+                        "sTitle": "消费总额(￥)",
+                        "bSortable": false,
+                        "sName": "ConsumeCount",
+                        "mData": function (data) {
+                            if (data.ParentId == "")
+                                return "<span style='color: #5ebd5e'>" + data.ConsumeCount + "</span>";
+                            else return data.ConsumeCount;
+                        },
+                    },
+                    {
+                        "sTitle": "是否参与店铺活动",
+                        "bSortable": false,
+                        "sName": "StoreActivity",
+                        "mData": function (data) {
+                            if (data.ParentId != null && data.ParentId > 0) {
+                                return "";
+                            }
+                            return data.StoreActivityId > 0 ? "是" : "否"
+                        },
+                    },
+                    {
+                        "sTitle": "是否使用优惠券",
+                        "bSortable": false,
+                        "sName": "CouponNumber",
+                        "mData": function (data) {
+                            if (data.ParentId != null && data.ParentId > 0) {
+                                return "";
+                            }
+                            return data.CouponNumber != null ? "是" : "否"
+                        },
+                    },
+                    {
+                        "sTitle": "状态",
+                        "bSortable": false,
+                        "sName": "Count",
+                        "mData": function (data) {
+                            if (data.Status == 0 || data.Status == 5) {
+                                return "<span style='color:green'>" + data.StatusText + "</span>";
+                            } else {
+                                return "<span style='color: #5ebd5e'>" + data.StatusText + "</span>";
+                            }
+
+                        },
+                    },
+                    {
+                        "sTitle": "操作人员",
+                        "bSortable": false,
+                        "sName": "AdminName",
+                        "mData": function (data) {
+                            return data.Operator;
+                        },
+                    },
+                    {
+                        "sTitle": "控制操作",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            if (!data.ParentId) {
+                                $("#hidRetailId").val(data.RetailNumber);
+                                return $.whiskey.datatable.tplView(data.RetailNumber);
+                            }
+                            return "";
+                        }
+                    }
+                ]
+            });
+            $("#Print").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var printer = $.whiskey.printer.ajaxPreview({
+                        actionUrl: "@Url.Action("Print")",
+                        lockButton: $(this),
+                        topMargin: "2%",
+                        leftMargin: "4%",
+                        contentWidth: "93.5%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#Export").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var printer = $.whiskey.exporter.ajaxExport({
+                        actionUrl: "@Url.Action("Export")",
+                        lockButton: $(this),
+                        fileName: "新导出文件",
+                        topMargin: 10,
+                        leftMargin: 10,
+                        contentWidth: "98%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#RemoveAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据移至回收站吗？",
+                        notes: "提示：数据移动到回收站后，随时可以从回收站中将其恢复",
+                        actionUrl: "@Url.Action("Remove")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#RecoveryAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据恢复吗？",
+                        notes: "提示：将数据从回收站移动至正常数据列表里",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#DeleteAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据彻底删除吗？",
+                        notes: "提示：数据删除后将不可能再恢复，请谨慎操作！",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#RetailNumber").keydown(function (e) {
+                if (e.keyCode == 32 || e.keyCode == 13) {
+                    $("#Search").click();
+                    return false;
+                }
+
+            });
+            $("#Search").on("click", function () {
+                var num = $("#RetailNumber").val().trim();
+                if (num.length == 0) {
+                    var dat = $.whiskey.datatable.instances[0];
+                    var setting = dat.fnSettings();
+                    setting.sAjaxSource = "";
+
+                    dat.fnSettings(setting);
+
+                } else {
+                    var dat = $.whiskey.datatable.instances[0];
+                    var setting = dat.fnSettings();
+                    setting.sAjaxSource = "@Url.Action("List")";
+                    dat.fnSettings(setting);
+                }
+                $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+        });
+
+        //加载退货视图
+        function Return(sender) {
+            var retailId = $("#hidRetailId").val();
+            if (!retailId) {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请输入有效的零售单号！"
+                });
+                return;
+            }
+            $.post("@Url.Action("CanReturn")", { retailNumber: retailId }).done(function (data) {
+                if (data.ResultType != 3) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: data.Message
+                    });
+                    return;
+                }
+                if (data.Message == "timeout") {
+                    var score = data.Data;
+                    $.whiskey.web.ajaxConfirm({
+                        question: "操作已超时,如继续操作,需要扣除" + score + "积分,确认继续吗?",
+                        notes: "提示：此操作不可撤消",
+                        success_event: function () {
+                            confirmReturn(retailId, sender);
+                        }
+                    });
+                }
+                else {
+                    confirmReturn(retailId, sender);
+                }
+
+
+            });//end post
+
+        }
+
+
+        function confirmReturn(retailId,sender) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要退货吗？",
+                    notes: "提示：退货操作不可撤销",
+                    lockButton: $(sender),
+                    success_event: function () {
+                        var dialog = new $.whiskey.web.ajaxDialog({
+                            caption: "退货",
+                            successTit: "确认退货",
+                            actionUrl: "@Url.Action("Return")",
+                            getParams: { retailNumber: retailId },
+                            lockButton: $(sender),
+                            successEvent: function () {
+                                //确认退货按钮
+
+                                var $form = $(".modal-form");
+                                if (!$form.valid()) {
+                                    return false;
+                                } else {
+                                    var res = globalProcessor.createReturnProducts();
+                                    if (!res) {
+                                        return false;
+                                    }
+                                    return true;
+                                }
+
+
+                            },
+                            formValidator: function () {
+                                debugger;
+
+                            },
+                            postComplete: function () {
+                                debugger;
+                                $.whiskey.datatable.reset(true);
+                                return true;
+                            },
+                        });//ajaxDialog
+                    },//end success_event
+                    complete: function () {
+                        $.whiskey.datatable.reset(true);
+                    }//end complete
+                });//end confirm
+        }
+
+        function View(sender, retailNumber) {
+            var view = new $.whiskey.web.ajaxView({
+                caption: "详细信息",
+                actionUrl: "/Stores/RetailDetail/PView",
+                params: { retailNumber: retailNumber },
+                lockButton: $(sender),
+            });
+        }
+
+
+        function Update(sender, Id) {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "修改信息",
+                actionUrl: "@Url.Action("Update")",
+                getParams: { Id: Id },
+                lockButton: $(sender),
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(true);
+                    return true;
+                },
+            });
+        }
+
+        function Remove(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要将这条数据移至回收站吗？",
+                notes: "提示：数据移动到回收站后可从随时将其恢复",
+                actionUrl: "@Url.Action("Remove")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Recovery(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要恢复这条数据吗？",
+                notes: "提示：将数据从回收站移动至正常数据列表里",
+                actionUrl: "@Url.Action("Recovery")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Delete(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要彻底删除这条数据吗？",
+                notes: "提示：数据彻底删除后不可恢复，请谨慎操作！",
+                actionUrl: "@Url.Action("Delete")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+        function validdat() {
+            var cou = $("#ReturnCount").val().trim();
+            var noerr = true;
+            if (cou == 0) {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "退货数量最少为1！",
+                    callback: function () {
+                    }
+                });
+                noerr = false;
+            }
+            return noerr;
+        }
+
+        function Disable(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要禁用这条数据吗？",
+                notes: "提示：禁用后数据将不在其他任何地方使用",
+                actionUrl: "@Url.Action("Disable")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+
+
+    </script>
+}
+

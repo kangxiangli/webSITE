@@ -1,0 +1,22 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model AdministratorTypeDto
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.TypeName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.TypeName, new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", @resize = "none" })
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Id)

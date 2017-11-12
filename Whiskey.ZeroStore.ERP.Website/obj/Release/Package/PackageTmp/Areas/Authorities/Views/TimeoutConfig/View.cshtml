@@ -1,0 +1,66 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model TimeoutConfig
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.TaskName) :
+    </label>
+    <div class="col-md-10">
+        @Model.TaskName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        超时时间 :
+    </label>
+    <div class="col-md-10 timeouttime">
+        @Model.TimeoutDay 天
+        @Model.TimeoutHour 时
+        @Model.TimeoutMinute 分
+        @Model.TimeoutSecond 秒
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ActionPath) :
+    </label>
+    <div class="col-md-10">
+        @Model.ActionPath
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<script>
+    $(function () {
+    })
+</script>

@@ -1,0 +1,126 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@model StoreProductCollocation
+
+<div class="form-group">
+
+        <label class="control-label col-md-2">搭配名称:</label>
+        <div class="col-md-6">
+            @Model.CollocationName
+        </div>
+</div>
+    <div class="form-group">
+            <label id="orig_id" class="control-label col-md-2">搭配师:</label>
+            <div class="col-md-6">
+                @UiHelper.showOperator(Model.Operator)
+            </div>
+        </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">搭配图:</label>
+        <div class="col-md-6">
+            <a href="#"><img class="popimg" src="@Model.ThumbnailPath" style="margin:2px;max-width:72px;" /></a>
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">店铺:</label>
+        <div class="col-md-8">
+            @{
+                <select class="form-control selectpicker">
+                    @foreach (var item in ViewData["Store"] as List<string>)
+                    {
+                        <option>@item</option>
+                    }
+                </select>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">风格:</label>
+        <div class="col-md-8">
+            @{
+                <select class="form-control selectpicker">
+                    @foreach (var item in ViewData["Styles"] as List<string>)
+                    {
+                        <option>@item</option>
+                    }
+                </select>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">颜色:</label>
+        <div class="col-md-8">
+            @{
+                <select class="form-control selectpicker">
+                    @foreach (var item in ViewData["Colour"] as List<string>)
+                    {
+                        <option>@item</option>
+                    }
+                </select>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">效果:</label>
+        <div class="col-md-8">
+            @{
+                <select class="form-control selectpicker">
+                    @foreach (var item in ViewData["Effect"] as List<string>)
+                    {
+                        <option>@item</option>
+                    }
+                </select>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">季节:</label>
+        <div class="col-md-8">
+            @{
+                <select class="form-control selectpicker">
+                    @foreach (var item in ViewData["Season"] as List<string>)
+                    {
+                        <option>@item</option>
+                    }
+                </select>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">场合:</label>
+        <div class="col-md-8">
+            @{
+                <select class="form-control selectpicker">
+                    @foreach (var item in ViewData["Situation"] as List<string>)
+                    {
+                        <option>@item</option>
+                    }
+                </select>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">体型:</label>
+        <div class="col-md-8">
+            @{
+                <select class="form-control selectpicker">
+                    @foreach (var item in ViewData["Shape"] as List<string>)
+                    {
+                        <option>@item</option>
+                    }
+                </select>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">创建时间:</label>
+        <div class="col-md-6">
+            @Model.CreatedTime
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">更新时间:</label>
+        <div class="col-md-6">
+            @Model.UpdatedTime
+        </div>
+</div>

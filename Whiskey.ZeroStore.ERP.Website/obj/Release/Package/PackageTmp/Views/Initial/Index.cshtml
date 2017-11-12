@@ -1,0 +1,46 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>View1</title>
+</head>
+<body>
+    <div> 
+        <button id="initBut"> 初始化</button>
+        <div id="cont"></div>
+       
+    </div>
+    <script src="~/Content/Scripts/Jquery/jquery-1.11.1.min.js"></script>
+    <script>
+        var te;
+        $(function () {
+            $.post("/Initial/GetList", {}, function (da) {
+                if (da != "") {
+                    te = da;
+                    var st = "";
+                    for (var i = 0; i < da.length; i++) {
+                        st += "<p>"+da[i] + "</p>";
+                    }
+                    $("#cont").html("").html(st);
+                }
+            })
+            $("#initBut").click(function () {
+                if (te != null && te != "")
+                {
+                    for (var i = 0; i < te.length; i++) {
+                        $.post(te[i], {}, function (d) { });
+                        $.get(te[i], {}, function () { });
+                    }
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

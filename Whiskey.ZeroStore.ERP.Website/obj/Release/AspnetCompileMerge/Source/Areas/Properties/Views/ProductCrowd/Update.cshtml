@@ -1,0 +1,129 @@
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Extensions
+@model ProductCrowdDto
+
+<style>
+    .modal-dialog {
+        width:800px;
+    }
+</style>
+
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#addImage" data-toggle="tab">上传图标</a>
+    </li>
+</ul>
+
+
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CrowdName) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.CrowdName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CrowdCode) :
+            </label>
+            <div class="col-md-10 divCode">
+                @Html.TextBoxFor(m => m.CrowdCode, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Description) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div id="addImage" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                照片预览:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="javascript:void(0);" class="thumbnail">
+                        <img src="@Model.IconPath" alt="图片" id="Icon" />
+                    </a>
+                </div>
+                <input type="hidden" name="IconPath" id="hidIcon" value="@Model.IconPath" />
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    上传:
+                </label>
+                <div class="col-md-10">
+                    <div class="dropzone-box uploadImage">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传会员图片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file" multiple="multiple" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.HiddenFor(f => f.Id)
+
+<script>
+    $(function () {
+        //初始化上传封面图片控件
+        var myDropzone = new Dropzone(".uploadImage", {
+            url: "/Upload/Multiple",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            maxFiles: 1,
+            paramName: "file",
+            maxFilesize: 0.5,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                this.on("sending", function (file, xhr, formData) {
+                    formData.append("ExtType", "Image");
+                    formData.append("SaveDir", "ProductCrowd");
+                });
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (data.errors.length == 0) {
+                        $(".bootbox #Icon").attr("src", data.files[0])
+                        $(".bootbox #hidIcon").attr("value", data.files[0]);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+
+                });
+            }
+        });
+
+    });
+</script>

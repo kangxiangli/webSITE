@@ -1,0 +1,502 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+<script src="~/Content/Scripts/Layer/layer.js"></script>
+<style>
+
+#content{
+	width: 96% !important;
+	background: rgba(0,0,0,0.2);
+}
+</style>
+<div id="app">
+
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">试卷名</label>
+                            <div class="col-md-8">
+                                <input v-on:keyup.enter="search(null)" class="form-control" type="text" name="Name" id="Name" placeholder="请输入试卷名" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-5">创建日期：</label>
+                            <div class="col-md-7">
+                                <div class="input-daterange input-group">
+                                    @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                    <span class="input-group-addon">至</span>
+                                    @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button v-on:click="search(null)" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button v-on:click="document.querySelector('.form-search').reset()" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+                        @*<button id="Create" v-on:click="add" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增数据</span></button>*@
+                        <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                        <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                        <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                    </div>
+                    <div class="button-recycle">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    <span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>试卷名称</th>
+                        <th>满分</th>
+                        <th>及格线</th>
+                        <th>试卷得分</th>
+                        <th>是否通过</th>
+                        <th>积分奖励</th>
+                        <th>试卷状态</th>
+                        <th>答卷人</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{index+1}}</td>
+                        <td>{{item.Name}}</td>
+                        <td>{{item.TotalScore}}</td>
+                        <td>{{item.PassLine}}</td>
+                        <td>{{item.GetScore}}</td>
+                        <td>
+                            <label v-if="item.IsPass" class="text-success">是</label>
+                            <label v-else class="text-danger">否</label>
+                        </td>
+                        <td>{{item.RewardMemberScore}}</td>
+                        <td>
+                            <span v-if="item.State=='@ExamRecordStateEnum.未开始'" class="label label-danger">{{item.State}}</span>
+                            <span v-if="item.State=='@ExamRecordStateEnum.已提交'" class="label label-success">{{item.State}}</span>
+                            <span v-if="item.State=='@ExamRecordStateEnum.答题中'" class="label label-info">{{item.State}}</span>
+                        </td>
+                        <td>{{item.MemberName}}</td>
+                        <td>
+                            <button title="学习" type="button" class="btn-opt-box" v-on:click="viewBlog(item.TraingBlogId)"><i class="btn-study-icon"></i></button>
+
+                            <button title="查看详细信息" v-if="item.State=='@ExamRecordStateEnum.已提交'" v-on:click="view(item.Id)" class="btn-opt-box"><i class="btn-view-icon"></i></button>
+
+                            <button title="开始答题" type="button" v-if="!item.IsPass" class="btn-opt-box" v-on:click="isRestartExam(item.Id,item.ExamId)"><i class="btn-studying-icon"></i></button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document" style="width:1000px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">{{examData.ExamName}} 答题时间:{{examData.ExamMinutesLimit}} 分钟 --{{questionIndex+1}}/{{examData.Questions.length}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="panel">
+                                <ul class="list-group">
+                                    <template v-for="(question,index) in examData.Questions">
+                                        <!--多选题-->
+                                        <li class="list-group-item" v-show="index==questionIndex">
+                                            ({{index+1}})
+                                            <div>
+
+                                                <label>题目:</label>
+                                                {{question.Title}}
+                                            </div>
+                                            <div>
+                                                <label>分值:</label>{{question.Score}}
+                                            </div>
+                                            <div>
+
+                                                <label>类型:</label>{{question.IsMulti?"多选":"单选"}}
+                                            </div>
+
+                                            <div v-if="question.ImgUrl && question.ImgUrl.length>0">
+
+                                                <label>题目图片:</label>
+                                                <img v-bind:src="question.ImgUrl" style="width:200px;height:200px;" />
+                                            </div>
+
+
+                                            <ul class="list-group">
+                                                <template v-for="(answer,subindex) in question.AnswerOptions">
+                                                    <li>
+                                                        ({{answer.Value}})
+
+                                                        <!--选择区-->
+                                                        <label v-if="question.IsMulti">
+                                                            {{answer.Title}}
+                                                            <input type="checkbox" v-bind:value="answer.Value" v-model="question.CheckedAnswer" />
+
+
+                                                        </label>
+
+                                                        <label v-else>
+                                                            {{answer.Title}}
+                                                            <input type="radio" v-bind:value="answer.Value" v-model="question.CheckedAnswer" />
+
+                                                        </label>
+                                                        <img v-if="answer.ImgUrl&& answer.ImgUrl.length>0" v-bind:src="answer.ImgUrl" style="width:200px;height:200px;"/>
+                                                    </li>
+                                                </template>
+                                            </ul>
+
+                                            选中项:{{question.CheckedAnswer}}
+                                        </li>
+                                    </template>
+                                </ul>
+
+                                <button type="button" class="btn btn-success pull-right" v-bind:disabled="questionIndex===examData.Questions.length-1" v-on:click="nextQuestion">下一题</button>
+                                <button type="button" class="btn btn-success pull-right" v-bind:disabled="questionIndex==0" v-on:click="prevQuestion">上一题</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" v-on:click="submitExam">提交</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@{
+    Html.RenderPartial("Page", null);
+}
+<script>
+    var baseUrl = '/Offices/MyTraining';
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            isDeleted: false,
+            isEnabled: true,
+            numbers: [],
+            pageDatas: [], //分页数据
+            currentId: 0,
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            },
+            checkedIds: [],
+            currentId: 0,
+
+            examData: {
+                Questions:[]
+            },
+            questionIndex:0
+        },
+        mounted: function () {
+            this.search();
+
+        },
+        methods: {
+            viewBlog: function (id,examName) {
+                var _self = this;
+                layer.open({
+                    type: 2,
+                    title: examName,
+                    shadeClose: true,
+                    shade: 0.8,
+                    area: ['1024px', '80%'],
+                    content: '/Msg/ViewBlog?blogId=' + id //iframe的url
+                }); 
+            },
+            nextQuestion: function () {
+                if (this.questionIndex <= this.examData.Questions.length - 2) {
+                    this.questionIndex++;
+                }
+
+            },
+            prevQuestion: function () {
+                if (this.questionIndex >= 1) {
+                    this.questionIndex--;
+                }
+            },
+
+            toggleEnable: function () {
+                this.isEnabled = !this.isEnabled;
+                this.search({ isEnbled: this.isEnabled })
+            },
+            search: function (filter) {
+
+                var _self = this;
+
+                var searchData = {
+
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+
+
+                }
+                var startDate = $("#StartDate").val();
+                var endDate = $("#EndDate").val();
+                var name = $("#Name").val();
+                if (startDate) {
+                    searchData.startDate = startDate;
+                }
+                if (endDate) {
+                    searchData.endDate = endDate;
+                }
+                if (name && name.length > 0) {
+                    searchData.name = name;
+
+                }
+                if (filter) {
+
+                    searchData = _.extend(searchData, filter)
+                }
+
+                $.getJSON(baseUrl + '/List', searchData).done(function (res) {
+                    if (res.ResultType !== 3) {
+                        //console
+                        return;
+                    }
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+                })
+            },
+            add: function () {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "添加数据",
+                    actionUrl: "@Url.Action("Create")",
+                    lockButton: $(this),
+                    formValidator: function () {
+                        //debugger
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        _self.search();
+                        return true;
+                    },
+                });
+            },
+            edit: function (id) {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "添加数据",
+                    actionUrl: "@Url.Action("Update")",
+                    lockButton: $(this),
+                    getParams: { Id: id },
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        _self.search();
+                        return true;
+                    },
+                });
+            },
+            view: function (id) {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxView({
+                    caption: "查看数据",
+                    actionUrl: "@Url.Action("View")",
+                    lockButton: $(this),
+                    params: { Id: id }
+
+                });
+            },
+            disable: function (id) {
+                var _self = this;
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要禁用这条数据吗？",
+                    notes: "提示：禁用后数据将不在其他任何地方使用",
+                    actionUrl: "@Url.Action("Disable")",
+                    params: { Id: id },
+                    lockButton: null,
+                    complete: function () {
+                        _self.search();
+                    }
+                });
+            },
+            enable: function (id) {
+                var _self = this;
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要启用这条数据吗？",
+                    notes: "",
+                    actionUrl: "@Url.Action("Enable")",
+                    params: { Id: id },
+                    lockButton: null,
+                    complete: function () {
+                        _self.search();
+                    }
+                });
+            },
+            toggleEnable: function () {
+                this.isEnabled = !this.isEnabled;
+                this.search({ isEnabled: this.isEnabled })
+            },
+
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            },
+            save: function () {
+                var _self = this;
+                var id = this.currentId;
+                var ids = this.$refs.child.checkedIds;
+
+                $.post(baseUrl + '/SetupQuestion', { examId: id, questionIds: ids })
+                    .done(function (res) {
+                        if (res.ResultType === 3) {
+                            $("#myModal").modal('hide');
+                            _self.search(null);
+                        }
+                    })
+            },
+            isRestartExam: function (examRecordId) {
+                // 判断是否是再次考试
+                var _self = this;
+                $.post(baseUrl + "/IsRestartExam", { examRecordId: examRecordId })
+                    .done(function (res) {
+                        //debugger
+                        if (res.ResultType === 3 ) {
+                            if (res.Message == "yes") {
+                                var score = res.Data;
+                                $.whiskey.web.ajaxConfirm({
+                                    question: "重考需要扣除积分,如继续,需要扣除" + score + "积分,确认继续吗?",
+                                    notes: "提示：此操作不可撤消",
+                                    success_event: function () {
+                                        //debugger
+
+                                        _self.startExam(examRecordId);
+                                    }
+                                });
+                            }
+                            else {
+                                _self.startExam(examRecordId);
+                            }
+
+                        }
+
+                    });//end done
+
+             },
+             startExam:function (examRecordId) {
+                // 获取试卷,考试
+                 var _self = this;
+                 $.post(baseUrl + "/StartExam", { examRecordId: examRecordId }, function (res) {
+                     if (res.ResultType !== 3) {
+                         alert(res.Message);
+                         return;
+                     }
+                    res.Data.Questions.forEach(function (item) {
+                        if (item.IsMulti) {
+                            item.CheckedAnswer = []
+                        }
+                        else {
+                            item.CheckedAnswer = ''
+                        }
+                     })
+                    _self.examData = res.Data;
+                    _self.questionIndex = 0;
+                    $("#myModal").modal("show");
+                });
+            },
+             submitExam: function () {
+                 //debugger
+                 var _self = this;
+                 var postData = {
+                     ExamId: this.examData.ExamId,
+                     ExamRecordId: this.examData.ExamRecordId,
+                     AnswerDetail: []
+                 };
+                 this.examData.Questions.forEach(function (item) {
+                     postData.AnswerDetail.push({
+                         QuestionId: item.Id,
+                         CheckedAnswer: item.CheckedAnswer? [].concat(item.CheckedAnswer):[]
+                     });
+                 })
+
+                 $.post(baseUrl + "/SubmitExam", postData)
+                     .done(function (res) {
+                         //debugger
+                         console.log(res);
+                         if (res.ResultType === 3) {
+                             $("button[data-dismiss=modal]").trigger('click');
+                             _self.search();
+                         }
+                     })
+             }
+        }
+
+    })
+</script>

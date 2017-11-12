@@ -1,0 +1,101 @@
+﻿<style>
+	.dataTables_length label{
+		display: flex;
+		width: 120px;
+	}
+	.datatable-footer>.col-md-2{
+		width: 120px;
+	}
+	.dataTables_wrapper>.datatable-footer>.text-right {
+       margin-top: -39px;
+    width: 70%;
+}
+</style>
+<div>
+    <input type="hidden" id="hid-depart-id" value="@ViewBag.DepartmentID"/>
+    <table class="table t-par-meb table-list table-hover valign-middle" width="100%">
+        <thead>
+        </thead>
+    </table>
+
+</div>
+<script>
+    //debugger 
+    $(function () {
+        $("button[data-bb-handler='success']").hide();
+        $.whiskey.datatable.instances[0] = $(".t-par-meb").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("GetMemberByDeparId")",
+            "fnServerParams": function (aoData) {
+                var depid = $("#hid-depart-id").val();
+                aoData.push({ name: "did",value:depid  });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(0)", nRow).html(iDisplayIndex + 1);
+                
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+            },
+
+            "aoColumns": [
+                {
+                    "sTitle": "自增编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        return '';
+                    }
+                },
+                {
+                    "sTitle": "名称",
+                    "bSortable": false,
+                    "sName": "Id",
+                    "mData": function (data) {
+                        if (data.isAdmin) {
+                            return data.realName+"(<span style='color: #e5603b'>部门负责人</span>)";
+                        }
+                        return data.realName;
+                    }
+                },
+                {
+                    "sTitle": "登录账户",
+                    "bSortable": false,
+                    "sName": "Id",
+                    "mData": function (data) {
+                        return data.adminName;
+                    }
+                },
+          
+                {
+                    "sTitle": "创建时间",
+                    "bSortable": false,
+                    "sName": "RealName",
+                    "mData": function (data) {
+                        if (data.UpdatedTime != "")
+                            return $.whiskey.tools.dateFormat(data.createTime, "yyyy-MM-dd HH:mm");
+                        return "";
+                    },
+                },
+           
+                {
+                    "sTitle": "备注",
+                    "bSortable": false,
+                    "sName": "MobilePhone",
+                    "mData": function (data) {
+                        return data.note;
+                    },
+                },
+           
+            ]
+        })
+    });
+
+</script>

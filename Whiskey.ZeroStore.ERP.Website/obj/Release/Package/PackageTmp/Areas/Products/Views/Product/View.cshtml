@@ -1,0 +1,550 @@
+﻿@using NPOI.SS.Formula.Functions
+@using Whiskey.ZeroStore.ERP.Models.Entities
+@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Web.Helper;
+@using Newtonsoft.Json;
+@model ProductOriginNumber
+<style>
+    .modal-dialog {
+        width: 80% !important;
+        max-width: 80%;
+    }
+
+    #dresser ul li img {
+        width: 50px;
+        margin-left: 15px;
+    }
+
+    #dresser ul li {
+        list-style-type: none;
+        margin-top: 10px;
+    }
+
+    .chil_li {
+        float: left;
+    }
+
+        .chil_li span {
+            display: block;
+            padding-left: 26px;
+        }
+
+        .chil_li img {
+            width: 50px;
+            margin-left: 15px;
+        }
+
+    #maintain ul li {
+        list-style-type: none;
+    }
+
+    #buysaidAttr ul li {
+        list-style-type: none;
+        margin-top: 10px;
+    }
+
+    #buysaidAttr:after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+    .par_li {
+        clear: both;
+    }
+
+    .img_box > p {
+        text-align: center;
+    }
+
+    .img_box {
+        float: left;
+        width: 40px;
+        height: 50px;
+        margin-right: 8px;
+        margin-bottom: 10px;
+    }
+
+        .img_box img {
+            width: 40px;
+        }
+</style>
+<script type="text/javascript" src="/Content/Scripts/Jquery/jquery.qrcode.min.js"></script>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#attach" data-toggle="tab">商城属性</a>
+    </li>
+    <li class="">
+        <a href="#hangtag" data-toggle="tab">吊牌属性</a>
+    </li>
+    <li class="">
+        <a href="#dresser" data-toggle="tab">搭配属性</a>
+    </li>
+    <li class="">
+        <a href="#other" data-toggle="tab">商品简介</a>
+    </li>
+    <li class="">
+        <a href="#qrcode" data-toggle="tab">二维码</a>
+    </li>
+    <li class="">
+        <a href="#othdresser" data-toggle="tab">相关搭配</a>
+    </li>
+    <li class="">
+        <a href="#buysaid" data-toggle="tab">买手说</a>
+    </li>
+    <li class="">
+        <a href="#maintain" data-toggle="tab">其他</a>
+    </li>
+</ul>
+
+<div class="tab-content" style="min-height:400px;">
+    <div class="tab-pane fade active in " id="base">
+
+        <div class="form-group">
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.BigProdNum)：</label>
+            <div class="col-md-4">
+                @Model.BigProdNum
+            </div>
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.AssistantNum)：</label>
+            <div class="col-md-4">
+                @Model.AssistantNum
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.OriginNumber)：</label>
+            <div class="col-md-4">
+                @Model.OriginNumber
+            </div>
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductName)：</label>
+            <div class="col-md-4 ">
+                <span>@Model.ProductName</span>
+            </div>
+
+        </div>
+        <div class="form-group">
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.BrandId)：</label>
+            <div class="col-md-4">
+                @Model.Brand.BrandName
+            </div>
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.CategoryId)：</label>
+            <div class="col-md-4 ">
+                <span>@Model.Category.CategoryName</span>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.SeasonId)：</label>
+            <div class="col-md-4">
+                @Model.Season.SeasonName
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.CrowdId)：</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductCrowd != null ? Model.ProductCrowd.CrowdName : string.Empty)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.TagPrice)：</label>
+            <div class="col-md-4 text-danger">
+                @Model.TagPrice 元
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.WholesalePrice)：</label>
+            <div class="col-md-4 text-danger">
+                @if (Model.WholesalePrice != 0 && Model.TagPrice != 0)
+                {
+                    @Model.WholesalePrice<span>元（</span>@(ConvertHelper.NumberToChinese((Math.Round(Model.WholesalePrice / Model.TagPrice * 100)).ToString(), true))<span>）</span>
+                }
+                else
+                {
+                    @Model.WholesalePrice<span>元</span>
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.PurchasePrice)：</label>
+            <div class="col-md-4 text-danger">
+                @Model.PurchasePrice 元
+            </div>
+            <label class="control-label col-md-2">操作人员：</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "系统")
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">审核人员：</label>
+            <div class="col-md-4">
+                @if (Model.VerifiedMemb != null)
+                {
+                    <span>@Model.VerifiedMemb.Member.MemberName</span>
+                }
+                else
+                {
+                    <span style="color: #5ebd5e">未审核</span>
+                }
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.CreatedTime)：</label>
+            <div class="col-md-4">
+                @Model.CreatedTime
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.UpdatedTime)：</label>
+            <div class="col-md-4">
+                @Model.UpdatedTime
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.Notes)：</label>
+            <div class="col-md-5">
+                @Model.Notes
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">颜色尺码：</label>
+            <div class="col-md-10">
+                @foreach (var item in Model.Products.Where(x => x.IsDeleted == false && x.IsEnabled == true))
+                {
+                    var curSize = item.Size;
+                    var curColor = item.Color;
+                    if (curColor != null)
+                    {
+                        <div class="img_box">
+                            <img src="@curColor.IconPath" title='@(curColor.ColorName+"_"+curSize.SizeName)' alt="@(curColor.ColorName+"_"+curSize.SizeName)">
+                            <p>@curSize.SizeName</p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade clearfix" id="attach">
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductName)：</label>
+            <div class="col-md-10">
+                @Model.ProductName
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.Summary)：</label>
+            <div class="col-md-10">
+                @Model.Summary
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                颜色类型：
+            </label>
+            <div class="col-md-2">
+                @Html.DropDownList("imgColorType", (List<SelectListItem>)ViewBag.CurColorType, new { @class = "form-control", @onchange = "colortypeChange(this,this.value)" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.OriginalPath)：</label>
+            <div class="col-md-2">
+                <div class="bordered text-center" style="width:128px;height:100px;overflow:hidden;">
+                    <img class="popimg" src="@Model.ThumbnailPath" style="max-width:120px;max-height:90px;margin:3px" alt="主图" id="ThumbnailPath" />
+                </div>
+            </div>
+            <label class="control-label col-md-2" style="padding:0;margin:0">@Html.DisplayNameFor(m => m.ProductCollocationImg)：</label>
+            <div class="col-md-2">
+                <img src="@Model.ProductCollocationImg" style="max-width:120px;max-height:90px;margin:3px;" id="ProductCollocationImg" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">细节组图：</label>
+            <div class="col-md-10">
+                <div class="clearfix" id="detailImgs">
+                    @foreach (var item in Model.ProductImages.Where(x => x.IsDeleted == false && x.IsEnabled == true))
+                    {
+                        <div class="bordered text-center" style="display:block;width:128px;height:100px;overflow:hidden;float:left;margin:10px 20px 10px 0px;">
+                            <img class="popimg" src="@item.ThumbnailSmallPath" style="max-width:120px;max-height:90px;margin:3px;" alt="" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="hangtag" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Fabric):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.Fabric : "")
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Material):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.Material : "")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.batching):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.batching : "")
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Stuffing):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.Stuffing : "")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Category):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.Category : "")
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.ProductionPlace):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.ProductionPlace : "")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Level):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.Level : "")
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Standard):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.Standard : "")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Inspector):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.Inspector : "")
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.PostCode):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.PostCode : "")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Manufacturer):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.Manufacturer : "")
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.CateName):</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.CateName : "")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.WashingSymbols):</label>
+            <div class="col-md-4">
+                <img src="@Html.Raw(Model.ProductOriginNumberTag != null ? Model.ProductOriginNumberTag.WashingSymbols : "")" style="width:100px;height:100px;" />
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade  in" id="dresser" style="overflow-y: scroll;max-height: 550px">
+        <input type="hidden" id="hid_attri" value="@ViewBag.Attribu" />
+        <ul class="atttir_img"></ul>
+
+    </div>
+
+    <div class="tab-pane fade clearfix" id="other">
+        <div style="margin:10px 50px" class="product-description">@Html.Raw(Model.Description)</div>
+    </div>
+    <div class="tab-pane fade clearfix" id="qrcode">
+        <br />
+        <br />
+        <div class="col-md-6 text-center">
+            <div id="qrcodePc"></div>
+            <div class="text-center">PC二维码内容：<a href="@ViewBag.Url@Model.HtmlPath" target="_blank">@ViewBag.Url@Model.HtmlPath</a></div>
+        </div>
+        <div class="col-md-6 text-center">
+            <div id="qrcodePhone"></div>
+            <div class="text-center">手机二维码内容：<a href="@ViewBag.Url@Model.HtmlPhonePath" target="_blank">@ViewBag.Url@Model.HtmlPhonePath</a></div>
+        </div>
+        <br />
+    </div>
+    <div id="othdresser" class="tab-pane fade clearfix">
+        <input type="hidden" value="@Html.Raw(string.Join(",", Model.MemberColloEles.Select(s => s.Id)))" />
+        <div id="otherCollPic">
+
+        </div>
+    </div>
+    <div id="buysaid" class="tab-pane fade clearfix">
+        <div id="buysaidAttr">
+            <ul>@Html.Raw(ViewBag.BuysaidAttriName)</ul>
+        </div>
+        <hr />
+        <div id="buysaidText" style="padding:10px 50px">@Html.Raw(Model.BuysaidText)</div>
+    </div>
+    <div class="tab-pane fade clearfix" id="maintain">
+        <div class="form-group">
+            <div id="maintainUl"></div>
+            @Html.Hidden("MaintainIds", (string.Join(",", Model.MaintainExtends.Select(s => s.Id))))
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(function () {
+        loadCollPic();
+        initMaintain();
+        var attr = $("#hid_attri").val();
+        if (attr.length > 0) { //
+            var res = JSON.parse(attr);
+            var resu = "";
+            for (att in res) {
+                resu += "<li class='par_li'><b><span style='font-size:18px'>" + res[att].name + "</span></b>";
+                var chiul = "<ul>";
+                $.each(res[att].child, function (i, v) {
+                    chiul += "<li class='chil_li'><img class='popimg' src=" + v.img + "><span>" + v.name + "</span></li>";
+                });
+                chiul += "</ul>";
+                resu += chiul + "</li>";
+            }
+            $(".atttir_img").html("").html(resu);
+        }
+    });
+    $(document).ready(function () {
+        $("#qrcodePc").qrcode({
+            render: "canvas",
+            width: 256,
+            height: 256,
+            typeNumber: -1,
+            background: "#ffffff",
+            foreground: "#000000",
+            text: $.whiskey.tools.chineseToUTF8("@ViewBag.Url" + "@Model.HtmlPath")
+        });
+        $("#qrcodePhone").qrcode({
+            render: "canvas",
+            width: 256,
+            height: 256,
+            typeNumber: -1,
+            background: "#ffffff",
+            foreground: "#000000",
+            text: $.whiskey.tools.chineseToUTF8("@ViewBag.Url" + "@Model.HtmlPhonePath")
+        });
+    });
+    //加载保养维护
+    function initMaintain() {
+        var ids = $("#MaintainIds").val().trim();
+        if (ids != "") {
+
+            $.post("/Properties/Maintain/GetMaintainByIds", { ids: ids }, function (da) {
+                if (da.ResultType == 3) {
+                    var resu = "<ul>";
+                    var t = da.Data;
+
+                    for (var i = 0; i < t.length; i++) {
+                        resu += "<li class='par_li'><b><span style='font-size:18px'>" + t[i].ExtendName + "</span></b><ul>";
+
+                        if (t[i].childrens != undefined && t[i].childrens != null) {
+                            for (var j = 0; j < t[i].childrens.length; j++) {
+                                var child = t[i].childrens[j];
+                                if (ids.indexOf("," + child.Id + ",") > -1)
+                                    resu += "<li class='chil_li'><img class='popimg' src='" + child.ImgPath + "'/><span>" + child.ExtendName + "</span></li>";
+                            }
+                            resu += "</ul>";
+                        }
+                        resu += "</li>";
+                    }
+                    resu += "</ul>";
+                    $("#maintainUl").html(resu);
+                }
+            });
+        }
+    }
+    function loadCollPic() {
+        var ids = $("#othdresser input").val();
+        //$("#othdresser input").remove();
+        if ((ids || "").length > 0) {
+
+            $.post("GetCollocationByIds", { ids: ids }, function (da) {
+                if (da.ResultType == 3) {
+                    var imgs = "";
+                    var d = da.Data;
+                    for (var i = 0; i < d.length; i++) {
+                        imgs += "<img style='margin-left:14px;width:30%' src='" + d[i].ImagePath + "'/>";
+                    }
+                    $("#otherCollPic").html("").html(imgs);
+                }
+            });
+        }
+        var saidatt = $("#buysaid input").val();
+        //$("#buysaid input").remove();
+        //if ((saidatt || "").length > 0) {
+        //    var t = saidatt.split("|");
+        //    var resul = "<ul>";
+        //    for (var i = 0; i < t.length; i++) {
+        //        resul += "<li style='margin-left:15px;border:1px solid gray ;height:40px;max-width:120px'>" + t[i] + "</li>";
+        //    }
+        //    resul += "</ul>"
+        //    $("#buysaidAttr").html("").html(resul);
+        //}
+    }
+    function curColorTypeIsBigNum() {
+        var ptype = $("#imgColorType option:selected").text();//如果是共用,走商品款号
+        return ptype == "共用" ? true : false;
+    }
+    //颜色类型改变
+    function colortypeChange(obj, productnumber) {
+        var isbignum = curColorTypeIsBigNum();
+        if (productnumber != null && productnumber != "") {
+            var ColorId;
+            if (!isbignum) {
+                try {
+                    var pn_cid = productnumber.split('_');
+                    productnumber = pn_cid[0];
+                    ColorId = pn_cid[1];
+                } catch (e) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "保存失败"
+                    });
+                }
+            }
+            $.whiskey.web.ajaxRequest({
+                actionUrl: "GetCurProImg",
+                params: { ProductNumber: productnumber, isbignum: isbignum, ColorId: ColorId },
+                lockButton: obj,
+                complete: function (da) {
+                    if (da.ResultType == 3) {
+                        var data = da.Data;
+                        var $objcol = $("#ProductCollocationImg");
+                        var $objori = $("#ThumbnailPath");
+                        var $objdetail = $("#detailImgs");
+
+                        $objcol.attr("src", data.ProductCollocationImg);
+                        $objori.attr("src", data.OriginalPath);
+
+                        //结节图
+                        var detailImgs = "";
+                        $.each(data.ProductImages, function (index, item) {
+                            detailImgs += '<div class="bordered text-center " style="display:block;width:128px;height:100px;overflow:hidden;float:left;margin:10px 20px 10px 0px;">';
+                            detailImgs += '<img class="popimg" src="' + item.OriginalPath + '" style="max-width:120px;max-height:90px;margin:3px;" alt="" />';
+                            detailImgs += "</div>";
+                        });
+                        $objdetail.empty().html(detailImgs);
+
+                    } else {
+                        $.whiskey.web.alert({
+                            type: "danger",
+                            content: "切换失败"
+                        });
+                    }
+                }
+            });
+        }
+    }
+</script>

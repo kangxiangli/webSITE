@@ -1,0 +1,95 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Notices
+@using Whiskey.ZeroStore.ERP.Models
+@model Notification
+<div id="notificationView">
+    <div class="form-group hidden">
+        <label class="control-label col-md-2">
+            @Html.DisplayNameFor(m => m.Title) :
+        </label>
+        <div class="col-md-10">
+            @Model.Title
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2 hidden">
+            @Html.DisplayNameFor(m => m.Description) :
+        </label>
+        <div class="col-md-10">
+            @Html.Raw(Model.Description)
+        </div>
+    </div>
+    @*<div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.NoticeType) :
+            </label>
+            <div class="col-md-10" id="noticetype">
+                @Html.Raw(Model.NoticeType == (int)NoticeFlag.Immediate ? "即时推送" : "定时推送")
+            </div>
+        </div>*@
+    <div class="form-group hidden">
+        <label class="control-label col-md-2">
+            发送时间 :
+        </label>
+        <div class="col-md-10">
+            @Model.UpdatedTime
+        </div>
+    </div>
+    @*<div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m=>m.CreatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.CreatedTime
+            </div>
+        </div>*@
+    @*<div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m=>m.IsEnabled) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsEnabled==true?"是":"否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m=>m.IsDeleted) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsDeleted==true?"是":"否")
+            </div>
+        </div>*@
+    <div class="form-group hidden">
+        <label class="control-label col-md-2">
+            发送人 :
+        </label>
+        <div class="col-md-10">
+            @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+        </div>
+    </div>
+    <iframe id="contfram" style="display:none"></iframe>
+</div>
+<style>
+    .notification_view .modal-body {
+        width: 650px;
+        min-height: 250px;
+    }
+
+    .notification_view .modal-footer span {
+        float: left;
+    }
+    .hidden {
+        display: none;
+    }
+</style>
+<script>
+    $(function () {
+        setbootboxinfo();
+    });
+    function setbootboxinfo() {
+        var sendpeo = '<span>发送人：@Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "系统")</span><br/>';
+        var sendtime = '<span>发送时间：@Model.UpdatedTime</span>';
+        $(".notification_view .modal-footer").prepend(sendpeo, sendtime);
+        $(".notification_view .modal-header .modal-title").text('@Model.Title');
+    }
+</script>

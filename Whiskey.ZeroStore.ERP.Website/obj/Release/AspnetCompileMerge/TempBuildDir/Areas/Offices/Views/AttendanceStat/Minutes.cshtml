@@ -1,0 +1,208 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.Utility.Data
+
+<style>
+    .modal-content {
+        width: 700px;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-info"></i> <span>数据</span></h5>
+            </div>
+        </div>
+        <div class="panel-footer text-right clearfix">
+            <label class="control-label col-md-3">
+                总计分钟数：
+            </label>
+            <div class="col-md-2">
+                @ViewBag.TotalMinutes
+            </div>
+            <label class="control-label col-md-3">
+                可兑换天数：
+            </label>
+            <div class="col-md-2">
+                @ViewBag.Days
+            </div>
+            @{
+                bool IsExchange = ViewBag.IsExchange;
+                if (IsExchange == true)
+                {
+                    <button  type="button" class="btn btn-default btn-padding-right"><i class="fa fa-plus"></i> <span>已兑换</span></button>
+                }
+                else
+                {
+                    <button id="Exchange"  data-date="@ViewBag.StartTime" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>兑换</span></button>
+                }
+}
+        </div>
+    </div>
+
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="MinutesList">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+@*<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>*@
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $("#MinutesList").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("MinutesList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("AttendanceTime", "@ViewBag.StartTime", "greater"));
+                conditions.Rules.push(new $.whiskey.filter.rule("AttendanceTime", "@ViewBag.EndTime", "less"));
+                //获取当前用户
+                conditions.Rules.push(new $.whiskey.filter.rule("AdminId", "@ViewBag.AdminId", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                $("td:eq(2)", nRow).css({ "float": "left","width":"100%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".table-list").treegrid({
+                    saveState: true,
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+			{
+			    "sTitle": "编号",
+			    "bSortable": false,
+			    "sName": "RowNumber",
+			    "mData": function (data) {
+			        return '';
+			    }
+			},
+            {
+                "sTitle": "考勤日期",
+                "bSortable": false,
+                "sName": "AttendanceTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.AttendanceTime);
+                },
+            },
+            {
+                "sTitle": "上班时间",
+                "bSortable": false,
+                "sName": "AmStartTime",
+                "mData": function(data){
+                    return data.AmStartTime;
+                },
+            },
+            {
+                "sTitle": "下班时间",
+                "bSortable": false,
+                "sName": "PmEndTime",
+                "mData": function (data) {
+                    return data.PmEndTime
+                },
+            },
+             
+            {
+                "sTitle": "迟到",
+                "bSortable": false,
+                "sName": "LateMinutes",
+                "mData": function (data) {
+                    return data.LateMinutes + "分钟";
+                },
+             },
+             {
+                 "sTitle": "早退",
+                 "bSortable": false,
+                 "sName": "LeaveEarlyMinutes",
+                 "mData": function (data) {
+                     return data.LeaveEarlyMinutes + "分钟";
+                 },
+             },
+             {
+                 "sTitle": "早到",
+                 "bSortable": false,
+                 "sName": "ArrivalEarlyMinutes",
+                 "mData": function (data) {
+                     return data.ArrivalEarlyMinutes + "分钟";
+                 },
+             },
+             {
+                 "sTitle": "晚退",
+                 "bSortable": false,
+                 "sName": "LeaveLateMinutes",
+                 "mData": function (data) {
+                     return data.LeaveLateMinutes + "分钟";
+                 },
+             },
+            ]
+
+        });
+
+
+        $("#Exchange").on("click", function () {
+            var date=$("#Exchange").attr("data-date");
+            $.ajax({
+                url: "@Url.Action("Exchange")",
+                type:"post",
+                data: { Date: date },
+                success: function (data) {
+                    if (data.ResultType=="@((int)OperationResultType.Success)") {
+                        alert(data.Message);
+                    } else {
+                        alert(data.Message);
+                    }
+                }
+            });
+        });
+
+    });
+
+
+</script>

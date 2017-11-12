@@ -1,0 +1,409 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Notices
+
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">通知标题</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Title", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">通知内容</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Description", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">创建日期</label>
+                        <div class="col-md-8">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                    <button id="Read" title="将所有未读项标记为已读" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-star"></i> <span>一键标记所有已读</span></button>
+                    <button id="ReadAll" title="将选择的项标记为已读" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-star-half-o"></i> <span>标记已读</span></button>
+                    @*<button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>*@
+                    @*<button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>*@
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <span><input class="isreader" type="checkbox" data-class="switcher-default"></span>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/Content/Scripts/Common/FileSaver.min.js"></script>
+    <script src="~/Content/Scripts/Jquery/jquery.wordexport.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.isreader').switcher({
+                on_state_content: "未读",
+                off_state_content: "已读"
+            }).on("click", function () {
+                $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+            });
+        });
+        $(document).ready(function () {
+            $.whiskey.datatable.instances[0] = $(".table-list").dataTable({
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("List")",
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    } else {
+                        startDate = $.whiskey.tools.getOneDay(-7);
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate, "greater"));
+                    }
+                    $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                        }
+                    });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                    aoData.push({ name: "IsRead", value: $('.isreader').prop("checked") });
+                },
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id, data.IsRead ? "IsRead" : "");
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        var index = data.iDisplayIndex + 1;
+                        return '' + index + '';
+                    }
+                },
+
+                {
+                    "sTitle": "通知标题",
+                    "bSortable": false,
+                    "sName": "Title",
+                    "mData": function (data) {
+                        return data.Title;
+                    },
+                },
+                 //{
+                 //    "sTitle": "App推送",
+                 //    "bSortable": false,
+                 //    "sName": "IsEnableApp",
+                 //    "mData": function (data) {
+                 //        if (data.IsEnableApp == true) {
+                 //            return "是";
+                 //        } else {
+                 //            return "否";
+                 //        }
+                 //    },
+                 //},
+                {
+                    "sTitle": "发送时间",
+                    "bSortable": false,
+                    "sName": "CreatedTime",
+                    "mData": function (data) {
+                        return $.whiskey.tools.dateFormat(data.Time);
+                    }
+                },
+                {
+                    "sTitle": "操作人员",
+                    "bSortable": false,
+                    "sName": "AdminName",
+                    "mData": function (data) {
+                        return data.AdminName || "系统";
+                    },
+                },
+                {
+                    sTitle: "状态",
+                    bSortable: false,
+                    sName: "IsRead",
+                    mData: function (data) {
+                        return (data.IsRead ? "<span>已读" : '<span style="color: #e5603b">未读') + "</span>";
+                    }
+                },
+                {
+                    "sTitle": "控制操作",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        var controller = "<button id=\"View\"  title=\"查看详细信息\" type=\"button\"  onclick=\"";
+                        if (data.IsRead) {
+                            controller += "View(this,null,'" + data.NId + "')";
+                        } else {
+                            controller += "View(this,'" + data.Id + "','" + data.NId + "')";
+                        }
+                        controller += ";\" class=\"btn btn-xs  btn-padding-right\"><i class=\"fa fa-envelope\"></i> </button>";
+                        return controller;
+                    }
+                }
+                ]
+            });
+
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+
+            $("#ReadAll").on("click", function () {
+                var listIds = $.map($(".table-list td input[type=checkbox]:not([class*='IsRead']):checked"), function (obj) {
+                    return obj.value;
+                });
+                if (listIds.length > 0) {
+                    var confirm = new $.whiskey.web.confirm({
+                        question: "确认要将选择项全部标记为已读吗？",
+                        notes: "提示：标记已读后，可在已读列表中查看",
+                        ok: function () {
+                            Update(this, listIds);
+                        }
+                    });
+                }
+            });
+
+            $("#Read").on("click", function () {
+
+                $.ajax({
+                    type: "post",
+                    url: "@Url.Action("GetReadCount")",
+                    success: function (data) {
+                        if (data > 0) {
+                            var confirm = new $.whiskey.web.confirm({
+                                question: "确认要将所有未读项标记为已读？",
+                                notes: "提示：标记已读后，可在已读列表中查看",
+                                ok: function () {
+                                    ReadAll(this);
+                                }
+                            });
+                        } else {
+                            $.whiskey.web.alert({
+                                type: "info",
+                                content: "暂无要处理的通知！",
+                                callback: function () {
+
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        });
+        function Update(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxRequest({
+                actionUrl: "@Url.Action("Update")",
+                method: "POST",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true, $.whiskey.datatable.instances[0]);
+                }
+            });
+        }
+
+        function ReadAll(sender) {
+            var confirm = new $.whiskey.web.ajaxRequest({
+                actionUrl: "@Url.Action("ReadAll")",
+                method: "POST",
+                params: { Id: 0 },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true, $.whiskey.datatable.instances[0]);
+                }
+            });
+        }
+
+        function View(sender, Id, NId) {
+            var view = new $.whiskey.web.ajaxView({
+                caption: "详细信息",
+                actionUrl: "@Url.Action("View")",
+                params: { Id: Id, NId: NId },
+                lockButton: $(sender),
+                buttonType: 0,
+                className: "notification_view",
+                button: {
+                    "export": {
+                        label: "导出",
+                        icon: "fa fa-save",
+                        className: "btn-warning",
+                        callback: function () {
+                            var notificationView = $("#notificationView").clone();
+                            notificationView.find(".hidden").show();
+                            notificationView.wordExport("消息通知");
+                        }
+                    },
+                    print: {
+                        label: "打印",
+                        icon: "fa fa-print",
+                        className: "btn-facebook",
+                        callback: function () {
+                            var frm = window.frames[0].window;
+                            var notificationView = $("#notificationView").clone();
+                            notificationView.find(".hidden").show();
+                            var cont = notificationView.html();
+                            frm.document.body.innerHTML = cont;
+                            frm.print();
+                        }
+                    },
+                    "read": {
+                        label: "已读",
+                        icon: "fa fa-save",
+                        className: "btn-warning",
+                        callback: function () {
+                            var IsRead = false;
+                            $.ajax({
+                                url: "@Url.Action("IsAnswer")",
+                                type: "post",
+                                async: false,
+                                data: { notificationReadId: Id },
+                                success: function (d) {
+                                    if (d.ResultType == 1) {
+                                        IsRead = true;
+                                    }
+                                    if(d.ResultType!=1&&d.ResultType!=3)
+                                    {
+                                        IsRead = true;
+                                        $.whiskey.web.alert({
+                                            type: "info",
+                                            content: d.Message,
+                                            callback: function () { }
+                                        });
+                                    }
+                                }
+                            })
+                            if (!IsRead) {
+                                var dialog = new $.whiskey.web.ajaxDialog({
+                                    caption: "通知查看测验",
+                                    diacl: "diaclg",
+                                    actionUrl: "@Url.Action("Answer")",
+                                    //params: { notificationId: NId },
+                                    getParams: { notificationReadId: Id },
+                                    successEvent: function () {
+                                        var value = $("#hdAnswerRecord").val();
+                                        var Ids = $("#hdIds").val();
+
+                                        if (value == undefined || value == null) {
+                                            $.whiskey.web.alert({
+                                                type: "info",
+                                                content: "请答题后再提交",
+                                                callback: function () {
+                                                }
+                                            });
+                                            return false;
+                                        }
+                                        var answers = JSON.parse(value);
+                                        $.ajax({
+                                            url: "@Url.Action("InAnswer")",
+                                            type: "post",
+                                            async: false,
+                                            data: { list: answers, Ids: Ids, notificationReadId: Id },
+                                            success: function (result) {
+                                                $.whiskey.web.alert({
+                                                    type: "info",
+                                                    content: result.Message,
+                                                    callback: function () {
+                                                    }
+                                                });
+                                                if (result.ResultType != -1) {
+                                                    return false;
+                                                }
+                                                return true;
+                                            }
+                                        })
+                                    },
+                                    async: false,
+                                    formValidator: function () {
+                                        var $form = $(".modal-form");
+                                        if (!$form.valid()) {
+                                            return false;
+                                        } else {
+                                            return true;
+                                        }
+                                    },
+                                    postComplete: function () {
+                                        return true;
+                                    },
+                                });
+                            }
+                            //$(this).close();
+
+                            $.whiskey.datatable.reset(true, $.whiskey.datatable.instances[0]);
+                        }
+                    },
+                },
+                close: function () {
+                    $.whiskey.datatable.reset(true, $.whiskey.datatable.instances[0]);
+                }
+            });
+        }
+
+
+    </script>
+}

@@ -1,0 +1,97 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+<style>
+    .diaclg .modal-dialog {
+        width: 60%;
+        max-width: 80%;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="LateList">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+@*<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>*@
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $("#LateList").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("FileList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                aoData.push({ name: "year", value: "@ViewBag.Year" });
+                aoData.push({ name: "month", value: "@ViewBag.Month" });
+                aoData.push({ name: "DepartmentId", value: "@ViewBag.DepartmentId" });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                aoData.push({ name: "LeaveInfoId", value: "LeaveInfoId" });
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(0)", nRow).html(iDisplayIndex + 1);
+                $("td:eq(1)", nRow).css({ "float": "left", "width": "100%" });
+                //$(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "AdminId"
+            },
+			{
+			    "sTitle": "编号",
+			    "bSortable": false,
+			    "sName": "RowNumber",
+			    "mData": function (data) {
+			        return '';
+			    }
+			},
+            {
+                "sTitle": "员工姓名",
+                "bSortable": false,
+                "sName": "RealName",
+                "mData": function (data) {
+                    return data.RealName;
+                },
+            },
+            {
+                "sTitle": "外勤时长",
+                "bSortable": false,
+                "sName": "Count",
+                "mData": function (data) {
+                    return data.Count + '小时';
+                },
+            },
+            ]
+        });
+    });
+</script>

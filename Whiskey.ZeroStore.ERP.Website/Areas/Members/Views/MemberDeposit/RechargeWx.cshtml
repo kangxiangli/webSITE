@@ -1,0 +1,117 @@
+﻿<style>
+    .RechargeDialog .modal-dialog {
+        width: 60%;
+        margin: 30px auto;
+    }
+
+    .checkbox label::before {
+        top: -6px !important;
+    }
+
+    .checkbox label::after {
+        display: inline-block;
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        left: 0px;
+        top: 3px !important;
+        margin-left: -20px;
+        padding-left: 3px;
+        padding-top: 1px;
+        font-size: 11px;
+        color: rgb(85, 85, 85);
+    }
+
+    #scoreDiv div button, #priceDiv div button {
+        margin-left: 20px;
+        margin-bottom: 20px;
+        background: transparent;
+        float: left;
+        border: 1px solid rgba(255,255,255,.6);
+        border-radius: 5px;
+    }
+
+    .btnactive {
+        background-color: #5cb95c !important;
+    }
+
+    #scoreDiv div, #priceDiv div {
+        display: inline-block;
+    }
+
+        #priceDiv div button:hover {
+            background-color: #5cb95c !important;
+        }
+
+        #scoreDiv div button:hover {
+            background-color: #5cb95c !important;
+        }
+
+    .RechargeDialog .bootbox-body {
+        background: rgba(0,0,0,.2);
+    }
+</style>
+<link href="/Content/WxPayImage/build.css" rel="stylesheet" />
+<ul class="nav nav-tabs" role="tablist" id="navTab" style="background:#505050">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">充值规则列表</a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">充积分规则列表</a></li>
+</ul>
+<br />
+<div id="priceDiv">
+    @Html.Raw(ViewData["priceDiv"])
+</div>
+<div id="scoreDiv" style="display:none">
+    @Html.Raw(ViewData["ScoreDiv"])
+</div>
+
+<br />
+<div class="col-md-13">
+    <div class="form-group no-margin-hr" style="margin:10px auto;text-align: center;padding:10px;">
+        <img src="/Content/WxPayImage/WxPayLogo.png" width="100px" />
+        <div class="checkbox checkbox-info checkbox-circle" style="display:inline-block;line-height: 0px; margin: 0px 0 -11px 9px;padding-top:-7px">
+            <input id="checkbox8"  disabled class="styled" type="checkbox" checked>
+            <label for="checkbox8">
+            </label>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="typeId" value="" />
+<input type="hidden" id="dataAmount" value="" />
+<input type="hidden" id="roleId" value="@ViewData["UserId"]" />
+<input type="hidden" id="sign" value="" />
+<script type="text/javascript">
+    $(function () {
+        $("#priceDiv button[type='button']").click(function () {
+            $("button[type='button']").removeClass("btnactive");
+            $(this).addClass("btnactive");
+            $("#typeId").val($(this).attr("data-index"));
+            $("#dataAmount").val($(this).attr("data-amount"));
+            $("#sign").val($(this).attr("data-sign"));
+        });
+        $("#scoreDiv button[type='button']").click(function () {
+            $("button[type='button']").removeClass("btnactive");
+            $(this).addClass("btnactive");
+            $("#typeId").val($(this).attr("data-index"));
+            $("#dataAmount").val($(this).attr("data-amount"));
+            $("#sign").val($(this).attr("data-sign"));
+        });
+        $("button[data-bb-handler='success']").text("充值");
+        $("#navTab li").click(function () {
+            $("button[type='button']").removeClass("btnactive");
+            $("#typeId").val("");
+            $("#dataAmount").val("");
+            $("#sign").val($(this).attr(""));
+            if (!$(this).hasClass("btnactive")) {
+                if ($(this).find("a").attr("aria-controls") == "home") {
+                    $("#priceDiv").css("display", "");
+                    $("#scoreDiv").css("display", "none");
+                }
+                else {
+                    $("#priceDiv").css("display", "none");
+                    $("#scoreDiv").css("display", "");
+                }
+            }
+        });
+    });
+
+</script>

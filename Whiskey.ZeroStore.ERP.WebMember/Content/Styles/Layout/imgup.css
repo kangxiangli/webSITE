@@ -1,0 +1,105 @@
+/*上传图片插件的样式*/
+
+.img-box .up-p{
+	margin-bottom: 20px;
+	font-size: 16px;
+	color: #555;
+}
+.img-box.full,.img-box.full section{
+	height: 100%;
+}
+.z_photo{
+	height: 100%;
+	display: flex;
+	padding: 2px;
+	align-items: center;
+}
+.z_photo .z_file{
+	position: relative;
+}
+.z_file  .file{
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 100;
+}
+.z_photo .up-section{
+	position: relative;
+	margin-right: 20px;
+}
+.up-section .close-upimg{
+	position: absolute;
+	top: 6px;
+	right: 8px;
+	display: none;
+	z-index: 10;
+}
+.up-section .up-span{
+	display: block;
+	width: 100%;
+	height: 100%;
+	visibility: hidden;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 9;
+	background: rgba(0,0,0,.5);
+}
+.up-section:hover{
+	border: 2px solid #d5968a;
+	cursor: pointer;
+}
+.up-section:hover .close-upimg{
+	display: block;
+}
+.up-section:hover .up-span{
+	visibility: visible;
+}
+.z_photo .up-img{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+.loading{
+
+	background:url(../../Images/Theme/loading.gif) no-repeat center;
+}
+.up-opcity{
+	opacity: 0;
+}
+.img-name-p{
+	display: none;
+}
+.upimg-div .up-section {
+    width: 15%;
+    height: 73% !important;
+}
+.img-box .upimg-div .z_file {
+	
+    width: 60px;
+    height: 60px;
+}
+.z_file .add-img {
+    display: block;
+    width: 60px;
+    height: 60px;
+   
+}
+.file{
+	cursor: pointer;
+}
+.check-p .del-com{
+	border-right: 1px solid #D1D1D1;
+}
+
+
+
+
+
+
+
+
+

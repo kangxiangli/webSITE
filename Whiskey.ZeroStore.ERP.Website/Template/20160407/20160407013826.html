@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8" http-equiv="content-type" content="text/html">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <title>登陆</title>
+
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body class="dl_body">
+<!--logo-->
+<img class="logo_dl2x" src="img/dlzc/login_logo_@2x.png" alt="logo"/>
+<!--登陆框-->
+
+<form action="dk.html" method="post" id="forms">
+    <div class="prompt"></div>
+    <div class="dl_box">
+        <div class="usd_box">
+            <img class="sj_png" src="img/dlzc/sj@2x.png" alt="账号"/>
+            <input class="usd" type="text" placeholder="邮箱 手机"/>
+        </div>
+        <div class="psd_box">
+            <img class="sj_png" src="img/dlzc/mm@2x.png" alt="密码"/>
+            <input class="pwd" type="password" placeholder="密码"/>
+        </div>
+    </div>
+    <input class="btn_dl" type="submit" value="登    陆"/>
+</form>
+<ul class="zc_mm">
+    <li><a href="zc.html">注册用户</a></li>
+    <li><a href="wjmm.html">忘记密码</a></li>
+</ul>
+<!--登陆方式 qq 微信  微博-->
+<div class="dlfs">
+    <div>
+        <img src="img/dlzc/login_qq_@2x.png" alt="qq"/>
+
+        <p>QQ</p>
+    </div>
+    <div>
+        <img src="img/dlzc/login_wx_@2x.png" alt="qq"/>
+
+        <p>微信</p>
+    </div>
+    <div>
+        <img src="img/dlzc/login_xl_@2x.png" alt="qq"/>
+
+        <p>微博</p>
+    </div>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script>
+    $(function(){
+        $("#forms").submit(function(){
+            var used=$(".usd").val();
+            var pasd=$(".pwd").val();
+            if(used==123 && pasd==123){
+                return true;
+            }
+            else if(((used=='')||(used=null))&&((pasd=='')||(pasd=null))){
+                $(".prompt").html("用户名和密码不能为空");
+                return false;
+            }
+            else if ((used=='')||(used=null)) {
+                $(".prompt").html("用户名不能为空");
+                return false;
+            }
+            else if ((pasd=='')||(pasd=null)) {
+                $(".prompt").html("密码不能为空");
+                return false;
+            }
+            else{
+                $(".prompt").html("用户名或密码不正确");
+                return false
+            }
+        })
+    });
+</script>
+</body>
+</html>

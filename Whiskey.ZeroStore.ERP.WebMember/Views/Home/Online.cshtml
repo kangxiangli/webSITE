@@ -1,0 +1,307 @@
+﻿@section Styles{
+    <link rel="stylesheet" href="~/content/styles/layout/OnlineSelection.css" />
+    <link rel="stylesheet" href="~/content/styles/layout/loading/css/loaders.css" />
+}
+
+@section Scripts{
+    <script src="~/Content/Scripts/vue.min.js"></script>
+    <script>
+    	
+        var categoryId = 1;
+        var index = 1;
+        var maxIndex = 9999999;
+        var postcomplete = false;
+        var menu = new Vue({
+            el: '#left-sideBar',
+            data: {
+                menulist: []
+            }
+        })
+        
+		init();
+        $(window).resize(function(){
+       		clothCenter()
+        })
+        //---------------------------------------------------------------------------------------------- 菜单滚动
+        var downIndex = 0;
+        $('#left-sideBar').on("mousewheel DOMMouseScroll", function (e) {
+            e.preventDefault(); //阻止body默认滚动
+            if (postcomplete) {
+                var top = $('#left-sideBar ul').position().top;
+                var delta = (e.originalEvent.wheelDelta && (e.originalEvent.wheelDelta > 0 ? 1 : -1)) || // chrome & ie
+                    (e.originalEvent.detail && (e.originalEvent.detail > 0 ? -1 : 1)); // firefox
+                var disY = $('#left-sideBar ul').height() - Math.abs($('#left-sideBar ul').position().top) - $('#left-sideBar').height();
+                if (delta > 0) {
+                    // 向上滚
+                    if (top > 0) return;
+                    downIndex += 20;
+                    $('#left-sideBar ul').css('transform', 'translateY(' + downIndex + 'px)');
+                } else if (delta < 0) {
+                    // 向下滚
+                    if (disY < 0) return;
+                    downIndex -= 20;
+                    $('#left-sideBar ul').css('transform', 'translateY(' + downIndex + 'px)');
+                }
+            }
+        });
+        //---------------------------------------------------------------------------------------------- 左侧菜单点击
+        $('#left-sideBar').on('click', '.firstMenu', function () {
+            index = 1;
+            maxIndex = 999999;
+            categoryId = $(this).attr('data-CategoryId');
+            $('.shopList ul').empty();
+            getProductList();
+            $('.activeMenuTitle').removeClass('activeMenuTitle')
+            $(this).addClass('activeMenuTitle');
+        });
+            //---------------------------------------------------------------------------------------------- 产品遮罩详情显示
+            var enterBtn = true,
+                outBtn = true;
+            $('.shopList').on('mouseenter', 'li', function (e) {
+                $(this).find('.product-introduce').stop().slideDown();
+            })
+            $('.shopList').on('mouseleave', 'li', function (e) {
+                $(this).find('.product-introduce').stop().slideUp();
+            })
+            //---------------------------------------------------------------------------------------------- 商品详情
+            $('.shopList ul li').click(function () {
+                window.open('shopItem.html')
+            })
+        
+            //---------------------------------------------------------------------------------------------- 初始化
+            function init() {
+                getMenu();
+                getProductList();
+
+            }
+
+            //---------------------------------------------------------------------------------------------- 滚动加载更多
+            var st = 0;
+            $(window).scroll(function (e) {
+            	var disY =  window.pageYOffset;
+            	if(disY == 0 )return;
+            	var winPos = $(document).scrollTop();
+            	var dis = winPos - st;
+        		if($(document).scrollTop() > 500 ){
+        			$('.backTop').show()
+        		}else{
+        			$('.backTop').hide()
+        		}
+        		//加载数据
+            	if (dis > 0 && postcomplete) {
+                    getProductList();
+                }
+            	
+            	st = winPos;
+           })   
+			//收起商品列表
+			$('.closeMenuBox').click(function(){
+				$('.openMenu').animate({left:0},500)
+				$('#left-sideBar').animate({left:-130},500)
+			})
+			$('.openMenu').click(function(){
+				$('.openMenu').animate({left:-130},500)
+				$('#left-sideBar').animate({left:0},500)
+			})
+           //回到顶部
+            $('.backTop').click(function(){
+            	$('.backTop').hide()
+           		if($(document).scrollTop() == 0 )return;
+           		$(document).scrollTop(0)
+            	//$(document).animate({scrollTop: '0px'}, 800);
+            })
+            //---------------------------------------------------------------------------------------------- 渲染商品数据
+            var Colors = ['#b1c5a3', '#af9ab2', '#bdaba9', '#8fb2bf', '#c8bc98']
+            function getProductList() {
+
+                if (maxIndex <= index) {
+                    return;
+                }
+                $('.nodata').remove();
+                $('.webviwWrapper').show();
+                $.ajax({
+                    type: "post",
+                    url: "/Products/Product/GetStoreProducts",
+                    dataType: 'json',
+                    data: {
+                        PageIndex: index,
+                        PageSize: 30,
+                        CategoryId: categoryId,
+                    },
+                    async: true,
+                    beforeSend: function () {
+                        postcomplete = false;
+                    },
+                    complete: function () {
+                        postcomplete = true;
+                		clothCenter();
+                    },
+                    success: function (data) {
+                        $('.webviwWrapper').hide();
+                        if (data.ResultType == 3) {
+                            var Cloths = data.Data;
+                            if (Cloths.length == 0) {
+                                maxIndex = index;
+                                $('.nodata').remove();
+                                $('.shopList').append('<div class="nodata">没有更多商品了~</div>');
+                            } else {
+                                index++;
+                                $(Cloths).each(function (i, item) {
+
+                                    var math = parseInt(Math.random() * 5);
+
+                                    var html = '';
+                                    html += '<li onclick=jumpDetail(this) data-BigProdNum=' + item.BigProdNum + '>' +
+                                    '<div class="productBox" style="background:' + Colors[math] + '"><img class="clothImage" onerror=imgError(this) onload=loadimg(this) src=' + item.ImageOrgPath + '>' +
+                                        '<div class="product-introduce"><div class="zz"></div>' +
+                                        '<div class="introduce">' +
+                                        '<p style="color: #e5c593;">' + item.CategoryName + '</p>' +
+                                        '<p>尺寸：' + item.SizeName + '</p>' +
+                                        '<p>季节：' + item.SeasonName + '</p>' +
+                                        '<p>颜色：' + item.ColorName + '</p>' +
+                                        '</div>' +
+                                        '<div class="product-introduce-jt">' +
+                                        '<img src="/content/images/shoping/jt.png" />' +
+                                        '</div>' +
+                                        '<div class="price">￥' + item.Price + '</div>' +
+                                        '</div></div></li>'
+                                    $('.shopList ul').append(html)
+                                });
+                            }
+                        }else{
+                        	$('.nodata').remove();
+                            $('.shopList').append('<div class="nodata">没有更多商品了~</div>');
+                        }
+                    }
+                });
+            }
+			function loadimg(_this){
+				$(_this).animate({'opacity':1},500)
+			}
+			function imgError(image) {
+                $(image).attr('src', '/content/images/shoping/errorImage.png');
+            }
+            //---------------------------------------------------------------------------------------------- 跳转商品详情
+            function jumpDetail(_this) {
+                var BigProdNum = $(_this).attr('data-BigProdNum');
+                window.open("/products/product/detail?BigProdNum=" + BigProdNum);
+            }
+            //---------------------------------------------------------------------------------------------- 获取菜单
+            function getMenu() {
+                $.ajax({
+                    url: '/properties/category/getlist',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {},
+                    success: function (data) {
+                        menu.menulist = data.Data;
+                    }
+                })
+            }
+            //---------------------------------------------------------------------------------------------- 获取商品详情
+
+            function getproductdetail(productId, fn) {
+                $.ajax({
+                    url: '/Products/Product/getproductdetail',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        ProductId: productId
+                    },
+                    success: function (data) {
+                        if (fn) {
+                            fn(data)
+                        }
+                    }
+                })
+            }
+            
+            function clothCenter(){
+            	//居中
+				var listWidth = $('.shop').width();
+				var clothWidth = $('.shopList li').outerWidth(true) || 260;
+				var lineCount = parseInt(listWidth / clothWidth);
+				var clothMargin = (listWidth - clothWidth*lineCount)/2;
+				$('.shopList').css({
+					marginLeft:clothMargin
+				})
+            }
+            
+    </script>
+}
+<div class="container">
+	<div class="openMenu">
+		<span>商品分类</span>
+		<img src="../../Content/Images/shoping/openright.png" />
+	</div>
+	 <div class="headeronline">
+        <img class="top-logo" src="/content/images/shoping/0fashion.png" />
+        <span>在线商城</span>
+    </div>
+    <div class="left-sideBar" id="left-sideBar">
+        <ul>
+        	
+        	
+            <li>
+                <a href="@Url.Action("index")"><img class="menuLogo" src="/content/images/shoping/menu_logo.png" />返回首页</a>
+            </li>
+            <!--<li><h1 class="firstMenu activeMenuTitle">新品推荐</h1><span class="new">new</span></li>-->
+            <li v-cloak v-for="(menu,index) in menulist">
+                <h1 class="firstMenu" :class="{'activeMenuTitle':index == 0}" data-index=index v-if="!menu.ParentId" v-bind:data-CategoryId=menu.CategoryId>{{ menu.CategoryName}}</h1>
+                <!--<ol class="secondMenuList">
+                    <li>
+                        <h2 class="secondMenu">裤子</h2></li>
+                    <li>
+                        <h2 class="secondMenu">半裙</h2>
+                        <ol class="thirdMenuList">
+                            <li>筒裙</li>
+                            <li>伞裙</li>
+                            <li>A裙</li>
+                            <li>长裙</li>
+                            <li>中裙</li>
+                        </ol>
+                    </li>
+                </ol>-->
+            </li>
+            <li class="closeMenuBox">
+        		<img class="closeMenu" title="收起商品列表" src="/Content/Images/shoping/closeleft.png" />
+        	</li>
+            <!--<li class="backTop">
+            	<img src="../../Content/Images/shoping/backTop.png" />
+            	<p>TOP</p>
+            </li>-->
+        </ul>
+    </div>
+<div class="backTop">
+	<img src="../../Content/Images/shoping/backTop.png" />
+	<p>TOP</p>
+</div>
+    <div class="shop">
+       
+        <div class="shopList">
+            <ul class="clearfix">
+            </ul>
+            <!--loading-->
+            <div class="webviwWrapper wrapper nano">
+                <div class="nano-content">
+                    <main>
+                        <div class="nano-items items-list">
+                            <div class="nano-item">
+                                <div class="item-inner">
+                                    <div class="item-loader-container">
+                                        <div class="la-ball-atom la-2x">
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

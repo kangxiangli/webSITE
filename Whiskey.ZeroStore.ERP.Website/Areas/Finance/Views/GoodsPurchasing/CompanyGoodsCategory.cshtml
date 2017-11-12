@@ -1,0 +1,209 @@
+﻿
+<style>
+    .adminlist .modal-content {
+        width: 943px;
+    }
+
+    .datatable-footer > .col-md-3:nth-child(2) {
+        width: 21% !important;
+    }
+
+    .datatable-footer > .col-md-7:nth-child(3) {
+        width: 46% !important;
+        margin-top: -10px !important;
+    }
+</style>
+<div id="CGC_div">
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-7">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">类别名称</label>
+                            <div class="col-md-7">
+                                @Html.TextBox("CompanyGoodsCategoryName", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">唯一性</label>
+                            <div class="col-md-7">
+                                @Html.DropDownList("IsUniqueness", new List<SelectListItem>() { new SelectListItem() { Value = "1", Text = "是" }, new SelectListItem() { Value = "0", Text = "否" } })
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%" id="CompanyGoodsCategoryList">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+
+<script type="text/javascript">
+    var datatable_install;
+
+    $(document).ready(function () {
+        var dts = $("#CGC_div #CompanyGoodsCategoryList").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("GetCompanyGoodsCategoryList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("Type", "@ViewBag.Type", "equal"));
+                $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                if (aData.ParentId == null) {
+                    $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                    $("td", nRow).css({ "color": "blue" });
+                } else {
+                    $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                }
+                var isEnabled = aData.IsEnabled;
+                if (isEnabled == false) {
+                    $(nRow).css({ "color": " #5ebd5e" });
+                }
+                //$("td:eq(1)", nRow).addClass("text-left").css({ "width": "25%" });
+
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".table-list").treegrid({
+                    //saveState: true,
+                    initialState: 'collapsed',
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+            {
+                "sTitle": "类别名称",
+                "bSortable": false,
+                "sName": "CompanyGoodsCategoryName",
+                "mData": function (data) {
+                    return data.CompanyGoodsCategoryName;
+                },
+            },
+            {
+                "sTitle": "展示图片",
+                "bSortable": false,
+                "sName": "ImgAddress",
+                "mData": function (data) {
+                    return "<img class='popimg' src='" + data.ImgAddress + "'  style='margin:2px;max-width:54px;cursor:pointer' onclick='showImage(this)' />";
+                },
+            },
+            {
+                "sTitle": "唯一性",
+                "bSortable": false,
+                "sName": "IsUniqueness",
+                "mData": function (data) {
+                    return data.IsUniqueness ? "是" : "否";
+                },
+            },
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    return (data.ParentId == null || data.ParentId == 0 || data.ParentId == undefined) && !data.IsUniqueness ? '' : ('<button type="button" onclick="choose(this)"  class="btn btn-light-green" data-name="' + data.CompanyGoodsCategoryName + '" data-uniqueness="' + (data.IsUniqueness ? 1 : 0) + '"  data-id="' + data.Id + '">选择</button>');
+                },
+            },
+            ]
+        });
+
+        $.whiskey.datatable.instances[0] = dts;
+
+        $("#CGC_div #Search").on("click", function () {
+            $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+        });
+
+        $("#CGC_div #Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+
+    });
+
+    //选择类别
+    function choose(my) {
+        var name = $(my).attr("data-name");
+        var id = parseInt($(my).attr("data-id"));
+
+        $("#CompanyGoodsCategoryID").val(id);
+        $("#CompanyGoodsCategoryName").val(name);
+
+        //$('.selectpicker').selectpicker('refresh');
+    }
+</script>

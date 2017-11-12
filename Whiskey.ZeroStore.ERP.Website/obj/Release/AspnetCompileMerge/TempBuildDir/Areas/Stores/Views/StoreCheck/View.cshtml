@@ -1,0 +1,69 @@
+﻿@using Whiskey.ZeroStore.ERP.Models.DTO
+@using Whiskey.Utility.Data
+@model StoreCheckDTO
+<style>
+	.list-group-box .list-group-li input{
+	width: 87%;
+    height: 30px;
+    text-align: center;
+	}
+	.list-group-box .list-group-li{
+		    text-align: center;
+	}
+	.btn-remove{
+		background-color:  #e5603b;
+	}
+</style>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CheckName) :
+    </label>
+    <div class="col-md-10">
+        @Html.DisplayTextFor(m => m.CheckName)
+        @Html.ValidationMessageFor(m => m.CheckName)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Desc) :
+    </label>
+    <div class="col-md-10">
+        @Html.DisplayTextFor(m => m.Desc)
+        @Html.ValidationMessageFor(m => m.Desc)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.PunishScore) :
+    </label>
+    <div class="col-md-2">
+        @Html.DisplayTextFor(f => f.PunishScore)
+        @Html.ValidationMessageFor(f => f.PunishScore)
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Standard) :
+    </label>
+    <div class="col-md-2">
+        @Html.DisplayTextFor(f => f.Standard)
+        @Html.ValidationMessageFor(f => f.Standard)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ItemsCount) :
+    </label>
+    <div class="col-md-2">
+        @Html.DisplayTextFor(f => f.ItemsCount)
+
+        @Html.ValidationMessageFor(f => f.ItemsCount)
+    </div>
+</div>
+<ol class="check-item-container list-group list-group-box">
+    @foreach (var item in JsonHelper.FromJson<CheckDetail[]>( Model.Items))
+    {
+        <li class="list-group-item list-group-li"><input type="text" class="store-check-item" name="checkItem" value="@item.OptionName" readonly /></li>
+    }
+</ol>

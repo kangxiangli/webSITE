@@ -1,0 +1,82 @@
+﻿<div class="form-group">
+    <label class="control-label col-md-3">
+        部门 :
+    </label>
+    <div class="col-md-6">
+        @Html.DropDownList("DepartmentId", (List<SelectListItem>)ViewBag.Department, new { @class = "form-control",@onchange="getAdmin(this)" })
+    </div>
+</div>
+<div class="form-group divAdmin">
+    <label class="control-label col-md-3">
+        员工 :
+    </label>
+    <div class="col-md-6">
+        <select id="AdminId" name="currentAdminId" class="form-control"></select>
+    </div>
+</div>
+<div class="form-group worktime">
+    <label class="control-label col-md-3" id="labAmStartTime">
+        日期 :
+    </label>
+    <div class="col-md-7" id="divAmStartTime">
+        <div class="input-daterange input-group">             
+            <input type="text" class="datetime form-control" id="StartDate" name="StartDate" />
+            <span class="input-group-addon">至</span>
+            <input type="text" class="datetime form-control" id="EndDate" name="EndDate"/>            
+        </div>
+    </div>    
+</div>
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+    $(function () {
+        getAdmin();
+    })
+
+    var myDate = new Date();
+    var year = myDate.getFullYear();
+    var month = myDate.getMonth() + 1;
+    var day = myDate.getDate();
+    var date = year + "/" + month + "/" + day;
+    $(".datetime").attr('value', date);
+    debugger
+    //初始化日期控件
+    $(".datetime").datetimepicker({        
+        //startDate: date,
+        format: 'yyyy/mm/dd',
+        autoclose: false,
+        minView: 'month',
+        todayBtn: true,
+        initialDate: date,
+        //forceParse:false
+    });
+
+    //获取部门下的员工
+    function getAdmin() {
+        var departId = $(".chooseIndex #DepartmentId").val();
+        if (departId == "0" || departId=="") {
+            $('.divAdmin').css("display", "none");
+            return false;
+        } else {
+            $('.divAdmin').css("display", "block");
+            $.ajax({
+                url: "@Url.Action("GetAdmin")",
+                type: "POST",
+                data: { DepartId: departId },
+                success: function (data) {
+                    $(".chooseIndex #AdminId").empty();
+                    var index = '<option value="0">所有</option>';
+                    $("#AdminId").append(index);
+                    for (var i = 0; i < data.length; i++) {
+                        var id = data[i].Id;
+                        var realName = data[i].RealName;
+                        var part = '<option value="' + id + '">' + realName + '</option>';
+                        $(".chooseIndex #AdminId").append(part);
+                    }
+                }
+            })
+        }
+    }
+     
+</script>

@@ -1,0 +1,206 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+<style>
+    .modal-content {
+        width: 1000px;
+        background: rgba(0,0,0,0.2);
+    }
+</style>
+<div id="view-member">
+
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    @*<input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">*@
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">会员名</label>
+                            <div class="col-md-8">
+                                <input v-on:keyup.enter="search({pageIndex:1})" class="form-control" type="text" name="name" id="name" placeholder="请输入会员名" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">手机号</label>
+                            <div class="col-md-8">
+                                <input v-on:keyup.enter="search({pageIndex:1})" class="form-control" type="text" name="MobilePhone" id="MobilePhone" placeholder="请输入会员名" />
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button v-on:click="search(null)" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button v-on:click="document.querySelector('.form-search').reset()" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+                        
+                        
+                    </div>
+                    <div class="button-recycle">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    @*<span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>*@
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>会员昵称</th>
+                        <th>真实姓名</th>
+                        <th>性别</th>
+                        <th>手机号</th>
+                        <th>归属店铺</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{index+1}}</td>
+                        <td>{{item.MemberName}}</td>
+                        <td>{{item.RealName}}</td>
+                        <td>{{item.Gender===0?'女':'男'}}</td>
+                        <td>{{item.MobilePhone}}</td>
+                        <td>{{item.StoreName?item.StoreName:'无'}}</td>
+                        <td>{{item.CreatedTime|datetime}}</td>
+                        <td>{{item.UpdatedTime|datetime}}</td>
+                        
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    $(function () {
+
+            var baseUrl = '/Commons/MemberImport';
+
+    var vmRecommendMember = new Vue({
+        el: "#view-member",
+        data: {
+            id: '@ViewBag.Id',
+            isDeleted: false,
+            isEnabled: true,
+
+            numbers: [],
+            pageDatas: [], //分页数据
+            currentId: 0,
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            },
+            checkedIds: [],
+            currentId: 0,
+        },
+        mounted: function () {
+            this.search();
+        },
+        methods: {
+
+            search: function (filter) {
+
+                var _self = this;
+
+                var searchData = {
+                    recordId:this.id,
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+                }
+                var startDate = $("#view-member #StartDate").val();
+                var endDate = $("#view-member #EndDate").val();
+                var name = $("#view-member #name").val();
+                var mobilePhone = $("#view-member #MobilePhone").val();
+                if (startDate) {
+                    searchData.startDate = startDate;
+                }
+                if (endDate) {
+                    searchData.endDate = endDate;
+                }
+
+                if (name && name.length > 0) {
+                    searchData.name = name;
+
+                }
+                if (mobilePhone && mobilePhone.length > 0) {
+                    searchData.mobilePhone = mobilePhone;
+
+                }
+
+                if (filter) {
+
+                    searchData = _.extend(searchData, filter)
+                }
+
+                $.getJSON(baseUrl + '/MemberList', searchData).done(function (res) {
+                    if (res.ResultType !== 3) {
+                        //console
+                        return;
+                    }
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+                })
+            },
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            }
+
+        }
+
+    })
+    })
+
+</script>

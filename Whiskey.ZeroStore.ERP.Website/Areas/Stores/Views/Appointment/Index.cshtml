@@ -1,0 +1,496 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Appointment
+<style>
+    .bootbox-input-textarea {
+        height: 8em !important;
+    }
+
+
+    .finish-appointment {
+        width: 23px;
+        height: 23px;
+        border-radius: 50%;
+        padding: 0px !important;
+        background-color: rgba(0,0,0,0);
+        margin: 0 3%;
+    }
+
+        .finish-appointment > i {
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            width: 25px;
+            height: 25px;
+            opacity: .7;
+        }
+
+            .finish-appointment > i:hover {
+                opacity: 1;
+            }
+
+    .icon-plus-sign-alt {
+        background-image: url(/Content/Images/img/chuli.png);
+    }
+
+    span.like, span.dislike, span.confirm-plan {
+        cursor: pointer !important;
+    }
+</style>
+<div id="app-appointment">
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    <switcher-search></switcher-search>
+                    @*<input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">*@
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">预约号</label>
+                            <div class="col-md-8">
+                                <input v-on:keyup.enter="search({pageIndex:1})" name="number" class="form-control" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">店铺</label>
+                            <div class="col-md-8">
+                                <select class="form-control" id="StoreId" name="StoreId"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">会员名称</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("RealName", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">手机号</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("MobilePhone", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">预约状态</label>
+                            <div class="col-md-8">
+                                @Html.EnumDropDownListFor(m => m.State, "请选择预约状态", new { @class = "form-control selectpicker" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">预约来源</label>
+                            <div class="col-md-8">
+                                @Html.DropDownListFor(m => m.AppointmentType, EnumHelper.GetSelectList(typeof(AppointmentType)),"请选择", new { @class = "form-control selectpicker" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">创建日期</label>
+                            <div class="col-md-8">
+                                <div class="input-daterange input-group">
+                                    @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                    <span class="input-group-addon">至</span>
+                                    @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button v-on:click="search(null)" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button v-on:click="document.querySelector('.form-search').reset()" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+                        <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right" v-on:click="Export"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                    </div>
+                    <div class="button-recycle">
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>预约号</th>
+                        <th>来源</th>
+                        <th>店铺</th>
+                        <th>会员</th>
+                        <th>头像</th>
+                        <th>手机号</th>
+                        <th>喜欢</th>
+                        <th>不喜欢</th>
+                        <th>状态</th>
+                        <th>方案</th>
+                        <th>预约时间</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{index+1}}</td>
+                        <td>{{item.Number}}</td>
+                        <td>{{item.AppointmentTypeName}}</td>
+                        <td>{{item.StoreName}}</td>
+                        <td><a href="javascript:;" v-on:click="memberDetail(item.MemberId)">{{item.RealName}}</a></td>
+                        <td v-html="suspension({imgPath:item.UserPhoto,classImg:false,shape:'circle'})"></td>
+                        <td>{{item.MobilePhone}}</td>
+                        <td>
+                            <span class="label label-success like" v-if="item.ProductNumber" v-on:click="viewProducts(item.Id,true)">{{item.ProductNumber.split(',').length}}</span>
+                            <span class="label label-success" v-else>0</span>
+                        </td>
+                        <td>
+                            <span class="label label-danger dislike" v-if="item.DislikeProductNumbers" v-on:click="viewProducts(item.Id,false)">{{item.DislikeProductNumbers.split(',').length}}</span>
+                            <span class="label label-danger" v-else>0</span>
+                        </td>
+                        <td>
+                            <span class='label'
+                                  v-bind:class="getClassName(item.State)">
+                                {{item.State}}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="label label-success confirm-plan" v-if="item.SelectedPlanId" v-on:click="viewPlans(item.Id,item.SelectedPlanId)">1</span>
+                            <span class="label label-success" v-else>0</span>
+                        </td>
+                        <td>
+                            <span v-if="item.StartTime">{{item.StartTime}} ~ {{item.EndTime}}</span>
+                        </td>
+
+                        <td>{{item.CreatedTime|datetime}}</td>
+                        <td>{{item.UpdatedTime|datetime}}</td>
+                        <td>
+                            <button type="button" title="查看详细信息" v-on:click="view(item.Id)" class="btn-opt-box"><i class="btn-view-icon"></i></button>
+                            <button type="button" v-if="item.State=='预约中'" title='处理' v-on:click="process(item.Id)" class='btn btn-xs finish-appointment'> <i class='fa icon-plus-sign-alt'></i> </button>
+                            <button title="撤销" v-if="item.State!=='已预约'&&item.State!=='已撤销'" class="btn-opt-box" v-on:click="cancel(item.Id)"><i class="btn-delete-icon"></i></button>
+
+
+
+                            <button type="button" v-if="showFeedback(item.State)" class="btn btn-primary" v-on:click="viewFeedback(item.Number)">查看反馈</button>
+                            <button type="button" v-if="showPacking(item.State)" title="装箱" v-on:click="viewPacking(item.Id)" class="btn-opt-box"><i class="btn-encasement-icon"></i></button>
+                            <button type="button" v-if="showPrintPlan(item.State)" title="打印搭配方案" v-on:click="printPlan(item.Id)" class="btn-opt-box"><i class="btn-print-project-icon"></i></button>
+                            <button type="button" v-if="showPrintQRCode(item.State)" title="打印预约二维码" v-on:click="printQRCode(item)" class="btn-opt-box"><i class="btn-print-qr-code-icon"></i></button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+    </div>
+
+</div>
+<div style="display: none">
+    <object id="GPrinter" classid="clsid:db424264-3254-476c-a275-c195fef84906" width="0" height="0"></object>
+</div>
+<script>
+    $(function () {
+    var baseUrl = '/Stores/Appointment';
+
+    var vm = new Vue({
+        el: "#app-appointment",
+        data: {
+            isDeleted: false,
+            isEnabled: true,
+            pageDatas: [], //分页数据
+            currentId: 0,
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            }
+        },
+        mounted: function () {
+            $("#StoreId").queryManageStore();
+            this.search();
+        },
+        methods: {
+            printQRCode(item) {
+                var data = {
+                    Number: item.Number,
+                    Member: item.RealName,
+                    Quantity: item.Quantity,
+                    Store: item.StoreName,
+                    Time:item.StartTime+" ~ "+item.EndTime
+                }
+                var objPrint = document.getElementById("GPrinter");
+                if (window["GPRINTER"] != null) {
+                    GPRINTER.openPort("GPRINTER  GP-3120TU");
+                    GPRINTER.clearBuffer();
+                    GPRINTER.setUp("50", "120", "4", "8", "0", "0", "0");
+                    GPRINTER.sendCommand("GAP 3mm,0");
+
+
+                    var x = "110", y = "30", level = "H", cellWith = "10", mode = "A", rotation = "0", content = data.Number;
+                    GPRINTER.qrCode(x, y, level, cellWith, mode, rotation, content);
+                    GPRINTER.windowsFont(320, 300, 40, 270, 2, 0, "ARIAL", "会员名:" + data.Member);
+                    GPRINTER.windowsFont(280, 300, 40, 270, 2, 0, "ARIAL", "店名:" + data.Store);
+                    GPRINTER.windowsFont(240, 300, 40, 270, 2, 0, "ARIAL", "件数:" + data.Quantity);
+                    GPRINTER.windowsFont(200, 300, 40, 270, 2, 0, "ARIAL", "预约号:" + data.Number);
+                    GPRINTER.windowsFont(160, 300, 40, 270, 2, 0, "ARIAL", "预约时间:" + data.Time);
+                    GPRINTER.printLabel("1", "1");
+                    GPRINTER.closePort();
+                }
+                else if (objPrint != null && objPrint.xkOpenport) {
+                        // IE环境
+                        objPrint.xkOpenport("Gprinter  GP-3120TU");
+                        objPrint.xkClearbuffer();
+
+
+                        objPrint.setUp("50", "120", "4", "8", "0", "0", "0");
+                        objPrint.sendCommand("GAP 3mm,0");
+
+
+                        var x = "110", y = "30", level = "H", cellWith = "10", mode = "A", rotation = "0", content = data.Number;
+                        objPrint.qrCode(x, y, level, cellWith, mode, rotation, content);
+                        objPrint.windowsFont(320, 300, 40, 270, 2, 0, "ARIAL", "会员名:" + data.Member);
+                        objPrint.windowsFont(280, 300, 40, 270, 2, 0, "ARIAL", "店名:" + data.Store);
+                        objPrint.windowsFont(240, 300, 40, 270, 2, 0, "ARIAL", "件数:" + data.Quantity);
+                        objPrint.windowsFont(200, 300, 40, 270, 2, 0, "ARIAL", "预约号:" + data.Number);
+                        objPrint.windowsFont(160, 300, 40, 270, 2, 0, "ARIAL", "预约时间:" + data.Time);
+                        objPrint.printLabel("1", "1");
+
+
+                        objPrint.xkPrintlabel("1", cou);
+                        objPrint.xkCloseport();
+                }
+                else {
+                    alert("未检测到打印机")
+                    return;
+                }
+                
+                
+
+
+
+            },
+            printPlan(appointmentId) {
+                var _self = this;
+                //打印小票
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "打印购物凭证",
+                    actionUrl: "@Url.Action("PrintPlan")",
+                    params: { Id: appointmentId },
+                });
+            },
+            viewPacking(id) {
+                $.getJSON('@Url.Action("GetPackingId")', { id: id })
+                    .done(function (res) {
+                        $.whiskey.web.load({ url: "/WareHouses/AppointmentPacking/Index?id=" + res.Data })
+                    })
+            },
+            viewFeedback(number) {
+                $.whiskey.web.load({ url: "/Stores/AppointmentFeedback/index?number=" + number })
+            },
+            cancel(id) {
+                var _self = this;
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要撤销预约吗？",
+                    notes: "",
+                    actionUrl: "@Url.Action("Cancel")",
+                    params: { id: id },
+                    complete: function () {
+                        _self.search();
+                    }
+                });
+            },
+            process(appointmentId) {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "处理预约",
+                    actionUrl: baseUrl + "/edit",
+                    getParams: { id: appointmentId },
+                    lockButton: $(this),
+                    formValidator: function () {
+                        var arr = appAppointmentEditVM.selectedPlan.concat([]);
+                        if (!arr || !arr.length) {
+                            alert("请选择至少一套搭配方案");
+                            return
+                        }
+
+                        var data = { id: appointmentId, planIds: arr.join(',') }
+                        $.post(baseUrl + "/edit", data)
+                            .done(function (res) {
+                                if (res.ResultType === 3) {
+
+                                    $("button.bootbox-close-button").trigger('click')
+                                    _self.search();
+                                }
+                                else {
+                                    alert(res.Message);
+                                }
+                                return false;
+                            })
+                    }
+                });
+            },
+            viewProducts(appointId,islike) {
+                var dialog = new $.whiskey.web.ajaxView({
+                    caption: "预约单品",
+                    actionUrl: "@Url.Action("ProductSelect")",
+                    params: { id: appointId, islike: islike },
+                    lockButton: $(this)
+                });
+            },
+            viewPlans(appointId,planIds) {
+                var dialog = new $.whiskey.web.ajaxView({
+                    caption: "预约单品",
+                    actionUrl: "@Url.Action("CollocationPlanSelect")",
+                    params: {  planIds: planIds, selectedIds: planIds },
+                    lockButton:null
+                });
+            },
+            memberDetail(memberId) {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "详细信息",
+                    actionUrl: "@Url.Action("MemberDetail")",
+                    params: { Id: memberId },
+                    lockButton: null
+                });
+            },
+            suspension(option) {
+                if (!option.imgPath) { return; }
+                return suspension(option);
+            },
+            search: function (filter) {
+
+                var _self = this;
+
+                var searchData = {
+
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+
+                }
+                var name = '', val = '';
+                $(".form-search input[name],select[name]").each(function (index,elem) {
+                     name = elem.getAttribute("name")
+                     val = elem.value;
+                     if (val) {
+                         searchData[name] = val;
+                     }
+                })
+
+                if (filter) {
+
+                    searchData = _.extend(searchData, filter)
+                }
+
+
+                $.getJSON(baseUrl + '/ListAsync', searchData).done(function (res) {
+                    if (res.ResultType !== 3) {
+
+                        return;
+                    }
+
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+
+                })
+            },
+
+
+            view: function (id) {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "详细信息",
+                    actionUrl: "@Url.Action("Edit")",
+                    params: { Id: id }
+                });
+            },
+            Export: function () {
+                $.whiskey.exporter.ajaxExport({
+                    actionUrl: "@Url.Action("Export")",
+                    lockButton: $(this),
+                    version:2,
+                    params: {
+                        conditions: $.whiskey.web.formData("#app-appointment").getJSON(),
+                    }
+                });
+            },
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            },
+            getClassName(state) {
+                return {
+                    'label-warning': state === '预约中',
+                    'label-info': state === '已处理' || state === '已预约' || state === '已装箱' || state === '已接收' || state === '已试穿',
+                    'label-success': state === '已回收',
+                    'label-danger':state==='已撤销'
+                }
+            },
+            showFeedback(state) {
+                return state === '已试穿'
+            },
+            showPacking(state) {
+                return state ===  state === '已预约' || state === '已装箱' || state === '已接收' || state === '已试穿'
+            },
+            showPrintPlan(state) {
+                return state === '已装箱' || state === '已接收' || state === '已试穿'
+            },
+            showPrintQRCode(state) {
+                return state === '已预约' || state === '已装箱' || state === '已接收' || state === '已试穿'
+            }
+        }
+    })
+    })
+
+</script>

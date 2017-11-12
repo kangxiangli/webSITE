@@ -1,0 +1,379 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0AC40936-083B-4C6A-9F83-1B98E5477E6B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Whiskey.ZeroStore.ERP.Transfers</RootNamespace>
+    <AssemblyName>Whiskey.ZeroStore.ERP.Transfers</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces, Version=4.0.0.0, Culture=neutral, PublicKeyToken=e06fbc6124f57c43, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Whiskey.ZeroStore.ERP.Website\Bin\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="APIEntities\Articles\AppArticleBase.cs" />
+    <Compile Include="APIEntities\Articles\AppArticleInfo.cs" />
+    <Compile Include="APIEntities\Articles\Article.cs" />
+    <Compile Include="APIEntities\Articles\ArticleContentInfo.cs" />
+    <Compile Include="APIEntities\Articles\ArticleImageInfo.cs" />
+    <Compile Include="APIEntities\Articles\GalleryInfo.cs" />
+    <Compile Include="APIEntities\Authorities\AdminInfo.cs" />
+    <Compile Include="APIEntities\Authorities\DepartInfo.cs" />
+    <Compile Include="APIEntities\BaseInfo\ProductBaseInfo.cs" />
+    <Compile Include="APIEntities\MemberCollo\BaseCollo.cs" />
+    <Compile Include="APIEntities\MemberCollo\ColloArticle.cs" />
+    <Compile Include="APIEntities\MemberCollo\ColloImage.cs" />
+    <Compile Include="APIEntities\MemberCollo\ColloInfo.cs" />
+    <Compile Include="APIEntities\MemberCollo\ColloText.cs" />
+    <Compile Include="APIEntities\MemberCollo\ImageList.cs" />
+    <Compile Include="APIEntities\MemberCollo\MemberCollo.cs" />
+    <Compile Include="APIEntities\MemberCollo\MyColl.cs" />
+    <Compile Include="APIEntities\MemberCollo\TextList.cs" />
+    <Compile Include="APIEntities\MemberSingleProduct\MemberComment.cs" />
+    <Compile Include="APIEntities\MemberSingleProduct\SingleProduct.cs" />
+    <Compile Include="APIEntities\Members\MemberInfo.cs" />
+    <Compile Include="APIEntities\Offices\AppAtten.cs" />
+    <Compile Include="APIEntities\Orders\M_OrderInfo.cs" />
+    <Compile Include="APIEntities\Orders\M_ProductInfo.cs" />
+    <Compile Include="APIEntities\ProductInfo\ColloProductInfo.cs" />
+    <Compile Include="APIEntities\ProductInfo\SampleEdo.cs" />
+    <Compile Include="APIEntities\ProductInfo\ProductEdo.cs" />
+    <Compile Include="APIEntities\ProductInfo\SaleProductColorEdo.cs" />
+    <Compile Include="APIEntities\ProductInfo\SaleProductSizeEdo.cs" />
+    <Compile Include="APIEntities\Property\ChildCategory.cs" />
+    <Compile Include="APIEntities\Property\ParentCategory.cs" />
+    <Compile Include="APIEntities\Stores\StoreCartItemEdo.cs" />
+    <Compile Include="APIEntities\Warehouses\CheckResultEdo.cs" />
+    <Compile Include="Configurations\MapperConfig.cs" />
+    <Compile Include="Entities\Article\AppArticleDto.cs" />
+    <Compile Include="Entities\Article\AppArticleItemDto.cs" />
+    <Compile Include="Entities\Article\ArticleAttributeDto.cs" />
+    <Compile Include="Entities\Article\ArticleItemDto.cs" />
+    <Compile Include="Entities\Article\ArticleDto.cs" />
+    <Compile Include="Entities\Article\ArticleStatus.cs" />
+    <Compile Include="Entities\Authority\ARolePermissionRelationDto.cs" />
+    <Compile Include="Entities\Authority\DepartmentDto.cs" />
+    <Compile Include="Entities\Authority\QrLoginDto.cs" />
+    <Compile Include="Entities\Authority\ResignationDto.cs" />
+    <Compile Include="Entities\Authority\ResignationToExamineDto.cs" />
+    <Compile Include="Entities\Authority\TimeoutConfigDto.cs" />
+    <Compile Include="Entities\Circle\CircleDto.cs" />
+    <Compile Include="Entities\Circle\TopicDto.cs" />
+    <Compile Include="Entities\Collocation\CollocationDto.cs" />
+    <Compile Include="Entities\Collocation\MissionDto.cs" />
+    <Compile Include="Entities\Commons\AppointmentGenDto.cs" />
+    <Compile Include="Entities\Commons\AppVerManageDto.cs" />
+    <Compile Include="Entities\Commons\ConfigureDto.cs" />
+    <Compile Include="Entities\Commons\PosLocationDto.cs" />
+    <Compile Include="Entities\Commons\SaleAutoGenDto.cs" />
+    <Compile Include="Entities\Common\AreaItemDto.cs" />
+    <Compile Include="Entities\Common\SensitiveWordDto.cs" />
+    <Compile Include="Entities\Common\TimeoutSettingDto.cs" />
+    <Compile Include="Entities\Coupon\CouponDto.cs" />
+    <Compile Include="Entities\Coupon\CouponItemDto.cs" />
+    <Compile Include="Entities\Factory\DesignerDto.cs" />
+    <Compile Include="Entities\Factory\FactorysDto.cs" />
+    <Compile Include="Entities\Finance\ClaimForGoodsDto.cs" />
+    <Compile Include="Entities\Finance\CompanyGoodsCategoryDto.cs" />
+    <Compile Include="Entities\Finance\GoodsPurchasingDto.cs" />
+    <Compile Include="Entities\Games\GameDto.cs" />
+    <Compile Include="Entities\Material\MaterialDto.cs" />
+    <Compile Include="Entities\Member\CollocationQuestionnaireDto.cs" />
+    <Compile Include="Entities\Members\MemberShareDto.cs" />
+    <Compile Include="Entities\Member\AdjustDepositDto.cs" />
+    <Compile Include="Entities\Member\MemberActivityDto.cs" />
+    <Compile Include="Entities\Member\MemberFigureDto.cs" />
+    <Compile Include="Entities\Member\MemberHeatDto.cs" />
+    <Compile Include="Entities\Member\MemberSignDto.cs" />
+    <Compile Include="Entities\Member\PrizeDto.cs" />
+    <Compile Include="Entities\Member\SignRuleDto.cs" />
+    <Compile Include="Entities\Mobile\MobileInfoDto.cs" />
+    <Compile Include="Entities\Notices\NotificationAnswerersDto.cs" />
+    <Compile Include="Entities\Notices\NotificationAnsweringDto.cs" />
+    <Compile Include="Entities\Notices\NotificationQuestionDto.cs" />
+    <Compile Include="Entities\Notice\MsgNotificationReaderDto.cs" />
+    <Compile Include="Entities\Notice\SmsDto.cs" />
+    <Compile Include="Entities\Offices\OrderFoodDto.cs" />
+    <Compile Include="Entities\Offices\PartnerStatisticsDto.cs" />
+    <Compile Include="Entities\Offices\WorkOrderCategoryDto.cs" />
+    <Compile Include="Entities\Offices\WorkOrderDealtWithDto.cs" />
+    <Compile Include="Entities\Offices\WorkOrderDto.cs" />
+    <Compile Include="Entities\Office\AnnualLeaveDto.cs" />
+    <Compile Include="Entities\Office\AttendanceDto.cs" />
+    <Compile Include="Entities\Office\AttendanceRepairDto.cs" />
+    <Compile Include="Entities\Office\AttendanceRestItemDto.cs" />
+    <Compile Include="Entities\Office\AttendanceStatisticsDto.cs" />
+    <Compile Include="Entities\Office\ClassApplicationDto.cs" />
+    <Compile Include="Entities\Office\EntryDto.cs" />
+    <Compile Include="Entities\Office\EntryToExamineDto.cs" />
+    <Compile Include="Entities\Office\FieldDto.cs" />
+    <Compile Include="Entities\Office\HolidayDto.cs" />
+    <Compile Include="Entities\Office\JobPositionDto.cs" />
+    <Compile Include="Entities\Office\LeaveInfoDto.cs" />
+    <Compile Include="Entities\Office\OvertimeDto.cs" />
+    <Compile Include="Entities\Office\PartnerDto.cs" />
+    <Compile Include="Entities\Office\PartnerExperienceDto.cs" />
+    <Compile Include="Entities\Office\PartnerLevelDto.cs" />
+    <Compile Include="Entities\Office\PartnerLevelOrderDto.cs" />
+    <Compile Include="Entities\Office\PartnerManageCheckDto.cs" />
+    <Compile Include="Entities\Office\PartnerManageDto.cs" />
+    <Compile Include="Entities\Office\RestDto.cs" />
+    <Compile Include="Entities\Office\WorkTimeDetaileDto.cs" />
+    <Compile Include="Entities\Office\WorkTimeDto.cs" />
+    <Compile Include="Entities\OnlineSale\OnlineOrderDto.cs" />
+    <Compile Include="Entities\OnlineSale\OnlineOrderItemDto.cs" />
+    <Compile Include="Entities\ProductTracks\ProductTrackDto.cs" />
+    <Compile Include="Entities\Product\CartDto.cs" />
+    <Compile Include="Entities\Product\ColloCalendarDto.cs" />
+    <Compile Include="Entities\Product\MemberCollocationDto.cs" />
+    <Compile Include="Entities\Product\MemberColloEleDto.cs" />
+    <Compile Include="Entities\Member\MemberStatus.cs" />
+    <Compile Include="Entities\Member\MemberTypeDto.cs" />
+    <Compile Include="Entities\Product\MemberSingleProductDto.cs" />
+    <Compile Include="Entities\Common\ApprovalDto.cs" />
+    <Compile Include="Entities\Common\CommentDto.cs" />
+    <Compile Include="Entities\Product\ProductOriginNumberDto.cs" />
+    <Compile Include="Entities\Properties\ProductCrowdDto.cs" />
+    <Compile Include="Entities\Properties\SizeExtentionDto.cs" />
+    <Compile Include="Entities\Property\BarCodeConfigDto.cs" />
+    <Compile Include="Entities\Property\ProductCommissionDto.cs" />
+    <Compile Include="Entities\Property\ProductDiscountDto.cs" />
+    <Compile Include="Entities\Property\SalesCampaignDto.cs" />
+    <Compile Include="Entities\Property\ScoreRuleDto.cs" />
+    <Compile Include="Entities\Property\StoreValueRuleDto.cs" />
+    <Compile Include="Entities\Recharge\RechargeOrderDto.cs" />
+    <Compile Include="Entities\StoreCollocation\StoreCollocationDto.cs" />
+    <Compile Include="Entities\StoreCollocation\StoreCollocationInfoDto.cs" />
+    <Compile Include="Entities\Store\StoreCartDto.cs" />
+    <Compile Include="Entities\Store\StoreCartItemDto.cs" />
+    <Compile Include="Entities\Store\StoreDepositDto.cs" />
+    <Compile Include="Entities\Store\StoreLevelDto.cs" />
+    <Compile Include="Entities\Store\StoreRecommendDto.cs" />
+    <Compile Include="Entities\Store\RetailDto.cs" />
+    <Compile Include="Entities\Store\StoreSpendStatisticsDto.cs" />
+    <Compile Include="Entities\Store\StoreTypeDto.cs" />
+    <Compile Include="Entities\Template\HtmlItemDto.cs" />
+    <Compile Include="Entities\Template\HtmlPartDto.cs" />
+    <Compile Include="Entities\Template\TemplateNotificationDto.cs" />
+    <Compile Include="Entities\Template\TemplateThemeDto.cs" />
+    <Compile Include="Entities\Video\CallthepoliceDto.cs" />
+    <Compile Include="Entities\Video\VideoEquipmentDto.cs" />
+    <Compile Include="Entities\Video\VideoJurisdictionDto.cs" />
+    <Compile Include="Entities\Warehouse\CheckupItemDto.cs" />
+    <Compile Include="Entities\Warehouse\InventoryRecordDto.cs" />
+    <Compile Include="Entities\Warehouse\OnlinePurchaseProductDto.cs" />
+    <Compile Include="Entities\Warehouse\OrderblankDto.cs" />
+    <Compile Include="Entities\Warehouse\OrderblankItemDto.cs" />
+    <Compile Include="Entities\Warehouse\WorkLogAttributeDto.cs" />
+    <Compile Include="Entities\Warehouse\WorkLogDto.cs" />
+    <Compile Include="Enum\Article\AppArticleItemFlag.cs" />
+    <Compile Include="Enum\Authority\AdminUpdateFlag.cs" />
+    <Compile Include="Enum\Authority\DepartmentFlag.cs" />
+    <Compile Include="Enum\Base\ApprovalFlag.cs" />
+    <Compile Include="Enum\Base\BankFlag.cs" />
+    <Compile Include="Enum\Base\DefaultFlag.cs" />
+    <Compile Include="Enum\Base\ExpressFlag.cs" />
+    <Compile Include="Enum\Base\SequenceFlag.cs" />
+    <Compile Include="Enum\Base\StarLevelFlag.cs" />
+    <Compile Include="Enum\Base\VerifyCodeFlag.cs" />
+    <Compile Include="Enum\Base\VerifyFlag.cs" />
+    <Compile Include="Enum\Base\WorkDateFlag.cs" />
+    <Compile Include="Enum\Collocation\MissionAttrFlag.cs" />
+    <Compile Include="Enum\Collocation\MissionFlag.cs" />
+    <Compile Include="Enum\Collocation\ScheduleFlag.cs" />
+    <Compile Include="Enum\Comment\CommentSourceFlag.cs" />
+    <Compile Include="Enum\Coupon\CouponFlag.cs" />
+    <Compile Include="Enum\Finance\CompanyGoodsCategoryStatusFlag.cs" />
+    <Compile Include="Enum\Finance\CompanyGoodsCategoryTypeFlag.cs" />
+    <Compile Include="Enum\Log\ProductBarcodeDetailFlag.cs" />
+    <Compile Include="Enum\Member\ColloArticleFlag.cs" />
+    <Compile Include="Enum\Member\GenderFlag.cs" />
+    <Compile Include="Enum\Member\MemberUpdateFlag.cs" />
+    <Compile Include="Enum\Member\PrizeFlag.cs" />
+    <Compile Include="Enum\Notices\MessagerStatusFlag.cs" />
+    <Compile Include="Enum\Notices\NoticeFlag.cs" />
+    <Compile Include="Enum\Notices\NoticeTargetFlag.cs" />
+    <Compile Include="Enum\Notices\QuestionTypeFlag.cs" />
+    <Compile Include="Enum\Office\AbsenceFlag.cs" />
+    <Compile Include="Enum\Office\AnnualLeaveFlag.cs" />
+    <Compile Include="Enum\Office\ApiAttenFlag.cs" />
+    <Compile Include="Enum\Office\AttendanceFlag.cs" />
+    <Compile Include="Enum\Office\PartnerExperienceFlag.cs" />
+    <Compile Include="Enum\Office\RepairPayFlag.cs" />
+    <Compile Include="Enum\Office\VacationFlag.cs" />
+    <Compile Include="Enum\Office\WorkTimeFlag.cs" />
+    <Compile Include="Enum\OpertaionFlag.cs" />
+    <Compile Include="Enum\Order\OrderFlag.cs" />
+    <Compile Include="Enum\Order\PayFlag.cs" />
+    <Compile Include="Enum\Product\ProductDiscountFlag.cs" />
+    <Compile Include="Enum\Product\ProductFlag.cs" />
+    <Compile Include="Entities\Property\DiscountInfo.cs" />
+    <Compile Include="Entities\Template\ResultType.cs" />
+    <Compile Include="Entities\Template\TemplateDto.cs" />
+    <Compile Include="Enum\Stores\PurchaseStatusFlag.cs" />
+    <Compile Include="Enum\Template\HtmlItemFlag.cs" />
+    <Compile Include="Enum\Template\TemplateFlag.cs" />
+    <Compile Include="Enum\Warehouse\CheckerCountFlag.cs" />
+    <Compile Include="Enum\Warehouse\CheckerItemFlag.cs" />
+    <Compile Include="Enum\Warehouse\InvalidFlag.cs" />
+    <Compile Include="Enum\Warehouse\StorageFlag.cs" />
+    <Compile Include="Enum\Warehouse\WorkLogAttributeFlag.cs" />
+    <Compile Include="Enum\WeChat\ErrCodeFlag.cs" />
+    <Compile Include="Enum\WeChat\NotifyType.cs" />
+    <Compile Include="Enum\WeChat\ReturnCodeFlag.cs" />
+    <Compile Include="APIEntities\MemberPhoto\MemberPhotoData.cs" />
+    <Compile Include="APIEntities\OfficeInfo\AttendanceInfo.cs" />
+    <Compile Include="APIEntities\ProductInfo\MemberProductInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Entities\Product\ProductDto.cs" />
+    <Compile Include="Entities\Authority\AdministratorDto.cs" />
+    <Compile Include="Entities\Authority\ModuleDto.cs" />
+    <Compile Include="Entities\Authority\PermissionDto.cs" />
+    <Compile Include="Entities\Authority\RoleDto.cs" />
+    <Compile Include="Entities\Common\CityDto.cs" />
+    <Compile Include="Entities\Common\DiscountDto.cs" />
+    <Compile Include="Entities\Common\ExpressDto.cs" />
+    <Compile Include="Entities\Common\LogDto.cs" />
+    <Compile Include="Entities\Common\PaymentDto.cs" />
+    <Compile Include="Entities\Common\ProvinceDto.cs" />
+    <Compile Include="Entities\Common\SettingDto.cs" />
+    <Compile Include="Entities\Gallery\GalleryAttributeDto.cs" />
+    <Compile Include="Entities\Gallery\GalleryDto.cs" />
+    <Compile Include="Entities\Member\MemberAddressDto.cs" />
+    <Compile Include="Entities\Member\MemberCardDto.cs" />
+    <Compile Include="Entities\Member\MemberConsumeDto.cs" />
+    <Compile Include="Entities\Member\MemberDto.cs" />
+    <Compile Include="Entities\Member\MemberFavouriteDto.cs" />
+    <Compile Include="Entities\Member\MemberGiftDto.cs" />
+    <Compile Include="Entities\Member\MemberLevelDto.cs" />
+    <Compile Include="Entities\Notice\MessagerDto.cs" />
+    <Compile Include="Entities\Notice\NotificationDto.cs" />
+    <Compile Include="Entities\Product\ProductAttributeDto.cs" />
+    <Compile Include="Entities\Product\ProductImageDto.cs" />
+    <Compile Include="Entities\Property\BrandDto.cs" />
+    <Compile Include="Entities\Property\CategoryDto.cs" />
+    <Compile Include="Entities\Property\ColorDto.cs" />
+    <Compile Include="Entities\Property\SeasonDto.cs" />
+    <Compile Include="Entities\Property\SizeDto.cs" />
+    <Compile Include="Entities\Store\OrderDto.cs" />
+    <Compile Include="Entities\Store\OrderItemDto.cs" />
+    <Compile Include="Entities\Store\RestoredDto.cs" />
+    <Compile Include="Entities\Store\RestoredItemDto.cs" />
+    <Compile Include="Entities\Store\ReturnedDto.cs" />
+    <Compile Include="Entities\Store\ReturnedItemDto.cs" />
+    <Compile Include="Entities\Store\StoreDto.cs" />
+    <Compile Include="Entities\Subject\SubjectAttributeDto.cs" />
+    <Compile Include="Entities\Subject\SubjectDto.cs" />
+    <Compile Include="Entities\Warehouse\CheckerDto.cs" />
+    <Compile Include="Entities\Warehouse\CheckerItemDto.cs" />
+    <Compile Include="Entities\Warehouse\InventoryDto.cs" />
+    <Compile Include="Entities\Warehouse\LocationDto.cs" />
+    <Compile Include="Entities\Warehouse\PurchaseDto.cs" />
+    <Compile Include="Entities\Warehouse\PurchaseItemDto.cs" />
+    <Compile Include="Entities\Warehouse\StorageDto.cs" />
+    <Compile Include="Entities\Warehouse\TransferDto.cs" />
+    <Compile Include="Entities\Warehouse\TransferItemDto.cs" />
+    <Compile Include="Entities\Member\MemberDepositDto.cs" />
+    <Compile Include="Entities\Warehouse\SaleDto.cs" />
+    <Compile Include="Entities\Warehouse\SaleItemDto.cs" />
+    <Compile Include="Enum\ResultType\TemplateType.cs" />
+    <Compile Include="APIEntities\SizeInfo\SizeInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Whiskey.Core\Whiskey.Core.csproj">
+      <Project>{f7c67c95-facb-4160-9a88-cb738e65e034}</Project>
+      <Name>Whiskey.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Whiskey.Utility\Whiskey.Utility.csproj">
+      <Project>{946e0a0a-8280-46b3-893e-1b00a554ccab}</Project>
+      <Name>Whiskey.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Whiskey.ZeroStore.ERP.Models\Whiskey.ZeroStore.ERP.Models.csproj">
+      <Project>{accb63aa-5cf9-4917-80a1-ca502872bc4b}</Project>
+      <Name>Whiskey.ZeroStore.ERP.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Entities\Authorities\" />
+    <Folder Include="Entities\FacePlus\" />
+    <Folder Include="Enum\Gallery\" />
+    <Folder Include="Enum\Offices\" />
+    <Folder Include="T4\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。启用“NuGet 程序包还原”可下载这些程序包。有关详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

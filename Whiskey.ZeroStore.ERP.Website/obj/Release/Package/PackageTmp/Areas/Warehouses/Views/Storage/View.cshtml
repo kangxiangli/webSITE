@@ -1,0 +1,127 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Transfers
+@model StorageDto
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.StoreId) :
+    </label>
+    <div class="col-md-7">
+		@ViewBag.storeName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m=>m.StorageType) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.StorageType==0?"线上仓库":"线下仓库")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StorageCategory) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.StorageCategory == 0 ? "商品仓" : "设备舱")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.StorageName) :
+    </label>
+    <div class="col-md-7">
+		@Model.StorageName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-7">
+		@Model.Description
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsVestIn) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsVestIn==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsOrderStorage) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsOrderStorage==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsDefaultStorage) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsDefaultStorage == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsTempStorage) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsTempStorage == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsForAddInventory) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsForAddInventory == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m => m.IsPublicInfo) :
+    </label>
+    <div class="col-md-7">
+		@Html.Raw(Model.IsPublicInfo==true?"是":"否")
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-7">
+		@Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-7">
+		@Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.CreatedTime
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.UpdatedTime
+    </div>
+</div>
+

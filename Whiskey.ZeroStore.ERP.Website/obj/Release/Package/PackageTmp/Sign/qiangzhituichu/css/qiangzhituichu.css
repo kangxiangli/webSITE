@@ -1,0 +1,117 @@
+/* mian*/
+.tcImg_right{
+    cursor: pointer;
+    position: absolute;
+    width: 1.2rem;
+    height: 1.2rem;
+    top: 1rem;
+    text-align: right;
+    right: 0.5rem;
+}
+.qztcBox{
+    width: 100%;
+    height: auto;
+}
+.qztc_list{
+    position: relative;
+    /*margin-top: 0.5rem;*/
+    width: 15rem;
+    border-radius: 0.2rem;
+    height: 9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0.5rem auto;
+    box-shadow: 1px 1px 3px rgba(255, 255, 255, 0.1);
+}
+.qztc_list li{
+
+    height: 1rem;
+    margin: 0.5rem 1rem;
+    font-size: 0.7rem;
+}
+.qztc_list li span{
+    display: inline-block;
+    /*width: 5rem;*/
+    font-size: 0.7rem;
+}
+.qztc_list li span i{
+    display: inline-block;
+    width: 1rem;
+}
+.qztc_list li span:nth-child(1){
+    width: 3rem;
+    text-align: center;
+}
+.qztc_right{
+    width: 3rem !important;
+    padding: 0.5rem;
+    position: absolute;
+    right: 0.5rem;
+    border-radius: 0.2rem;
+    bottom: 0.05rem !important;
+    margin-right: 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+/* end  mian*/
+/*¿Î÷∞…Í«Î*/
+#liZhiForm {
+    width:100%;
+    overflow:hidden;
+}
+.warmPromptBg {
+    position:absolute;
+    width:100%;
+    height:100%;
+    background-color:rgba(0,0,0,0.5);
+    top:0;
+    left:0;
+    display:none;
+}
+.warmPrompt,.warmSure,.warmSure1,.warmSure2 {
+    position:absolute;
+    display: none;
+    background-color: #fff;
+    text-align: center;
+    width: 60%;
+    top: 40%;
+    left: 50%;
+    margin-left: -30%;
+    z-index: 100;
+    border-radius: 5px;
+    color:rgba(0,0,0,0.7);
+}
+.noCheg,.infTil,.infTil1,.infTil2{
+    color:rgba(0,0,0,0.7);
+    font-size:0.6rem;
+    height:1rem;
+    line-height:1.3rem;
+}
+.yuanyin,.xinXi,.xinXi1,.xinXi2{
+    font-size:0.75rem;
+    height:2rem;
+    line-height:2.2rem;
+}
+.btnAll,.hideWarm,.hideWarm1,.hideWarm2{
+    border-top: 1px solid rgba(221, 221, 221, 1) !important;
+    height: 1.8rem;
+    line-height: 1.8rem;
+
+}
+.btnAll > input,.hideWarm,.hideWarm1,.hideWarm2{
+    color: #0F80FB;
+    font-weight: 700;
+    font-size: 0.75em;
+    float:left;
+    height: 1.8rem;
+    background-color:transparent;
+}
+.btnAll > input {
+    width:49.5%;
+}
+.hideWarm,.hideWarm1,.hideWarm2 {
+    width:100%;
+}
+.btnAll .btnSure,.btnAll .btnSure1,.btnAll .btnSure2{
+    border-right:1px solid rgba(221, 221, 221, 1)!important;
+}
+
+/*end ¿Î÷∞…Í«Î*/

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title> 
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+ <script type="text/javascript">
+function disp_confirm()
+  {
+  var r=confirm("检测到有新版本，是否更新？")
+  if (r==true)
+    {
+    window.location.href="/download/tools/index.html"
+    }
+  else
+    {
+    window.location.href="index.html"
+    }
+  }
+</script>
+    <script src="js/global.js"></script>   
+    </head>
+    <body class="um-vp " ontouchstart>
+
+   <script type="text/javascript">
+   </script>
+   <img id="hc" src="/download/tools/v1.png" width="1" height="1" onerror="no();" onload="yes();">
+   <script src="js/appcan.js"></script>
+   <script src="js/appcan.control.js"></script>
+    </body>
+      <script type="text/javascript">
+    //随机解除缓存
+    var a = $("#hc").attr("src");
+    window.localStorage.a = a;
+        var string = "";
+        for (var i = 0; i < 5; i++) {
+            string += Math.floor(Math.random() * 10);
+        }
+        cle();
+        $("#hc").attr("src",localStorage.a + '?=' + string);
+        console.log($("#hc").attr("src"));
+    function cle() {
+        $("#hc").attr("src", '');
+    }   
+</script>
+    
+    <script type="text/javascript">
+    //版本状态
+    function yes() {        
+     window.location.href="/sign/dk.html"
+    };
+    function no() {
+    disp_confirm() 
+    };
+
+
+
+    </script>
+</html>

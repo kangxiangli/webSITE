@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta id="viewport" name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <title>信息查询</title>
+    <link href="../css/public.css" rel="stylesheet" />
+    <link href="css/xinxichax.css" rel="stylesheet" />
+    <script>
+        (function (w) {
+            s();
+            var e = ("onorientationchange" in w) ? "orientationchange" : "resize";
+            w.addEventListener(e, function () {
+                setTimeout(function () {
+                    s()
+                }, 200)
+            }, false);
+            function s() {
+                var a = w.innerWidth;
+                var b = 20 * (a / 320);
+                if (b > 40) {
+                    b = 40;
+                }
+                document.querySelector("html").style.fontSize = b + "px";
+            }
+        })(window);
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="xinxiCx">
+    <div class="til_bak">
+        <p class="back_befo" id="leave">
+            <img src="../img/nav_fh@2x.png" alt="png" /><span>返回</span>
+        </p>信息查询
+    </div>
+    <!--main-->
+    <div id="mainCont">
+        <!--<div>-->
+            <!--img-->
+            <div class="barImg">
+                <div class="imgBox">
+                    <img src="xinxijimg/3.png" alt="Alternate Text" />
+                </div>
+                <div id="barDiv">
+                    <p class="barCode">款号</p>
+                    <img src="xinxijimg/solid.png" />
+                </div>
+
+            </div>
+
+            <!-- 库存 -->
+            <div class="wareHouse">
+                <ul class="ulTil">
+                    <li>颜色</li>
+                    <li>尺码</li>
+                    <li>数量</li>
+                    <li>库存</li>
+                </ul>
+                <div id="infoFenlei">
+                    <ul class="fenLei">
+                        <!--<li>
+                            <ul class="fenlUl">
+                                <li><div class="fenlImg"><img src="#" alt="Alternate Text" /></div></li>
+                                <li>s</li>
+                                <li>1</li>
+                                <li>国贸店</li>
+                            </ul>
+                        </li>-->
+                    </ul>
+                </div>
+            </div>
+        <!--</div>-->
+    </div>
+
+    <div class="algo_bg"></div>
+    <div class="alog">
+        <p>未查询到数据</p>
+        <input class="btn_back" type="button" name="name" value="确  定" />
+    </div>
+    <script src="../js/fastclick.js"></script>
+    <script src="../js/global.js"></script>
+    <script src="../js/iscroll.js"></script>
+    <script src="js/xinxichax.js"></script>
+    <script>
+        $(function () {
+            FastClick.attach(document.body);
+
+            var infoFenlei = new IScroll('#infoFenlei', { scrollX: true, freeScroll: true, click: true });
+            document.addEventListener('touchmove', function (e) {
+                e.preventDefault();
+                infoFenlei.refresh();
+            }, false);
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,83 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Template
+<div class="form-group">
+    <label class="control-label col-md-2">
+        模板分类：
+    </label>
+    <div class="col-md-8">
+        @Html.Raw(Model.templateNotification != null ? Model.templateNotification.Name : string.Empty)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.TemplateName)：
+    </label>
+    <div class="col-md-10">
+        @Model.TemplateName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes)：
+    </label>
+    <div class="col-md-10">
+        @Model.Notes
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.TemplateHtml) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.TemplateHtml, new { @readonly = "true", @style = "width:100%;min-height:200px" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.OperatorId) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "系统")
+    </div>
+</div>

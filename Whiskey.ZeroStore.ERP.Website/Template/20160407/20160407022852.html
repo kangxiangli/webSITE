@@ -1,0 +1,27 @@
+﻿ $(document).ready(function () {        
+
+        //初始化页眉编辑器
+        var templateHtml = KindEditor.create("#TemplateHtml", {
+            width: "100%",
+            height: "400px",
+            resizeType: 1,
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            contentEditable: true,
+            filterMode: false,
+            items: ['preview', '|', 'fullscreen'],
+            designMode: false,
+            afterCreate: function (id) {
+                this.focus(id);
+            },
+            afterChange: function (id) {
+                this.sync(id);
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+
+
+    });

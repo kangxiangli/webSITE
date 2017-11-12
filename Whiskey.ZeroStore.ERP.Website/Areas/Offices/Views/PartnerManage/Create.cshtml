@@ -1,0 +1,465 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model PartnerManageDto
+
+<style>
+    .modal-content {
+        width: 1000px;
+    }
+
+    .thumbnail {
+        width: 100px;
+    }
+</style>
+
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#addImage" data-toggle="tab">上传相关图片</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.MemberName) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.MemberName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.MemberPass) :
+            </label>
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.MemberPass, new { @class = "form-control", @placeholder = "默认123456" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Gender) :
+            </label>
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(f => f.Gender, new { @class = "form-control _select_input cur_selectpicker_sex" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.MobilePhone) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.MobilePhone, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Email) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div id="city_div">
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.Province) :
+                </label>
+                <div class="col-md-4">
+                    <select class="prov form-control cur_selectpicker_Province" name="Province" id="Province"></select>
+                </div>
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.City) :
+                </label>
+                <div class="col-md-4">
+                    <select class="city form-control cur_selectpicker_City" disabled="disabled" name="City" id="City"></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Address) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.ZipCode) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.ZipCode, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CreateTime) :
+            </label>
+            <div class="col-md-5">
+                <div class="input-daterange input-group">
+                    @Html.TextBox("CreateTime", "", new { @class = "form_time form-control", @placeholder = "点击选择" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", @resize = "none" })
+            </div>
+        </div>
+    </div>
+
+    <div id="addImage" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                经营许可证:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="javascript:void(0);" class="thumbnail">
+                        <img src="/Content/Images/logo-_03.png" alt="图片" id="LicencePhotoImg" class="popimg" />
+                    </a>
+                </div>
+                @Html.HiddenFor(m => m.LicencePhoto, new { @class = "form-control", @Value = "/Content/Images/logo-_03.png" })
+
+                <label class="control-label col-md-2">
+                    店铺照片:
+                </label>
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="/Content/Images/logo-_03.png" alt="图片" id="StorePhotoImg" />
+                    </a>
+                </div>
+                @Html.HiddenFor(m => m.StorePhoto, new { @class = "form-control", @Value = "/Content/Images/logo-_03.png" })
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-1">
+                    上传:
+                </label>
+                <div class="col-md-5">
+                    <div class="dropzone-box uploadImage_LicencePhoto">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="dropzone-box uploadImage_StorePhoto">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                身份证正面:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="/Content/Images/logo-_03.png" alt="图片" id="IDCard_FrontImg" />
+                    </a>
+                </div>
+                @Html.HiddenFor(m => m.IDCard_Front, new { @class = "form-control", @Value = "/Content/Images/logo-_03.png" })
+
+                <label class="control-label col-md-2">
+                    身份证反面:
+                </label>
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="/Content/Images/logo-_03.png" alt="图片" id="IDCard_ReverseImg" />
+                    </a>
+                </div>
+                @Html.HiddenFor(m => m.IDCard_Reverse, new { @class = "form-control", @Value = "/Content/Images/logo-_03.png" })
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-1">
+                    上传:
+                </label>
+                <div class="col-md-5">
+                    <div class="dropzone-box uploadImage_IDCard_Front">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="dropzone-box uploadImage_IDCard_Reverse">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/Scripts/citySelect/jquery.cityselect.js"></script>
+<link href="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<script>
+    $(function () {
+        $("#CreateTime").datetimepicker({
+            language: 'zh-CN',
+            minView: 'hour',
+            todayBtn: true,
+            format: "yyyy-mm-dd hh:ii:ss"
+        });
+
+
+        $("#city_div").citySelect();
+
+        //初始化上传封面图片控件
+        var myDropzone = new Dropzone(".uploadImage_LicencePhoto", {
+            url: "/Upload/Multiple",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            maxFiles: 1,
+            paramName: "file",
+            maxFilesize: 1,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (file.status == "success") {
+                        $(".bootbox #LicencePhotoImg").attr("src", data.files[0])
+                        $(".bootbox #LicencePhoto").attr("value", data.files[0]);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+                });
+            },
+            removedfile: function (file) {
+                _this = this;
+                if (confirm("确认要删除吗？")) {
+                    var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                    if (removeIndex >= 0) {
+                        _this.options.dictFiles.remove("img-" + removeIndex);
+                    }
+                    var _ref;
+                    if ((_ref = file.previewElement) != null) {
+                        _ref.parentNode.removeChild(file.previewElement);
+                    }
+                }
+                _this.files = [];
+
+                $(".bootbox #LicencePhotoImg").attr("src", "/Content/Images/logo-_03.png")
+                $(".bootbox #LicencePhoto").attr("value", "/Content/Images/logo-_03.png");
+
+                return this._updateMaxFilesReachedClass();
+            }
+        });
+        var myDropzone1 = new Dropzone(".uploadImage_StorePhoto", {
+            url: "/Upload/Multiple",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            maxFiles: 1,
+            paramName: "file",
+            maxFilesize: 1,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (file.status == "success") {
+                        $(".bootbox #StorePhotoImg").attr("src", data.files[0])
+                        $(".bootbox #StorePhoto").attr("value", data.files[0]);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+                });
+            },
+            removedfile: function (file) {
+                _this = this;
+                if (confirm("确认要删除吗？")) {
+                    var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                    if (removeIndex >= 0) {
+                        _this.options.dictFiles.remove("img-" + removeIndex);
+                    }
+                    var _ref;
+                    if ((_ref = file.previewElement) != null) {
+                        _ref.parentNode.removeChild(file.previewElement);
+                    }
+                }
+                _this.files = [];
+
+                $(".bootbox #StorePhotoImg").attr("src", "/Content/Images/logo-_03.png")
+                $(".bootbox #StorePhoto").attr("value", "/Content/Images/logo-_03.png");
+
+                return this._updateMaxFilesReachedClass();
+            }
+        });
+
+        var myDropzone2 = new Dropzone(".uploadImage_IDCard_Front", {
+            url: "/Upload/Multiple",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            maxFiles: 1,
+            paramName: "file",
+            maxFilesize: 1,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (file.status == "success") {
+                        $(".bootbox #IDCard_FrontImg").attr("src", data.files[0])
+                        $(".bootbox #IDCard_Front").attr("value", data.files[0]);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+                });
+            },
+            removedfile: function (file) {
+                _this = this;
+                if (confirm("确认要删除吗？")) {
+                    var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                    if (removeIndex >= 0) {
+                        _this.options.dictFiles.remove("img-" + removeIndex);
+                    }
+                    var _ref;
+                    if ((_ref = file.previewElement) != null) {
+                        _ref.parentNode.removeChild(file.previewElement);
+                    }
+                }
+                _this.files = [];
+
+                $(".bootbox #IDCard_FrontImg").attr("src", "/Content/Images/logo-_03.png")
+                $(".bootbox #IDCard_Front").attr("value", "/Content/Images/logo-_03.png");
+
+                return this._updateMaxFilesReachedClass();
+            }
+        });
+
+        var myDropzone3 = new Dropzone(".uploadImage_IDCard_Reverse", {
+            url: "/Upload/Multiple",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            maxFiles: 1,
+            paramName: "file",
+            maxFilesize: 1,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (file.status == "success") {
+                        $(".bootbox #IDCard_ReverseImg").attr("src", data.files[0])
+                        $(".bootbox #IDCard_Reverse").attr("value", data.files[0]);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+                });
+            },
+            removedfile: function (file) {
+                _this = this;
+                if (confirm("确认要删除吗？")) {
+                    var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                    if (removeIndex >= 0) {
+                        _this.options.dictFiles.remove("img-" + removeIndex);
+                    }
+                    var _ref;
+                    if ((_ref = file.previewElement) != null) {
+                        _ref.parentNode.removeChild(file.previewElement);
+                    }
+                }
+                _this.files = [];
+
+                $(".bootbox #IDCard_ReverseImg").attr("src", "/Content/Images/logo-_03.png")
+                $(".bootbox #IDCard_Reverse").attr("value", "/Content/Images/logo-_03.png");
+
+                return this._updateMaxFilesReachedClass();
+            }
+        });
+    });
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+    $('.cur_selectpicker_sex').selectpicker();
+    })
+    
+    
+    
+</script>
+

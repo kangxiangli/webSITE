@@ -1,0 +1,413 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model StoreDto
+<style>
+    .modal-content {
+        width: 792px;
+    }
+</style>
+<ul class="nav nav-tabs">
+    <li class="tab-pane active" id="storeinfo">
+        <a href="#base" data-toggle="tab">店铺信息</a>
+    </li>
+    <li class="tab-pane" id="imgpth">
+        <a href="#collo" data-toggle="tab">店铺头像</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.DepartmentId) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(x => x.DepartmentName, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+            <button title="选择部门" type="button" class="btn btn-success btn-padding-right" id="choiceDepart"><span>选择</span></button>
+            @*<div class="control-detail col-md-7">
+                    @Html.ValidationMessageFor(m => m.DepartmentName)
+                </div>*@
+            @Html.HiddenFor(x => x.DepartmentId)
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.StoreName) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.StoreName, new { @class = "form-control" })
+            </div>
+            <div class="control-detail col-md-7">
+                @Html.ValidationMessageFor(m => m.StoreName)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsAttached) :
+            </label>
+            <div class="col-md-1">
+                @Html.CheckBoxFor(x => x.IsAttached, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.StoreTypeId) :
+            </label>
+            <div class="col-md-7">
+                @Html.DropDownListFor(f=> f.StoreTypeId, ViewBag.StoreTypes as IEnumerable<SelectListItem>, new { @class = "form-control selectpicker_yes" })
+            </div>
+            <div class="control-detail col-md-7">
+                @Html.ValidationMessageFor(m => m.StoreTypeId)
+            </div>
+        </div>
+        @*<div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.StoreMallType) :
+                </label>
+                <div class="col-md-7">
+                    @Html.EnumDropDownListFor(m => m.StoreMallType, new { @class = "form-control" })
+                </div>
+            </div>*@
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsMainStore) :
+            </label>
+            <div class="col-md-7" id="hid_ismainstore">
+                <input type="hidden" value="@Model.IsMainStore.ToString().ToLower()" />
+                <select name="IsMainStore" class="form-control selectpicker_yes">
+                    <option value="true">是</option>
+                    <option value="false">否</option>
+                </select>
+            </div>
+            <div class="control-detail col-md-7">
+                @Html.ValidationMessageFor(m => m.IsMainStore)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.StoreCredit) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.StoreCredit, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+            <div class="control-detail col-md-7">
+                @Html.ValidationMessageFor(m => m.StoreCredit)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Balance) :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBoxFor(m => m.Balance, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.StoreDiscount) :
+            </label>
+            <div class="col-md-2">
+                @Html.TextBoxFor(m => m.StoreDiscount, new { @class = "form-control", @check_number = "", @check_float = "2", @min_value = "0", @max_value = "1" })
+            </div>
+        </div>
+        @*<div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.ContactPerson) :
+                </label>
+                <div class="col-md-7">
+                    @Html.TextBoxFor(m => m.ContactPerson, new { @class = "form-control" })
+                </div>
+                <div class="control-detail col-md-7">
+                    @Html.ValidationMessageFor(m => m.ContactPerson)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.MobilePhone) :
+                </label>
+                <div class="col-md-7">
+                    @Html.TextBoxFor(m => m.MobilePhone, new { @class = "form-control" })
+                </div>
+                <div class="control-detail col-md-7">
+                    @Html.ValidationMessageFor(m => m.MobilePhone)
+                </div>
+            </div>*@
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Telephone) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.Telephone, new { @class = "form-control" })
+            </div>
+            <div class="control-detail col-md-7">
+                @Html.ValidationMessageFor(m => m.Telephone)
+            </div>
+        </div>
+        <div id="city_div">
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.Province) :
+                </label>
+                <div class="col-md-7">
+                    <select class="prov form-control cur_selectpicker_Province" name="Province" id="Province"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.City) :
+                </label>
+                <div class="col-md-7">
+                    <select class="city form-control cur_selectpicker_City" disabled="disabled" name="City" id="City"></select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.ZipCode) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.ZipCode, new { @class = "form-control" })
+            </div>
+            <div class="control-detail col-md-7">
+                @Html.ValidationMessageFor(m => m.ZipCode)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Description) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+            </div>
+            <div class="control-detail col-md-7">
+                @Html.ValidationMessageFor(m => m.Description)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Address) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+            </div>
+            <div class="control-detail col-md-7">
+                @Html.ValidationMessageFor(m => m.Address)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Longitude) :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBoxFor(m => m.Longitude, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-md-1">
+                @Html.DisplayNameFor(m => m.Latitude) :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBoxFor(m => m.Latitude, new { @class = "form-control" })
+            </div>
+            <button title="坐标拾取" type="button" class="btn btn-success btn-padding-right" id="selectLongLat"><span>拾取</span></button>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IMEI) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.IMEI, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+            </div>
+            <div class="control-detail col-md-7">
+                @Html.ValidationMessageFor(m => m.Notes)
+            </div>
+        </div>
+        @Html.HiddenFor(m => m.Id)
+    </div>
+    <div id="collo" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <div class="dropzone-box detailImgs">
+                <div class="dz-default dz-message">
+                    <i class="fa fa-cloud-upload"></i>
+                    点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                </div>
+                <img src="" id="StorePhotoImg" style="float:right;width:30%; display:none;margin-right: 40%;margin-top: 2%;" />
+                @Html.HiddenFor(m => m.StorePhoto, new { @class = "form-control" })
+                <div class="fallback">
+                    <input name="file" type="file" multiple="" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/Scripts/citySelect/jquery.cityselect.js"></script>
+<script>
+    $(function () {
+        initData();
+        $("#choiceDepart").on("click", function () {
+            choiceDepart();
+        })
+
+        $(".nav-tabs li").click(function () {
+            var idStr = $(this).attr("id");
+            if (idStr == "storeinfo") {
+                $("#base").css("display", "");
+                $("#collo").css("display", "none");
+            } else {
+                $("#base").css("display", "none");
+                $("#collo").css("display", "");
+            }
+        });
+
+        $("#selectLongLat").click(function () {
+            window.open("http://api.map.baidu.com/lbsapi/getpoint/index.html");
+        });
+
+        $(".detailImgs").dropzone({
+            url: "/Upload/Multiple",
+            acceptedFiles: "image/*",
+            paramName: "file",
+            maxFilesize: 2,
+            maxFiles: 1,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            //addRemoveLinks:false,
+            init: function () {
+                var dropper = this;
+                $.whiskey.web.ajaxRequest({
+                    actionUrl: "/Stores/Store/Thumbnails",
+                    params: { Id: "@Model.Id" },
+                    lockButton: $(".modal-footer .btn-primary"),
+                    complete: function (data) {
+                        if ((typeof data == 'object')) {
+                            $.each(data, function (index, item) {
+                                var loadFile = {
+                                    name: item.FileName.toString(),
+                                    size: item.FileSize
+                                }
+                                dropper.emit("addedfile", loadFile);
+                                dropper.emit("thumbnail", loadFile, item.FilePath.toString());
+                                dropper.emit("success", loadFile);
+                                dropper.options.dictFiles.put("img-" + dropper.options.dictCounter, item.FilePath);
+                                dropper.options.dictCounter++;
+
+                                $("#StorePhotoImg").css("display", "");
+                                var StorePhotoPth = item.FilePath.toString();
+                                if (StorePhotoPth != "") {
+                                    $("#StorePhotoImg").attr("src", $("#StorePhoto").val());
+                                    $(".dz-default").css("display", "none");
+                                }
+                                //$(".dz-default").css("display", "none");
+                            });
+                        }
+                    }
+                });
+                this.on("sending", function (file, xhr, formData) {
+                    formData.append("ExtType", "Image");
+                    formData.append("SaveDir", "StoreInfo");
+                });
+                this.on("addedfile", function (file) {
+                    var dropzone = this;
+                    file.previewElement.addEventListener("click", function () {
+                        dropzone.removeFile(file);
+                    });
+                });
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (data != null) {
+                        var dropzone = this;
+                        var arrFiles = data.files;
+                        var uploadPath = arrFiles[0];
+                        var choice = $("#choiceImg").val();
+
+                        var delimg = $("<div class='img-remove'></div>").click(function () {
+                            dropzone.emit("removedfile", file, choice, $(this));
+                        });
+                        $("#StorePhotoImg").css("display", "");
+                        $(".dz-default").css("display", "none");
+                        $("#StorePhotoImg").attr("src", uploadPath);
+                        $("#StorePhoto").val(uploadPath);
+                    }
+                });
+                this.on("complete", function (data) {
+                    if (data.status == "error") {
+                        var errorInfo = $(data.previewElement).find("span[data-dz-errormessage]").text();
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: errorInfo
+                        });
+                    }
+                });
+            },
+            removedfile: function (file, choice, obj) {
+                _this = this;
+                if (confirm("确认要删除吗？")) {
+                    var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                    if (removeIndex >= 0) {
+                        _this.options.dictFiles.remove("img-" + removeIndex);
+                    }
+                    $("#StorePhotoImg").css("display", "none");
+                    $("#StorePhotoImg").attr("src", "");
+                    $("#StorePhoto").val("");
+                    $(".dz-default").css("display", "block");
+                    var _ref;
+                    if ((_ref = file.previewElement) != null) {
+                        _ref.parentNode.removeChild(file.previewElement);
+                    }
+                }
+                _this.files = [];
+                return this._updateMaxFilesReachedClass();
+            }
+        });
+
+        $("#city_div").citySelect({
+            prov: "@Model.Province",
+            city:"@Model.City"
+        });
+
+    });
+
+    function initData() {
+        var ismain = $("#hid_ismainstore input:hidden").val();
+        if (ismain == "false") {
+            $("#hid_ismainstore select option[value='false']").attr("selected", "selected");
+        }
+    }
+
+    //选择部门
+    function choiceDepart() {
+        $.ajax({
+            url: "@Url.Action("Department")",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "chooseIndex",
+                    title: "部门列表",
+                    buttons: {
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".chooseIndex").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker_yes').selectpicker();
+    })
+</script>

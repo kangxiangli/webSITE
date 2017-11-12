@@ -1,0 +1,97 @@
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model AppointmentGenDto
+
+<style>
+    .AppointmentAutoGen .modal-dialog .modal-content {
+        max-width: 1000px !important;
+        width: 750px;
+    }
+</style>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.MemberIds) :
+    </label>
+    <div class="col-md-6">
+        @Html.DropDownListFor(x => x.MemberIds, new List<SelectListItem>(), new Dictionary<string, object> { { "class", "form-control selectpicker" }, { "multiple", "multiple" }, { "data-live-search", "true" } })
+    </div>
+    <button title="选择会员" type="button" class="btn btn-success btn-padding-right" onclick="chooseMember(this)"><i class=""></i> <span>选择</span></button>
+    <button title="清除全部" type="button" class="btn btn-danger" onclick="clearMemberInfo();"><i class=""></i> <span>清除</span></button>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ProductIds) :
+    </label>
+    <div class="col-md-6">
+        @Html.DropDownListFor(x => x.ProductIds, new List<SelectListItem>(), new Dictionary<string, object> { { "class", "form-control selectpicker" }, { "multiple", "multiple" }, { "data-live-search", "true" } })
+    </div>
+    <button title="选择货号" type="button" class="btn btn-success btn-padding-right" onclick="chooseBigProdNum(this)"><i class=""></i> <span>选择</span></button>
+    <button title="清除全部" type="button" class="btn btn-danger" onclick="clearinfo();"><i class=""></i> <span>清除</span></button>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">预约日期 :</label>
+    <div class="col-md-6">
+        <div class="input-daterange input-group">
+            @Html.TextBox("StartTime", "", new { @class = "start-date date-time input-sm form-control", @placeholder = "开始日期" })
+            <span class="input-group-addon">至</span>
+            @Html.TextBox("EndTime", "", new { @class = "end-date date-time input-sm form-control", @placeholder = "结束日期" })
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(f => f.Notes, new { @class = "form-control", @rows = "10", @cols = "20", @maxLength = "300" })
+    </div>
+</div>
+
+<link href="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+    $(function () {
+        $(".date-time").datetimepicker({
+            language: 'zh-CN',
+            minView: 'hour',
+            todayBtn: true,
+            autoclose: true,
+            format: "yyyy-mm-dd hh:ii"
+        });
+
+        $('.selectpicker').selectpicker({
+            noneSelectedText: "请选择",
+            size: 10
+        });
+    });
+
+    function chooseBigProdNum(sender) {
+        $.whiskey.web.ajaxView({
+            caption: "选择商品",
+            actionUrl: "VProduct",
+            lockButton: sender,
+            className: "VProduct",
+        });
+    }
+    function chooseMember(sender) {
+        $.whiskey.web.ajaxView({
+            caption: "选择会员",
+            actionUrl: "VMember",
+            lockButton: sender,
+            className: "VMember",
+        });
+    }
+
+    function clearMemberInfo() {
+        $('.AppointmentAutoGen #MemberIds').empty().selectpicker('refresh');
+    }
+    function clearinfo() {
+        $('.AppointmentAutoGen #ProductIds').empty().selectpicker('refresh');
+    }
+</script>
+

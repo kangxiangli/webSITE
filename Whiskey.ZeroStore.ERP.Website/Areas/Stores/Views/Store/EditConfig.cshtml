@@ -1,0 +1,80 @@
+﻿<div id="app">
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    @*<span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>*@
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>名称</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(value,key,index) in config">
+                        <td>
+                            {{index}}
+                        </td>
+                        <td>
+                            {{map[key]||key}}
+                        </td>
+                        <td>
+                            <span class="label label-success" v-if="value==1">已开启</span>
+                            <span class="label label-danger" v-else>未开启</span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-success" v-if="value==0" v-on:click="open(key)">开启</button>
+                            <button type="button" class="btn btn-danger" v-else v-on:click="close(key)">关闭</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+           
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var smsConfigVM = null;
+    $(function () {
+        let baseUrl = '/Stores/Store';
+        smsConfigVM = new Vue({
+            el: "#app",
+            data: {
+                config: {},
+                map: {
+                    retail: '零售',
+                    recharge:'充值'
+                }
+            },
+            mounted: function () {
+                var _self = this;
+                $.getJSON(`${baseUrl}/GetConfig`, function (res) {
+                    if (res.ResultType === 3) {
+                        _self.config = res.Data;
+                    }
+                })
+            },
+
+            methods: {
+                open(key) {
+                    this.config[key] = 1;
+                },
+                close(key) {
+                    this.config[key] = 0;
+                }
+            }
+            
+        })
+    })
+
+</script>

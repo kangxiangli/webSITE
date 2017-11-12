@@ -1,0 +1,45 @@
+﻿<script>
+    $(function () {
+        initialHub();
+    });
+    function initialHub(startlog) {
+        startlog = startlog || false;
+        $.connection.hub.logging = startlog;
+        var connection = $.connection.hub.start();
+        var autoexithub = $.connection.AutoExitHub;
+        autoexithub.client.exitLogin = function (data) {
+            if (data.ResultType == OperationResultType.Success) {
+                exitLogin(data);
+            }
+        }
+        connection.done(function () {
+            linkToServer(autoexithub.server);
+        });
+        $.connection.hub.reconnected(function () {
+            linkToServer(autoexithub.server);
+        });
+    }
+    function linkToServer(server) {
+        $.fashion.getBrowserId(function (browserId) {
+            server.flushSocketLink('@Model.AdminId', browserId);
+        });
+    }
+    //退出登录
+    function exitLogin(da) {
+        $.fashion.web.ajax({
+            type: "post",
+            url: "@Url.Action("Logout", "Login", new { area = "Authorities" })",
+            success: function (data) {
+                $.connection.hub.stop(true, true);//断掉连接
+                $.fashion.web.alert({
+                    type: "warning",
+                    content: da.Message,
+                    ismodal: true,
+                    callback: function () {
+                        window.location.replace("/admin_login");
+                    }
+                });
+            }
+        });
+    }
+</script>

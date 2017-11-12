@@ -1,0 +1,232 @@
+﻿<div id="app-product-select">
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    @*<input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">*@
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">商品品类</label>
+                            <div class="col-md-8">
+                                <input class="form-control" type="text" v-bind:value="categoryName" readonly />
+                                <input type="hidden" name="categoryId" v-bind:value="categoryId" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">是否有库存</label>
+                            <div class="col-md-8">
+                                <select id="hasInventory" name="hasInventory">
+                                    <option value="">请选择</option>
+                                    <option value="true">有</option>
+                                    <option value="false">无</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">标签</label>
+                            <div class="col-md-8">
+                                <textarea class="form-control" type="text" name="tags" v-bind:value="tags" readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">商品款号/货号</label>
+                            <div class="col-md-8">
+                                <input v-on:keyup.enter="search({pageIndex:1})" class="form-control" type="text" name="productNumber" placeholder="请输入商品款号/货号" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button v-on:click="search(null)" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button v-on:click="document.querySelector('.form-search').reset()" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+                        @*<button title="批量设置" type="button" v-on:click="batchRecommend" class="btn btn-facebook btn-padding-right">批量推荐</button>
+                            <button title="批量设置" type="button" v-on:click="batchRemoveRecommend" class="btn btn-danger btn-padding-right">批量不推荐</button>*@
+
+                    </div>
+                    <div class="button-recycle">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    @*<span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>*@
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>商品款号</th>
+                        <th>商品货号</th>
+                        <th>库存数量</th>
+                        <th>图片</th>
+                        <th>颜色</th>
+                        <th>尺码</th>
+                        <th>品牌</th>
+                        <th>吊牌价</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{index+1}}</td>
+                        <td>{{item.BigProdNum}}</td>
+                        <td>{{item.ProductNumber}}</td>
+                        <td>{{item.InventoryCount}}</td>
+                        <td>
+                            <img-suspension v-bind:path="item.ProductCollocationImg"></img-suspension>
+                        </td>
+                        <td>{{item.ColorName}}</td>
+                        <td>{{item.SizeName}}</td>
+                        <td>{{item.BrandName}}</td>
+                        <td>{{item.TagPrice}}</td>
+                        <td>
+                            <button type="button"
+                                    v-on:click="handelSelect(item)"
+                                    v-bind:disabled="selectedProduct.productNumber==item.ProductNumber"
+                                    class="btn btn-primary">
+                                {{selectedProduct.productNumber===item.ProductNumber?'已选择':'选择'}}
+                            </button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    var categoryId = parseInt('@ViewBag.categoryId')
+    var categoryName = '@ViewBag.categoryName'
+    var tags = '@ViewBag.tags';
+
+     var productSelectVM = new Vue({
+         el: "#app-product-select",
+         data: {
+            categoryId: categoryId,
+            categoryName: categoryName,
+            tags: tags,
+            isDeleted: false,
+            isEnabled: true,
+            pageDatas: [], //分页数据
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            },
+            selectedProduct: {
+                productNumber: '',
+                productCollocationImg:''
+            }
+        },
+        mounted: function () {
+            this.search();
+            this.$nextTick(function () {
+                $("#hasInventory").selectpicker();
+            })
+        },
+        methods: {
+            handelSelect(item) {
+                this.selectedProduct.productNumber = item.ProductNumber;
+                this.selectedProduct.productCollocationImg = item.ProductCollocationImg;
+            },
+            
+            search: function (filter) {
+
+                var _self = this;
+
+                var searchData = {
+
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+                    categoryId: this.categoryId,
+                    tags:this.tags
+                }
+
+                var name = '', val = '';
+                $("#app-product-select input[name],select[name]").each(function (index, elem) {
+                    name = elem.getAttribute("name")
+                    val = elem.value;
+                    if (val) {
+                        searchData[name] = val;
+                    }
+                })
+
+
+                if (filter) {
+                    searchData = _.extend(searchData, filter)
+                }
+
+                $.getJSON('/Common/ProductList', searchData).done(function (res) {
+
+                    if (res.ResultType !== 3) {
+                        //console
+                        return;
+                    }
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+                })
+            },
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            },
+
+            save: function () {
+
+
+            }
+
+        }
+
+    })
+</script>

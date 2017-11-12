@@ -1,0 +1,57 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model CheckerDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.StoreId) :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownList("StoreId", (List<SelectListItem>)ViewBag.Stores, new {@class="form-control create-storeid" })
+        @*@Html.TextBoxFor(m=> m.StoreId, new { @class = "form-control" })*@
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.StorageId) :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownList("StorageId", new List<SelectListItem>(), new {@class="form-control create-storageid"})
+        @*@Html.TextBoxFor(m=> m.StorageId, new { @class = "form-control" })*@
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.CheckerName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.CheckerName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.AbsentAmount) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.AbsentAmount, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.SurplusAmount) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.SurplusAmount, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Notes, new { @class = "form-control" })
+    </div>
+</div>

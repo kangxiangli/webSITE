@@ -1,0 +1,183 @@
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Data
+@model ClaimForGoodsDto
+
+<style>
+
+</style>
+
+<div class="form-group">
+    <label class="control-label col-md-2">所属部门：</label>
+    <div class="col-md-7">
+        @Html.DropDownListFor(m => m.DepartmentId, (List<SelectListItem>)ViewBag.Departments, new { @class = "form-control selectpicker", data_live_search = "true" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">申领人：</label>
+    <div class="col-md-5">
+        @Html.TextBox("RealNames", "", new Dictionary<string, object> { { "class", "form-control" }, { "readonly", "readonly" } })
+        @Html.HiddenFor(m => m.ApplicantId)
+    </div>
+    <button id="ChooseAdmin" style="background:#5cb85c;" title="选择员工" type="button" class="btn nav-icon-btn-success btn-padding-right" onclick="chooseAdmin()"><i class="fa fa-chevron-down"></i> <span>选择</span></button>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        类型 :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownList("Type", (List<SelectListItem>)ViewBag.CompanyGoodsCategoryTypeFlagList, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CompanyGoodsCategoryID) :
+    </label>
+    <div class="col-md-6">
+        <input type="text" value="" id="CompanyGoodsCategoryName" readonly="readonly" disabled="disabled" />
+        @Html.HiddenFor(m => m.CompanyGoodsCategoryID)
+    </div>
+    <button id="ChooseCGCIds" style="background:#5cb85c;" title="选择类别" type="button" class="btn nav-icon-btn-success btn-padding-right" onclick="chooseCompanyGoodsCategoryIds()"><i class="fa fa-chevron-down"></i> <span>选择</span></button>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Quantity) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsReturn) :
+    </label>
+    <div class="col-md-10">
+        @Html.CheckBoxFor(m => m.IsReturn, new { @class = "form-control", @onclick = "ReturnChange()" })
+    </div>
+</div>
+<div class="form-group" style="display:none" id="div_ReturnTimeLimit">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ReturnTimeLimit) :
+    </label>
+    <div class="col-md-10">
+        @Html.CheckBoxFor(m => m.ReturnTimeLimit, new { @class = "form-control", @onclick = "ReturnChange()" })
+    </div>
+</div>
+<div class="form-group" style="display:none" id="div_EstimateReturnTime">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.EstimateReturnTime) :
+    </label>
+    <div class="col-md-10">
+        <div class="input-group">
+            @Html.TextBoxFor(m => m.EstimateReturnTime, new { @class = "form-control datetime", @placeholder = "预计归还时间" })
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<script>
+    function SetEstimateReturnTime(data) {
+        $("#EstimateReturnTime").datetimepicker("remove");
+        $("#EstimateReturnTime").datetimepicker(data);
+    }
+
+    var date;
+    $(function () {
+        $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker('refresh');
+
+        date = (new Date()).toLocaleDateString();
+
+        SetEstimateReturnTime({
+            startDate: date,
+            language: 'zh-CN',
+            minView: 'hour',
+            todayBtn: true,
+            autoclose: true,
+            format: 'yyyy/mm/dd hh:ii',
+            minuteStep: 30
+        });
+    });
+    //选择员工
+    function chooseAdmin() {
+        var Id = parseInt($("#DepartmentId").val());
+        if (Id == undefined || Id == 0) {
+            $.whiskey.web.alert({
+                type: "error",
+                content: "请先选择部门",
+                callback: function () {
+                }
+            });
+            return;
+        }
+        var view = new $.whiskey.web.ajaxView({
+            caption: "员工列表",
+            actionUrl: "@Url.Action("Admin")",
+            params: { departId: Id }
+        });
+    }
+
+    //选择类别
+    function chooseCompanyGoodsCategoryIds() {
+        var val = $("#Type").val();
+        if (val == undefined || val == null || val == "") {
+            $.whiskey.web.alert({
+                type: "error",
+                content: "请先选择类型",
+                callback: function () {
+                }
+            })
+            return;
+        }
+        var type = parseInt(val)
+        $.ajax({
+            url: "@Url.Action("CompanyGoodsCategory")",
+            type: "get",
+            data: { type: type },
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "GetCompanyGoodsCategoryList",
+                    title: "类别列表",
+                    buttons: {
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".memberlist").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function ReturnChange() {
+        if (!$("#IsReturn").prop("checked")) {
+            $("#div_ReturnTimeLimit").css("display", "none");
+            $("#div_EstimateReturnTime").css("display", "none");
+            return;
+        }
+
+        $("#div_ReturnTimeLimit").css("display", "");
+        if ($("#ReturnTimeLimit").prop("checked")) {
+            $("#div_EstimateReturnTime").css("display", "");
+        } else {
+            $("#div_EstimateReturnTime").css("display", "none");
+        }
+    }
+</script>

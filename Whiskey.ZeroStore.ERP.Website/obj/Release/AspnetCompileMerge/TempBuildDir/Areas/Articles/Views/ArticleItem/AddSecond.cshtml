@@ -1,0 +1,35 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model ArticleAttribute
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ParentId) :
+    </label>
+    <div class="col-md-10"> 
+       @ViewBag.Name
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.AttributeName) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.AttributeName, new { @class = "form-control",@value=""})
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Description) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Sequence) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Sequence, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m => m.ParentId)

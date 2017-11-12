@@ -1,0 +1,254 @@
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model SaleAutoGenDto
+
+<style>
+    .SaleAutoGen .modal-dialog .modal-content {
+        max-width: 1000px!important;
+    }
+    .Seller_details {
+        display: none;
+        min-height: 50px;
+        width: 100%;
+        padding: 5px;
+        margin-top: 10px;
+    }
+
+    .div_Seller {
+        width: 50%;
+        float: left;
+    }
+
+        .div_Seller select {
+            margin: 5px auto;
+        }
+
+    .div_Member {
+        width: 50%;
+        float: right;
+    }
+    .sel_disabled .dropdown-menu.inner li{
+        pointer-events: none;
+    }
+</style>
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #e5603b"></span>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ProductIds) :
+    </label>
+    <div class="col-md-6">
+        @Html.DropDownListFor(x => x.ProductIds, new List<SelectListItem>(), new Dictionary<string, object> { { "class", "form-control selectpicker" }, { "multiple", "multiple" }, { "data-live-search", "true" } })
+    </div>
+    <button title="选择货号" type="button" class="btn btn-success btn-padding-right" onclick="chooseBigProdNum(this)"><i class=""></i> <span>选择</span></button>
+    <button title="清除全部" type="button" class="btn btn-danger" onclick="clearinfo();"><i class=""></i> <span>清除</span></button>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.AllSaleCount) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.AllSaleCount, new { @class = "form-control", @check_number = "", @check_int = "", @min_value = "1" })
+    </div>
+    <label class="control-label col-md-4" style="text-align:left;">&yen; <span id="divAllMoney">0</span></label>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Discount) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.Discount, new { @class = "form-control", @placeholder = "默认不打折,折扣范围1-10", @onkeyup = "discountchange(this);", @check_number = "", @check_float = "2", @min_value = "1", @max_value = "10" })
+    </div>
+    <label class="control-label col-md-4" style="text-align:left;">&yen; <span id="discountAllMoney">0</span></label>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Quotiety) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.Quotiety, new { @Value="0.83", @class = "form-control", @placeholder = "默认1,系数范围0-1", @check_number = "", @check_float = "2", @min_value = "0", @max_value = "1" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">起止日期 :</label>
+    <div class="col-md-6">
+        <div class="input-daterange input-group">
+            @Html.TextBox("StartTime", "", new { @class = "start-date date-time input-sm form-control", @placeholder = "开始日期" })
+            <span class="input-group-addon">至</span>
+            @Html.TextBox("EndTime", "", new { @class = "end-date date-time input-sm form-control", @placeholder = "结束日期" })
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">销售日期 :</label>
+    <div class="col-md-6">
+        <div class="input-daterange input-group">
+            @Html.TextBox("RetailStartTime", "", new { @class = "start-date date-time input-sm form-control", @placeholder = "开始日期" })
+            <span class="input-group-addon">至</span>
+            @Html.TextBox("RetailEndTime", "", new { @class = "end-date date-time input-sm form-control", @placeholder = "结束日期" })
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        入货店铺 :
+    </label>
+    <div class="col-md-6">
+        <select class="form-control" id="sendstoreid" name="sendstoreid" onchange="storeChange(this);"></select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SendStorageId) :
+    </label>
+    <div class="col-md-6">
+        <select class="form-control selectpicker" id="SendStorageId" name="SendStorageId"></select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        销售店铺 :
+    </label>
+    <div class="col-md-6 sel_disabled">
+        @Html.DropDownListFor(x => x.ReceiveStorageIds, new List<SelectListItem>(), new Dictionary<string, object> { { "class", "form-control selectpicker" }, { "multiple", "multiple" }, { "data-live-search", "true" } })
+    </div>
+    <button title="选择配货仓库" type="button" class="btn btn-success btn-padding-right" onclick="chooseReceiveStorage(this)"><i class=""></i> <span>选择</span></button>
+    <button title="清除全部" type="button" class="btn btn-danger" onclick="$('#ReceiveStorageIds').empty().selectpicker('refresh'); $('.div_storeSellerMember').html('');"><i class=""></i> <span>清除</span></button>
+</div>
+<hr />
+<!--clone模板-->
+<div id="div_clone" style="display:none">
+    <div class="form-group storeSellerContent">
+        <label class="control-label lbl_storename" style="line-height:30px"></label>
+        <button title="展开&收起" type="button" class="btn btn-success btn-padding-right btn_collapse"><i class=""></i> <span>展开&收起</span></button>
+        <button title="销售员&会员" type="button" class="btn btn-success btn-padding-right btn_sel_seller"><i class=""></i> <span>销售员&会员</span></button>
+        <label class="lbl_count_content">销售员：<label class="lbl_count_seller">0</label>  会员：<label class="lbl_count_member">0</label></label>
+        <div class="Seller_details">
+            <div class="div_Seller">
+                销售：<select class="selectpicker_sel _sel_seller" multiple data-live-search="true" data-dom=".lbl_count_seller"></select>
+            </div>
+            <div class="div_Member">
+                会员：<select class="selectpicker_sel _sel_member" multiple data-live-search="true" data-dom=".lbl_count_member"></select>
+            </div>
+        </div>
+    </div>
+</div>
+<!--模板结束-->
+<div class="div_storeSellerMember">
+
+</div>
+
+<link href="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+    $(function () {
+        $(".date-time").datetimepicker({
+            language: 'zh-CN',
+            minView: 'hour',
+            todayBtn: true,
+            autoclose: true,
+            format: "yyyy-mm-dd hh:ii"
+        });
+
+        $(".div_storeSellerMember").delegate(".btn_collapse", "click", (item) => {
+            $(item.currentTarget).siblings(".Seller_details").slideToggle("fast");
+        });
+
+        $('.selectpicker').selectpicker({
+            noneSelectedText: "请选择",
+            size: 10
+        });
+        $("#sendstoreid").queryManageStore({
+            selected: [14],
+            callback: function () { $("#sendstoreid").change(); }
+        });
+
+        $("#ReceiveStorageIds").on("refreshed.bs.select changed.bs.select", function () {
+            var cursids = $("#ReceiveStorageIds").find("option").map((ind, item) => { return $(item).attr("data-storeid") }).get();
+            $(".storeSellerContent[data-storeid]").filter((ind,item) => {
+                var sid = $(item).attr("data-storeid");
+                return $.inArray(sid, cursids) == -1;
+            }).remove();
+
+            $("#ReceiveStorageIds").find("option").each(function (ind, item) {
+                var storename = $(item).attr("data-storename");
+                var storeid = $(item).attr("data-storeid");
+                $container = $(".div_storeSellerMember");
+                if ($container.find(".storeSellerContent[data-storeid='" + storeid + "']").length == 0) {
+                    $info = $("#div_clone .storeSellerContent").clone();
+                    $info.attr("data-storeid", storeid);
+                    $info.find(".lbl_storename").text(storename + "：");
+                    $info.find(".btn_sel_seller").click(() => { chooseSellerMember(this, storeid); });
+                    $info.find(".selectpicker_sel").selectpicker({ noneSelectedText: "请选择", size: 5 });
+                    $container.prepend($info);
+                }
+            });
+        })
+    });
+    function clearinfo() {
+        $('.SaleAutoGen #ProductIds').empty().selectpicker('refresh');
+        $(".SaleAutoGen #AllSaleCount").val('');
+        $(".SaleAutoGen #divAllMoney,#discountAllMoney").text('0');
+    }
+    function storeChange(sender) {
+        var storeId = $(sender).val();
+        var st = storeWithStorage(storeId, $("#SendStorageId"));
+    }
+
+    //根据店铺获取仓库
+    function storeWithStorage(storeId, bindstorage) {
+        if (storeId !== undefined && storeId !== null && storeId !== "") {
+            $.post("@Url.Action("GetStorages")", { storeId: storeId }, function (data) {
+                var opts = "";
+                if (data != null && data != "") {
+                    $.each(data, function () {
+                        var id = this.Id;
+                        var name = this.Name;
+                        var _checked = this.IsDefault ? "selected" : "";
+                        opts += "<option value=" + id + " " + _checked + ">" + name + "</option>";
+                    })
+                }
+                $(bindstorage).html("").html(opts).selectpicker('refresh');
+            });
+        }
+    }
+    function discountchange(sender) {
+        var dis = $(sender).val();
+        var money = $("#divAllMoney").text();
+        dis = parseFloat(dis);
+        money = parseFloat(money);
+        if (!isNaN(dis) && !isNaN(money))
+            $("#discountAllMoney").text(dis * money * 0.1).css("color", "#5cb85c");
+        else
+            $("#discountAllMoney").text(money).css("color", "#fff");
+    }
+
+    function chooseBigProdNum(sender) {
+        $.whiskey.web.ajaxView({
+            caption: "选择款号",
+            actionUrl: "VProduct",
+            lockButton: sender,
+            className: "VProduct",
+        });
+    }
+
+    function chooseReceiveStorage(sender) {
+        $.whiskey.web.ajaxView({
+            caption: "选择配货仓库",
+            actionUrl: "VStorage",
+            lockButton: sender,
+            className: "VStorage",
+        });
+    }
+    function chooseSellerMember(sender,storeid) {
+        $.whiskey.web.ajaxView({
+            caption: "选择销售员和会员",
+            params: { StoreId: storeid },
+            actionUrl: "VSellerMember",
+            lockButton: sender,
+            className: "VSellerMember",
+        });
+    }
+</script>

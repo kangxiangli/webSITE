@@ -1,0 +1,190 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Member
+
+@model PrizeDto
+
+
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+<link rel="stylesheet" href="/content/editor/themes/default/default.css" />
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<style>
+    .li_empt {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+</style>
+
+
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #e5603b"></span>
+</div>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#addImage" data-toggle="tab">上传图片</a>
+    </li>
+</ul>
+@Html.HiddenFor(x=>x.Id)
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.PrizeName) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.PrizeName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.PrizeType) :
+            </label>
+            <div class="col-md-8 divPrizeType">
+                <select class="form-control selectpicker" name="PrizeType" id="PrizeType">
+                    <option value="@((int)PrizeFlag.Score)">积分</option>
+                    <option value="@((int)PrizeFlag.Res)">物品</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group divScore">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Score) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Score, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Quantity) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                会员获取数量 :
+            </label>
+            <div class="col-md-8">
+                @Model.GetQuantity 
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                会员领取数量 :
+            </label>
+            <div class="col-md-8">
+                @Model.ReceiveQuantity
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div id="addImage" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                图片:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="@Model.RewardImagePath" alt="图片" id="ImagePath" />
+                    </a>
+                </div>
+                <input type="hidden" name="RewardImagePath" id="hidImagePath" value="@Model.RewardImagePath" />
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    上传:
+                </label>
+                <div class="col-md-10">
+                    <div class="dropzone-box uploadImage">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file" multiple="multiple" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+        var prizeType = "@Model.PrizeType";
+        $(".divPrizeType #PrizeType option").each(function () {
+            if ($(this).val() == prizeType) {
+                $(this).attr("selected", "selected");
+            }
+        })
+        setScore();
+        //初始化上传封面图片控件
+        var myDropzone = new Dropzone(".uploadImage", {
+            url: "@Url.Action("UploadImage")",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            maxFiles: 1,
+            paramName: "file",
+            maxFilesize: 1,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (data.ResultType == 3) {
+                        $(".bootbox #ImagePath").attr("src", data.Path)
+                        $(".bootbox #hidImagePath").attr("value", data.Path);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+
+                });
+            }
+        });
+
+    })
+
+    function setScore() {
+        var prize = $(".bootbox #PrizeType").val();
+        if (prize == "@((int)PrizeFlag.Res)") {
+            $(".divScore").css("display", "none");
+            $(".bootbox #Score").attr("value", "0");
+        } else {
+            $(".divScore").css("display", "block");
+        }
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

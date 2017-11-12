@@ -1,0 +1,70 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Data
+<style>
+    .modal-body {
+        min-height: 650px;
+    }
+    .modal-dialog{
+        width:900px;
+    }
+</style>
+
+<div class="div-content">
+    <label class="control-label col-md-2">
+        模板内容 :
+    </label>
+    <a class="btn btn-label" role="button" data-toggle="collapse" href="#collapseExample2" aria-expanded="false" aria-controls="collapseExample2">
+        模版文档
+    </a>
+    <div class="collapse" id="collapseExample2">
+        <div class="well">
+            1、@@Model.adminId 用户Id <br />
+            2、@@Model.adminName 用户名称 <br />
+            3、@@Model.adminImg 用户头像 <br />
+            4、@@Model.Menu 菜单项 {ModuleName:"模块名称",Icon:"模块图标",PageUrl:"页面路径",PageController:"页面控制器",Children:"子模块是集合"}<br />
+            5、@@Model.BreadCrumb 当前菜单项{ModuleName:"模块名称",Icon:"模块图标",PageUrl:"页面路径",PageController:"页面控制器",Children:"子模块是集合"}<br />
+            6、@@Html.Partial("_QrLogin") 扫码登录Js，img的父级div class='qr_code'(必须)<br />
+        </div>
+    </div>
+    <div class="col-md-12">
+        @Html.TextArea("TemplateContent", new { @class = "form-control", @rows = "25", @style= "resize:none;" })
+    </div>
+    <div class="col-md-12">
+        状态：<label id="lbl_checkinfo"></label>
+    </div>
+</div>
+<script>
+    $(function () {
+        $("button[data-bb-handler='check']").click(function () {
+            ValidateTemplateContent(this);
+        });
+    });
+    function ValidateTemplateContent(btn) {
+        var $btn = $(btn);
+        var textarea = $(".div-content #TemplateContent");
+        var content = textarea.val();
+        if (content != "") {
+            $btn.attr("disabled", "disabled");
+            $.whiskey.web.ajaxRequest({
+                method: "post",
+                actionUrl: "@Url.Action("ValidateTemplateContent")",
+                params: { themeContent: content },
+                complete: function (data) {
+                    console.log(data);
+                    $btn.removeAttr("disabled");
+                    if (data) {
+                        $("#lbl_checkinfo").text("校验通过").css("color", "green");
+                        textarea.parent().removeClass("has-error");
+                    }
+                    else {
+                        textarea.parent().addClass("has-error");
+                        $("#lbl_checkinfo").text("校验失败").css("color", " #5ebd5e");
+                    }
+                }
+            });
+        } else {
+            textarea.parent().removeClass("has-error");
+            $btn.removeAttr("disabled");
+        }
+    }
+</script>

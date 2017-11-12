@@ -1,0 +1,615 @@
+﻿<style>
+    label.label-success.disabled, .label[disabled] {
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 0.65;
+        filter: alpha(opacity=65);
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+    .btn {
+        padding: 5px 13px;
+    }
+    .thumbnail .caption {
+        color: white;
+        padding: 0;
+        margin-left: 15px;
+        position: relative;
+    }
+
+    .thumbnail {
+        height: 466px;
+        padding: 10px 0;
+    }
+
+        .thumbnail img {
+            width: 100%;
+        }
+
+    .caption p {
+        font-family: "Microsoft YaHei";
+        line-height: 21px;
+        letter-spacing: 1px;
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 14px;
+    }
+
+    .thumbnail_outer {
+        height: 260px;
+        overflow: hidden;
+    }
+
+    .imageSrc {
+        width: 40% !important;
+        position: absolute;
+        bottom: 142px;
+        left: -2%;
+        /*firefox*/
+        -moz-box-shadow: 2px 3px 5px 1px rgba(0, 0, 0, 0.3);
+        /*webkit*/
+        -webkit-box-shadow: 2px 3px 5px 1px rgba(0, 0, 0, 0.3);
+        /*opera或ie9*/
+        box-shadow: 2px 3px 5px 1px rgba(0, 0, 0, 0.3);
+    }
+
+    .red {
+        color: #e5603b;
+    }
+
+    .green {
+        color: #5ebd5e;
+    }
+
+    .gray {
+        color: #888
+    }
+</style>
+<div class="container" id="number-list">
+
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    <input class="custswitcher" type="checkbox" data-class="switcher-default checked" checked="checked">
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal form-search">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-2">款号</label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="text" v-model="searchParam.BigProductNumber">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">品牌</label>
+                            <div class="col-md-5">
+                                <select class="form-control selectpicker_2" v-model="searchParam.BrandId">
+                                    <option v-for="option in brandOptions" v-bind:value="option.Value">
+                                        {{option.Text}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-2">品类</label>
+                            <div class="col-md-5">
+                                <select class="form-control selectpicker_2" v-model="searchParam.CategoryId">
+                                    <option v-for="option in categoryOptions" v-bind:value="option.Value">
+                                        {{option.Text}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-2">季节</label>
+                            <div class="col-md-5">
+                                <select class="form-control selectpicker_2" v-model="searchParam.SeasonId">
+                                    <option v-for="option in seasonOptions" v-bind:value="option.Value">
+                                        {{option.Text}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">店铺</label>
+                            <div class="col-md-5">
+                                @*<select class="form-control selectpicker_2" v-model="searchParam.StoreId">
+                                        <option v-for="option in storeOptions" v-bind:value="option.Value">
+                                            {{option.Text}}
+                                        </option>
+                                    </select>*@
+                                <select id="StoreId" name="StoreId" class="form-control"></select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-2">新品状态</label>
+                            <div class="col-md-5">
+                                <div class="input-daterange input-group">
+                                    @Html.DropDownList("State", EnumHelper.GetSelectList(typeof(Whiskey.ZeroStore.ERP.Models.BigProdNumStateEnum)), "请选择新品状态", new { @class = "selectpicker" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button id="Search" title="按条件搜索数据" type="button" @@click="search('btn')" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="panel panel-heading">
+            <div class="panel panel-list">
+
+                <div class="row" style="">
+
+                    <img-list v-bind:pagedatas="pageDatas" @@on-edit="showRecommend" @@on-delete="deleteRecommend"></img-list>
+                </div>
+                <my-page v-bind:current="pageInfo.CurrentPage"
+                         v-bind:total="pageInfo.TotalCount"
+                         v-bind:page-size="pageInfo.PageSize"
+                         @@on-change="changePage"
+                         @@on-page-size-change="changePageSize">
+                </my-page>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document" style="width:1000px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">{{currentNumber}}店铺推荐设置</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="panel panel-list">
+                            <div class="panel-heading">
+                                直营店铺
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="col-md-2" v-for="(store,index) in recommendStores" v-if="store.StoreTypeName=='直营店'">
+                                    <label>
+                                        <input type="checkbox" v-bind:value="store.Id" v-model="store.HasRecommend" v-bind:disabled="store.Disabled" />{{store.StoreName}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-list">
+                            <div class="panel-heading">
+                                授权店铺
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="col-md-2" v-for="(store,index) in recommendStores" v-if="store.StoreTypeName=='授权店'">
+                                    <label>
+                                        <input type="checkbox" v-bind:value="store.Id" v-model="store.HasRecommend" v-bind:disabled="store.Disabled" />{{store.StoreName}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-list">
+                            <div class="panel-heading">
+                                加盟店铺
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="col-md-2" v-for="(store,index) in recommendStores" v-if="store.StoreTypeName=='加盟店'">
+                                    <label>
+                                        <input type="checkbox" v-bind:value="store.Id" v-model="store.HasRecommend" v-bind:disabled="store.Disabled" />{{store.StoreName}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-list">
+                            <div class="panel-heading">
+                                股份店铺
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="col-md-2" v-for="(store,index) in recommendStores" v-if="store.StoreTypeName=='股份店'">
+                                    <label>
+                                        <input type="checkbox" v-bind:value="store.Id" v-model="store.HasRecommend" v-bind:disabled="store.Disabled" />{{store.StoreName}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-list">
+                            <div class="panel-heading">
+                                虚拟店铺
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="col-md-2" v-for="(store,index) in recommendStores" v-if="store.StoreTypeName=='虚拟店'">
+                                    <label>
+                                        <input type="checkbox" v-bind:value="store.Id" v-model="store.HasRecommend" v-bind:disabled="store.Disabled" />{{store.StoreName}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" v-on:click="saveEdit">保存</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<template id="img-list">
+    <div class="clearfix">
+        <div v-for="(entry,index) in pagedatas" class="" style="width:200px;float:left;margin-right: 4px;">
+            <div class="thumbnail">
+                <div class="thumbnail_outer">
+                    <img class="img-thumbnail col-md-12" v-bind:src="entry.ThumbnailPath" onerror='imgloaderror(this);' />
+
+                </div>
+
+                <div class="caption">
+                    <p>商品名：{{entry.ProductName}}</p>
+                    <p>款号:{{entry.BigProductNumber}}</p>
+                    <p>吊牌价:{{entry.TagPrice}}</p>
+                    <p>推送数量:<a :class="entry.RecommendMemberCount<=0? 'label label-info':'label label-success'" style="cursor:pointer;" v-bind:disabled="entry.RecommendMemberCount<=0" v-on:click="pushRecommend(entry.BigProductNumber,1)">{{entry.RecommendMemberCount}}</a>
+                    <p>状态:<span v-bind:class="{green:entry.State=='经典',red:entry.State=='新品',gray:entry.State=='普通'}">{{entry.State}}</span> </p>
+                    <p>
+                        <a href="javascript:;" v-on:click="pushRecommend(entry.BigProductNumber)" class="btn btn-success" role="button">推送</a>
+                        <a href="javascript:;" v-on:click="showRecommend(entry.BigProductNumber)" class="btn btn-primary" role="button">编辑</a>
+                        <a href="javascript:;" v-on:click="deleteRecommend(entry.BigProductNumber)" class="btn btn-danger" role="button">撤销</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</template>
+<script src="~/wwwroot/lib/vue.js"></script>
+@section Scripts{
+
+
+    @{
+        Html.RenderPartial("Page", null);
+    }
+    <script src="~/Content/Scripts/lodash/lodash.js"></script>
+
+    <script type="text/javascript">
+        var storeRecommendVM;
+        $(function () {
+            var baseUrl = '/Stores/StoreRecommend';
+            Vue.component('img-list', {
+                template: '#img-list',
+                props: ['pagedatas'],
+                methods: {
+                    showRecommend: function (number) {
+                        this.$emit('on-edit', number);
+                    },
+                    deleteRecommend: function (number) {
+                        this.$emit('on-delete', number);
+                    },
+                    getStateImgSrc:function(state){
+                        return state == "经典" ? "$('.status_s').css('color':'#5ebd5e') " : state == "新品" ? "color:#e5603b " : "color:#888";
+                    },
+                    pushRecommend: function (bigProdNumber, isLimit = 0) {
+
+                        var dialog = new $.whiskey.web.ajaxDialog({
+                            caption: "创建数据",
+                            actionUrl: "@Url.Action("MemberSelect")",
+                            lockButton: $(this),
+                            formValidator: function () {
+                                vmRecommendMember.save();
+                                return false;
+                            },
+                            getParams: { bigProdNumber: bigProdNumber, islimit: isLimit },
+                            postComplete: function () {
+                                $.whiskey.datatable.reset(false);
+					            return true;
+                            },
+                        });
+                    }
+                }
+            });//end component
+            storeRecommendVM = new Vue({
+                el: "#number-list",
+                data: {
+                    numbers: [],
+                    pageDatas: [],
+                    brandOptions: [],
+                    categoryOptions: [],
+                    recommendStores: [],
+                    //storeOptions: [],
+                    seasonOptions: [],
+                    currentNumber: '',
+                    searchParam: {
+                        BigProductNumber: '',
+                        BrandId: -1,
+                        CategoryId: '',
+                        SeasonId: '',
+                        StoreId: ''
+                    },
+                    pageInfo: {
+                        CurrentPage: 1,
+                        PageCount: 0,
+                        PageSize: 16,
+                        TotalCount: 0
+                    },
+                    canSubmit: true
+                },
+                mounted: function () {
+                    var _self = this;
+                    this.$nextTick(function () {
+                        $.getJSON(baseUrl + '/GetOptions', {}).done(function (res) {
+                            if (res.ResultType !== 3) {
+                                //console.log('GetOptions fail');
+                                return;
+                            }
+                            _self.brandOptions = res.Data.brandOptions;
+                            _self.categoryOptions = res.Data.categoryOptions;
+                            _self.seasonOptions = res.Data.seasonOptions;
+                            //_self.storeOptions = res.Data.storeOptions;
+                            _self.search();
+                            Vue.nextTick(function () {
+
+							 $('.selectpicker_2').selectpicker();
+
+							})
+
+                        });
+                    });
+                },
+                methods: {
+                    addFromDialog: function (number) {
+                        var index = _.findIndex(this.numbers, function (n) { return n.BigProductNumber === number.BigProductNumber });
+                        if (index === -1) {
+                            number.InTable = true;
+                            this.numbers.push(number)
+                        }
+                    },
+                    removeFromDialog: function (number) {
+
+                        var index = _.findIndex(this.numbers, function (n) { return n.BigProductNumber === number.BigProductNumber });
+                        if (index !== -1) {
+                            number.InTable = false;
+                            this.numbers.splice(index, 1);
+                        }
+                    },
+                    remove: function (index) {
+                        this.numbers.splice(index, 1);
+                    },
+                    search: function (type) {
+                        if (type == "btn") {
+                            this.pageInfo.CurrentPage = 1;
+                        }
+                        var _self = this;
+
+                        var searchData = {
+                            BigProductNumber: this.searchParam.BigProductNumber,
+                            BrandId: this.searchParam.BrandId,
+                            CategoryId: this.searchParam.CategoryId,
+                            SeasonId: this.searchParam.SeasonId,
+                            StoreId: $("#StoreId").val(),
+                            State: $("#State").val(),
+                            CurrentPage: this.pageInfo.CurrentPage,
+                            PageSize: this.pageInfo.PageSize,
+
+                        }
+                        ////console                                                 .log(                        "search:" + JSON.stringify(searchData));
+
+                        $.getJSON(baseUrl + '/GetRecommendNumbersAsync', searchData).done(function (res) {
+                            if (res.ResultType !== 3) {
+                                //console                                           .log('GetOptions fail');
+                                return;
+                            }
+                            var pageInfo = res.Data.pageInfo;
+                            var pageData = res.Data.pageData;
+                            //判断是否已在列表中
+
+                            _self.pageDatas = pageData;
+                            _self.pageInfo = pageInfo;
+                            //console                                               .log(res);
+                        })
+                    },
+                    upload: function () {
+                        var dialog = new $.whiskey.web.ajaxDialog({
+                            caption: "批量导入",
+                            successTit: "确定",
+                            successEvent: this.select_check_Access,
+                            actionUrl: baseUrl + "/BatchImport",
+                            noneheader: true,
+                            lockButton: null,
+                            methType: "post",
+                            formValidator: function () {
+                                var $form = $(".modal-form");
+                                if (!$form.valid()) {
+                                    $(".modal-dialog").parent("div").animate({ scrollTop: 20 }, 500);
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            },
+                            postComplete: function () {
+                                //$                                                 .whiskey.datatable.reset(false);
+                                return true;
+                            },
+                        });
+                    },
+                    select_check_Access: function () {
+                        var _self = this;
+
+                        var tableData = window.gloablDataTableObj.data();
+                        var barcodes = [];
+                        for (var i = 0; i < tableData.length; i++) {
+                            barcodes.push(tableData[i].value);
+                        }
+                        var postData = { numbers: barcodes.join(",") };
+                        $.post(baseUrl + "/ValidateNumber", postData).done(function (data) {
+                            if (data.ResultType != 3) {
+                                $.whiskey.web.alert({
+                                    type: "info",
+                                    content: data.Message,
+                                    callback: function () {
+                                    }
+                                });
+                                return;
+                            }
+                            var numberInfo = data.Data;
+                            for (var i = 0; i < numberInfo.length; i++) {
+                                _self.addFromDialog(numberInfo[i]);
+                            }
+
+                        })
+
+                    },
+                    showRecommend: function (number) {
+                        var _self = this;
+                        if (!number || number.length <= 0) {
+                            return;
+                        }
+                        _self.currentNumber = number;
+                        $.getJSON(baseUrl + '/GetRecommendStores', { number: number }).done(function (res) {
+                            if (!res.ResultType === 3) {
+                                alert(res.Message);
+                            }
+                            _self.recommendStores = res.Data;
+                            $("#myModal").modal('show');
+                            $(".panel-body").show();
+                        })
+                    },
+                    saveEdit: function () {
+                        debugger
+                        var number = this.currentNumber;
+                        if (!number || number.length <= 0) {
+                            return;
+                        }
+                        var storeIds = _.chain(this.recommendStores)
+                                        .filter(function (s) { return s.HasRecommend === true })
+                                        .map(function (s) { return s.Id }).value();
+                        var postData = { number: number, recommendStoreIds: storeIds.join(',') };
+                        $.post(baseUrl + "/SaveEdit", postData).done(function (data) {
+                            if (data.ResultType != 3) {
+                                $.whiskey.web.alert({
+                                    type: "info",
+                                    content: data.Message,
+                                    callback: function () {
+                                    }
+                                });
+                                return;
+                            }
+                            $.whiskey.web.alert({
+                                type: "success",
+                                content: "保存成功！",
+                                callback: function () {
+                                    location.reload();
+                                }
+                            });
+
+                        })
+
+                    },
+                    deleteRecommend: function (number) {
+                        var _self = this;
+                        if (!number || number.length <= 0) {
+                            return;
+                        }
+                        var confirm = new $.whiskey.web.ajaxConfirm({
+                            question: "确认移除推荐吗？",
+                            notes: "",
+                            actionUrl: "@Url.Action("DeleteRecommend")",
+                            params: { number: number },
+                            complete: function () {
+                                $.whiskey.web.alert({
+                                    type: "success",
+                                    content: "操作成功！",
+                                    callback: function () {
+                                        location.reload();
+                                    }
+                                });
+                            }
+                        });
+                    },
+                    changePage: function (page) {
+                        this.pageInfo.CurrentPage = page;
+                        this.search('page');
+                    },
+                    changePageSize: function (newSize) {
+                        console.log(newSize);
+                        this.pageInfo.PageSize = newSize;
+                        this.pageInfo.CurrentPage = 1;
+                        this.search('page');
+                    }
+
+                },
+                events: {
+                    'on-delete': function (number) {
+                        this.deleteRecommend(number);
+                    },
+                    'on-edit': function (number) {
+                        this.showRecommend(number);
+                    }
+
+                }
+            });
+            $('.custswitcher').switcher({
+                //theme: 'square',
+                on_state_content: "展开搜索",
+                off_state_content: "隐藏搜索"
+            }).on("click", function () {
+                debugger;
+                var panel_body = $(this).parents('.panel-heading').siblings(".panel-body");
+                if (panel_body.is(":hidden")) {
+                    panel_body.slideDown('fast');
+                } else {
+                    panel_body.slideUp('fast');
+                }
+                //$(".panel-body").toggle("slow");
+            });
+        });//end ready
+
+
+    </script>
+
+
+    <script>
+        $(function () {
+            $("#StoreId").queryManageStore();
+
+
+        })
+
+    </script>
+
+}

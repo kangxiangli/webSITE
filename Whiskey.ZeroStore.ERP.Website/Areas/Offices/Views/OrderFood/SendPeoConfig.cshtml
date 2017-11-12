@@ -1,0 +1,30 @@
+﻿<div class="form-group">
+    <label class="control-label col-md-6" style="color:#eb603b;">
+        默认短信通知人手机号，以【<span style="color:#ff0000;"> , </span> 】分隔
+    </label>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        通知人 :
+    </label>
+    <div class="col-md-10">
+        @Html.TextArea("Phones", ViewBag.Phones as string, new { @class = "form-control", @rows = "20", @cols = "20" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        通知时间 :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBox("SendHour", ViewBag.SendHour as string, new { @class = "form-control", @check_number = "", @check_input = "", @min_value = "0", @max_value = "23" })
+    </div>
+    <label class="control-label col-md-1" style="margin-left:-30px;">:</label>
+    <div class="col-md-4">
+        @Html.TextBox("SendMinute", ViewBag.SendMinute as string, new { @class = "form-control", @check_number = "", @check_input = "", @min_value = "0", @max_value = "59" })
+    </div>
+</div>
+<script>
+    $(function () {
+        //$(".datetime").datetimepicker();
+    });
+</script>

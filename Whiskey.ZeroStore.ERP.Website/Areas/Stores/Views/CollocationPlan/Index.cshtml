@@ -1,0 +1,330 @@
+﻿<div id="app">
+
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    <switcher-search></switcher-search>
+                    @*<input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">*@
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">方案名</label>
+                            <div class="col-md-8">
+                                <input v-on:keyup.enter="search(null)" class="form-control" type="text" name="name" placeholder="请输入方案名" />
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-5">创建日期：</label>
+                            <div class="col-md-7">
+                                <div class="input-daterange input-group">
+                                    @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                    <span class="input-group-addon">至</span>
+                                    @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button v-on:click="search(null)" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button v-on:click="document.querySelector('.form-search').reset()" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+                        <button id="Create" v-on:click="edit(null)" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增数据</span></button>
+                        @*<button id="EditConfig" v-on:click="editConfig" title="配置修改" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>配置修改</span></button>*@
+                    </div>
+                    <div class="button-recycle">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    <span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>方案名</th>
+                        <th>封面</th>
+                        <th>单品数量</th>
+                        <th>搭配组合数量</th>
+                        <th>使用次数</th>
+                        <th>创建时间</th>
+                        <th>操作人</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{index+1}}</td>
+                        <td>{{item.Name}}</td>
+                        <td><img-suspension v-bind:path="item.CoverImg"></img-suspension></td>
+                        <td>{{item.RuleCount}}</td>
+                        <td>{{item.SuggestionCount}}</td>
+                        <td>{{item.UseCount}}</td>
+                        <td>{{item.CreatedTime|datetime}}</td>
+                        <td>{{item.MemberName}}</td>
+                        <td>
+                            <button id="View" title="查看详细信息" v-on:click="view(item.Id)" class="btn-opt-box"><i class="btn-view-icon"></i></button>
+                            <button title="修改数据" v-on:click="edit(item.Id)" class="Update btn-opt-box"><i class="btn-setting-icon"></i></button>
+                            <button id="Disable" title="禁用数据" v-if="item.IsEnabled" v-on:click="disable(item.Id)" class="btn-opt-box"><i class="btn-disable-icon"></i></button>
+                            <button id="Enable" title="启用数据" v-if="!item.IsEnabled" v-on:click="enable(item.Id)" class="btn-opt-box"><i class="btn-enable-icon"></i></button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+            
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+    var baseUrl = '/Stores/CollocationPlan';
+
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            pageFlags: [],
+            isDeleted: false,
+            isEnabled: true,
+            numbers: [],
+            pageDatas: [], //分页数据
+            currentId: 0,
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            },
+            checkedIds: [],
+            currentId: 0
+        },
+        mounted: function () {
+
+            this.queryFlag();
+            this.search();
+        },
+        updated() {
+            this.pageFlags.forEach(selector => $(selector).remove());
+        },
+        methods: {
+            
+            queryFlag() {
+                var _self = this;
+                $.getJSON(baseUrl + '/QueryPageFlag', {isValid:false})
+                    .done(function (res) {
+                        if (res.ResultType !== 3) {
+                            alert(res.Message);
+                            return;
+                        }
+                        if (Array.isArray(res.Data)) {
+                            _self.pageFlags = res.Data;
+                        }
+                    })
+            },
+
+            toggleEnable: function () {
+                this.isEnabled = !this.isEnabled;
+                this.search({ isEnbled: this.isEnabled })
+            },
+            search: function (filter) {
+
+                var _self = this;
+
+                var searchData = {
+
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+
+                }
+                var name = '', val = '';
+                $(".form-search input[name],select[name]").each(function (index,elem) {
+                     name = elem.getAttribute("name")
+                     val = elem.value;
+                     if (val) {
+                         searchData[name] = val;
+                     }
+                })
+
+
+                if (filter) {
+
+                    searchData = _.extend(searchData, filter)
+                }
+
+
+                $.getJSON(baseUrl + '/List', searchData).done(function (res) {
+                    if (res.ResultType !== 3) {
+                        //console
+                        return;
+                    }
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+
+                })
+            },
+            edit: function (id) {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "添加数据",
+                    actionUrl: baseUrl + "/edit",
+                    getParams: { id: id },
+                    lockButton: $(this),
+                    formValidator: function () {
+
+                        var data = {
+                            id: editPlanVM.id,
+                            name: editPlanVM.name,
+                            desc: editPlanVM.desc,
+                            coverImg: editPlanVM.coverImg,
+                            tags: editPlanVM.checkedAttrs,
+                            rules: editPlanVM.rules,
+                            suggestions: editPlanVM.suggestions
+                        }
+
+                        // 校验
+                        if (!data.name || !data.name.length) {
+                            alert('方案名不可为空')
+                            return false;
+                        }
+                        if (!data.desc || !data.desc.length) {
+                            alert('方案描述不可为空')
+                            return false;
+                        }
+
+                        if (!data.coverImg || !data.coverImg.length) {
+                            alert('方案封面不可为空')
+                            return false;
+                        }
+
+                        if (!data.rules || !data.rules.length) {
+                            alert('方案模版不可为空')
+                            return false;
+                        }
+
+                        if (!data.suggestions || !data.suggestions.length) {
+                            alert('方案搭配建议不可为空')
+                            return false;
+                        }
+
+                        if (data.suggestions.some(i => !i.memberCollocationId)) {
+                            alert('搭配建议需要关联会员搭配')
+                            return false;
+                        }
+
+                        $.post(baseUrl + "/edit", data)
+                            .done(function (res) {
+                                if (res.ResultType === 3) {
+
+                                    $("button.bootbox-close-button").trigger('click')
+                                    _self.search();
+                                }
+                                else {
+                                    alert(res.Message);
+                                }
+                                return false;
+                            })
+                    }
+                });
+            },
+
+            view: function (id) {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxView({
+                    caption: "查看数据",
+                    actionUrl: "@Url.Action("Edit")",
+                    lockButton: $(this),
+                    params: { Id:id}
+
+                });
+            },
+            disable: function (id) {
+                var _self = this;
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要禁用这条数据吗？",
+                    notes: "提示：禁用后数据将不在其他任何地方使用",
+                    actionUrl: "@Url.Action("Disable")",
+                    params: { Id: id },
+                    lockButton:null,
+                    complete: function () {
+                        _self.search();
+                    }
+                });
+            },
+            enable: function (id) {
+                 var _self = this;
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要启用这条数据吗？",
+                    notes: "",
+                    actionUrl: "@Url.Action("Enable")",
+                    params: { Id: id },
+                    lockButton:null,
+                    complete: function () {
+                        _self.search();
+                    }
+                });
+            },
+            toggleEnable: function () {
+                this.isEnabled = !this.isEnabled;
+                this.search({ isEnabled: this.isEnabled })
+            },
+
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            }
+        }
+    })
+    })
+
+</script>

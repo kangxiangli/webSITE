@@ -1,0 +1,212 @@
+﻿<style>
+    .pagination li input {
+        position: relative;
+        float: left;
+        padding: 6px 12px;
+        text-decoration: none;
+        color: #fff;
+        background-color: rgba(0,0,0,0.2);
+        border: 1px solid rgba(0,0,0,0.1);
+        margin-left: -1px;
+        width: 66px;
+        margin-right: 5px
+    }
+</style>
+<template id="my-page">
+    <div class="row">
+        <div class="col-md-12 clearfix form-inline">
+            <div v-if="showTotal" class="pull-left form-group" style="line-height:55px;position:absolute;left:10px;">
+                <label> 显示：</label>
+                <select v-model="pageSize" v-on:change="onSize" class="form-control">
+                    <option v-for="n in pageSizeOpts" v-bind:value="n">{{n}}条</option>
+                </select>
+            </div>
+
+            <div class="pull-right">
+
+                <ul class="pagination">
+                    <li style="float:left;line-height:2.5rem;margin-right:10px;">共 {{total}}条</li>
+
+                    <li v-bind:class="prevClasses" v-on:click="prev">
+                        <a>上一页</a>
+                    </li>
+                    <li title="1" v-if="allPages >= 1" v-bind:class="firstPageClasses" v-on:click="changePage(1)"><a>1</a></li>
+                    <!--向前3页-->
+                    <li v-bind:title="current-3" v-if="current - 3 > 1" v-on:click="fastPrev"><a>...</a></li>
+                    <!--向前2页-->
+                    <li v-bind:title="current - 2" v-if="current - 2 > 1" v-on:click="changePage(current - 2)"><a>{{ current - 2 }}</a></li>
+
+                    <!--向前1页-->
+                    <li v-bind:title="current - 1" v-if="current - 1 > 1" v-on:click="changePage(current - 1)"><a>{{ current - 1 }}</a></li>
+
+                    <!--当前页-->
+                    <li v-bind:title="current" v-if="current != 1 && current != allPages" class="active"><a>{{ current }}</a></li>
+
+                    <!--向后1页-->
+                    <li v-bind:title="current + 1" v-if="current + 1 < allPages" v-on:click="changePage(current + 1)"><a>{{ current + 1 }}</a></li>
+
+                    <!--向后2页-->
+                    <li v-bind:title="current + 2" v-if="current + 2 < allPages" v-on:click="changePage(current + 2)"><a>{{ current + 2 }}</a></li>
+
+                    <!--向后3页-->
+                    <li v-bind:title="current+3" v-if="current + 3 < allPages" v-on:click="fastNext"><a>...</a></li>
+                    <!--最后一页-->
+                    <li v-bind:title="allPages" v-if="allPages > 1" v-bind:class="lastPageClasses" v-on:click="changePage(allPages)"><a>{{allPages}}</a></li>
+                    <li v-if="showElevator">
+                        <input type="text" v-on:keyup.enter="jumpPage" v-model="jump" />
+                    </li>
+                    <!--下一页-->
+                    <li v-bind:class="nextClasses" v-on:click="next">
+                        <a>下一页</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+
+</template>
+<script>
+    $(function () {
+        Vue.filter('datetime', function (str, fmt) {
+            if (!fmt) {
+                fmt = "yyyy-MM-dd hh:mm:ss"
+            }
+            var date = new Date(+str.replace(/\/Date\((\d+)\)\//gi, "$1"));
+            var o = {
+                "M+": date.getMonth() + 1, //月份
+                "d+": date.getDate(), //日
+                "h+": date.getHours(), //小时
+                "m+": date.getMinutes(), //分
+                "s+": date.getSeconds(), //秒
+                "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+                "S": date.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o) {
+
+                if (new RegExp("(" + k + ")").test(fmt)) {
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                }
+            }
+            return fmt;
+        })
+        Vue.component('my-page', {
+            template: '#my-page',
+            props: {
+                current: {
+                    type: Number,
+                    default: 1
+                },
+                total: {
+                    type: Number,
+                    default: 0
+                },
+                pageSize: {
+                    type: Number,
+                    default: 10
+                },
+                pageSizeOpts: {
+                    type: Array,
+                    default() {
+                        return [5,10,16,20];
+                    }
+                },
+                showTotal: {
+                    type: Boolean,
+                    default: true
+                },
+                showElevator: {
+                    type: Boolean,
+                    default: false
+                }
+            },
+            data() {
+                return {
+                    jump: ''
+                };
+            },
+            computed: {
+
+                allPages() {
+                    const allPage = Math.ceil(this.total / this.pageSize);
+                    return (allPage === 0) ? 1 : allPage;
+                },
+
+                prevClasses() {
+                    return this.current === 1 ? 'disabled' : '';
+                },
+
+
+                nextClasses() {
+                    return this.current === this.allPages ? 'disabled' : '';
+                },
+
+
+                firstPageClasses() {
+                    return this.current === 1 ? 'active' : '';
+                },
+
+
+                lastPageClasses() {
+                    return this.current == this.allPages ? 'active' : '';
+                }
+            },
+            methods: {
+                changePage(page) {
+                    if (this.current != page) {
+                        this.$emit('on-change', page);
+                    }
+                },
+                jumpPage() {
+                    const jumpPage = parseInt(this.jump);
+
+                    if (!isNaN(jumpPage) && jumpPage > 0 && jumpPage <= this.allPages) {
+                        this.changePage(jumpPage);
+                    }
+                },
+                prev() {
+                    const current = this.current;
+                    if (current <= 1) {
+                        return false;
+                    }
+                    this.changePage(current - 1);
+                },
+                next() {
+                    const current = this.current;
+                    if (current >= this.allPages) {
+                        return false;
+                    }
+                    this.changePage(current + 1);
+                },
+                fastPrev() {
+                    const page = this.current - 3;
+                    if (page > 0) {
+                        this.changePage(page);
+                    } else {
+                        this.changePage(1);
+                    }
+                },
+                fastNext() {
+                    const page = this.current + 3;
+                    if (page > this.allPages) {
+                        this.changePage(this.allPages);
+                    } else {
+                        this.changePage(page);
+                    }
+                },
+                onSize() {
+                    const currentSize = this.pageSize;
+                    this.$emit('on-page-size-change', currentSize);
+                }
+
+
+            }
+
+        })
+    })
+
+</script>
+
+

@@ -1,0 +1,96 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model RoleDto
+<style>
+    #roleright_tab ul li {
+        float: left;
+        margin-left: 5px !important;
+    }
+
+    #roleright_tab li a {
+        padding: 7px 3px;
+    }
+
+    .permis-contain li {
+        border-left: 1px solid gray;
+    }
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+    <li><a href="#roleright_tab" id="defauright_a" data-toggle="tab">角色权限</a></li>
+    @*<li><a href="#rolegroup_tab" data-toggle="tab">所属组</a></li>*@
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.RoleName) :
+            </label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.RoleName, new { @class = "form-control" })
+            </div>
+            <div class="control-detail col-md-4">
+                @Html.ValidationMessageFor(m => m.RoleName)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.Description) :
+            </label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+            </div>
+            <div class="control-detail col-md-4">
+                @Html.ValidationMessageFor(m => m.Description)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.Weight) :
+            </label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.Weight, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+            <div class="control-detail col-md-4">
+                @Html.ValidationMessageFor(m => m.Weight)
+            </div>
+        </div>
+        @Html.HiddenFor(m => m.Id)
+
+
+    </div>
+    <div class="tab-pane fade" id="roleright_tab">
+        @{Html.RenderAction("LoadPermissionTree", "Role");}
+    </div>
+    @*<div class="tab-pane fade" id="rolegroup_tab">
+        @if (((Dictionary<int, string[]>)ViewBag.groups) == null || ((Dictionary<int, string[]>)ViewBag.groups).Count() == 0)
+        {
+            <span style="text-align:center">无分组数据……</span>
+        }
+        else
+        {
+            foreach (var item in (Dictionary<int, string[]>)ViewBag.groups)
+            {
+                if (item.Value[1] == "1")
+                {
+                    <label style="padding-left:15px"><input name="group" type="checkbox" value="@item.Key" checked="checked" />@item.Value[0]</label>
+                }
+                else
+                {
+                    <label style="padding-left:15px"><input name="group" type="checkbox" value="@item.Key" />@item.Value[0]</label>
+                }
+            }}
+    </div>*@
+</div>
+<script>
+    $(function () {
+        $(document).delegate("#roleright_tab .tree :checkbox:not([class*='xianshi'])", "click", function () {
+            var weight = $(".tree .erji>span>:checkbox:checked").length;
+            $("#baseinfo_tab #Weight").val(weight);
+        });
+    });
+</script>

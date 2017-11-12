@@ -1,0 +1,75 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@model LeaveInfoDto
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        可用调休 :
+    </label>
+    <div class="col-md-6">
+        @ViewBag.ChangeRestDays
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        可用年假 :
+    </label>
+    <div class="col-md-6">
+        @ViewBag.AnnualLeaveDays
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.LeaveReason) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.LeaveReason, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.VacationType) :
+    </label>
+    <div class="col-md-10">        
+        <select id="VacationType" name="VacationType" class="form-control">            
+            <option value="@((int)VacationFlag.SickLeave)">病假</option>
+            <option value="@((int)VacationFlag.Leave)">事假</option>
+            <option value="@((int)VacationFlag.AnnualLeave)">年假</option>
+            <option value="@((int)VacationFlag.ChangeRest)">调休</option>
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        请假时间 :
+    </label>
+    <div class="col-md-10">
+        <div class="input-group">
+            @Html.TextBoxFor(x => x.StartTime, new { @class = "form-control datetime", @placeholder = "开始时间" })
+            <span class="input-group-addon">至</span>
+            @Html.TextBoxFor(x => x.EndTime, new { @class = "form-control datetime", @placeholder = "结束时间" })
+        </div>
+    </div>
+</div>
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+    $(function () {
+        
+        
+    });
+    //获取当前时期并赋值给日期控件
+    var myDate = new Date();
+    var date = myDate.toLocaleDateString();
+    //$(".datetime").attr("value", date);
+    //初始化日期控件
+    $(".datetime").datetimepicker({
+        startDate: date,
+        format: 'yyyy/mm/dd hh:ii',
+        autoclose: false,
+        minView: 'hour',
+        todayBtn: true,
+        //forceParse:false
+    });
+</script>

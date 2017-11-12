@@ -1,0 +1,82 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model InventoryDto
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StoreId) :
+    </label>
+    <div class="col-md-8 ">
+        @Html.DropDownList("StoreId", (List<SelectListItem>)ViewBag.Stores, new { @class = "form-control" })
+
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m=>m.StorageId) :
+    </label>
+    <div class="col-md-8">
+        @Html.DropDownList("StorageId", (List<SelectListItem>)ViewBag.Storages, new {@class="form-control create-storage"})
+        
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m=>m.ProductId) :
+    </label>
+    <div class="col-md-8">
+        @Html.DropDownList("ProductId", (List<SelectListItem>)(ViewBag.Products), new {@class="form-control" })
+       
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m=>m.Quantity) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m=> m.Quantity, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m=>m.TagPrice) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m=> m.TagPrice, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m=>m.RetailPrice) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m=> m.RetailPrice, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m=>m.WholesalePrice) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m=> m.WholesalePrice, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m=>m.PurchasePrice) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m=> m.PurchasePrice, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m=>m.LocationCode) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m=> m.LocationCode, new { @class = "form-control" })
+    </div>
+</div>

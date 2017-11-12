@@ -1,0 +1,7 @@
+D:\用户目录\我的文档\sitenew\tfs\RongCloudServer\bin\Release\Whiskey.RongCloudServer.dll
+D:\用户目录\我的文档\sitenew\tfs\RongCloudServer\bin\Release\Whiskey.RongCloudServer.pdb
+D:\用户目录\我的文档\sitenew\tfs\RongCloudServer\bin\Release\Newtonsoft.Json.dll
+D:\用户目录\我的文档\sitenew\tfs\RongCloudServer\bin\Release\Newtonsoft.Json.xml
+D:\用户目录\我的文档\sitenew\tfs\RongCloudServer\obj\Release\Whiskey.RongCloudServer.csprojResolveAssemblyReference.cache
+D:\用户目录\我的文档\sitenew\tfs\RongCloudServer\obj\Release\Whiskey.RongCloudServer.dll
+D:\用户目录\我的文档\sitenew\tfs\RongCloudServer\obj\Release\Whiskey.RongCloudServer.pdb

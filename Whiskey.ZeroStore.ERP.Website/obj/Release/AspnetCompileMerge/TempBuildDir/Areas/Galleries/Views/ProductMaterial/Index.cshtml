@@ -1,0 +1,437 @@
+﻿
+<style>
+    .thumbnail_five_box {
+        position: relative;
+        width: 180px;
+        background: rgba(0, 0, 0, 0.2);
+        height: 180px;
+        margin: 0 auto;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .thumbnail_five {
+        left: 0;
+        padding: 2px;
+        position: absolute;
+        height: 99%;
+        overflow: hidden;
+    }
+
+    .thumbnail_f {
+        max-width: 179px;
+        /* margin: 0 auto 0 auto; */
+        /* position: relative; */
+        padding-bottom: 141px;
+        /* height: 0; */
+        overflow: hidden;
+    }
+
+
+    .lazy_img {
+        opacity: 0.2;
+    }
+
+    .thumbnail_five img {
+        width: 174px !important;
+    }
+
+    .gallery-item img {
+        padding: 0px !important;
+        border: 0 !important;
+        background: none !important;
+        margin-top: 0px;
+        box-shadow: none;
+    }
+
+    .brick {
+        width: 180px;
+        height: 273px;
+    }
+
+    .gallery-item.polaroid:nth-child(9) {
+        position: absolute;
+        /*top: 300px !important;*/
+    }
+
+    .brick .info h5 {
+        width: 180px;
+        height: 15px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .brick .info a:nth-child(2) {
+        color: rgba(255, 255, 255, 0.7);
+        text-align: center;
+        width: 180px;
+        display: block;
+    }
+
+    #news {
+        background: url("/Content/Images/noimage.pngimg") no-repeat center center;
+        background-size: 100% 100%;
+    }
+
+    .lazy_img {
+        opacity: 0.3;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">图片类别</label>
+                        <div class="col-md-9">
+                            @*@Html.DropDownList("AttributeId", (List<SelectListItem>)ViewBag.GalleryAttribute, new { @class = "form-control" })*@
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">图片描述</label>
+                        <div class="col-md-9">
+                            @Html.TextBox("Description", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">图片标签</label>
+                        <div class="col-md-9">
+                            @Html.TextBox("Tags", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">创建日期</label>
+                        <div class="col-md-9">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <script type="text/x-handlebars-template" id="waterfall-tpl">
+            {{#result}}
+            <div class="gallery-item polaroid ">
+                <div class="options">
+                    <div class="view">
+                        <a href="javascript:View(this,{{Id}});"><span class="icon-plus"></span><b>查看</b></a>
+                    </div>
+                    <div class="delete">
+                        <a href="javascript:Delete(this,{{Id}});"><span class="icon-plus"></span><b>删除</b></a>
+                    </div>
+                    <div class="update">
+                        <a href="javascript:Update(this,{{Id}});"><span class="icon-heart"></span><b>修改</b></a>
+                    </div>
+                    <div class="update">
+
+                    </div>
+                </div>
+                <div class="brick">
+                    <a href="javascript:View(this,{{Id}});">
+                        <div class="thumbnail_five_box"><div class="thumbnail_five"><div class="thumbnail_f" id="news">  <img class="lazy_img" onerror="imgloaderror(this);" alt="{{PictureName}}" title="" trueImg="{{OriginalPath}}" src="" style=" width:100%" /></div></div></div>
+
+                        <!--<div class="thumbnail_five_box"><div class="thumbnail_five"><div class="thumbnail_f" id="news">  <img class="lazy_img" onerror="imgloaderror(this);" trueImg="{{OriginalPath}}" alt="{{PictureName}}" title="" src="" /> </div></div></div>-->
+
+
+                        <div class="info">
+                            <h5>{{PictureName}}</h5>
+                            <a href="javascript:downloadImage('{{OriginalPath}}');"><span class="icon-heart"></span><b>rt下载</b></a>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+            {{/result}}
+        </script>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                    <button id="Create" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增数据</span></button>
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>图片列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+            </div>
+        </div>
+        <div class="gallery-container">
+        </div>
+    </div>
+</div>
+@section Scripts{
+    @Scripts.Render("~/bundles/waterfall")
+    <script type="text/javascript">
+    	//延迟加载
+   var news = $("#news");
+    	var imgList=$("#news>.lazy_img");
+ 		function lazyImg(curImg) {
+	        var oImg = new Image;
+	        oImg.src = curImg.getAttribute("trueImg");
+	        console.log("oImg.src"+oImg.src);
+	        oImg.onload = function () {
+	            curImg.src = this.src;
+	            curImg.style.display = "block";
+	            fadeIn(curImg);
+	            oImg = null;
+        };
+        curImg.isLoad = true;
+    }
+    //->实现渐现的效果
+    function fadeIn(curImg) {
+        var duration = 500, interval = 10, target = 1;
+        var step = (target / duration) * interval;
+        var timer = window.setInterval(function () {
+        	 //var curOp = curImg.css("opacity");
+        	  var curOp= window.getComputedStyle(curImg, null)["opacity"];
+            if (curOp >= 1) {
+                curImg.style.opacity = 1;
+                window.clearInterval(timer);
+                return;
+            }
+           // curOp += step;
+              curOp =((curOp*10)+ (step*10))/10;
+              console.log(curOp);
+            curImg.style.opacity = curOp;
+        }, interval);
+    }
+  //->循环处理每一张图片
+    function handleAllImg() {
+    	$.each($("#news>.lazy_img"),function(i,item){
+			var curImgPar = $("#news>.lazy_img").parent()
+    		 lazyImg(item);
+    	})
+    }
+
+    window.setTimeout(handleAllImg, 300);
+
+    $(document).ready(function () {
+
+        $('.gallery-container').waterfall({
+            itemCls: 'gallery-item',
+            colWidth: 180,
+            gutterWidth: 20,
+            gutterHeight: 20,
+            path: function (page) {
+                return "@Url.Action("Waterfall")?iDisplayStart=" + ((page - 1) * 10);
+            },
+            params: {
+                'conditions': function () {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    }
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                    $(".form-search select").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                        }
+                    });
+                    $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                        }
+                    });
+                    return JSON.stringify(conditions);
+                },
+                "iDisplayLength": 10,
+                "sColumns": "CreatedTime",
+                "iSortCol_0": 0,
+                "sSortDir_0": "desc"
+            },
+        });
+
+        $("#Create").on("click", function () {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "创建数据",
+                actionUrl: "@Url.Action("Create")",
+                lockButton: $(this),
+                formValidator: function () {
+                    var colours = $("#Colours").val();
+                    var attributes = $("#Attributes").val();
+                    var orginallpath = $("#OriginalPath").val();
+                    if (orginallpath.length == 0) {
+                        $.whiskey.web.alert({
+                            type: "warning",
+                            content: "请上传一张素材图片！",
+                            callback: function () {
+                            }
+                        });
+                        $(".modal-form .nav-tabs li:eq(0) a").tab("show");
+                        return false;
+                    }
+                    //if(colours.length == 0){
+                    //    $.whiskey.web.alert({
+                    //        type: "warning",
+                    //        content: "请点击预览图选择一种或多种可以代表图片色调的主色！",
+                    //        callback: function () {
+                    //        }
+                    //    });
+                    //    $(".modal-form .nav-tabs li:eq(0) a").tab("show");
+
+                    //    return false;
+                    //}
+                    if (attributes.length == 0) {
+                        $.whiskey.web.alert({
+                            type: "warning",
+                            content: "请至少选择一种图片属性！",
+                            callback: function () {
+
+                            }
+                        });
+                        $(".modal-form .nav-tabs li:eq(1) a").tab("show");
+                        return false;
+                    }
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.waterfall.reset('.gallery-container');
+                    return true;
+                },
+            });
+        });
+
+        $("#Search").on("click", function () {
+            $.whiskey.waterfall.reset('.gallery-container');
+        });
+
+        $("#Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+
+
+    });
+
+    function View(sender, Id) {
+        var view = new $.whiskey.web.ajaxView({
+            caption: "详细信息",
+            actionUrl: "@Url.Action("View")",
+            params: { Id: Id },
+            lockButton: $(sender),
+        });
+    }
+
+
+    function Update(sender, Id) {
+        var dialog = new $.whiskey.web.ajaxDialog({
+            caption: "修改信息",
+            actionUrl: "@Url.Action("Update")",
+            getParams: { Id: Id },
+            lockButton: $(sender),
+            formValidator: function () {
+                var colours = $("#Colours").val();
+                var attributes = $("#Attributes").val();
+                var orginallpath = $("#OriginalPath").val();
+                if (orginallpath.length == 0) {
+                    $.whiskey.web.alert({
+                        type: "warning",
+                        content: "请上传一张素材图片！",
+                        callback: function () {
+                        }
+                    });
+                    $(".modal-form .nav-tabs li:eq(0) a").tab("show");
+                    return false;
+                }
+                //if(colours.length == 0){
+                //    $.whiskey.web.alert({
+                //        type: "warning",
+                //        content: "请点击预览图选择一种或多种可以代表图片色调的主色！",
+                //        callback: function () {
+                //        }
+                //    });
+                //    $(".modal-form .nav-tabs li:eq(0) a").tab("show");
+
+                //    return false;
+                //}
+                if (attributes.length == 0) {
+                    $.whiskey.web.alert({
+                        type: "warning",
+                        content: "请至少选择一种图片属性！",
+                        callback: function () {
+
+                        }
+                    });
+                    $(".modal-form .nav-tabs li:eq(1) a").tab("show");
+                    return false;
+                }
+                var $form = $(".modal-form");
+                if (!$form.valid()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            postComplete: function () {
+                $.whiskey.waterfall.reset('.gallery-container');
+                return true;
+            },
+        });
+    }
+
+    function Delete(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要彻底删除这条数据吗？",
+            notes: "提示：数据彻底删除后可以恢复。",
+            actionUrl: "@Url.Action("Remove")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.waterfall.reset('.gallery-container');
+            }
+        });
+    }
+
+   function downloadImage(path){
+       location.href = "@Url.Action("DownloadImage")"+"?Path="+path;
+   }
+
+    </script>
+}

@@ -1,0 +1,130 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@model PurchaseItem
+
+<style>
+    img {
+    width:98%;
+    }
+</style>
+<div>
+    <ul id="tab_contentmain" class="nav nav-tabs">
+        <li class="active"><a  href="#baseinfo" data-toggle="tab">基本信息</a> </li>
+        <li><a id="picking_a" href="#descriptInfo" data-toggle="tab">详细描述</a></li>
+
+    </ul>
+    <div id="TabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="baseinfo">
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.Purchase.PurchaseNumber) :
+                </label>
+                <div class="col-md-6">
+                    @Model.Purchase.PurchaseNumber
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.ProductId) :
+                </label>
+                <div class="col-md-6">
+                    @Model.Product.ProductName
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.TagPrice) :
+                </label>
+                <div class="col-md-6">
+                    @Model.TagPrice
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.RetailPrice) :
+                </label>
+                <div class="col-md-6">
+                    @Model.RetailPrice
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.WholesalePrice) :
+                </label>
+                <div class="col-md-6">
+                    @Model.WholesalePrice
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.PurchasePrice) :
+                </label>
+                <div class="col-md-6">
+                    @Model.PurchasePrice
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.Quantity) :
+                </label>
+                <div class="col-md-6">
+                    @Model.Quantity
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(c => c.IsDeleted) :
+                </label>
+                <div class="col-md-6">
+                    @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.IsEnabled) :
+                </label>
+                <div class="col-md-6">
+                    @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(c => c.CreatedTime):
+                </label>
+                <div class="col-md-6">
+                    @Model.CreatedTime
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    操作人员 :
+                </label>
+                <div class="col-md-6">
+                    @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+                </div>
+            </div>
+
+
+        </div>
+        <div class="tab-pane fade" id="descriptInfo">
+            
+        </div>
+        <input id="hid_da" type="hidden" value="@Model.Product.Description" />
+
+    </div>
+</div>
+<script>
+    $(function () {
+        var te = $("#hid_da").val();
+        te += "<a href='#tab_contentmain'>返回顶部</a>";
+        $("#descriptInfo").html("").html(te);
+    })
+</script>
+
+
+
+
+

@@ -1,0 +1,66 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@model Inventory
+<div class="form-group" style="display: none">
+    <label class="control-label col-md-3">
+       所属店铺id :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m=>m.StoreId, new { @class = "form-control",@readonly="true",style="background-color:#dddddd"})
+       
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        所属店铺名称 :
+    </label>
+    <div class="col-md-7">
+
+        @Html.TextBoxFor(m => m.Store.StoreName, new { @class = "form-control", @readonly = "true", style = "background-color:#dddddd" })
+        
+    </div>
+</div>
+<div class="form-group" style="display: none">
+    <label class="control-label col-md-3">
+        所属仓库id :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.StorageId, new { @class = "form-control", @readonly = "true", style = "background-color:#dddddd" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        所属仓库名称 :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.Storage.StorageName, new { @class = "form-control ", @readonly = "true", style = "background-color:#dddddd" })
+    </div>
+</div>
+<div class="form-group" style="display: none">
+    <label class="control-label col-md-3">
+        所属商品id :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.ProductId, new { @class = "form-control", @readonly = "true", style = "background-color:#dddddd" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        所属商品名称 :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.Product.ProductName, new { @class = "form-control", @readonly = "true", style = "background-color:#dddddd" })
+    </div>
+</div>
+
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m=>m.LocationCode) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.LocationCode, new { @class = "form-control " })
+    </div>
+</div>
+@Html.HiddenFor(m=> m.Id)
+

@@ -1,0 +1,96 @@
+﻿@using Whiskey.ZeroStore.ERP.Models;
+
+@{
+    IEnumerable<Module> Menu = ViewBag.Menu;
+    string themePath = ViewBag.themePath ?? string.Empty;
+}
+@{
+    if (ViewBag.themeExist ?? false)
+    {
+        Html.RenderPartial(Path.Combine(themePath, "_Menu.cshtml"), ViewBag as object);
+    }
+    else
+    {
+        <script src="/content/scripts/layout/themes.js"></script>
+        <div id="main-menu" role="navigation">
+            <div id="main-menu-inner">
+                <div class="menu-content top" id="menu-content-demo">
+                    <div>
+                        <div class="text-bg"><span class="text-sm">你好！@ViewBag.AdminName</span></div>
+                        <a href="javascript:"><img src="@ViewBag.AdminImg" alt="" class=""></a>
+                        <div class="btn-group">
+                            <a href="#" class="btn btn-xs btn-primary btn-outline dark"><i class="fa fa-envelope"></i></a>
+                            <a href="/Members/Member/Update?Id=@ViewBag.AdminId" id="Profiles" class="btn btn-xs btn-primary btn-outline dark"><i class="fa fa-user"></i></a>
+                            <a href="#" class="btn btn-xs btn-primary btn-outline dark"><i class="fa fa-cog"></i></a>
+                            <a href="@Url.Action("Logout", "Login", new {area="Authorities" })" class="btn btn-xs btn-danger btn-outline dark"><i class="fa fa-power-off"></i></a>
+                        </div>
+                        <a href="#" class="close">&times;</a>
+                    </div>
+                    <input type="hidden" value="@ViewBag.AdminId" />
+                </div>
+                <ul class="navigation">
+                    <li>
+                        <a href="@Url.Action("Index", "Home", new { area = "Authorities" })"><i class="menu-icon fa fa-home"></i><span class="mm-text">首页统计面板</span></a>
+                    </li>
+                    @foreach (var parentMenu in Menu)
+                    {
+                        <li class="mm-dropdown">
+                            <a href="javascript:void(0)"><i class="menu-icon fa @parentMenu.Icon"></i><span class="mm-text">@parentMenu.ModuleName</span></a>
+                            <ul>
+                                @if (parentMenu.Children != null && parentMenu.Children.Count() > 0)
+                                {
+                                    foreach (var childMenu in parentMenu.Children)
+                                    {
+                                        <li>
+                                            <a tabindex="-1" href="@childMenu.PageUrl" rel="@childMenu.PageController"><i class="fa fa-caret-right"></i> <span class="mm-text">@childMenu.ModuleName</span></a>
+                                        </li>
+                                    }
+                                }
+
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+}
+<script>
+    (function ($) {
+        $("ul.navigation,#sidebar ul.nav").find("a[href]").filter(":not([href*='javascript'],[href^='#'],[href=''])").each(function (index, item) {
+            var $item = $(item);
+            $item.attr("fashion-href", item.href).removeAttr("href").css("cursor", "pointer");
+            $item.bind('click.nav', function () {
+                var itemurl = $(this).attr("fashion-href");
+                _loadPartialPage(itemurl);
+                history.pushState(history.state, "", itemurl);
+                $item.parent().addClass("active").siblings().removeClass("active").parents("li.active").siblings().removeClass("active").find("li").removeClass("active");
+            });
+        });
+        function _loadPartialPage(itemurl) {
+            var loading = $.Loading();
+            loading.show();
+            $.get(itemurl, {}, function (segment) {
+                if (typeof segment == "object" && segment.ResultType && segment.ResultType !== 3 && segment.Message) {
+                    loading.dispose(true);
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: segment.Message,
+                        callback: function () {
+                            loading.dispose(true);
+                            location.href = '/Authorities/Home';
+                        }
+                    });
+                    return;
+                }
+                else {
+                    $("#main-wrapper").empty().append(segment);
+                    loading.dispose(true);
+
+                }
+
+            })
+          
+        }
+    })(jQuery);
+</script>

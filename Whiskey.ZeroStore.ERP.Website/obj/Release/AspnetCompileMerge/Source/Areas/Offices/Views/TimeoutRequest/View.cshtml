@@ -1,0 +1,85 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+@model TimeoutRequest
+
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Department.DepartmentName) :
+    </label>
+    <div class="col-md-7">
+        @Model.Department.DepartmentName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        超时类型 :
+    </label>
+    <div class="col-md-7">
+        @Model.TimeoutType.Name
+    </div>
+</div>
+ 
+<div class="form-group">
+    <label class="control-label col-md-3">
+        申请人 :
+    </label>
+    <div class="col-md-7">
+        @Model.RequestAdmin.Member.RealName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        审核人:
+    </label>
+    <div class="col-md-7">
+        @if (Model.VerifyAdminId.HasValue)
+        {
+            @Model.VerifyAdmin.Member.RealName
+        }
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m=>m.Number):
+    </label>
+    <div class="col-md-7">
+        @Model.Number
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Notes):
+    </label>
+    <div class="col-md-7">
+        @Model.Notes
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.State) :
+    </label>
+    <div class="col-md-7">
+        @Model.State.ToString()
+    </div>
+</div>
+
+
+ 

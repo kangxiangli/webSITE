@@ -1,0 +1,293 @@
+﻿<style>
+    .modal-content {
+        width: 1054px;
+    }
+</style>
+<div class="row memb-lis">
+    <div class="panel panel-search">
+        <div class="clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search form-sear-lis" >
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-5">归属店铺：</label>
+                        <div class="col-md-7">
+                            @Html.DropDownList("StoreId", (List<SelectListItem>)ViewBag.StoreIds, new { @class = "form-control selectpicker", data_live_search="true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-5">搭配师：</label>
+                        <div class="col-md-7">
+                            @Html.DropDownList("CollocationId", (List<SelectListItem>)ViewBag.CollocationIds, new { @class = "form-control selectpicker" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-5">会员账号：</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("AdminName", "", new { @class = "form-control", placeholder = "输入员工账号" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-5">电子邮箱：</label>
+                        <div class="col-md-7">
+
+                            @Html.TextBox("Email", "", new { @class = "form-control", placeholder = "输入电子邮箱" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-5">会员姓名：</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("RealName", "", new { @class = "form-control", placeholder = "输入会员姓名" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-5">电话号码：</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("MobilePhone", "", new { @class = "form-control", placeholder = "输入电话号码" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-5">性别：</label>
+                        <div class="col-md-7">
+                            <select id="Gender" name="Gender" class="form-control selectpicker">
+                                <option value="">选择性别</option>
+                                <option value="1">男</option>
+                                <option value="0">女</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-5">备注信息：</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("Notes", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/Scripts/Common/comm.js"></script>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+           
+        </div>
+        <table class="table mem-li-tab table-list valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<script>
+    //debugger
+    $(document).ready(function () {
+        $(document).delegate(".mem-li-tab tbody tr", "mousemove", function () {
+            $(this).css("cursor", "pointer").addClass("success");
+        }).delegate(".mem-li-tab tbody tr", "mouseleave", function () {
+            $(this).removeClass("success");
+        }).delegate(".mem-li-tab tbody tr", "click", function () {
+            $(this).find("input[type='radio']").attr("checked", "checked");
+        });;
+        $.whiskey.datatable.instances[0]=$(".mem-li-tab").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "/Members/Member/MemberList",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                
+                $(".memb-lis input").each(function () {
+                    var field = $(this).attr("Id");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                });
+                $(".memb-lis select").each(function () {
+                    var field = $(this).attr("Id");
+                    var value = $(this).find("option:selected").val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                    }
+                });
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(0)", nRow).html(iDisplayIndex + 1);
+                //$("td:eq(2)", nRow).css("float", "left");
+                //$(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".table-list").treegrid({
+                    saveState: true,
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+           
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+           
+			{
+			    "sTitle": "编号",
+			    "bSortable": false,
+			    "sName": "RowNumber",
+			    "mData": function (data) {
+			        return '';
+			    }
+			},
+			{
+			    "sTitle": "会员编号",
+			    "bSortable": false,
+			    "sName": "AdminName",
+			    "mData": function (data) {
+			        return data.MembNumber;
+			    },
+			},
+            {
+                "sTitle": "会员昵称",
+                "bSortable": false,
+                "sName": "AdminName",
+                "mData": function(data){
+                    return data.MemberName;
+                },
+            }, 
+            {
+                "sTitle": "归属店铺",
+                "bSortable": false,
+                "sName": "Stores",
+                "mData": function (data) {
+                    
+                    return data.StoreName;
+                },
+            },
+            
+            {
+                "sTitle": "性别",
+                "bSortable": false,
+                "sName": "Gender",
+                "mData": function (data) {
+                    
+                    return data.Gender==1?"男":"女";
+                },
+            }, 
+            {
+                "sTitle": "姓名",
+                "bSortable": false,
+                "sName": "RealName",
+                "mData": function(data){
+                    return data.RealName;
+                },
+            },
+            {
+                "sTitle": "手机号码",
+                "bSortable": false,
+                "sName": "MobilePhone",
+                "mData": function (data) {
+                    return data.MobilePhone;
+                },
+            },
+            
+            {
+                "sTitle": "邮箱",
+                "bSortable": false,
+                "sName": "Email",
+                "mData": function (data) {
+                    
+                    return data.Email;
+                },
+            },
+            {
+                "sTitle": "会员卡号",
+                "bSortable": false,
+                "sName": "Email",
+                "mData": function (data) {
+                    
+                    return data.CardNumber;
+                },
+            },
+            {
+                "sTitle": "备注",
+                "bSortable": false,
+                "sName": "Email",
+                "mData": function (data) {
+                    
+                    return data.Notes;
+                },
+            },
+            
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return "<input class='form-control' value="+data.Id+" name='sel_rad' type='radio'/>";
+                }
+            }
+            ]
+
+        })
+        $(".memb-lis #Search").click(function(){
+            $.whiskey.datatable.instances[0].fnDraw(false);
+        });
+        $(".memb-lis #Clear").click(function () {
+            $(".memb-lis .form-search input").val("");
+        });
+        $(".bootbox-close-button:last").click(function () {
+            $(".creat_div").parents(".modal-content:first").show();
+        });
+    });
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

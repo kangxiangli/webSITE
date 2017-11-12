@@ -1,0 +1,710 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F3CBFE95-9404-4AB9-8E00-475104757A19}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Whiskey.ZeroStore.ERP.Services</RootNamespace>
+    <AssemblyName>Whiskey.ZeroStore.ERP.Services</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc">
+      <HintPath>..\packages\Autofac.Mvc5.3.3.3\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Math36, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\Math36.dll</HintPath>
+    </Reference>
+    <Reference Include="RazorEngine, Version=3.9.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
+      <HintPath>..\packages\RazorEngine.3.9.0\lib\net45\RazorEngine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity.Design" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Achieve\FiledDaysOperation.cs" />
+    <Compile Include="Achieve\OvertimeDaysOperation.cs" />
+    <Compile Include="Content\ContractHelper.cs" />
+    <Compile Include="Content\IBaseContract.cs" />
+    <Compile Include="Content\Models\DepartmentStores.cs" />
+    <Compile Include="Content\PermissionMemberHelper.cs" />
+    <Compile Include="Contracts\Authorities\IOAuthRecordContract.cs" />
+    <Compile Include="Contracts\Authority\IResignationToExamineContract.cs" />
+    <Compile Include="Contracts\Authority\IStatisticsContract.cs" />
+    <Compile Include="Contracts\Commons\IAppointmentGenContract.cs" />
+    <Compile Include="Contracts\Commons\IAppVerManageContract.cs" />
+    <Compile Include="Contracts\Commons\IConfigureContract.cs" />
+    <Compile Include="Contracts\Commons\IPosLocationContract.cs" />
+    <Compile Include="Contracts\Notices\ISmsContract.cs" />
+    <Compile Include="Contracts\Common\IRechargeGenerateRecordContract.cs" />
+    <Compile Include="Contracts\Common\IMemberImportRecordContract.cs" />
+    <Compile Include="Contracts\Commons\ISaleAutoGenContract.cs" />
+    <Compile Include="Contracts\Coupon\ICouponActivityContract.cs" />
+    <Compile Include="Contracts\Finance\IClaimForGoodsContract.cs" />
+    <Compile Include="Contracts\Finance\ICompanyGoodsCategoryContract.cs" />
+    <Compile Include="Contracts\Finance\IGoodsPurchasingContract.cs" />
+    <Compile Include="Contracts\Faces\IMemberFaceContract.cs" />
+    <Compile Include="Contracts\Games\IGameRuleContract.cs" />
+    <Compile Include="Contracts\Members\IMemberBehaviorContract.cs" />
+    <Compile Include="Contracts\Members\IRecommendMemberCollocationContract.cs" />
+    <Compile Include="Contracts\Member\ICollocationQuestionnaireContract.cs" />
+    <Compile Include="Contracts\Offices\IBlogContract.cs" />
+    <Compile Include="Contracts\Offices\IExamContract.cs" />
+    <Compile Include="Contracts\Members\IMemberShareContract.cs" />
+    <Compile Include="Contracts\Notices\INotificationQASystemContract.cs" />
+    <Compile Include="Contracts\Offices\IOrderFoodContract.cs" />
+    <Compile Include="Contracts\Offices\ITimeoutRequestContract.cs" />
+    <Compile Include="Contracts\Offices\IWorkOrderCategoryContract.cs" />
+    <Compile Include="Contracts\Offices\IWorkOrderContract.cs" />
+    <Compile Include="Contracts\Offices\IWorkOrderDealtWithContract.cs" />
+    <Compile Include="Contracts\Games\IGameContract.cs" />
+    <Compile Include="Contracts\Product\IProdcutOrigNumberProductDetailContract.cs" />
+    <Compile Include="Contracts\Properties\ISizeExtentionContract.cs" />
+    <Compile Include="Contracts\Store\IAppointmentContract.cs" />
+    <Compile Include="Contracts\Member\IMemberHeatContract.cs" />
+    <Compile Include="Contracts\Member\IShoppingCartItemContract.cs" />
+    <Compile Include="Contracts\Offices\IPartnerStatisticsContract.cs" />
+    <Compile Include="Contracts\Finance\IPunishScoreRecordContract.cs" />
+    <Compile Include="Contracts\Office\IClassApplicationContract.cs" />
+    <Compile Include="Contracts\Office\IEntryContract.cs" />
+    <Compile Include="Contracts\Office\IEntryToExamineContract.cs" />
+    <Compile Include="Contracts\Office\IPartnerManageCheckContract.cs" />
+    <Compile Include="Contracts\Office\IPartnerManageContract.cs" />
+    <Compile Include="Contracts\Office\IWorkTimeDetaileContract.cs" />
+    <Compile Include="Contracts\ProductTracks\IProductTrackContract.cs" />
+    <Compile Include="Contracts\Properties\IProductCrowdContract.cs" />
+    <Compile Include="Contracts\Property\IStoreValueRuleContract.cs" />
+    <Compile Include="Contracts\Recharge\IRechargeOrderContract.cs" />
+    <Compile Include="Contracts\StoreCollocation\IStoreCollocationInfoContract.cs" />
+    <Compile Include="Contracts\StoreCollocation\IStoreProductCollocationContract.cs" />
+    <Compile Include="Contracts\Store\IAppointmentFeedbackContract.cs" />
+    <Compile Include="Contracts\Store\IAppointmentPackingContract.cs" />
+    <Compile Include="Contracts\Store\ICollocationPlanContract.cs" />
+    <Compile Include="Contracts\Store\ICollocationTemplateContract.cs" />
+    <Compile Include="Contracts\Store\IRetailFeedbackContract.cs" />
+    <Compile Include="Contracts\Store\IStoreCheckRecordContract.cs" />
+    <Compile Include="Contracts\Store\IStoreDepositContract.cs" />
+    <Compile Include="Contracts\Store\IStoreLevelContract.cs" />
+    <Compile Include="Contracts\Store\IStoreNoRecommendContract.cs" />
+    <Compile Include="Contracts\Store\IStoreCheckContract.cs" />
+    <Compile Include="Contracts\Store\IStoreTypeContract.cs" />
+    <Compile Include="Contracts\Video\ICallthepoliceContract.cs" />
+    <Compile Include="Contracts\Video\IVideoEquipmentContract.cs" />
+    <Compile Include="Contracts\Video\IVideoJurisdictionContract.cs" />
+    <Compile Include="Implements\Authorities\OAuthService.cs" />
+    <Compile Include="Implements\Authority\ResignationToExamineService.cs" />
+    <Compile Include="Implements\Authority\StatisticsService.cs" />
+    <Compile Include="Implements\Commons\AppointmentGenService.cs" />
+    <Compile Include="Implements\Commons\AppVerManageService.cs" />
+    <Compile Include="Implements\Commons\ConfigureService.cs" />
+    <Compile Include="Implements\Commons\PosLocationService.cs" />
+    <Compile Include="Implements\Notices\SmsService.cs" />
+    <Compile Include="Implements\Common\RechargeGenerateRecordService.cs" />
+    <Compile Include="Implements\Common\MemberImportRecordService.cs" />
+    <Compile Include="Implements\Commons\SaleAutoGenService.cs" />
+    <Compile Include="Implements\Coupon\CouponActivityService.cs" />
+    <Compile Include="Implements\Finance\ClaimForGoodsService.cs" />
+    <Compile Include="Implements\Finance\CompanyGoodsCategoryService.cs" />
+    <Compile Include="Implements\Finance\GoodsPurchasingService.cs" />
+    <Compile Include="Implements\Faces\MemberFaceService.cs" />
+    <Compile Include="Implements\Games\GameRuleService.cs" />
+    <Compile Include="Implements\Members\CollocationQuestionnaireService.cs" />
+    <Compile Include="Implements\Members\MemberBehaviorService.cs" />
+    <Compile Include="Implements\Members\MemberShareService.cs" />
+    <Compile Include="Implements\Members\RecommendMemberSingleProductService.cs" />
+    <Compile Include="Implements\Members\SignRuleService.cs" />
+    <Compile Include="Implements\Notices\NotificationQASystemService.cs" />
+    <Compile Include="Implements\Offices\OrderFoodService.cs" />
+    <Compile Include="Implements\Offices\TimeoutRequestContractService.cs" />
+    <Compile Include="Implements\Office\TrainingBlogService.cs" />
+    <Compile Include="Implements\Office\ExamService.cs" />
+    <Compile Include="Implements\Finance\MemberPunishScoreRecordService.cs" />
+    <Compile Include="Implements\Offices\WorkOrderCategoryService.cs" />
+    <Compile Include="Implements\Offices\WorkOrderDealtWithService.cs" />
+    <Compile Include="Implements\Offices\WorkOrderService.cs" />
+    <Compile Include="Implements\Games\GameService.cs" />
+    <Compile Include="Implements\Product\ProdcutOrigNumberProductDetailService.cs" />
+    <Compile Include="Implements\Properties\SizeExtentionService.cs" />
+    <Compile Include="Implements\Store\AppointmentFeedbackService.cs" />
+    <Compile Include="Implements\Store\AppointmentPackingService.cs" />
+    <Compile Include="Implements\Store\AppointmentService.cs" />
+    <Compile Include="Implements\Members\ShoppingCartItemService.cs" />
+    <Compile Include="Implements\Members\MemberHeatService.cs" />
+    <Compile Include="Implements\Offices\PartnerStatisticsService.cs" />
+    <Compile Include="Implements\Office\ClassApplicationService.cs" />
+    <Compile Include="Implements\Office\EntryService.cs" />
+    <Compile Include="Implements\Office\EntryToExamineServices.cs" />
+    <Compile Include="Implements\Office\PartnerManageCheckService.cs" />
+    <Compile Include="Implements\Office\PartnerManageService.cs" />
+    <Compile Include="Implements\Office\WorkTimeDetaileService.cs" />
+    <Compile Include="Implements\ProductTracks\ProductTrackService.cs" />
+    <Compile Include="Implements\Properties\ProductCrowdService.cs" />
+    <Compile Include="Implements\Property\StoreValueRuleService.cs" />
+    <Compile Include="Implements\Recharge\RechargeOrderService.cs" />
+    <Compile Include="Contracts\Common\ITimeoutSettingContract.cs" />
+    <Compile Include="Contracts\Factory\IDesignerContract.cs" />
+    <Compile Include="Contracts\Factory\IFactorysContract.cs" />
+    <Compile Include="Implements\Common\TimeoutSettingService.cs" />
+    <Compile Include="Implements\StoreCollocation\StoreCollocationInfoService.cs" />
+    <Compile Include="Implements\StoreCollocation\StoreProductCollocationService.cs" />
+    <Compile Include="Implements\Store\CollocationPlanService.cs" />
+    <Compile Include="Implements\Store\CollocationTemplateService.cs" />
+    <Compile Include="Implements\Store\RetailProductFeedbackService.cs" />
+    <Compile Include="Implements\Store\StoreCheckRecordService.cs" />
+    <Compile Include="Implements\Store\StoreDepositService.cs" />
+    <Compile Include="Implements\Store\StoreLevelService.cs" />
+    <Compile Include="Implements\Store\StoreNoRecommentService.cs" />
+    <Compile Include="Implements\Store\StoreCheckService.cs" />
+    <Compile Include="Implements\Store\StoreTypeService.cs" />
+    <Compile Include="Implements\Video\CallthepoliceService.cs" />
+    <Compile Include="Implements\Video\VideoEquipmentService.cs" />
+    <Compile Include="Implements\Video\VideoJurisdictionService.cs" />
+    <Compile Include="Content\StoreStorage.cs" />
+    <Compile Include="Implements\Factory\DesignerService.cs" />
+    <Compile Include="Implements\Factory\FactorysService.cs" />
+    <Compile Include="SuperContracts\FiledDaysSuper.cs" />
+    <Compile Include="SuperContracts\OvertimeDaysSuper.cs" />
+    <Compile Include="SuperContracts\WorkDaysSuper.cs" />
+    <Compile Include="Achieve\WorkDaysOperation.cs" />
+    <Compile Include="Content\CacheAccess.cs" />
+    <Compile Include="Content\PermissionHelper.cs" />
+    <Compile Include="Content\SessionAccess.cs" />
+    <Compile Include="Content\ThemeRazor.cs" />
+    <Compile Include="Content\Utils.cs" />
+    <Compile Include="Contracts\Article\IAppArticleItemContract.cs" />
+    <Compile Include="Contracts\Article\IAppArticleContract.cs" />
+    <Compile Include="Contracts\Article\IArticleAttributeContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Article\IArticleContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Article\IArticleImageContract.cs" />
+    <Compile Include="Contracts\Article\IArticleItemContract.cs" />
+    <Compile Include="Contracts\Authority\IAdministratorContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Authority\IARolePermissionRelationContract.cs" />
+    <Compile Include="Contracts\Authority\IDepartmentContract.cs" />
+    <Compile Include="Contracts\Authority\IModuleContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Authority\IPermissionContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Authority\IQrLoginContract.cs" />
+    <Compile Include="Contracts\Authority\IResignationContract.cs" />
+    <Compile Include="Contracts\Authority\IRoleContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Authority\ITimeoutConfigContract.cs" />
+    <Compile Include="Contracts\Circle\ITopicContract.cs" />
+    <Compile Include="Contracts\Circle\ICircleContract.cs" />
+    <Compile Include="Contracts\Collocation\ICollocationContract.cs" />
+    <Compile Include="Contracts\Collocation\IMissionContract.cs" />
+    <Compile Include="Contracts\Common\IAreaItemContract.cs" />
+    <Compile Include="Contracts\Common\ICityContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Common\IDiscountContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Common\IExpressContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Common\ILogContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Common\IPaymentContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Common\IProvinceContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Common\ISensitiveWordContract.cs" />
+    <Compile Include="Contracts\Common\ISettingContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Coupon\ICouponContract.cs" />
+    <Compile Include="Contracts\Gallery\IGalleryAttributeContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Gallery\IGalleryContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Logs\IProductOperationLogContract.cs" />
+    <Compile Include="Contracts\Member\IAdjustDepositContract.cs" />
+    <Compile Include="Contracts\Member\IMemberAddressContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Member\IMemberCardContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Member\IMemberFigureContract.cs" />
+    <Compile Include="Contracts\Member\IMemberIMContract.cs" />
+    <Compile Include="Contracts\Member\IMemberIMFriendContract.cs" />
+    <Compile Include="Contracts\Member\IMemberSignContract.cs" />
+    <Compile Include="Contracts\Member\IPrizeContract.cs" />
+    <Compile Include="Contracts\Member\ISignRuleContract.cs" />
+    <Compile Include="Contracts\Moblie\IMobileInfoContract.cs" />
+    <Compile Include="Contracts\Notice\IMsgNotificationContract.cs" />
+    <Compile Include="Contracts\Office\IAnnualLeaveContract.cs" />
+    <Compile Include="Contracts\Office\IAttendanceContract.cs" />
+    <Compile Include="Contracts\Office\IAttendanceRepairContract.cs" />
+    <Compile Include="Contracts\Office\IAttendanceRestItemContract.cs" />
+    <Compile Include="Contracts\Office\IAttendanceStatisticsContract.cs" />
+    <Compile Include="Contracts\Office\IFieldContract.cs" />
+    <Compile Include="Contracts\Office\IJobPositionContract.cs" />
+    <Compile Include="Contracts\Office\ILeaveInfoContract.cs" />
+    <Compile Include="Contracts\Office\IOvertimeContract.cs" />
+    <Compile Include="Contracts\Office\IHolidayContract.cs" />
+    <Compile Include="Contracts\Office\IPartnerExperienceContract.cs" />
+    <Compile Include="Contracts\Office\IPartnerLevelContract.cs" />
+    <Compile Include="Contracts\Office\IRestContract.cs" />
+    <Compile Include="Contracts\Office\IPartnerContract.cs" />
+    <Compile Include="Contracts\Office\IWorkLogAttributeContract.cs" />
+    <Compile Include="Contracts\Office\IWorkLogContract.cs" />
+    <Compile Include="Contracts\Office\IWorkTimeContract.cs" />
+    <Compile Include="Contracts\Product\IColloCalendarContract.cs" />
+    <Compile Include="Contracts\Product\IProductBarcodeDetailContract.cs" />
+    <Compile Include="Contracts\Product\IProductBuysaidAttributeContract.cs" />
+    <Compile Include="Contracts\Property\IBarCodeConfigContract.cs" />
+    <Compile Include="Contracts\Property\IMaintainContract.cs" />
+    <Compile Include="Contracts\Product\IMemberCollocationContract.cs" />
+    <Compile Include="Contracts\Product\IMemberColloEleContract.cs" />
+    <Compile Include="Contracts\Member\IMemberConsumeContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Member\IMemberContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Member\IMemberFavouriteContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Member\IMemberGiftContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Member\IMemberLevelContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Member\IMemberActivityContract.cs" />
+    <Compile Include="Contracts\Member\IMemberTypeContract.cs" />
+    <Compile Include="Contracts\Notice\IMessagerContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Notice\INotificationContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Product\IMemberSingleProductContract.cs" />
+    <Compile Include="Contracts\Product\IProductAttributeContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Product\IProductContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Product\IProductImageContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Common\IApprovalContract.cs" />
+    <Compile Include="Contracts\Common\ICommentContract.cs" />
+    <Compile Include="Contracts\Product\IProductNumberAttrContract.cs" />
+    <Compile Include="Contracts\Product\IProductOrigNumberContract.cs" />
+    <Compile Include="Contracts\Property\IBrandContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Property\ICategoryContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Property\IColorContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Property\IProductCommissionContract.cs" />
+    <Compile Include="Contracts\Property\IProductDiscountContract.cs" />
+    <Compile Include="Contracts\Property\IScoreRuleContract.cs" />
+    <Compile Include="Contracts\Property\ISeasonContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Property\ISizeContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Store\IOrderContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Store\IOrderItemContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Store\IRestoredContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Store\IRestoredItemContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Store\IRetailContract.cs" />
+    <Compile Include="Contracts\Store\IRetailItemContract.cs" />
+    <Compile Include="Contracts\Store\IReturnedContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Store\IRetailInventoryContract.cs" />
+    <Compile Include="Contracts\Store\IReturnedItemContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Store\ISalesCampaignContract.cs" />
+    <Compile Include="Contracts\Store\IStoreActivityContract.cs" />
+    <Compile Include="Contracts\Store\IStoreCartContract.cs" />
+    <Compile Include="Contracts\Store\IStoreCartItemContract.cs" />
+    <Compile Include="Contracts\Store\IStoreContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Store\IStoreRecommendContract.cs" />
+    <Compile Include="Contracts\Store\IStoreSpendStatisticsContract.cs" />
+    <Compile Include="Contracts\Store\IStoreStatisticsContract.cs" />
+    <Compile Include="Contracts\Subject\ISubjectAttributeContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Subject\ISubjectContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Template\IHtmlPartContract .cs" />
+    <Compile Include="Contracts\Template\ITemplateArticleAttrRelationshipContract.cs" />
+    <Compile Include="Contracts\Template\ITemplateContract.cs" />
+    <Compile Include="Contracts\Template\IHtmlItemContract.cs" />
+    <Compile Include="Contracts\Template\ITemplateNotification.cs" />
+    <Compile Include="Contracts\Template\ITemplateThemeContract.cs" />
+    <Compile Include="Contracts\Warehouse\ICheckerContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Warehouse\ICheckerItemContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Warehouse\ICheckupItemContract.cs" />
+    <Compile Include="Contracts\Product\IProductBarcodePrintInfoContract.cs" />
+    <Compile Include="Contracts\Warehouse\IInventoryContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Warehouse\IInventoryDetailContract.cs" />
+    <Compile Include="Contracts\Warehouse\IInventoryRecordContract.cs" />
+    <Compile Include="Contracts\Warehouse\ILocationContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Warehouse\IOnlinePurchaseProductContract.cs" />
+    <Compile Include="Contracts\Warehouse\IOrderblankAuditContract.cs" />
+    <Compile Include="Contracts\Warehouse\IOrderblankContract.cs" />
+    <Compile Include="Contracts\Warehouse\IOrderblankItemContract.cs" />
+    <Compile Include="Contracts\Warehouse\IPurchaseAuditContract.cs" />
+    <Compile Include="Contracts\Warehouse\IPurchaseContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Warehouse\IPurchaseItemContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Warehouse\IStorageContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Warehouse\ITransferContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Contracts\Warehouse\ITransferItemContract.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Extensions\Helper\AdminParamsHelper.cs" />
+    <Compile Include="Extensions\Helper\OfficeHelper.cs" />
+    <Compile Include="Extensions\License\Storage\LicenseStorag.cs" />
+    <Compile Include="Implements\Article\AppArticleItemService.cs" />
+    <Compile Include="Implements\Article\AppArticleService.cs" />
+    <Compile Include="Implements\Article\ArticleAttributeService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Implements\Article\ArticleImageService.cs" />
+    <Compile Include="Implements\Article\ArticleItemService.cs" />
+    <Compile Include="Implements\Article\ArticleService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Implements\Authority\AdministratorService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Implements\Authority\ARolePermissionRelationService.cs" />
+    <Compile Include="Implements\Authority\DepartmentService.cs" />
+    <Compile Include="Implements\Authority\ModuleService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Implements\Authority\PermissionService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Implements\Authority\QrLoginService.cs" />
+    <Compile Include="Implements\Authority\ResignationService.cs" />
+    <Compile Include="Implements\Authority\RoleService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Implements\Authority\TimeoutConfigService.cs" />
+    <Compile Include="Implements\Circle\TopicService.cs" />
+    <Compile Include="Implements\Circle\CircleService.cs" />
+    <Compile Include="Implements\Collocation\CollocationService.cs" />
+    <Compile Include="Implements\Collocation\MissionService.cs" />
+    <Compile Include="Implements\Common\AreaItemService.cs" />
+    <Compile Include="Implements\Common\SensitiveWordService.cs" />
+    <Compile Include="Implements\Coupon\CouponService.cs" />
+    <Compile Include="Implements\Gallery\GalleryAttributeService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Implements\Gallery\GalleryService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Implements\Members\AdjustDepositService.cs" />
+    <Compile Include="Implements\Members\MemberActivityService.cs" />
+    <Compile Include="Implements\Members\MemberFigureService.cs" />
+    <Compile Include="Implements\Members\MemberIMFriendService.cs" />
+    <Compile Include="Implements\Members\MemberIMService.cs" />
+    <Compile Include="Implements\Members\MemberSignService.cs" />
+    <Compile Include="Implements\Members\PrizeService.cs" />
+    <Compile Include="Implements\Members\RecommendMemberCollocationService.cs" />
+    <Compile Include="Implements\Mobile\MobileInfoService.cs" />
+    <Compile Include="Implements\Notice\MsgNotificationReaderService.cs" />
+    <Compile Include="Implements\Notice\StoreSpendStatisticsService.cs" />
+    <Compile Include="Implements\Notice\StoreStatisticsService.cs" />
+    <Compile Include="Implements\Office\AnnualLeaveService.cs" />
+    <Compile Include="Implements\Office\AttendanceRepairService.cs" />
+    <Compile Include="Implements\Office\AttendanceRestItemService.cs" />
+    <Compile Include="Implements\Office\AttendanceService.cs" />
+    <Compile Include="Implements\Office\AttendanceStatisticsService.cs" />
+    <Compile Include="Implements\Office\FieldService.cs" />
+    <Compile Include="Implements\Office\JobPositionService.cs" />
+    <Compile Include="Implements\Office\LeaveInfoService.cs" />
+    <Compile Include="Implements\Office\OvertimeService.cs" />
+    <Compile Include="Implements\Office\HolidayService.cs" />
+    <Compile Include="Implements\Office\PartnerExperienceService.cs" />
+    <Compile Include="Implements\Office\PartnerLevelService.cs" />
+    <Compile Include="Implements\Office\RestService.cs" />
+    <Compile Include="Implements\Office\PartnerService.cs" />
+    <Compile Include="Implements\Office\WorkLogAttributeService.cs" />
+    <Compile Include="Implements\Office\WorkLogService.cs" />
+    <Compile Include="Implements\Office\WorkTimeService.cs" />
+    <Compile Include="Implements\Product\ColloCalendarService.cs" />
+    <Compile Include="Implements\Product\MemberCollocationService.cs" />
+    <Compile Include="Implements\Product\MemberColloEleService.cs" />
+    <Compile Include="Implements\Members\MemberTypeService.cs" />
+    <Compile Include="Implements\Product\MemberSingleProductService.cs" />
+    <Compile Include="Implements\Product\ProductBarcodeDetailService.cs" />
+    <Compile Include="Implements\Product\ProductBuysaidAttributeService.cs" />
+    <Compile Include="Implements\Product\ProductNumberAttrService.cs" />
+    <Compile Include="Implements\Product\ProductOrigNumberService.cs" />
+    <Compile Include="Implements\Product\ProductService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Implements\Common\ApprovalService.cs" />
+    <Compile Include="Implements\Common\CommentService.cs" />
+    <Compile Include="Implements\Property\BarCodeConfigService.cs" />
+    <Compile Include="Implements\Property\MaintainService.cs" />
+    <Compile Include="Implements\Property\ProductCommissionService.cs" />
+    <Compile Include="Implements\Property\ProductDiscountService.cs" />
+    <Compile Include="Implements\Property\ScoreRuleService.cs" />
+    <Compile Include="Implements\Store\StoreRecommentService.cs" />
+    <Compile Include="Implements\Store\RetailInventoryService .cs" />
+    <Compile Include="Implements\Store\RetailItemService.cs" />
+    <Compile Include="Implements\Store\RetailService.cs" />
+    <Compile Include="Implements\Store\SalesCampaignService.cs" />
+    <Compile Include="Implements\Store\StoreActivityService.cs" />
+    <Compile Include="Implements\Store\StoreCartItemService.cs" />
+    <Compile Include="Implements\Store\StoreCartService.cs" />
+    <Compile Include="Implements\Template\HtmPartService.cs" />
+    <Compile Include="Implements\Template\TempalteArticleAttrRelationshipService.cs" />
+    <Compile Include="Implements\Template\HtmlItemService.cs" />
+    <Compile Include="Implements\Template\TemplateNotificationService.cs" />
+    <Compile Include="Implements\Template\TemplateService.cs" />
+    <Compile Include="Implements\Template\TemplateThemeService.cs" />
+    <Compile Include="Implements\Warehouse\CheckupItemService.cs" />
+    <Compile Include="Implements\Product\ProductBarcodePrintInfoService.cs" />
+    <Compile Include="Implements\Warehouse\InventoryDetailService.cs" />
+    <Compile Include="Implements\Warehouse\InventoryRecordService.cs" />
+    <Compile Include="Implements\Warehouse\OnlinePurchaseProductService.cs" />
+    <Compile Include="Implements\Warehouse\OrderblankAuditServer.cs" />
+    <Compile Include="Implements\Warehouse\OrderblankItemServer.cs" />
+    <Compile Include="Implements\Warehouse\OrderblankService.cs" />
+    <Compile Include="Implements\Warehouse\PurchaseAuditServer.cs" />
+    <Compile Include="Implements\Logs\ProductOperationLogServer.cs" />
+    <Compile Include="InterfaceContracts\IDays.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Implements\Common\CityService.cs" />
+    <Compile Include="Implements\Common\DiscountService.cs" />
+    <Compile Include="Implements\Common\ExpressService.cs" />
+    <Compile Include="Implements\Common\LogService.cs" />
+    <Compile Include="Implements\Common\PaymentService.cs" />
+    <Compile Include="Implements\Common\ProvinceService.cs" />
+    <Compile Include="Implements\Common\SettingService.cs" />
+    <Compile Include="Implements\Members\MemberAddressService.cs" />
+    <Compile Include="Implements\Members\MemberCardService.cs" />
+    <Compile Include="Implements\Members\MemberConsumeService.cs" />
+    <Compile Include="Implements\Members\MemberFavouriteService.cs" />
+    <Compile Include="Implements\Members\MemberGiftService.cs" />
+    <Compile Include="Implements\Members\MemberLevelService.cs" />
+    <Compile Include="Implements\Members\MemberService.cs" />
+    <Compile Include="Implements\Notice\MessagerService.cs" />
+    <Compile Include="Implements\Notice\NotificationService.cs" />
+    <Compile Include="Implements\Product\ProductAttributeService.cs" />
+    <Compile Include="Implements\Product\ProductImageService.cs" />
+    <Compile Include="Implements\Property\BrandService.cs" />
+    <Compile Include="Implements\Property\CategoryService.cs" />
+    <Compile Include="Implements\Property\ColorService.cs" />
+    <Compile Include="Implements\Property\SeasonService.cs" />
+    <Compile Include="Implements\Property\SizeService.cs" />
+    <Compile Include="Implements\Store\OrderItemService.cs" />
+    <Compile Include="Implements\Store\OrderService.cs" />
+    <Compile Include="Implements\Store\RestoredItemService.cs" />
+    <Compile Include="Implements\Store\RestoredService.cs" />
+    <Compile Include="Implements\Store\ReturnedItemService.cs" />
+    <Compile Include="Implements\Store\ReturnedService.cs" />
+    <Compile Include="Implements\Store\StoreService.cs" />
+    <Compile Include="Implements\Subject\SubjectAttributeService.cs" />
+    <Compile Include="Implements\Subject\SubjectService.cs" />
+    <Compile Include="Implements\Warehouse\CheckerItemService.cs" />
+    <Compile Include="Implements\Warehouse\CheckerService.cs" />
+    <Compile Include="Implements\Warehouse\InventoryService.cs" />
+    <Compile Include="Implements\Warehouse\LocationService.cs" />
+    <Compile Include="Implements\Warehouse\PurchaseItemService.cs" />
+    <Compile Include="Implements\Warehouse\PurchaseService.cs" />
+    <Compile Include="Implements\Warehouse\StorageService.cs" />
+    <Compile Include="Implements\Warehouse\TransferItemService.cs" />
+    <Compile Include="Implements\Warehouse\TransferService.cs" />
+    <Compile Include="Contracts\Member\IMemberDepositContract.cs" />
+    <Compile Include="Implements\Members\MemberDepositService.cs" />
+    <Compile Include="Contracts\Warehouse\ISaleContract.cs" />
+    <Compile Include="Contracts\Warehouse\ISaleItemContract.cs" />
+    <Compile Include="Implements\Warehouse\SaleItemService.cs" />
+    <Compile Include="Implements\Warehouse\SaleService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\cn.jpush.api\Whiskey.jpush.api.csproj">
+      <Project>{e281d457-f259-4f0b-8608-16c81d8ae97b}</Project>
+      <Name>Whiskey.jpush.api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RongCloudServer\Whiskey.RongCloudServer.csproj">
+      <Project>{ac2db438-696e-4861-91d1-ed8d957a3003}</Project>
+      <Name>Whiskey.RongCloudServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Whiskey.Core.Data.Entity\Whiskey.Core.Data.Entity.csproj">
+      <Project>{d58a373c-1a9c-4bf7-833d-427e4aef8502}</Project>
+      <Name>Whiskey.Core.Data.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Whiskey.Core\Whiskey.Core.csproj">
+      <Project>{f7c67c95-facb-4160-9a88-cb738e65e034}</Project>
+      <Name>Whiskey.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Whiskey.Utility\Whiskey.Utility.csproj">
+      <Project>{946e0a0a-8280-46b3-893e-1b00a554ccab}</Project>
+      <Name>Whiskey.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Whiskey.Web\Whiskey.Web.csproj">
+      <Project>{d2ac8387-fc21-4e8e-810b-c0a637d44222}</Project>
+      <Name>Whiskey.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Whiskey.ZeroStore.ERP.Models\Whiskey.ZeroStore.ERP.Models.csproj">
+      <Project>{accb63aa-5cf9-4917-80a1-ca502872bc4b}</Project>
+      <Name>Whiskey.ZeroStore.ERP.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Whiskey.ZeroStore.ERP.Transfers\Whiskey.ZeroStore.ERP.Transfers.csproj">
+      <Project>{0ac40936-083b-4c6a-9f83-1b98e5477e6b}</Project>
+      <Name>Whiskey.ZeroStore.ERP.Transfers</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="T4\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="dll\Math36.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。启用“NuGet 程序包还原”可下载这些程序包。有关详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

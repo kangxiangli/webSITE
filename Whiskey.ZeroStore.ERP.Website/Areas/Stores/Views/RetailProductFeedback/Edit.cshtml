@@ -1,0 +1,128 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model RetailProductFeedback
+<style>
+    .modal-content {
+        width: 600px;
+    }
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active"><a href="#tab-baseinfo" data-toggle="tab">反馈信息</a></li>
+</ul>
+<div id="appointment-feedback-edit" class="tab-content">
+
+
+    <!--基本信息tab-->
+    <div class="tab-pane fade in active" id="tab-baseinfo">
+        <div class="row">
+
+            <div class="panel_content">
+                <ul class="list-group">
+                    <template v-for="(item,index) in items">
+                        <!--多选题-->
+                        <li class="list-group-item">
+                            ({{index+1}})
+
+
+                            <div class="form-group">
+                                <div class="col-md-2">
+                                    <label>标题:</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <textarea disabled class="form-control" style="height:80px;" v-model.trim="item.Title"></textarea>
+                                </div>
+                                <div class="btn-group btn-group-sm col-md-5">
+
+                                </div>
+
+                            </div>
+                            
+                            <!--选项区-->
+                            <ul class="list-group">
+                                <template v-for="(option,subindex) in item.Options">
+                                    <li>
+
+                                        <div class="form-group">
+                                            <div class="col-md-2">{{option.Value}}:</div>
+                                            <div class="col-md-4">
+                                                <label>
+                                                    <input disabled type="checkbox" v-bind:value="option.Value" v-model="item.Checked" />
+                                                    {{option.Title}}
+                                                </label>
+                                               
+                                            </div>
+
+                                            <div class="col-md-2" style="display: flex;">
+
+                                            </div>
+                                        </div>
+
+                                    </li>
+                                </template>
+                            </ul>
+                            备注:{{item.Remarks}}
+                        </li>
+                    </template>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script>
+
+    let feedbacks = []
+
+    try {
+
+        feedbacks = JSON.parse('@Html.Raw(Model.Feedbacks)')
+    }
+    catch (e) {
+
+    }
+
+    var editPlanVM = new Vue({
+        el: '#appointment-feedback-edit',
+        data: {
+            id: '@Model.Id',
+            feedbacks: feedbacks,
+            items: []
+        },
+        created: function () {
+
+        },
+        methods: {
+
+
+        },
+        mounted: function () {
+            var _self = this;
+            $.getJSON('/Stores/RetailProductFeedback/GetOptions')
+                .done(function (res) {
+                    if (res.ResultType === 3) {
+                        _self.items = res.Data;
+                        _self.items.forEach(i => {
+                            let feedbackItemArr = _self.feedbacks.filter(f => f.OptionId == i.Id);
+                            if (feedbackItemArr && feedbackItemArr.length) {
+                                let [feedbackItem] = feedbackItemArr
+                                i.Checked = feedbackItem.Checked
+                                i.Remarks = feedbackItem.Remarks || '';
+                            }
+                            else {
+                                i.Remarks = ''
+                                i.Checked = []
+                            }
+                        })
+
+                    }
+                })
+
+        },
+        computed: {
+
+        }
+    })
+</script>

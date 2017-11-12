@@ -1,0 +1,291 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model StorageDto
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+<style>
+    .nocheck::after {
+        display: none;
+    }
+</style>
+<div>
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-4">员工姓名或者工号：</label>
+                    <div class="col-md-5">
+                        @Html.TextBox("AttributeName", "", new { @class = "form-control", placeholder = "输入员工姓名或工号" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-4">所属部门：</label>
+                    <div class="col-md-5">
+                        @Html.DropDownList("DepartmentId", (List<SelectListItem>)ViewBag.Departments, new { @class = "form-controlselectpicker " })
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button id="Search_par" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear_par" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @{
+        if (ViewBag.Multi == "1")
+        {
+            <div>
+                <span>已选用户</span>
+                <table id="multi_tabl" class="table table-list table-hover valign-middle" width="100%">
+                    <thead>
+                    <th>部门</th>
+                    <th>用户名</th>
+                    <th>操作</th></thead>
+                </table>
+            </div>
+            <hr />
+        }
+    }
+
+    <table id="nwe_table_1" class="table table-list table-hover valign-middle" width="100%">
+        <thead>
+        </thead>
+    </table>
+</div>
+
+<script>
+    //debugger
+    var datatable_install;
+    $(document).ready(function () {
+
+        var dts = $("#nwe_table_1").dataTable({
+            "sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-5 info"i><"col-md-7 text-right"p>>',
+            "sAjaxSource": "/Department/GetDepartMember",
+            "iDisplayLength": 10,
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var _name = $("#AttributeName").val().trim();
+                var _depart = $("#DepartmentId").val().trim();
+                if (_name != null && _name != "") {
+                    var group = new $.whiskey.filter.group();
+                    group.Operate = "or";
+                    group.Rules.push(new $.whiskey.filter.rule("AdminName", _name, "equal"));
+                    group.Rules.push(new $.whiskey.filter.rule("RealName", _name, "equal"));
+                    group.Rules.push(new $.whiskey.filter.rule("AdminNum", _name, "equal"));
+                    conditions.Groups.push(group);
+
+                }
+                if (_depart != null && _depart != "") {
+                    conditions.Rules.push(new $.whiskey.filter.rule("DepartmentId", _depart, "equal"));
+                }
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", false, "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", true, "equal"));
+
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var isEnabled = aData.IsEnabled;
+                if (isEnabled == false) {
+                    $(nRow).css({ "color": " #e5603b" });
+                }
+                $("td:eq(1)", nRow).addClass("text-left").css({ "width": "26%" });
+                $("td:last", nRow).addClass("text-left").css({ "width": "10%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $("#nwe_table_1 .checked-all").click(function () {
+                    var checkedStatus = $(this).is(":checked");
+                    $("#nwe_table_1 tr td input[type=checkbox]").each(function () {
+                        $(this).prop("checked", checkedStatus);
+                       
+                    });
+                });
+                $("#nwe_table_1 .checked-all").prop("checked", true).click();
+              
+                $(".table-list").treegrid({
+                    initialState: 'collapsed',
+                    treeColumn: 1,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+            "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "名称",
+                    "bSortable": false,
+                    "sName": "AttrName",
+                    "mData": function (data) {
+                        return data.RealName;
+                    },
+                },
+
+                {
+                    "sTitle": "员工账号",
+                    "bSortable": false,
+                    "sName": "AttrName",
+                    "mData": function (data) {
+                        return data.AttrName;
+                    },
+                },
+
+                {
+                    "sTitle": "性别",
+                    "bSortable": false,
+                    "sName": "Gender",
+                    "mData": function (data) {
+                        if (data.Gender != "")
+                            return data.Gender == "1" ? "男" : "女";
+                        return "";
+
+                    },
+                },
+                {
+                    "sTitle": "联系电话",
+                    "bSortable": false,
+                    "sName": "Telephone",
+                    "mData": function (data) {
+                        return data.Telephone;
+
+                    }
+
+                }
+                , {
+                    "sTitle": "备注",
+                    "bSortable": false,
+                    "sName": "Description",
+                    "mData": function (data) {
+                        return data.Description;
+                    }
+                }
+            ]
+
+        });
+        //$.whiskey.datatable.instances[0]=dts;
+        $.whiskey.datatable.instances[0] = dts;
+        //datatable_install = $.whiskey.datatable.instance;
+        //alert("hi");
+        $("#Search_par").click(function () {
+
+            var name = $("#AttributeName").val();
+            var depart = $("#Department option:selected").val();
+            $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+
+        });
+        $("#Clear_par").click(function () {
+            $("#AttributeName").val("");
+            $("#DepartmentId option:eq(0)").prop("selected", true);
+        });
+        //给右上角的关闭按钮注册事件
+        $(".bootbox-close-button:last").click(function () {
+            $("form[0fashion='fashion-team']").parents(".modal-content").show();
+        });
+
+
+        $("body").delegate("#nwe_table_1 .te_1_che", "click", function () {
+
+            //var par = $("#nwe_table_1 td input[type=checkbox]:checked").parents("tr").prevAll(".treegrid-expanded").children("td:first").children().children(":checkbox");
+
+            var par = $(this).parents("tr:first").attr("class");
+            if (par == null) return false;
+            var regex = /.+treegrid-parent-(\S+)/;
+            var resul = regex.exec(par);
+
+            if (resul != null) {
+                var chisty = ".treegrid-" + resul[1];
+                if ($(this).is(":checked")) {
+                    $(chisty).children("td:first").children().children().prop("checked", "checked");
+                }
+                var checkcou = 0;
+                $(chisty).nextAll(".treegrid-parent-" + resul[1]).each(function () {
+
+                    if ($(this).children("td:first").children().children().is(":checked")) {
+                        checkcou++;
+                    }
+                });
+                if (checkcou > 0)
+                    $(chisty).children("td:first").children().children().prop("checked", "checked");
+                else
+                    $(chisty).children("td:first").children().children().prop("checked", false);
+            } else {
+
+                var regex = /.+treegrid-(DE\d+)/;
+                var ischecked = $(this).is(":checked");
+                var parid = regex.exec(par)[1];
+
+                var id = ".treegrid-" + parid;
+                var parentid = ".treegrid-parent-" + parid;
+
+                $(id).nextAll(parentid).each(function () {
+
+                    // alert($(this).children("td:first").children().children().attr("checked"));
+
+                    $(this).children("td:first").children().children().prop("checked", ischecked);
+                });
+
+
+            }
+
+            if ($(this).is(":checked")) {
+                selRow(this);
+            }
+
+        }).delegate(".mulsel_rem", "click", function () {
+            $(this).parents("tr:eq(0)").remove();
+        });
+
+    });
+    function selRow(send) {
+        var ches = $(send);
+        ches.each(function () {
+            var num = $(this).parents("tr:eq(0)").find("td:eq(2)").text().trim();
+            if (num != "") {
+                var _row = $(this).parents("tr:eq(0)");
+                var _id = $(this).val();
+                var t = $("#multi_tabl").find("." + _id);
+                if (t.length==0) {
+
+                    var _num = $(_row).find("td:eq(2)").text();
+
+                    var ishid = $(_row).is(":hidden");
+                    var parrow = ishid ? $(_row).prevAll(".treegrid-collapsed:eq(0)") : $(_row).prevAll(".treegrid-expanded:eq(0)");
+                    var parnam = $(parrow).find("td:eq(1)").text();
+                    var parid = $(parrow).find("td:eq(0) input").val();
+                    var row = "<tr><td style='display:none' class='" + _id + "'>" + _id + "</td><td style='display:none'>" + parid + "</td><td>" + parnam + "</td><td>" + _num + "</td><td><button class='mulsel_rem fa fa-life-ring' title='删除'></td></tr>";
+                    $("#multi_tabl").append(row);
+
+                }
+
+            } else {
+                var _id = $(this).val();
+                var bae = ".treegrid-parent-" + _id;
+                var sends = $(bae).find("input");
+                selRow(sends);
+            }
+        });
+    }
+</script>

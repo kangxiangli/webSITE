@@ -1,0 +1,186 @@
+﻿@model Whiskey.ZeroStore.ERP.Transfers.Entities.ScoreRuleDto
+<style>
+    .clre {
+        color:  #5ebd5e;
+        padding: 6px;
+        border: 1px solid #cecece;
+    }
+
+    .clwid .modal-content {
+        width: 700px;
+    }
+</style>
+<link href="~/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<div class="ruleCreat" id="base">
+   
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-4">积分规则名称:</label>
+        <div class="col-md-4" style="z-index:9999">
+            @Html.TextBox("CampaignName", "", new { @class = "form-control" })
+        </div>
+    </div>
+   
+    <div class="form-group">
+        <label id="" class="control-label col-md-4">最低消费:</label>
+        <div class="col-md-4">
+            <div class="input-group  ">
+                <span class="input-group-addon">￥</span>
+                <input id="minConsume" type="number" class="form-control" value="0" min="0" />
+
+            </div>
+        </div>
+       </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-4">消费金额：积分:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input class="form-control" type="number" id="consume" min="1"  value="1" />
+                <span class="input-group-addon">:</span>
+                <input class="form-control" name="noMemb" id="score" type="number" min="1"  value="1" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-4">消费积分是否获取积分:</label>
+        <div class="col-md-4">
+            <select name="ConSGetScore" class="form-control selectpicker">
+                <option value="1">获取</option>
+                <option value="0" selected="selected">不获取</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-4">消费储值是否获取积分:</label>
+        <div class="col-md-4">
+            <select name="ConCGetScore" class="form-control selectpicker">
+                <option value="1">获取</option>
+                <option value="0" selected="selected">不获取</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-4">@Html.DisplayNameFor(m => m.CanUseScoreWhenNotBelongToStore):</label>
+        <div class="col-md-4">
+            @Html.CheckBoxFor(m => m.CanUseScoreWhenNotBelongToStore)
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-4">@Html.DisplayNameFor(m => m.CanGetScoreWhenNotBelongToStore):</label>
+        <div class="col-md-4">
+            @Html.CheckBoxFor(m => m.CanGetScoreWhenNotBelongToStore)
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-4">是否启用:</label>
+        <div class="col-md-4" >
+            <select name="IsEnable" class="form-control selectpicker">
+                <option value="1">启用</option>
+                <option value="0" selected="selected">不启用</option>
+            </select>
+        </div>
+        <span style="color: #5ebd5e;">*如果启用，则原有规则会被禁用</span>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-4">规则描述:</label>
+        <div class="col-md-8">
+            <textarea name="Descript" id="Descript" class="form-control"></textarea>
+
+        </div>
+    </div>
+    
+</div>
+
+<script>
+
+    function dataValiPost() {
+        var errcou = 0;
+        var da = [];
+        var name = $(".ruleCreat #CampaignName").val();
+        if (name.trim().length == 0) {
+            $(".ruleCreat #CampaignName").css({ "border": "2px solid  #5ebd5e" }).attr("title", "名称不为空");
+            errcou += 1;
+        }
+        else {
+            $(".ruleCreat #CampaignName").css({ "border": "" });
+            da.push({"ScoreName":name});
+        }
+        var minconsu = $(".ruleCreat #minConsume").val();
+        if ($.isNumeric(minconsu) && minconsu >= 0) {
+            $(".ruleCreat #minConsume").css({ "border": "" });
+            da.push({ "MinConsum": minconsu });
+        }
+        else {
+            $(".ruleCreat #minConsume").css({ "border": "2px solid  #5ebd5e" }).attr("title", "最低消费金额填写错误");
+            errcou += 1;
+        }
+           
+        var consu = $(".ruleCreat #consume").val();
+        if ($.isNumeric(consu) && consu > 0) {
+            $(".ruleCreat #consume").css({ "border": "" });
+            da.push({ "ConsumeUnit": consu });
+        }
+        else {
+            $(".ruleCreat #consume").css({ "border": "2px solid  #5ebd5e" }).attr("title", "输入数字且大于0");
+            errcou += 1;
+        }
+
+        var score = $(".ruleCreat #score").val();
+        if ($.isNumeric(score) && score > 0) {
+            $(".ruleCreat #score").css({ "border": "" });
+            da.push({ "ScoreUnit": score });
+        }
+        else {
+            $(".ruleCreat #score").css({ "border": "2px solid  #5ebd5e" }).attr("title", "输入数字且大于0");
+            errcou += 1;
+
+        }
+        var descript = $(".ruleCreat #Descript").val();
+        if (descript.trim().length == 0) {
+            $(".ruleCreat #Descript").css({ "border": "2px solid  #5ebd5e" }).attr("title", "描述不为空");
+            errcou += 1;
+        }
+        else {
+            da.push({"Descrip":descript});
+        }
+        //消费积分是否获取积分
+        var conSGetScore = $("select[name='ConSGetScore'] option:selected").val();
+        conSGetScore = conSGetScore == 0 ? false : true;
+        da.push({ IsConsumeScoreGetScore: conSGetScore });
+        //消费储值是否获取积分
+        var conCGetScore = $("select[name='ConCGetScore'] option:selected").val();
+        conCGetScore = conCGetScore == 0 ? false : true;
+        da.push({ IsConsumeCardMoneyGetScore: conCGetScore });
+
+        //是否可在非归属店铺消费积分
+        var CanUseScoreWhenNotBelongToStore = $("input[name=CanUseScoreWhenNotBelongToStore]").is(":checked");
+        da.push({ CanUseScoreWhenNotBelongToStore: CanUseScoreWhenNotBelongToStore });
+
+        //是否能在非归属店铺获得积分
+        var CanGetScoreWhenNotBelongToStore = $("input[name=CanGetScoreWhenNotBelongToStore]").is(":checked");
+        da.push({ CanGetScoreWhenNotBelongToStore: CanGetScoreWhenNotBelongToStore });
+
+        var isenable = $("select[name='IsEnable'] option:selected").val();
+        isenable = isenable == 0 ? false : true;
+        da.push({ IsEnabled: isenable });
+
+        if (errcou == 0) {
+            return {error:0,data:da};
+        }
+        else {
+           
+            return {error:1}
+        }
+    }
+   
+</script>
+<script>
+	 // selectpicker_b 初始化
+    $(function () {
+        	 $('.selectpicker').selectpicker();
+    })
+  
+</script>
+
+
+
+

@@ -1,0 +1,85 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Factorys
+
+<div class="creat_div" style="margin-top:20px;margin-left:-50px">
+    <div class="form-group">
+        <label class="control-label col-md-4">
+            @Html.DisplayNameFor(m => m.FactoryName) :
+        </label>
+        <div class="col-md-4">
+            @Model.FactoryName
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">
+            @Html.DisplayNameFor(m => m.DepartmentId) :
+        </label>
+        <div class="col-md-4">
+            @Model.Department.DepartmentName
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">
+            @Html.DisplayNameFor(m => m.StoreId) :
+        </label>
+        <div class="col-md-4">
+            @Model.Store.StoreName
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">
+            @Html.DisplayNameFor(m => m.StorageId) :
+        </label>
+        <div class="col-md-4">
+            @Model.Storage.StorageName
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">
+            @Html.DisplayNameFor(m => m.BrandId) :
+        </label>
+        <div class="col-md-4">
+            @Model.Brand.BrandName
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">
+            @Html.DisplayNameFor(m => m.FactoryAddress) :
+        </label>
+        <div class="col-md-4">
+            @Model.FactoryAddress
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">
+            @Html.DisplayNameFor(m => m.Leader) :
+        </label>
+        <div class="col-md-4">
+            @Model.Leader
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">
+            @Html.DisplayNameFor(m => m.MobilePhone) :
+        </label>
+        <div class="col-md-4">
+            @Model.MobilePhone
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">
+            @Html.DisplayNameFor(m => m.MacAddress) :
+        </label>
+        <div class="col-md-4">
+            @Model.MacAddress
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">
+            @Html.DisplayNameFor(m => m.Notes) :
+        </label>
+        <div class="col-md-4">
+            @Model.Notes
+        </div>
+    </div>
+</div>

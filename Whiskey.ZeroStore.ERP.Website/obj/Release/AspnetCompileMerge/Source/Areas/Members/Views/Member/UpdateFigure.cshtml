@@ -1,0 +1,204 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@model MemberFigure
+<style>
+    .thumbnail {
+        height: auto !important;
+    }
+
+    .thumbnail {
+        height: auto !important;
+    }
+</style>
+<div class="div_wrapper">
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            上装尺码 :
+        </label>
+        <div class="col-md-5 ">
+            <select id="ApparelSize_S" class="form-control">
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="2XL">2XL</option>
+                <option value="3XL">3XL</option>
+                <option value="4XL">4XL</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            下装尺码 :
+        </label>
+        <div class="col-md-5 ">
+            <select id="ApparelSize_X" class="form-control">
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="2XL">2XL</option>
+                <option value="3XL">3XL</option>
+                <option value="4XL">4XL</option>
+            </select>
+        </div>
+    </div>
+    @Html.HiddenFor(f => f.ApparelSize)
+    <div class="form-group divColor">
+        <label class="control-label col-md-3">
+            偏好颜色 :
+        </label>
+        <div class="col-md-5 ">
+            @Html.DropDownList("PreferenceColor_S", ViewBag.Colors as List<SelectListItem>, new { @class = "form-control", @multiple = "" })
+        </div>
+        @Html.HiddenFor(f => f.PreferenceColor, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            身材类型 :
+        </label>
+        <div class="col-md-5 ">
+            <select id="FigureType_S" class="form-control">
+                <option value="A">A</option>
+                <option value="V">V</option>
+                <option value="H">H</option>
+                <option value="O">O</option>
+                <option value="X">X</option>
+                <option value="I">I</option>
+            </select>
+            @Html.HiddenFor(f => f.FigureType, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            身材描述 :
+        </label>
+        <div class="col-md-5">
+            <select id="FigureDes_S" class="form-control" multiple>
+                <option value="脖子短">脖子短</option>
+                <option value="胸大">胸大</option>
+                <option value="腰粗">腰粗</option>
+                <option value="宽臀">宽臀</option>
+                <option value="窄臀">窄臀</option>
+                <option value="平臀">平臀</option>
+                <option value="肩宽">肩宽</option>
+                <option value="上臀粗">上臀粗</option>
+                <option value="腹部突出">腹部突出</option>
+                <option value="大腿粗">大腿粗</option>
+                <option value="小腿粗">小腿粗</option>
+                <option value="腿不直">腿不直</option>
+            </select>
+            @Html.HiddenFor(f => f.FigureDes, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            生日 :
+        </label>
+        <div class="col-md-5 ">
+            @Html.TextBoxFor(f => f.Birthday, "{0:yyyy/MM/dd}", new { @class = "form-control", @placeholder = "生日" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            身高（cm） :
+        </label>
+        <div class="col-md-5 ">
+            @Html.TextBoxFor(f => f.Height, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            体重（kg） :
+        </label>
+        <div class="col-md-5 ">
+            @Html.TextBoxFor(f => f.Weight, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            肩宽（cm） :
+        </label>
+        <div class="col-md-5 ">
+            @Html.TextBoxFor(f => f.Shoulder, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            胸围（cm） :
+        </label>
+        <div class="col-md-5 ">
+            @Html.TextBoxFor(f => f.Bust, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            腰围（cm） :
+        </label>
+        <div class="col-md-5">
+            @Html.TextBoxFor(f => f.Waistline, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            臀围（cm） :
+        </label>
+        <div class="col-md-5">
+            @Html.TextBoxFor(f => f.Hips, new { @class = "form-control" })
+        </div>
+    </div>
+    <input type="hidden" value="@Model.Id" name="Id" />
+    @Html.HiddenFor(f => f.MemberId)
+    @Html.HiddenFor(f => f.Gender)
+</div>
+
+<script>
+    $(function () {
+        var ApparelSize = "@Model.ApparelSize";
+        if (ApparelSize) {
+            var appa = ApparelSize.split(',');
+            $("#ApparelSize_S").val(appa[0]);
+            if (appa.length > 1) {
+                $("#ApparelSize_X").val(appa[1]);
+            }
+        }
+
+        $("#FigureType_S").val("@Model.FigureType");
+
+        $("#ApparelSize_S,#ApparelSize_X").change(function () {
+            var s = $("#ApparelSize_S").val();
+            var x = $("#ApparelSize_X").val();
+            $("#ApparelSize").val(s + "," + x);
+        });
+        $("#FigureType_S").change(function () {
+            $("#FigureType").val($(this).val());
+        });
+        $("#FigureDes_S").change(function () {
+            var fs = $(this).val();
+            if (fs) {
+                fs = fs.join(',');
+            }
+            $("#FigureDes").val(fs);
+        });
+        $("#PreferenceColor_S").change(function () {
+            var fs = $(this).val();
+            if (fs) {
+                fs = fs.join(',');
+            }
+            $("#PreferenceColor").val(fs);
+        });
+    });
+</script>
+<script>
+    $(function () {
+        $(".div_wrapper select").selectpicker({ noneSelectedText: '请选择' });
+        $("#FigureDes_S").selectpicker("val", "@Model.FigureDes".split(","));
+        $("#PreferenceColor_S").selectpicker("val", "@Model.PreferenceColor".split(","));
+        $("#PreferenceColor_S").selectpicker({ maxOptions: 3 });
+        $(".div_wrapper #Birthday").datepicker()
+    });
+</script>
+

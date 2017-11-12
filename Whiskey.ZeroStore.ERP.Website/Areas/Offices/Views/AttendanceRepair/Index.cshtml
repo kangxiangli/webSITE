@@ -1,0 +1,506 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">员工姓名：</label>
+                        <div class="col-md-7">
+                            <input class="form-control" id="memberName" name="memberName" placeholder="输入员工姓名" type="text" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">状态：</label>
+                        <div class="col-md-7">
+                            <select name="VerifyType" id="VerifyType" class="form-control selectpicker ser_sel">
+                                <option value="">下拉选择</option>
+                                <option value="@((int)VerifyFlag.Verifing)">审核中</option>
+                                <option value="@((int)VerifyFlag.Pass)">通过</option>
+                                <option value="@((int)VerifyFlag.NoPass)">拒绝</option>
+                                <option value="@((int)VerifyFlag.Waitting)">待确认</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">可查看部门：</label>
+                        <div class="col-md-7">
+                            @Html.DropDownList("Administrator.DepartmentId", (List<SelectListItem>)ViewBag.depList, new { @class = "form-control ser_sel selectpicker", data_live_search = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">申请日期：</label>
+                        <div class="col-md-7">
+                            <div class="input-daterange input-group" style="padding: 1px 0;">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">补卡状态：</label>
+                        <div class="col-md-7">
+                            <select id="verifyFlag" name="verifyFlag" class="form-control ser_sel selectpicker">
+                                <option value="">请选择</option>
+                                <option value="4">未签到</option>
+                                <option value="5">未签退</option>
+                                <option value="6">迟到</option>
+                                <option value="7">早退</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">补卡日期：</label>
+                        <div class="col-md-7">
+                            <div class="input-daterange input-group" style="padding: 1px 0;">
+                                <input type="text" id="repairTime" name="repairTime" class="start-date input-sm form-control" placeholder="补卡日期" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+            <div class="pull-right">
+                <div class="button-normal">
+                    @*<button id="Create" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>请假</span></button>*@
+                    <button id="SetPaidScore" title="默认扣除积分配置" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-cog"></i> <span>默认扣除积分配置</span></button>
+                    <button id="PassAll" title="批量通过" type="button" class="btn btn-padding-right" style="background-color:#5cb85c"><i class="fa icon-cloud-download"></i> <span>批量通过</span></button>
+                    <button id="NoPassAll" title="批量拒绝" type="button" class="btn btn-padding-right" style="background-color:#5cb85c"><i class="fa icon-cloud-upload"></i> <span>批量拒绝</span></button>
+                    <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                    <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                    <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                </div>
+                <div class="button-recycle">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <span><input class="enabler" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                <span style="margin-left:20px;"><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle table-verify" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+@section Scripts{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-3 info"l><"col-md-3 info"i><"col-md-6 text-right"p>>',
+                //"bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("List")",
+                "aLengthMenu": [10, , 20, 50, 100],
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    }
+                    if ($(".trusher").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                        if ($(".enabler").is(":checked")) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                        } else {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                        }
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                    }
+                    $(".form-search input[name][name!='StartDate'][name!='EndDate'][name!='memberName'][name!='repairTime']").each(function () {
+                        var field = $(this).attr("Id");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                        }
+                    });
+                    //
+                    aoData.push({ name: "memberName", value: $("#memberName").val() });
+                    aoData.push({ name: "repairTime", value: $("#repairTime").val() });
+                    aoData.push({ name: "verifyFlag", value: $("#verifyFlag").val() });
+                    $(".form-search select").each(function () {
+                        var field = $(this).attr("Id");
+                        var value = $(this).find("option:selected").val().trim();
+                        if (value != null && value.length > 0 && $(this).attr("name") != "verifyFlag") {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                        }
+                    });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                    aoData.push({ name: "SelDepartmentId", value: $("#Administrator_DepartmentId").val() });
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                    $("td:eq(2)", nRow).css({ "float": "left", "width": "100%" });
+                    $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                    return nRow;
+                },
+                "fnDrawCallback": function () {
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table-list tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+                    });
+
+                    //$(".table-list").treegrid({
+                    //    saveState: true,
+                    //    treeColumn: 2,
+                    //    expanderExpandedClass: 'treegrid-expander-expanded',
+                    //    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                    //});
+
+                },
+
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        return '';
+                    }
+                },
+                 {
+                     "sTitle": "员工姓名",
+                     "bSortable": false,
+                     "sName": "RealName",
+                     "mData": function (data) {
+                         return data.RealName;
+                     },
+                 },
+                 {
+                     "sTitle": "部门",
+                     "bSortable": false,
+                     "sName": "DepartmentName",
+                     "mData": function (data) {
+                         return data.DepartmentName;
+                     },
+                 },
+                {
+                    "sTitle": "扣除积分",
+                    "bSortable": false,
+                    "sName": "PaidScore",
+                    "mData": function (data) {
+                        return data.PaidScore;
+                    },
+                },
+                {
+                    "sTitle": "扣除双倍积分",
+                    "bSortable": false,
+                    "sName": "IsDoubleScore",
+                    "mData": function (data) {
+                        return data.IsDoubleScore ? "是" : "否";
+                    },
+                },
+                {
+                    "sTitle": "申请时间",
+                    "bSortable": false,
+                    "sName": "CreatedTime",
+                    "mData": function (data) {
+                        return $.whiskey.tools.dateFormat(data.CreatedTime);
+                    },
+                },
+                {
+                    "sTitle": "补卡时间",
+                    "bSortable": false,
+                    "sName": "CreatedTime",
+                    "mData": function (data) {
+                        return $.whiskey.tools.dateFormat(data.AttendanceTime);
+                    },
+                },
+                {
+                    "sTitle": "补卡原因",
+                    "bSortable": false,
+                    "sName": "ApiAttenFlag",
+                    "mData": function (data) {
+
+                        var flag = data.ApiAttenFlag;
+                        var da = {
+                            value: flag,
+                            color: "warning"
+                        };
+
+                        if (flag == parseInt("@((int)ApiAttenFlag.Absence)")) {
+                            da.value = "未签到";
+                            da.color = "danger";
+                        } else if (flag == parseInt("@((int)ApiAttenFlag.Late)")) {
+                            da.value = "迟到";
+                        } else if (flag == parseInt("@((int)ApiAttenFlag.LeaveEarly)")) {
+                            da.value = "早退";
+                        } else if (flag == parseInt("@((int)ApiAttenFlag.NoSignOut)")) {
+                            da.value = "未签退";
+                            da.color = "danger";
+                        } else {
+                            da.value = "未知";
+                        }
+                        return $.whiskey.datatable.lblColor(da.value, da.color);
+                    },
+                },
+                {
+                    "sTitle": "状态",
+                    "bSortable": false,
+                    "sName": "VerifyType",
+                    "mData": function (data) {
+                        var flag = data.VerifyType;
+                        var text = "";
+                        if (flag === parseInt("@((int)VerifyFlag.Verifing)")) {
+                            text = "审核中";
+                        } else if (flag === parseInt("@((int)VerifyFlag.Pass)")) {
+                            text = "通过";
+                        } else if (flag === parseInt("@((int)VerifyFlag.Waitting)")) {
+                            text = "待确认";
+                        } else {
+                            text = "拒绝";
+                        }
+                        return text;
+                    },
+                },
+                {
+                    "sTitle": "审核人",
+                    "bSortable": false,
+                    "sName": "VerifyName",
+                    "mData": function (data) {
+                        return data.VerifyName;
+                    },
+                },
+                {
+                    "sTitle": "控制操作",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        var controller = "";
+                        var flag = data.VerifyType;
+                        controller += $.whiskey.datatable.tplView(data.Id);
+                        if (flag === parseInt("@((int)VerifyFlag.Verifing)")) {
+                            controller += "<button id=\"Verify2\"   title=\"通过\" type=\"button\"  onclick=\"Verify(this," + data.Id + ",1," + data.ApiAttenFlag + ")\"; class=\"btn btn-xs  btn-padding-right\"><i class=\"fa fa-clipboard \"></i> </button>";
+                            controller += "<button id=\"Verify1\"  title=\"不通过\" type=\"button\"  onclick=\"Verify(this," + data.Id + ",2," + data.ApiAttenFlag + ")\"; class=\"btn btn-xs  btn-padding-right\"><i class=\"fa fa-life-ring\"></i> </button>";
+                            controller += "<button id=\"Verify3\"  title=\"扣积分\" type=\"button\"  onclick=\"Verify(this," + data.Id + ")\"; class=\"btn btn-xs  btn-padding-right\"><i class=\"fa fa-strikethrough\"></i> </button>";
+                        }
+                        return controller;
+                    }
+                }]
+            });
+
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+            $("#PassAll").on("click", function () {
+                VerifyAll(1);
+            });
+
+            $("#NoPassAll").on("click", function () {
+                VerifyAll(2);
+            });
+
+            $("#SetPaidScore").click(function () { SetPaidScoreConfiguration(); });
+        });
+        function VerifyAll(type) {
+            var checkedIds = $(".table-verify tbody :checkbox:checked").map(function () {
+                return $(this).val();
+            }).get();
+            if (!checkedIds || checkedIds.length == 0) {
+                return;
+            }
+            $.whiskey.web.ajaxRequest({
+                method: "POST",
+                actionUrl: "VerifyAll",
+                params: {
+                    Ids: checkedIds,
+                    type: type
+                },
+                lockButton: $(this),
+                complete: function (da) {
+                    $.whiskey.web.alert({
+                        type: "success",
+                        content: da
+                    });
+                     $.whiskey.web.updateBadge(0,"attendance_repair")
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+        //查看详情
+        function View(sender, id) {
+            var view = new $.whiskey.web.ajaxView({
+                caption: "详细信息",
+                actionUrl: "@Url.Action("View")",
+                params: { Id: id },
+                lockButton: $(sender),
+            });
+        }
+
+        function Verify(sender, id, type, apiAttenFlag) {
+            if (type == "2") {//拒绝审核
+
+//              var a = $(".attendance_repair").html() - 1;
+//              $(".attendance_repair").html(a);
+  				$.whiskey.web.updateBadge(-1,"attendance_repair",true)
+//              if (parseInt(a) == 0) {
+//                  $(".attendance_repair").css("display", "none")
+//              } else {
+//                  $(".attendance_repair").css("display", "black")
+//              }
+            } else if (type == "1") {//审核通过
+//              var a = $(".attendance_repair").html() - 1;
+                $.whiskey.web.updateBadge(-1,"attendance_repair",true)
+//              $(".attendance_repair").html(a);
+//              if (parseInt(a) == 0) {
+//                  $(".attendance_repair").css("display", "none")
+//              } else {
+//                  $(".attendance_repair").css("display", "black")
+//              }
+            } else {
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "详细信息",
+                    actionUrl: "@Url.Action("Verify")",
+                    lockButton: $(sender),
+                    getParams: { Id: id },
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+//                      var a = $(".attendance_repair").html() - 1;
+//                      $(".attendance_repair").html(a);
+//                      if (parseInt(a) == 0) {
+//                          $(".attendance_repair").css("display", "none")
+//                      } else {
+//                          $(".attendance_repair").css("display", "black")
+//                      }
+                         $.whiskey.web.updateBadge(-1,"attendance_repair",true)
+                        $.whiskey.datatable.reset(true);
+                        return true;
+                    },
+                });
+                return;
+            }
+
+            $.whiskey.web.ajaxRequest({
+                method: "POST",
+                actionUrl: "Verify",
+                params: {
+                    Id: id,
+                    VerifyType: type,
+                    ApiAttenFlag: apiAttenFlag
+                },
+                lockButton: sender,
+                complete: function (da) {
+                    var rtype = "danger";
+                    var message = type == "2" ? "审核已拒绝" : "审核已通过";
+                    if (da.ResultType == OperationResultType.Success) {
+                        rtype = "success";
+                            $.whiskey.web.updateBadge(-1,"attendance_repair",true)
+                        $.whiskey.datatable.reset(true);
+                    } else {
+                        message = da.Message;
+                    }
+                    $.whiskey.web.alert({
+                        type: rtype,
+                        content: message
+                    });
+                }
+            });
+        }
+
+        function SetPaidScoreConfiguration() {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "默认扣除积分配置",
+                diacl: "diaclg",
+                actionUrl: "@Url.Action("SetPaidScoreIndex")",
+                successEvent: SetPaidScoreHander,
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+            postComplete: function () {
+                return true;
+            },
+            });
+        }
+        function SetPaidScoreHander() {
+            if ($(".modal-form #PaidScore").val() == "") {
+                return false;
+            }
+            $.ajax({
+                url: "@Url.Action("SetPaidScore")",
+                type: "POST",
+                data: { LeavePoints: $(".modal-form #PaidScore").val() },
+            success: function (data) {
+                $.whiskey.web.alert({
+                    type: "success",
+                    content: "修改成功！",
+                });
+            }
+        });
+        }
+    </script>
+}

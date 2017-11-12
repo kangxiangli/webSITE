@@ -1,0 +1,783 @@
+﻿
+
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">姓名：</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("Realname", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div><div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">手机：</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("MobilePhone", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">状态：</label>
+                        <div class="col-md-7">
+                            <select class="form-control selectpicker" id="ToExamineResult">
+                                <option value="">请选择</option>
+                                <option value="0">审核中</option>
+                                <option value="1">已通过</option>
+                                <option value="2">未通过</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+            <div class="pull-right">
+                <div class="button-normal">
+                    <button id="CreateMember" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增会员</span></button>
+                    <button id="Create" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增入职</span></button>
+                    <button id="BatchSync" title="批量同步" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>批量同步</span></button>
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+
+        </div>
+        <table id="mainTable" class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+<link href="~/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="~/Content/Scripts/Layout/DataHelper.js"></script>
+@section Scripts{
+
+    <script type="text/javascript">
+        (function () {
+            $("#Create").on("click", function () {
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "入职信息",
+                    actionUrl: "/Offices/EntryManagement/Create",
+                    lockButton: $(this),
+                    diacl: "clwid",
+                    successEvent: postDa,
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+            });
+            //
+            $("#CreateMember").on("click", function () {
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "入职信息",
+                    actionUrl: "/Offices/EntryManagement/CreateMember",
+                    lockButton: $(this),
+                    diacl: "clwid",
+                    successEvent: postDaCreate,
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+            });
+            $("#BatchSync").click(function () {
+                batchSync();
+            })
+            $("#Search").click(function () {
+                $.whiskey.datatable.reset(false, $mainTable);
+            });
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+            $mainTable = $("#mainTable").dataTable({
+                "bScrollCollapse": false,
+                "bStateSave": true,
+                "sDom": '<"H clearfix datatable-header text-center"r>t<"F clearfix datatable-footer"<"col-md-5"<"col-md-4 info  text-left"i><"pcou col-md-7 text-left info">><"col-md-7 text-right"p>>',
+                "sAjaxSource": "@Url.Action("List")",
+                "aLengthMenu": [10],
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    aoData.push({ name: "Realname", value: $("#Realname").val() });
+                    aoData.push({ name: "MobilePhone", value: $("#MobilePhone").val() });
+                    aoData.push({ name: "ToExamineResult", value: $("#ToExamineResult").val() });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table-list tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+                    });
+                    var isEnabled = aData.IsEnabled;
+                    if (isEnabled == false) {
+                        $(nRow).css({ "color": " #e5603b" });
+                    }
+                    $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+                    $("td:eq(1)", nRow).css({ "width": "13%", "padding-left": "0" });
+                    //$("td:eq(4)", nRow).css({ "float": "left","width":"13%" });
+                    $("td:last", nRow).addClass("text-middle").css({ "width": "15%" });
+                    return nRow;
+                },
+                "fnFooterCallback": function () {
+
+                },
+                "fnDrawCallback": function (da, json) {
+                    $.whiskey.tools.json("");
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table-list tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+                    });
+                },
+
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                    {
+                        "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                        "sName": "Id",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            return $.whiskey.datatable.tplListCheckbox(data.Id);
+                        }
+                    },
+			{
+			    "sTitle": "编号",
+			    "bSortable": false,
+			    "sName": "RowNumber",
+			    "mData": function (data) {
+			        var index = data.iDisplayIndex + 1;
+			        return '' + index + '';
+			    }
+			},
+
+            {
+                "sTitle": "员工编号",
+                "bSortable": false,
+                "sName": "UniquelyIdentifies",
+                "mData": function (data) {
+                    return data.UniquelyIdentifies;
+                },
+            },
+            {
+                "sTitle": "姓名",
+                "bSortable": false,
+                "sName": "MemberName",
+                "mData": function (data) {
+                    return data.RealName;
+                },
+            },
+            {
+                "sTitle": "性别",
+                "bSortable": false,
+                "sName": "Gender",
+                "mData": function (data) {
+                    return data.Gender == 0 ? "女" : "男";
+                },
+            },
+            {
+                "sTitle": "手机号",
+                "bSortable": false,
+                "sName": "MobilePhone",
+                "mData": function (data) {
+                    return data.MobilePhone;
+                },
+            },
+           {
+               "sTitle": "人事审核",
+               "bSortable": false,
+               "sName": "RealName",
+               "mData": function (data) {
+                   return Personnelmatters(data.Auditauthority, data.ToExamineResult, data.Id);
+               },
+           },
+          {
+              "sTitle": "技术审核",
+              "bSortable": false,
+              "sName": "RealName",
+              "mData": function (data) {
+                  return Technology(data.Auditauthority, data.ToExamineResult, data.Id);
+              },
+          },
+            {
+                "sTitle": "财务审核",
+                "bSortable": false,
+                "sName": "RealName",
+                "mData": function (data) {
+                    return Generalmanager(data.Auditauthority, data.ToExamineResult, data.Id);
+                },
+            },
+            {
+                "sTitle": "操作人员",
+                "bSortable": false,
+                "sName": "RealName",
+                "mData": function (data) {
+                    return data.OperatorName;
+                },
+            },
+            {
+                "sTitle": "控制操作",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    var controller = '<button id="View" title="查看详细信息" type="button" onclick="View(this,' + data.Id + ');" class="btn btn-xs  btn-padding-right"><i class="fa fa-eye"></i> </button>';
+                    if (data.operationId == data.CurrentId) {
+                        if (data.ToExamineResult == -1 || data.ToExamineResult == -6 || data.ToExamineResult == -4) {
+                            controller += '<button id="Update" title="修改数据" type="button" onclick =Update(' + data.Id + ') class="btn btn-xs  btn-padding-right"><i class="fa fa-pencil"></i> </button>';
+                        }
+                    }
+                    controller += ' <button type="button" title="同步" onClick="sync(' + data.Id + ')" class="btn-opt-box sync"><i class="btn-timing-icon"></i></button>'
+                   ///controller += '<button onClick="sync(' + data.Id +')" class="sync btn btn-primary">同步</button>';
+                    return controller;
+                }
+            }
+                ]
+
+            });
+        })();
+
+        // 老员工入职信息同步
+        function sync(id) {
+            $.post("@Url.Action("Sync")", { entryId: id })
+                .done(function (res) {
+                    if (res.ResultType !== 3) {
+                        $.whiskey.web.alert({
+                            type: "error",
+                            content: "操作失败！",
+                            callback: function () {
+
+                            }
+                        });
+                        return;
+                    }
+                    else {
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: res.Message,
+                            callback: function () {
+
+                            }
+                        });
+                    }
+                    //$.whiskey.datatable.reset(false, $mainTable);
+
+                })
+        }
+
+        // 老员工入职信息同步
+        function batchSync() {
+            let ids = []
+            $(".te_1_che").each((i, chk) =>ids.push( chk.value))
+            $.post("@Url.Action("BatchSync")", { ids:ids })
+                .done(function (res) {
+                    if (res.ResultType !== 3) {
+                        $.whiskey.web.alert({
+                            type: "error",
+                            content: "操作失败！",
+                            callback: function () {
+
+                            }
+                        });
+                        return;
+                    }
+                    else {
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: res.Message,
+                            callback: function () {
+
+                            }
+                        });
+                    }
+                    //$.whiskey.datatable.reset(false, $mainTable);
+
+                })
+        }
+
+        function postDa() {
+            var res = dataValiPost();
+            if (res.error == 0) {
+                $.post("/Offices/EntryManagement/Create", { dto: et(res.data) }, function (da) {
+                    if (da.ResultType == 3) {
+                        $.whiskey.datatable.reset(false, $mainTable);
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: "入职信息添加成功！",
+                        });
+
+                    }
+                    else {
+                        $.whiskey.web.alert({
+                            type: "error",
+                            content: "添加异常！",
+                            callback: function () {
+
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请更正已存在的错误！",
+                    callback: function () {
+
+                    }
+                });
+                return false;
+            }
+        }
+        function postDaCreate() {
+            var res = dataValiPost();
+            if (res.error == 0) {
+                $.post("@Url.Action("CreateMember")", { dto: et(res.data) }, function (da) {
+                    if (da.ResultType == 3) {
+                        $.whiskey.datatable.reset(false, $mainTable);
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: "会员信息添加成功！",
+                        });
+
+                    }
+                    else {
+
+                        $.whiskey.web.alert({
+                            type: "error",
+                            content: da.Message,
+                            callback: function () {
+
+                            }
+                        });
+                        return false;
+                    }
+                });
+            }
+            else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请更正已存在的错误！",
+                    callback: function () {
+
+                    }
+                });
+                return false;
+            }
+        }
+        function et(tli) {
+            if ($.isArray(tli)) {
+                var ret;
+                for (i in tli) {
+                    ret = $.extend({}, ret, tli[i]);
+                }
+                return ret;
+            }
+        }
+
+        function ToExamineFun(ToExamineStatues, ToExamineResult, EntryId) {
+            if (ToExamineResult == -3 && ToExamineStatues == -2) {
+                ToExamineStatues = -5;
+            } else if (ToExamineResult == -5 && ToExamineStatues == -1) {
+                ToExamineStatues = -6;
+            }
+            $.ajax({
+                url: "@Url.Action("ToExamine")",
+                type: "post",
+                data: { ToExamineStatues: ToExamineStatues, EntryId: EntryId, Reason: "" },
+                success: function (da) {
+                    if (da.ResultType == 3) {
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: "审核成功!",
+                        });
+                         var a = $(".entry_manage").html()-1;
+						$(".entry_manage").html(a);
+						if(parseInt(a)==0){
+						$(".entry_manage").css("display","none")
+						}else{
+							$(".entry_manage").css("display","black")
+						}
+                        $.whiskey.datatable.reset(false, $mainTable);
+                    }
+                    else {
+                        $.whiskey.web.alert({
+                            type: "error",
+                            content: da.Message,
+                            callback: function () {
+
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        function PersonnelmattersToExamine(EntryId) {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "入职信息",
+                actionUrl: "/Offices/EntryManagement/Personnelmatters?EntryId=" + EntryId,
+                lockButton: $(this),
+                diacl: "clwid",
+                successEvent: PersonnelmattersHander,
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(false);
+                    return true;
+                },
+            });
+        }
+
+        function Update(EntryId) {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "入职信息",
+                actionUrl: "/Offices/EntryManagement/Update?EntryId=" + EntryId,
+                lockButton: $(this),
+                diacl: "clwid",
+                successEvent: UpdateHander,
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(false);
+                    return true;
+                },
+            });
+        }
+
+        function UpdateHander() {
+            var res = dataValiPost();
+            if (res.error == 0) {
+                $.post("/Offices/EntryManagement/Update", { dto: et(res.data) }, function (da) {
+                    if (da.ResultType == 3) {
+                        $.whiskey.datatable.reset(false, $mainTable);
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: "修改成功!",
+                        });
+
+                    }
+                    else {
+                        $.whiskey.web.alert({
+                            type: "error",
+                            content: "修改异常！",
+                            callback: function () {
+
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请更正已存在的错误！",
+                    callback: function () {
+
+                    }
+                });
+                return false;
+            }
+        }
+
+        function PersonnelmattersHander() {
+            var res = dataValiPost();
+            if (res.error == 0) {
+                $.post("/Offices/EntryManagement/PersonnelmattersDetaile", { dto: et(res.data) }, function (da) {
+                    if (da.ResultType == 3) {
+                        $.whiskey.datatable.reset(false, $mainTable);
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: "审核成功!",
+                        });
+
+                    }
+                    else {
+                        $.whiskey.web.alert({
+                            type: "error",
+                            content: da.Message,
+                            callback: function () {
+
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请更正已存在的错误！",
+                    callback: function () {
+
+                    }
+                });
+                return false;
+            }
+        }
+        function TechnologyToExamine(EntryId) {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "入职信息",
+                actionUrl: "/Offices/EntryManagement/Technology?EntryId=" + EntryId,
+                lockButton: $(this),
+                diacl: "clwid",
+                successEvent: TechnologyHander,
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(false);
+                    return true;
+                },
+            });
+        }
+
+        function TechnologyHander() {
+            var Jurisdiction = "";
+            $(".personnel #technologyDiv input[type='checkbox']:checked").each(function () {
+                Jurisdiction += $(this).val() + ",";
+            });
+            var InterviewEvaluation = encodeURI($(".personnel #InterviewEvaluation").val());
+            if (Jurisdiction != "") {
+                $.post("/Offices/EntryManagement/TechnologyDetaile", { Jurisdiction: Jurisdiction, InterviewEvaluation: InterviewEvaluation, entryId: $(".personnel #Id").val() }, function (da) {
+                    if (da.ResultType == 3) {
+                        $.whiskey.datatable.reset(false, $mainTable);
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: "审核成功!",
+                        });
+
+                    }
+                    else {
+                        $.whiskey.web.alert({
+                            type: "error",
+                            content: da.Message,
+                            callback: function () {
+
+                            }
+                        });
+                    }
+                });
+            }
+            else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请分配角色权限",
+                    callback: function () {
+
+                    }
+                });
+                return false;
+            }
+        }
+
+        function Personnelmatters(Auditauthority, ToExamineResult, Id) {
+            var returnStr = "";
+            switch (Auditauthority) {
+                case 0:
+                    if (ToExamineResult == 0) {
+                        returnStr = "<span style='color:#6ec0fb !important'>审核中</span>";
+                    } else if (ToExamineResult == -1 || ToExamineResult == -6) {
+                        returnStr = "<span style='color: #e5603b !important'>未通过</span>";
+                    } else {
+                        returnStr = "<span style='color:#5ebd5e!important'>已通过</span>";
+                    }
+                    break;
+                case 1:
+                case 4:
+                case 5:
+                case 7:
+                    if (ToExamineResult == 0 || ToExamineResult == -2 || ToExamineResult == -5) {
+                        returnStr = '<span class="label label-success" style="cursor:pointer;margin-right: 16px;" onclick=PersonnelmattersToExamine("' + Id + '")>通过</span><span onclick="ToExamineFun(-1,' + ToExamineResult + ',' + Id + ')" class="label label-danger" style="cursor:pointer">不通过</span>';
+                    } else if (ToExamineResult == -1 || ToExamineResult == -6) {
+                        returnStr = "<span style='color: #e5603b !important'>未通过</span>";
+                    } else {
+                        returnStr = "<span style='color:#5ebd5e!important'>已通过</span>";
+                    }
+                    break;
+                case 2:
+                case 3:
+                case 6:
+                    returnStr = "<span style='color:#5ebd5e!important'>已通过</span>";
+                    break;
+            }
+            return returnStr;
+        }
+
+        function Technology(Auditauthority, ToExamineResult, Id) {
+            var returnStr = "";
+            switch (Auditauthority) {
+                case 2:
+                case 4:
+                case 6:
+                case 7:
+                    if (ToExamineResult == 1 || ToExamineResult == -3) {
+                        returnStr = '<span class="label label-success" onclick="TechnologyToExamine(' + Id + ')" style="cursor:pointer;margin-right: 16px;">通过</span><span onclick="ToExamineFun(-2,' + ToExamineResult + ',' + Id + ')"  class="label label-danger" style="cursor:pointer">不通过</span>';
+                    }
+                    else if (ToExamineResult == -2 || ToExamineResult == -5 || ToExamineResult == -6) {
+                        returnStr = "<span style='color: #e5603b !important'>未通过</span>";
+                    } else if (ToExamineResult == 0 || ToExamineResult == -1) {
+
+                        returnStr = "";
+                    }
+                    else {
+                        returnStr = "<span style='color:#5ebd5e!important'>已通过</span>";
+                    }
+                    break;
+                case 0:
+                case 1:
+                case 3:
+                case 5:
+                    if (ToExamineResult == -2 || ToExamineResult == -5) {
+                        "<span style='color: #e5603b !important'>未通过</span>";
+                    } else if (ToExamineResult == 2 || ToExamineResult == 3) {
+                        returnStr = "<span style='color:#5ebd5e!important'>已通过</span>";
+                    } else if (ToExamineResult == 1) {
+                        returnStr = "<span style='color:#6ec0fb !important'>审核中</span>";
+                    }
+                    break;
+            }
+            return returnStr;
+        }
+
+        function Generalmanager(Auditauthority, ToExamineResult, Id) {
+            var returnStr = "";
+            switch (Auditauthority) {
+                case 3:
+                case 5:
+                case 6:
+                case 7:
+                    if (ToExamineResult == 2) {
+                        returnStr = '<span class="label label-success" onclick="ToExamineFun(3,' + ToExamineResult + ',' + Id + ')" style="cursor:pointer;margin-right: 16px;">通过</span><span onclick="ToExamineFun(-3,' + ToExamineResult + ',' + Id + ')" class="label label-danger" style="cursor:pointer">不通过</span>';
+                    }
+                    else if (ToExamineResult == -3) {
+                        "<span style='color: #e5603b !important'>未通过</span>";
+                    } else if (ToExamineResult == -4) {
+                        returnStr = '拒绝';
+                    } else if (ToExamineResult == 3) {
+                        returnStr = "<span style='color:#5ebd5e!important'>已通过</span>";
+                    } else if (ToExamineResult == 2) {
+                        returnStr = "<span style='color:#6ec0fb !important'>审核中</span>";
+                    }
+                    break;
+                case 0:
+                case 1:
+                case 2:
+                case 4:
+                    if (ToExamineResult == -3) {
+                        returnStr = "<span style='color: #e5603b !important'>未通过</span>";
+                    } else if (ToExamineResult == -4) {
+                        returnStr = '拒绝';
+                    } else if (ToExamineResult == 3) {
+                        returnStr = "<span style='color:#5ebd5e!important'>已通过</span>";
+                    } else if (ToExamineResult == 2) {
+                        returnStr = "<span style='color:#6ec0fb !important'>审核中</span>";
+                    }
+                    break;
+            }
+            return returnStr;
+        }
+        function View(sender, Id) {
+            var view = new $.whiskey.web.ajaxView({
+                caption: "详细信息",
+                ClassName: "clwid",
+                actionUrl: "@Url.Action("EntryDetaile")",
+                params: { EntryId: Id },
+                lockButton: $(sender),
+            });
+        }
+
+        $.download = function (url, data) {
+            if (url && data) {
+                data = typeof data == 'string' ? data : jQuery.param(data);
+                var inputs = '';
+                $.each(data.split('&'), function () {
+
+                    var pair = this.split('=');
+                    inputs += '<input type="hidden" name="' + pair[0] + '" value="' + pair[1] + '" />';
+                });
+                $('<form action="' + url + '" method="post"' + ' >' + inputs + '</form>')
+                .appendTo('body').submit().remove();
+            }
+        };
+        function downloadFile(obj) {
+            var src = $(obj).attr("href");
+            if (src != "") {
+                $.download("/Video/VideoEquipment/DownFile", "imgPath=" + src);
+            }
+        }
+    </script>
+}

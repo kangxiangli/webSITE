@@ -1,0 +1,42 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Template
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.TemplateName) :
+    </label>
+    <div class="col-md-10">
+        @Model.TemplateName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Model.Notes
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.TemplatePath) :
+    </label>
+    <div class="col-md-10">
+        @Model.TemplatePath
+        <a onclick="GetDetail()">查看</a>
+    </div>
+
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.TemplatePath) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.TemplateHtml, new { @readonly = "true",@style="width:100%" })
+    </div>
+
+</div>
+<script type="text/javascript">
+    function GetDetail() {
+        location.href = "@Model.TemplatePath";
+    }
+</script>

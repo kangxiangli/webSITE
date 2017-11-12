@@ -1,0 +1,385 @@
+﻿@model decimal?
+
+
+<div class="panel col-md-11">
+    <!-- Default panel contents -->
+    <div class="panel-heading">优惠信息</div>
+
+    <!-- Table -->
+    <ul class="list-group">
+        <div class="list-group-item">
+            总消费:<span style="color: #e5603b;font-size:20px;" id="totalMoney">@Model.ToString()</span>
+        </div>
+        <li class="list-group-item" style="height:60px;">
+            <div>
+                <label class="control-label col-md-3">会员折扣：</label>
+                <div class="col-md-2">
+                    <input class="form-control" id="levelDiscount" disabled="disabled" type="text" value="0" />
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item" style="height:90px;">
+            <!--优惠券输入区-->
+            <div>
+                <div class="mes_warn col-md-offset-2"><span style="color: #e5603b;font-size:12px;">*扫描枪扫入或者下拉选择优惠券，优惠券不找零</span></div>
+                <input type="hidden" name="hideda_coupon" class="hideda_coupon" />
+                <div class="">
+                    <label class="control-label col-md-3">使用优惠券：</label>
+                    <div class="col-md-4"><input type="text" class="form-control scan" value="" placeholder="扫描枪扫入" /></div>
+                </div>
+
+                <div class="col-md-2 memb-cl">
+                    <select class="form-control coupon cur_selectpicker">
+                        <option value="">-选择优惠券-</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <div class="col-md-8">
+                        <input class="form-control couponMon" disabled="disabled" type="text" value="0" />
+                    </div>
+                    <label class="control-label col-md-4 couponName"></label>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item" style="height:60px;">
+            <div>
+                <label class="control-label col-md-3">店铺活动：</label>
+                <div class="col-md-3">
+                    <select id="selectActivity" name="selectActivity" class="form-control cur_selectpicker">
+                        <option>请选择活动</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input class="form-control" id="storeActivityDiscountMoney" disabled="disabled" type="text" value="0" />
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item" style="height:60px;">
+            <div>
+                <label class="control-label col-md-3">总优惠金额：</label>
+                <div class="col-md-2">
+                    <input class="form-control" id="couponMoney" disabled="disabled" type="text" value="0" />
+                </div>
+            </div>
+        </li>
+
+        <li class="list-group-item" style="height:60px;">
+            <div>
+                <label class="control-label col-md-3">总消费金额：</label>
+                <div class="col-md-2">
+                    <input class="form-control" id="afterDiscountMoney" disabled="disabled" type="text" value="0" />
+                </div>
+            </div>
+        </li>
+
+        <li class="list-group-item" style="height:60px;">
+            <div class="col-md-12">
+                <a href="javascript:;" id="btnStep1" class="btn btn-success pull-left">
+                    <span class="fa fa-arrow-left"></span>上一步
+                </a>
+                <a href="javascript:;" id="btnStep3" class="btn btn-success pull-right">
+                    <span class="fa fa-arrow-right"></span>下一步
+                </a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<script>
+
+    var canUseCoupon = parseInt('@ViewBag.CanUseCoupon');
+    var canUseStoreActivity = parseInt('@ViewBag.CanUseStoreActivity');
+    var levelDiscount = parseFloat('@ViewBag.LevelDiscount');
+    // 页面展示高度问题修正
+    $('body,html').animate({ scrollTop: 0 }, 10);
+    $("#levelDiscount").val(levelDiscount);
+    var realMoney = Math.max(0, parseFloat($("#totalMoney").text()) * levelDiscount);
+    debugger;
+    $("#afterDiscountMoney").val(realMoney.toFixed(2));
+    // 判断优惠券及店铺活动是否可用
+    if (canUseCoupon === 0) {
+        // 禁用优惠券
+        $(".scan").attr("disabled", "disabled");
+        $(".coupon").attr("disabled", "disabled");
+    }
+
+    if (canUseStoreActivity === 0) {
+        // 禁用店铺活动
+        $("#selectActivity").attr("disabled", "disabled");
+    }
+
+    if (canUseCoupon === 1) {
+        loadMemberCoupon(memberInfoGlobal);
+    }
+    if (canUseStoreActivity === 1) {
+        // 加载店铺的活动
+        loadStoreActivity('@ViewBag.StoreId')
+    }
+
+
+
+
+    // 加载会员优惠券
+    function loadMemberCoupon(da) {
+        var opts = "<option value='0'>-选择优惠券-</option>";
+        if (da.Coupon != null && da.Coupon != "") {
+            for (var i = 0; i < da.Coupon.length; i++) {
+                var cp = da.Coupon[i];
+                opts += "<option value=" + cp.DiscountAmount + " coupNum=" + cp.CouponNumb + ">" + cp.CouponName + "</option>";
+            }
+        }
+        $(".coupon").html("").html(opts);
+          $('.cur_selectpicker').selectpicker();
+          $('.cur_selectpicker').selectpicker('refresh');
+    }
+
+    // 加载店铺参加的活动
+    function loadStoreActivity(storeid) {
+        var totalMoney = getTotalMoney();
+        // 获取会员卡号
+        var memberInfo = getMemberInfo();
+        var memberCard = (memberInfo && memberInfo.MemberNum) || '';
+        $.getJSON("@Url.Action("GetStoreActivity")", { storeId: storeid, memberCard: memberCard }, function (res) {
+            if (res.ResultType == 3) {
+                // 清空活动item
+                $("#selectActivity").empty();
+                $("#selectActivity").append("<option>请选择活动</option>");
+                // 重新加载
+                for (var i = 0; i < res.Data.length; i++) {
+                    var MinConsume = res.Data[i].MinConsume;
+                    var discount = res.Data[i].DiscountMoney;
+                    //只展示有效的店铺活动
+                    if (totalMoney >= MinConsume) {
+                        $("#selectActivity").append("<option value=" + res.Data[i].Id + " data-minconsume=" + MinConsume + " data-discount=" + discount + ">" + res.Data[i].ActivityName + "</option>")
+
+                    }
+                }
+                  $('.cur_selectpicker').selectpicker();
+        		$('.cur_selectpicker').selectpicker('refresh');
+            }
+        });
+    }
+
+
+    // 切换店铺活动
+    $("#selectActivity").change(function () {
+        //重置优惠券优惠金额
+        $(".couponMon").val("0");
+        var $option = $("#selectActivity option:selected");
+        if ($option.length != 1 || isNaN($option.val())) {
+            $("#storeActivityDiscountMoney").val("0");// 没有选择活动
+            displayCouponMoney();
+        }
+        else {
+            var val = $option.val();
+            var option = $option[0];
+            var minconsume = parseFloat($option.data("minconsume"));  // 最低消费
+            var discountMoney = parseFloat($option.data("discount")); // 优惠金额
+            $("#storeActivityDiscountMoney").val(discountMoney.toFixed(2)); // 优惠金额
+            displayCouponMoney();// 计算总优惠
+        }
+
+
+    });//end change
+
+    // 重置店铺活动
+    function resetStoreActivity() {
+        // 清空店铺优惠金额
+        $("#storeActivityDiscountMoney").val("0");
+        // 重新加载店铺活动
+        loadStoreActivity(@ViewBag.StoreId);
+    }
+
+
+    // 计算优惠总金额(优惠券+店铺活动)
+    function displayCouponMoney() {
+
+
+        // 1.获取店铺活动优惠金额
+        var storeActivityDiscountMoney = parseFloat($("#storeActivityDiscountMoney").val());
+        if (!storeActivityDiscountMoney || storeActivityDiscountMoney < 0) {
+            storeActivityDiscountMoney = 0;
+        }
+        // 2.获取优惠券优惠金额
+        var couponMoney = parseFloat($(".coupon option:selected").val());
+        if (!couponMoney || couponMoney < 0) {
+            couponMoney = 0;
+        }
+        // 3.得到总优惠金额
+        var totalCoupon = couponMoney + storeActivityDiscountMoney;
+
+        // 优惠前总消费金额
+        var totalMoney = getTotalMoney();
+
+        // 优惠前总消费金额*会员折扣
+        if (levelDiscount && levelDiscount > 0 && levelDiscount <= 1) {
+            totalMoney = totalMoney * levelDiscount;
+        }
+
+        // 优惠金额超过了总金额
+        if (totalCoupon > totalMoney) {
+
+            // 总优惠金额与总金额的差额
+            var diffMoney = totalCoupon - totalMoney;
+
+            // 单项优惠超过总金额
+            if (storeActivityDiscountMoney > totalMoney) {
+                //优惠券优惠0
+                couponMoney = 0;
+                storeActivityDiscountMoney = storeActivityDiscountMoney - diffMoney;
+
+            }
+            else if (couponMoney > totalMoney) {
+                //优惠券优惠金额为 couponMoney - 超过的金额-店铺活动优惠金额 优先消耗店铺活动
+
+                couponMoney = totalCoupon - diffMoney - storeActivityDiscountMoney;
+
+            }
+            else {
+                //二者均小于总金额,叠加后,超过总金额,
+                couponMoney = couponMoney - diffMoney;
+
+            }
+
+            //计算出实际的优惠总额
+            totalCoupon = storeActivityDiscountMoney + couponMoney;
+        }
+        $(".couponMon").val(couponMoney.toFixed(2));
+        $("#storeActivityDiscountMoney").val(storeActivityDiscountMoney.toFixed(2));
+        $("#couponMoney").val(totalCoupon.toFixed(2));
+
+        // 4.计算优惠后的商品总金额
+        var afterDiscountMoney = Math.max(0, (totalMoney - totalCoupon));
+
+        $("#afterDiscountMoney").val(afterDiscountMoney.toFixed(2));
+    }
+
+    // #region 优惠券交互
+
+    // 扫描优惠券
+    $(".scan").keyup(function (e) {
+
+        if (e.keyCode == 13) {
+            resetCoupon(".coupon");
+            var t = $(this).val();
+            t = t.replace(/[^\da-zA-Z]/g, "");
+            var cardNum = $("#membNum").val();
+
+            var postData = {
+                couponNum: t,
+                cardNum: cardNum
+            };
+            validateCoupon(postData);
+        }
+    });
+
+    // 重置优惠券控件
+    function resetCoupon(selector) {
+        $(selector).val("");
+        $(".couponMon").val("0");  //优惠券
+        $("#couponMoney").val("0");//优惠总金额
+        $("#afterDiscountMoney").val("");
+    }
+
+
+    // 优惠券选中
+    $(".coupon").change(function () {
+        // 清空扫码输入框和优惠金额,总优惠金额
+        resetCoupon(".scan");
+
+
+        var option = $(this).find("option:selected");
+        var couponNum = option.attr("coupNum");
+        var cardNum = $("#membNum").val();
+        $(".hideda_coupon").val(couponNum);
+
+        var postData = {
+            couponNum: couponNum,
+            cardNum: cardNum
+        };
+        // 校验
+        validateCoupon(postData);
+
+
+    });
+
+    // 优惠券校验
+    function validateCoupon(postData) {
+        $.post("/Stores/Retail/DiscountCoupon", postData, function (da) {
+            if (da.ResultType == 3) {
+
+                // 优惠券超过商品总价格
+                //var productMoney = getTotalMoney();
+                //var discount = Math.min(da.Data.DiscountAmount, productMoney); //代金券面额<=总价格
+                debugger;
+                $(".couponMon").val(da.Data.DiscountAmount.toFixed(2)); //代金券面额
+                $(".hideda_coupon").val(da.Data.CouponNum);
+            }
+            else {
+                $(".couponMon").val("0");
+            }
+            // 刷新店铺活动
+            $("#selectActivity").change();
+        });
+
+    }
+
+    function getTotalMoney() {
+        return parseFloat($("#totalMoney").text());
+    }
+
+
+    // #endregion
+
+
+</script>
+
+<script>
+    $("#btnStep1").click(function () {
+        $(".step2").empty();
+        $(".step1").show();
+    });
+
+    $("#btnStep3").click(function () {
+        //优惠总金额 = 商品总金额 - 总优惠金额
+        var beforeDiscountMoney = parseFloat('@Model.ToString()');// 商品总金额
+        var couponMoney = parseFloat($(".couponMon").val());// 优惠券优惠金额
+        var storeActivityDiscountMoney = parseFloat($("#storeActivityDiscountMoney").val());//店铺活动优惠金额
+        var tempId = parseInt($("#selectActivity").val());
+        var storeActivityId = isNaN(tempId) ? "":tempId;
+        var totalDiscountMoney = parseFloat($("#couponMoney").val()); // 总优惠金额
+
+        if (totalDiscountMoney != couponMoney + storeActivityDiscountMoney) {
+            alert("总优惠金额计算有误!")
+            return;
+        }
+        var afterDiscountMoney = Math.max(0, parseFloat((beforeDiscountMoney * levelDiscount).toFixed(2)) - totalDiscountMoney);
+
+        //支付类型,会员/非会员
+        var isMember = isMemb();
+        //会员信息
+        var memberInfo = memberInfoGlobal;
+
+        //搭配师信息
+        var collnum = $(".collocation_num").val();
+
+        var state = {
+            isMember: isMember,                       //是否会员支付
+            memberInfo: memberInfo,                   //会员信息
+            beforeDiscountMoney: beforeDiscountMoney, //优惠前总金额
+            couponMoney: couponMoney,                 //优惠券优惠金额
+            storeActivityDiscountMoney: storeActivityDiscountMoney,//店铺活动优惠金额
+            totalDiscountMoney: totalDiscountMoney,
+            afterDiscountMoney: afterDiscountMoney,   //优惠后的总金额
+            CollNum: collnum,
+            storeActivityId: storeActivityId,
+            currentStoreId: '@ViewBag.StoreId',
+            levelDiscount: levelDiscount
+        };
+        $.post('/Stores/Retail/Step3', { state: JSON.stringify(state) }, function (res) {
+            $(".step1").hide();
+            $(".step2").hide();
+            $(".step3").append(res);
+        }, "html");
+    });
+</script>

@@ -1,0 +1,56 @@
+﻿<script>
+    $(function () {
+        initialHub();
+    });
+    function initialHub(startlog) {
+        startlog = startlog || false;
+        $.connection.hub.logging = startlog;
+        var autoexithub = $.connection.AutoExitHub;
+        autoexithub.client.exitLogin = function (data) {
+            if (data.ResultType == OperationResultType.Success) {
+                exitLogin(data);
+            }
+        }
+        $.connection.hub.start().done(function () {
+            linkToServer(autoexithub.server);
+        });
+        $.connection.hub.disconnected(function () {
+            setTimeout(function () {
+                $.connection.hub.start().done(function () {
+                    linkToServer(autoexithub.server);
+                });
+            }, 20000);
+        });
+        $.connection.hub.reconnected(function () {
+            linkToServer(autoexithub.server);
+        });
+    }
+    function linkToServer(server) {
+        try {
+            $.fashion.getBrowserId(function (browserId) {
+                server.flushSocketLink('@Model.AdminId', browserId);
+            });
+        } catch (e) {
+
+        }
+
+    }
+    //退出登录
+    function exitLogin(da) {
+        $.whiskey.web.ajaxRequest({
+            method: "post",
+            actionUrl: "@Url.Action("Logout", "Login", new { area = "Authorities" })",
+            complete: function (data) {
+                $.connection.hub.stop(true, true);//断掉连接
+                $.whiskey.web.alert({
+                    type: "warning",
+                    content: da.Message,
+                    ismodal: true,
+                    callback: function () {
+                        window.location.replace("/admin_login");
+                    }
+                });
+            }
+        });
+    }
+</script>

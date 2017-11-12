@@ -1,0 +1,41 @@
+﻿<link href="~/Content/Styles/PermissionTree/permissionTree.css" rel="stylesheet" />
+<script src="~/Content/Scripts/PermissionTree/PermissionTree.js"></script>
+<style>
+	#loading{
+		position: absolute;
+		top: 0%;
+    	left: -3%;
+		background: rgba(0,0,0,0);
+	}
+</style>
+<div>
+	<div id="loading">
+						<div id="loading-center">
+							<div id="loading-center-absolute">
+								<div class="object"></div>
+								<div class="object"></div>
+								<div class="object"></div>
+								<div class="object"></div>
+								<div class="object"></div>
+								<div class="object"></div>
+								<div class="object"></div>
+								<div class="object"></div>
+								<div class="object"></div>
+								<div class="object"></div>
+							</div>
+						</div>
+	                </div>
+    <div class="tree" style="height:600px;"></div>
+</div>
+<script>
+    $(function () {
+        var id = $("#Id").val();
+
+        $.post("/Authorities/Permission/GetTree", function (data) {
+            $(".tree").loadTree(data);
+        });
+        $(".bootbox-close-button").click(function () {
+            $(".par_view").parents(".modal-content:first").show(400);
+        });
+    });
+</script>

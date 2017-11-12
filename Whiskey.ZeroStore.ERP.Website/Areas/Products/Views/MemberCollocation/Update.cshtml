@@ -1,0 +1,125 @@
+﻿<link href="~/Content/Styles/dapei/css/swiper-3.4.2.min.css" rel="stylesheet" />
+<link href="~/Content/Styles/dapei/css/dapei.css?t=1234" rel="stylesheet" />
+<input type="hidden" class="memberId" value="@ViewBag.MemberId" />
+<div class="dialogShowMsg"></div>
+
+<div class="outBox">
+    <div class="loadGig">
+        <img src="~/Content/Styles/dapei/img/loading_new.gif" />
+    </div>
+    <div class="shangpin">
+        <div id="listNum">
+            <div id="wrapper" class="wrappers">
+                <div id="scroller">
+                    <div class="clo1"></div>
+                    <div class="clo2"></div>
+                    <div class="clo3"></div>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+
+            <!--底部导航栏-->
+
+            <div class="listBoxFooter">
+                <div class="footerList">
+                    <div class="swiper-wrapper footerWraper">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="monogamy">
+        <div class="canvasBox contain">
+            <canvas id="palette" class="palette" data-viewId="@ViewBag.Id"></canvas>
+        </div>
+        <!--素材-->
+        <div class="img_box">
+        </div>
+        <!--背景-->
+        <div class="backImg">
+        </div>
+        <div id="preview" style="width: 30px;height: 30px;position: absolute;">
+        </div>
+        <div id="swiperFooter">
+            <ul class="swiper-wrapper footer_menu">
+                <li class="addCloth swiper-slide">
+                    <img src="~/Content/Styles/dapei/img/tab_1tj_pre_2x.png" />
+                    <p>添加</p>
+                </li>
+                <li class="chongzhi swiper-slide">
+                    <img src="~/Content/Styles/dapei/img/cjdp@x.png" />
+                    <p>重置</p>
+                </li>
+                <li class="jingxiang swiper-slide">
+                    <img src="~/Content/Styles/dapei/img/tab_3xz_pre_2x.png" />
+                    <p>镜像</p>
+                </li>
+                <li class="sucai swiper-slide">
+                    <img src="~/Content/Styles/dapei/img/tab_6sc_pre_2x.png" />
+                    <p>素材</p>
+                </li>
+                <li class="addBackground swiper-slide">
+                    <img src="~/Content/Styles/dapei/img/tab_7bj_pre_2x.png" />
+                    <p>背景</p>
+                </li>
+                <li class="addPhoto swiper-slide">
+                    <img src="~/Content/Styles/dapei/img/dp_tab_album2x.png" />
+                    <p class="photo">相册</p>
+                    <input class="inptFile" onchange="previewImage(this)" type="file" value="上传图片" />
+                </li>
+                <li class="swiper-slide shangyi" id="shangyi">
+                    <img src="~/Content/Styles/dapei/img/tab_8sy_pre_2x.png" />
+                    <p>上移</p>
+                </li>
+                <li class="swiper-slide xiayi" id="xiayi">
+                    <img src="~/Content/Styles/dapei/img/tab_9xy_pre_2x.png" />
+                    <p>下移</p>
+                </li>
+                <li class="remove swiper-slide">
+                    <img src="~/Content/Styles/dapei/img/tab_2sc_pre_2x.png" />
+                    <p>删除</p>
+                </li>
+                <li class="addSave swiper-slide">
+                    <img src="~/Content/Styles/dapei/img/tab_2sc_pre_2x.png" />
+                    <p>保存</p>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+
+    <div class="saveAll">
+        <ul class="ulBoxBig">
+            <li><span>搭配</span> <div class="dapeiImg"><img src="~/Content/Styles/dapei/img/4.jpg" /></div></li>
+            <li><span>名称</span> <input type="type" class="clothName" name="name" placeholder="填写搭配名称" /></li>
+            <li>
+                <span>颜色</span>
+                <div class="colorsBox">
+                    <ul class="swiper-wrapper colors">
+                        @*<li class="swiper-slide"><span><img src="~/Content/Styles/dapei/img/tab_2sc_pre_2x.png" alt="Alternate Text" /></span><p>红色</p></li>*@
+                    </ul>
+                </div>
+            </li>
+            <li class="showSelect selectSeason"><span>季节</span><input type="type" name="name" placeholder="选择搭配试穿季节" value="" /></li>
+            <li class="showSelect selectStyle"><span>风格</span><input type="type" name="name"placeholder="选择搭配属于风格" value="" /></li>
+            <li class="showSelect liStyle"><span>场合</span><input type="type" name="name" placeholder="选择搭配试穿场合" value="" /></li>
+            <li><span>备注</span><textarea class="txtArea" placeholder="如：收纳位置"></textarea></li>
+        </ul>
+
+        <div class="showSendMsg">
+            <p>温馨提示</p>
+            <span>成功</span>
+            <div class="sureSend">确定</div>
+        </div>
+    </div>
+    <div class="selectSyle">
+        <ul class="swiperData">
+        </ul>
+    </div>
+    <div class="closeFile"></div>
+</div>
+<script src="~/Content/Styles/dapei/js/iscroll.js"></script>
+<script src="~/Content/Styles/dapei/js/swiper.min.js"></script>
+<script src="~/Content/Styles/dapei/js/fabric_with_gestures.js"></script>
+<script src="~/Content/Styles/dapei/js/dapei.js"></script>

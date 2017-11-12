@@ -1,0 +1,18 @@
+﻿
+<div class="form-group">
+    <label class="control-label col-md-2">
+       盘点名称 :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBox("CheckerName", (string)ViewBag.CheckerName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        盘点备注 :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBox("Notes", (string)ViewBag.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<input id="hid_da_num" type="hidden" name="CheckGuid" value="@ViewBag.Num" />

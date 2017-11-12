@@ -1,0 +1,476 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers
+@model WorkOrderDto
+
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">工单标题</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("WorkOrderTitle", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">申请人名称</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("ApplicantName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">当前处理人名称</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("HandleName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">部门</label>
+                        <div class="col-md-8">
+                            @Html.DropDownList("DepartmentId", (List<SelectListItem>)ViewBag.Departments, new { @class = "form-control selectpicker", data_live_search="true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">类别</label>
+                        <div class="col-md-8">
+                            @Html.DropDownList("WorkOrderCategoryId", (List<SelectListItem>)ViewBag.WorkOrderCategorys, new { @class = "form-control selectpicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">状态</label>
+                        <div class="col-md-8">
+                            <select id="Status" name="Status" class="form-control ">
+                                <option value="">请选择</option>
+                                <option value="-1">已撤销</option>
+                                <option value="0">指派中</option>
+                                <option value="1">已分配</option>
+                                <option value="2">已接受</option>
+                                <option value="3">已完成</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">提交时间</label>
+                        <div class="col-md-8">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                    <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                    <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                    <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                </div>
+                <div class="button-recycle">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <span style="margin-left:20px;"><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("List")",
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    }
+                    if ($(".trusher").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                        //if ($(".enabler").is(":checked")) {
+                        //    conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                        //} else {
+                        //    conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                        //}
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                    }
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                    $(".form-search input[name!='StartDate'][name!='EndDate'],.form-search select").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0 && field != "WorkOrderTitle") {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, $(this).hasClass("_select_input") ? "equal" : "equal"));
+                        } else if (value != null && value.length > 0 && field == "WorkOrderTitle") {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, $(this).hasClass("_select_input") ? "contains" : "contains"));
+                        }
+                    });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        var index = data.iDisplayIndex + 1;
+                        return '' + index + '';
+                    }
+                },
+                {
+                    "sTitle": "标题",
+                    "bSortable": false,
+                    "sName": "WorkOrderTitle",
+                    "mData": function (data) {
+                        return data.WorkOrderTitle;
+                    },
+                },
+                {
+                    "sTitle": "类别",
+                    "bSortable": false,
+                    "sName": "WorkOrderCategoryName",
+                    "mData": function (data) {
+                        return data.WorkOrderCategoryName;
+                    },
+                },
+                {
+                    "sTitle": "申请人员",
+                    "bSortable": false,
+                    "sName": "ApplicantName",
+                    "mData": function (data) {
+                        return data.ApplicantName;
+                    },
+                },
+                {
+                    "sTitle": "部门",
+                    "bSortable": false,
+                    "sName": "DepartmentName",
+                    "mData": function (data) {
+                        return data.DepartmentName;
+                    },
+                },
+                {
+                    "sTitle": "提交时间",
+                    "bSortable": false,
+                    "sName": "CreatedTime",
+                    "mData": function (data) {
+                        return $.whiskey.tools.dateFormat(data.CreatedTime);
+                    },
+                },
+                {
+                    "sTitle": "状态",
+                    "bSortable": false,
+                    "sName": "Status",
+                    "mData": function (data) {
+                        var strStatus = "";
+                        switch (data.Status) {
+                            case -1:
+                                strStatus = "已撤销";
+                                break;
+                            case 0:
+                                strStatus = "指派中";
+                                break;
+                            case 1:
+                                strStatus = "已分配";
+                                break;
+                            case 2:
+                                strStatus = "已接受";
+                                break;
+                            case 3:
+                                strStatus = "已完成";
+                                break;
+                            default:
+                                break;
+                        }
+                        return strStatus;
+                    },
+                },
+                {
+                    "sTitle": "当前处理人员",
+                    "bSortable": false,
+                    "sName": "HandleName",
+                    "mData": function (data) {
+                        return data.HandleName;
+                    },
+                },
+                {
+                    "sTitle": "处理时间",
+                    "bSortable": false,
+                    "sName": "DealtTime",
+                    "mData": function (data) {
+                        return data.DealtTime != "" && data.DealtTime != null ? $.whiskey.tools.dateFormat(data.DealtTime) : "";
+                    },
+                },
+                {
+                    "sTitle": "完成时间",
+                    "bSortable": false,
+                    "sName": "FinishTime",
+                    "mData": function (data) {
+                        return data.FinishTime != "" && data.FinishTime != null ? $.whiskey.tools.dateFormat(data.FinishTime) : "";
+                    },
+                },
+                {
+                    "sTitle": "操作人员",
+                    "bSortable": false,
+                    "sName": "OperationName",
+                    "mData": function (data) {
+                        return data.OperationName;
+                    },
+                },
+                {
+                    "sTitle": "控制操作",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        var controller = $.whiskey.datatable.tplView(data.Id);
+                        if (data.Status == 0) {
+                            controller += $.whiskey.datatable.tplUpdatePart(data.Id, "指派");
+                        }
+                        if ((data.Status == -1 || data.Status == 3) && data.IsDeleted) {
+                            controller += $.whiskey.datatable.tplRecovery(data.Id);
+                        } else if ((data.Status == -1 || data.Status == 3) && !data.IsDeleted) {
+                            controller += $.whiskey.datatable.tplRemove(data.Id);
+                        }
+                        return controller;
+                    }
+                }
+                ]
+            });
+
+            $("#Print").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var printer = $.whiskey.printer.ajaxPreview({
+                        actionUrl: "@Url.Action("Print")",
+                        lockButton: $(this),
+                        topMargin: "2%",
+                        leftMargin: "4%",
+                        contentWidth: "93.5%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $("#Export").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var printer = $.whiskey.exporter.ajaxExport({
+                        actionUrl: "@Url.Action("Export")",
+                        lockButton: $(this),
+                        fileName: "新导出文件",
+                        topMargin: 10,
+                        leftMargin: 10,
+                        contentWidth: "98%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#RemoveAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据移至回收站吗？",
+                        notes: "提示：数据移动到回收站后，随时可以从回收站中将其恢复",
+                        actionUrl: "@Url.Action("Remove")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#RecoveryAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据恢复吗？",
+                        notes: "提示：将数据从回收站移动至正常数据列表里",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+
+
+        });
+
+        function View(sender, Id) {
+            var view = new $.whiskey.web.ajaxView({
+                caption: "详细信息",
+                actionUrl: "@Url.Action("View")",
+                params: { Id: Id },
+                lockButton: $(sender),
+            });
+        }
+
+
+        function Update(sender, Id) {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "指派",
+                actionUrl: "@Url.Action("Assign")",
+                getParams: { Id: Id },
+                lockButton: $(sender),
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        $.whiskey.datatable.reset(true);
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(true);
+                    return true;
+                },
+            });
+
+        }
+
+        function Remove(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要将这条数据移至回收站吗？",
+                notes: "提示：数据移动到回收站后可从随时将其恢复",
+                actionUrl: "@Url.Action("Remove")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Recovery(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要恢复这条数据吗？",
+                notes: "提示：将数据从回收站移动至正常数据列表里",
+                actionUrl: "@Url.Action("Recovery")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+    </script>
+    
+    
+    <script>
+    // selectpicker 初始化
+    $(function () {
+        $('#Status').selectpicker();
+$('#Status').selectpicker('refresh');
+    })
+</script>
+}
+
+
+

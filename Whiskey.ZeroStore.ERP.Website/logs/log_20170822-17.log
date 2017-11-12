@@ -1,0 +1,54 @@
+
+[2017-08-22 17:17:25.545] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 7 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:17:25.878] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 7 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:17:30.210] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 24 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:19:33.553] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 23 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:19:33.740] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 23 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:22:44.908] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 44 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:22:46.948] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 44 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:22:47.176] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 44 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:37:42.845] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 34 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:37:42.908] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 34 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:37:43.253] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 34 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:37:43.376] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 34 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:37:43.460] ERROR Whiskey.ZeroStore.ERP.Services.Implements.NotificationService 34 USER-20160427FL\Administrator 
+通知消息保存失败   在 Whiskey.ZeroStore.ERP.Services.Implements.NotificationService.Insert(Boolean contentToTitle, Action`1 sendaction, NotificationDto[] dtos) 位置 D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Services\Implements\Notice\NotificationService.cs:行号 165
+
+[2017-08-22 17:38:28.011] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 62 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:38:28.094] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 62 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:38:28.410] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 62 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:38:28.479] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 62 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-22 17:38:28.521] ERROR Whiskey.ZeroStore.ERP.Services.Implements.NotificationService 62 USER-20160427FL\Administrator 
+通知消息保存失败   在 Whiskey.ZeroStore.ERP.Services.Implements.NotificationService.Insert(Boolean contentToTitle, Action`1 sendaction, NotificationDto[] dtos) 位置 D:\用户目录\我的文档\sitenew\tfs\Whiskey.ZeroStore.ERP.Services\Implements\Notice\NotificationService.cs:行号 165

@@ -1,0 +1,352 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model MemberDto
+@using Whiskey.Utility.Data
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Member
+<style type="text/css">
+    #DataTables_Table_3_wrapper > .datatable-footer > .col-md-2:nth-child(1) {
+        width: 15%;
+    }
+</style>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-arrow-circle-left"></i> <a href="javascript:void(0);" onclick="$.whiskey.web.load({url:'@Url.Action("Index")'})"><i class="fa fa-backward"></i> <span>返回会员列表</span></a></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <h5><i class="fa fa-credit-card"></i> <span>基本信息</span></h5>
+            </div>
+        </div>
+        <br />
+        <br />
+        @using (Ajax.BeginForm("Update", new { }, new AjaxOptions() { HttpMethod = "post", OnBegin = "beforeSend()", OnSuccess = "afterFun(data)" }, new { id = "form1" }))
+        {
+            @Html.HiddenFor(x => x.Id)
+            <div class="tab-content">
+                <div class="tab-pane fade active in " id="base">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.StoreId) :
+                        </label>
+                        <div class="col-md-5 ">
+                            @Html.TextBoxFor(x => x.StoreName, new { @class = "form-control", @readonly = "readonly" })
+                            @Html.HiddenFor(x => x.StoreId)
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-success" id="getStore">
+                                选择店铺
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" value="@Model.UserPhoto" name="UserPhoto" />
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            搭配师 :
+                        </label>
+                        <div class="col-md-5">
+                            <input type="text" readonly="readonly" id="collocationName" class="form-control" />
+                            <input type="hidden" id="CollocationId" name="CollocationId" />
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-success" id="getCollocation">
+                                选择搭配师
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.MemberName) :
+                        </label>
+                        <div class="col-md-7 divName">
+                            @Html.TextBoxFor(m => m.MemberName, new { @class = "form-control", })
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                            <label class="control-label col-md-3">
+                                会员角色 :
+                            </label>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-success" onclick='$(".divMemberRole").toggle();'>
+                                    选择角色
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">
+                            </label>
+                            <div class="col-md-7 divMemberRole" style="display:none;">
+                                @foreach (var item in ViewBag.AllMemberRoles as IList<SelectListItem>)
+                                {
+                                    <input type="checkbox" value="@item.Value" name="MemberRoleIds" @Html.Raw(item.Selected ? "checked" : "") />@item.Text
+                                }
+                            </div>
+                        </div>*@
+                    <div class="form-group warning alert-danger" id="warn">
+                        <label class="control-label col-md-3">
+                            注意 :
+                        </label>
+                        <div class="col-md-6">
+                            <label class="control-label col-md-10">
+                                <i class="fa fa-warning"></i><span id="warnInfo">如需修改密码，请填写密码；无需修改，不用填写</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.ResetPass) :
+                        </label>
+                        <div class="col-md-7 divMemberPass">
+                            @Html.PasswordFor(m => m.ResetPass, new { @class = "form-control", @oncopy = "document.selection.empty()", @onpaste = "return false" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.SecondReset) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.PasswordFor(m => m.SecondReset, new { @class = "form-control", @oncopy = "document.selection.empty()", @onpaste = "return false" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.MemberTypeId) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.DropDownListFor(m => m.MemberTypeId, (List<SelectListItem>)ViewBag.MemberType, new { @class = "form-control selectpicker" })
+                        </div>
+                    </div>
+                    <div class="form-group member-level-container" style="display:none;">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.LevelId) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.HiddenFor(m => m.LevelId)
+                            @Html.DropDownList("member-level-enterprise", (List<SelectListItem>)ViewBag.MemberLevels, "请选择企业会员类型", new { @class = "form-control selectpicker" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.Gender) :
+                        </label>
+                        <div class="col-md-7">
+                            <select class="form-control selectpicker" id="Gender" name="Gender">
+                                <option value="0">女</option>
+                                <option value="1">男</option>
+                            </select>
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                            <label class="control-label col-md-3">
+                                @Html.DisplayNameFor(m => m.CardNumber) :
+                            </label>
+                            <div class="col-md-7">
+                                @Html.TextBoxFor(m => m.CardNumber, new { @class = "form-control"  })
+                            </div>
+                        </div>*@
+                    @Html.HiddenFor(m => m.CardNumber)
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.Email) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.MobilePhone) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.MobilePhone, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.RealName) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.RealName, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.IDCard) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.IDCard, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.DateofBirth) :
+                        </label>
+                        <div class="col-md-2">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("DateofBirth", Model.DateofBirth, new { @class = "start-date input-sm form-control", @placeholder = "点击选择" })
+                            </div>
+                        </div>
+                        <label class="control-label col-md-1">
+                            @Html.DisplayNameFor(m => m.CreateTime) :
+                        </label>
+                        <div class="col-md-3">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("CreateTime", Model.CreateTime, new { @class = "start-date input-sm form-control", @placeholder = "点击选择" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.Notes) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-4 text-right">
+                    <button type="submit" id="btnAdd" class="btn btn-success">
+                        修改
+                    </button>
+                </div>
+                <div class="col-md-3 text-right">
+                    <button type="button" class="btn btn-primary" onclick="getBack()">
+                        返回
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    $(function () {
+        //初始化性别
+        initGender();
+        //获取选择店铺列表
+        $("#getStore").on("click", function () {
+            $.whiskey.ajaxLoading({
+                url: "@Url.Action("StoreList")",
+                type: 'get',
+                success: function (data) {
+                    bootbox.dialog({
+                        message: data,
+                        // message:formBody,
+                        title: "店铺列表",
+                        buttons: {
+                            cancel: {
+                                label: "关闭",
+                                icon: "fa-close",
+                                className: "btn-default",
+                                callback: function () {
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        //获取选择搭配师列表
+        $("#getCollocation").on("click", function () {
+            $.whiskey.ajaxLoading({
+                url: "@Url.Action("CollocationList")",
+                type: 'get',
+                success: function (data) {
+                    bootbox.dialog({
+                        message: data,
+                        // message:formBody,
+                        title: "搭配师列表",
+                        buttons: {
+                            cancel: {
+                                label: "关闭",
+                                icon: "fa-close",
+                                className: "btn-default",
+                                callback: function () {
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+    //返回结果
+    function afterFun(data) {
+        if (data.ResultType == "@((int)OperationResultType.Success)") {
+            $.whiskey.web.load({ url: "@Url.Action("Index")" });
+        } else {
+            $("#btnAdd").removeClass("disabled")
+            $.whiskey.web.alert({
+                type: "danger",
+                content: data.Message,
+                callback: function () {
+                }
+            });
+        }
+    }
+    //返回折扣列表
+    function getBack() {
+        $.whiskey.web.load({ url: "@Url.Action("Index")" });
+    }
+
+    function initGender() {
+        var gender = "@Model.Gender";
+        $("#Gender option").each(function () {
+            var value = $(this).val();
+            if (gender == value) {
+                $(this).attr("selected", "selected");
+            }
+        });
+    }
+    function beforeSend() {
+        $("#btnAdd").addClass("disabled", "disabled")
+    }
+
+    $(function () {
+         // 会员等级类型初始化
+        const levelId = Number( @Model.LevelId);
+        if(levelId && levelId > 0) {
+            $("#member-level-enterprise").selectpicker('val', levelId)
+        }
+        $("#MemberTypeId").change(function () {
+            var val = parseInt($(this).val());
+            if (isNaN(val) || val <= 0) {
+                $("#LevelId").val(levelId);
+                $(".member-level-container").hide();
+                return;
+            }
+
+
+            if (val === parseInt('@ViewBag.EnterpriseMemberTypeId')) {
+                $(".member-level-container").show();
+                $("#member-level-enterprise").trigger('change');
+            }
+            else{
+                $("#LevelId").val(levelId);
+                $(".member-level-container").hide();
+            }
+
+        });
+
+        $("#member-level-enterprise").change(function () {
+            var val = parseInt($(this).val());
+            if (!isNaN(val) && val > 0) {
+                $("#LevelId").val(val);
+            }
+            else {
+                $("#LevelId").val(levelId);
+            }
+        })
+
+        $("#MemberTypeId").trigger('change');
+    })
+</script>
+

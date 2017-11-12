@@ -1,0 +1,102 @@
+﻿<div>
+    <ul id="myTab" class="nav nav-tabs">
+        <li>
+            <a href="#valid_tab" data-toggle="tab">
+                有效验证列表
+            </a>
+        </li>
+        <li><a href="#invalid_tab" data-toggle="tab">无效验证列表</a></li>
+
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in" id="valid_tab">
+            <table id="nwe_table_1" class="table table-striped table-condensed table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr role="row">
+                        <th class="sorting_disabled _tipColumn_" rowspan="1" colspan="1" style="width: 92px;">商品id</th>
+                        <th class="sorting_disabled _tipColumn_" rowspan="1" colspan="1" style="width: 122px;">商品编号</th>
+                        <th class="sorting_disabled _tipColumn_" rowspan="1" colspan="1" style="width: 122px;">商品名称</th>
+                        <th class="sorting_disabled _tipColumn_" rowspan="1" colspan="1" style="width: 66px;">季节</th>
+                        <th class="sorting_disabled _tipColumn_" rowspan="1" colspan="1" style="width: 67px;">颜色</th>
+                        <th class="sorting_disabled _tipColumn_" rowspan="1" colspan="1" style="width: 67px;">尺码</th>
+                        <th class="sorting_disabled _tipColumn_" rowspan="1" colspan="1" style="width: 67px;">总数</th>
+                    </tr>
+                </thead>
+                <tbody><tr><td>数据加载中……</td></tr></tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade in" id="invalid_tab">
+            <table id="nwe_table_2" class="table table-striped table-condensed table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr role="row">
+                        <th class="sorting_disabled _tipColumn_" rowspan="1" colspan="1" style="width: 0px;">商品编号</th>
+                        <th class="sorting_disabled _tipColumn_" rowspan="1" colspan="1" style="width: 0px;">原因描述</th>
+                        <th class="sorting_disabled _tipColumn_" rowspan="1" colspan="1" style="width: 0px;">总数</th>
+                    </tr>
+                </thead>
+                <tbody><tr><td>数据加载中……</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        var ind = $.whiskey.tools.other();
+        if (ind == "1") {
+            $("#myTab li:first").addClass("active");
+            $("#valid_tab").addClass("active");
+            $("#myTab li:last").removeClass("active");
+        }
+        else {
+            $("#myTab li:last").addClass("active");
+            $("#myTab li:first").removeClass("active");
+            $("#invalid_tab").addClass("active");
+        }
+        $.post("/Warehouses/Buy/GetValidDa", { PurchaseNumber: "@Request["PurchaseNumber"]" }, function (da) {
+            if (da != null && da != "") {
+                var dat = da.valid;
+                var conten = "";
+                if (dat == null || dat == undefined || dat == "") {
+                    $("#nwe_table_1 tbody").html("").html("<tr><td>没有有效数据</td></tr>");
+                }
+                else {
+                    for (var i = 0; i < dat.length; i++) {
+                        var te = dat[i];
+                        conten += validAddRow(te);
+                    }
+                    $("#nwe_table_1 tbody").html("").html(conten);
+                }
+
+                var dat1 = da.invalid;
+                var conte = "";
+                if (dat1 == undefined || dat1 == null || dat1 == "") {
+                    $("#nwe_table_2 tbody").html("").html("<tr><td>没有无效数据</td></tr>");
+                }
+                else {
+                    for (var i = 0; i < dat1.length; i++) {
+                        var te = dat1[i];
+                        conte += invalidAddRow(te);
+                    }
+                    $("#nwe_table_2 tbody").html("").html(conte);
+                }
+            }
+            else {
+                $("#nwe_table_1 tbody").html("").html("<tr><td>没有有效数据</td></tr>");
+                $("#nwe_table_2 tbody").html("").html("<tr><td>没有无效数据</td></tr>");
+            }
+        });
+    });
+    function validAddRow(da) {
+        if (da != undefined && da != null && da != "") {
+            var str = "<tr><td style='width:15%'>" + da.ProductId + "</td><td style='width:15%'>" + da.ProductNumber + "</td><td style='width:20%'>" + da.ProductName + "</td><td style='width:10%'>" + da.SeasonName + "</td><td style='width:10%'>" + da.ColorName + "</td><td style='width:15%'>" + da.SizeName + "</td><td style='width:15%'>" + da.Count + "</td></tr>";
+            return str;
+        }
+    }
+    function invalidAddRow(da) {
+        if (da != undefined && da != null && da != "") {
+            var str = "<tr><td>" + da.ProductBarcode + "</td><td>" + da.Notes + "</td><td>" + da.Amount + "</td></tr>";
+            return str;
+        }
+    }
+</script>

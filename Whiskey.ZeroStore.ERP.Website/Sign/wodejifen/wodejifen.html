@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta id="viewport" name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <title>我的积分</title>
+    <link href="../css/public.css" rel="stylesheet" />
+    <link href="css/wodejifen.css" rel="stylesheet" />
+    <script>
+        (function (w) {
+            s();
+            var e = ("onorientationchange" in w) ? "orientationchange" : "resize";
+            w.addEventListener(e, function () {
+                setTimeout(function () {
+                    s()
+                }, 200)
+            }, false);
+            function s() {
+                var a = w.innerWidth;
+                var b = 20 * (a / 320);
+                if (b > 40) {
+                    b = 40;
+                }
+                document.querySelector("html").style.fontSize = b + "px";
+            }
+        })(window);
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="wodeJf">
+    <div class="til_bak">
+        <p class="back_befo" id="leave">
+            <img src="../img/nav_fh@2x.png" alt="png" /><span>返回</span>
+        </p>我的积分
+    </div>
+    <div class="jifen">
+        <div class="allIntegral">
+            <img src="../img/cehua/7@2x.png"class="jifenImg" alt="Alternate Text" />
+            <span class="integral">109,470</span>
+        </div>
+        <div id="jifenMokuai">
+            <div class="jifenBox">
+                <div class="lineBox">
+                    <b>9-23</b>
+                    <i>+10</i>
+                    <span>用户好评</span>
+                </div>
+                <div class="lineBox">
+                    <b>9-23</b>
+                    <i>+10</i>
+                    <span>用户好评</span>
+                </div>
+                <div class="lineBox">
+                    <b>9-23</b>
+                    <i>+10</i>
+                    <span>用户好评</span>
+                </div>
+                <div class="lineBox">
+                    <b>9-23</b>
+                    <i>+10</i>
+                    <span>用户好评</span>
+                </div>
+                <div class="lineBox">
+                    <b>9-23</b>
+                    <i>+10</i>
+                    <span>用户好评</span>
+                </div>
+                <div class="lineBox">
+                    <b>9-23</b>
+                    <i>+10</i>
+                    <span>用户好评</span>
+                </div>
+                <div class="lineBox">
+                    <b>9-23</b>
+                    <i>+10</i>
+                    <span>用户好评</span>
+                </div>
+                <div class="lineBox">
+                    <b>9-23</b>
+                    <i>+10</i>
+                    <span>用户好评</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../js/global.js"></script>
+    <script src="../js/iscroll.js"></script>
+    <script src="js/wodejifen.js"></script>
+    <script>
+        var jifenMokuai = new IScroll('#jifenMokuai', { scrollX: true, freeScroll: true, click: true });
+
+        document.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+            jifenMokuai.refresh();
+
+        }, false);
+    </script>
+</body>
+</html>

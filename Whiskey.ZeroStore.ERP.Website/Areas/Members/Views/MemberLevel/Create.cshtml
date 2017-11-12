@@ -1,0 +1,54 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Models
+@model MemberLevelDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpgradeType) :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownList("UpgradeType", EnumHelper.GetSelectList(typeof(UpgradeType)), "请选择升级方式", new { @class = "form-control selectpicker show-tick" })
+    </div>
+</div>
+<div class="form-group UpgradeConditionContainer" style="display:none;">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpgradeCondition) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.UpgradeCondition, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.LevelName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.LevelName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Discount) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Discount, new { @class = "form-control" })
+    </div>
+</div>
+<script>
+    $(".selectpicker").selectpicker();
+    $("#UpgradeType").change(function () {
+        var val = parseInt($(this).val());
+
+        if (!isNaN(val) && val == @((int)UpgradeType.企业)) {
+            $("#UpgradeCondition").val(0);
+            $(".UpgradeConditionContainer").hide();
+        }
+        else if(!isNaN(val) && val == @((int)UpgradeType.充值)){
+            $(".UpgradeConditionContainer").show();
+        }
+    })
+</script>

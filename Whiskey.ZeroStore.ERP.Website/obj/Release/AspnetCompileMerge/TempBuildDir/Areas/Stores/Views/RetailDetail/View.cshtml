@@ -1,0 +1,183 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@model Whiskey.ZeroStore.ERP.Models.Entities.RetailItem
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        订单号 :
+    </label>
+    <div class="col-md-7">
+        @Model.Retail.RetailNumber
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        货号 :
+    </label>
+    <div class="col-md-7">
+        @Model.Product.ProductNumber
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        商品名 :
+    </label>
+    <div class="col-md-7">
+        @Model.Product.ProductName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        图片 :
+    </label>
+    <div class="col-md-7">
+        <img src="@Model.Product.ThumbnailPath" />
+    </div>
+</div>
+
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        吊牌价(￥) :
+    </label>
+    <div class="col-md-7">
+        @Model.ProductTagPrice
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        零售价(￥) :
+    </label>
+    <div class="col-md-7">
+        @Model.ProductRetailPrice
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        数量 :
+    </label>
+    <div class="col-md-7">
+        @Model.RetailCount
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        总消费(￥) :
+    </label>
+    <div class="col-md-7">
+        <span class="consuCou" style="color: #5ebd5e"></span>元
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        会员名 :
+    </label>
+    <div class="col-md-7">
+        @if (Model.Retail.ConsumerId == null)
+        {
+            <span>非会员</span>
+        }
+        else
+        {
+            <span>@Model.Retail.Consumer.MemberName</span>
+        }
+    </div>
+</div>
+@if (Model.Retail.LevelDiscount.HasValue)
+{
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            会员折扣:
+        </label>
+        <div class="col-md-7">
+            <span class="" style="color: #5ebd5e">@Model.Retail.LevelDiscount</span>
+        </div>
+    </div>
+}
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        参与的活动 :
+    </label>
+    <div class="col-md-7">
+        @if (Model.SalesCampaignId == null)
+        {
+            <span style="color: #5ebd5e">未参与活动</span>
+        }
+        else
+        {
+            @Model.SalesCampaign.CampaignName
+        }
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        商品活动折扣 :
+    </label>
+    <div class="col-md-7">
+        @Model.SalesCampaignDiscount<span>折</span>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        获得积分 :
+    </label>
+    <div class="col-md-7">
+        @if (Model.Retail.ConsumerId == null)
+        {
+            <span>0</span>
+        }
+        else
+        {
+            @Model.GetScore
+        }
+       
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        出库日期 :
+    </label>
+    <div class="col-md-7">
+        @Model.Retail.OutStorageDatetime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        创建时间 :
+    </label>
+    <div class="col-md-7">
+        @Model.Retail.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        最后修改时间 :
+    </label>
+    <div class="col-md-7">
+        @Model.Retail.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        经办人 :
+    </label>
+    <div class="col-md-7">
+        @Model.Retail.Operator.Member.MemberName
+    </div>
+</div>
+<script>
+    $(function() {
+        sum();
+
+    });
+    function sum() {
+        var price = parseFloat(@Model.ProductRetailPrice);
+        var cou = parseFloat(@Model.RetailCount);
+        var dis = parseInt(@Model.SalesCampaignDiscount);
+        ConsumeCoun = price * cou*dis/10;
+        $(".consuCou").text(ConsumeCoun);
+    }
+</script>

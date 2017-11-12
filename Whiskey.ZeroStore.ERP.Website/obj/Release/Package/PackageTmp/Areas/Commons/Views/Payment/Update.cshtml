@@ -1,0 +1,64 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model PaymentDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PaymentName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PaymentName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PaymentPartner) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PaymentPartner, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PaymentKey) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PaymentKey, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PaymentFee) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PaymentFee, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.MobilePhone) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.MobilePhone, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Website) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Website, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m=> m.Id)

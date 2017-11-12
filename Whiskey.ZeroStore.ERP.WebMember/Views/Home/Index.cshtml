@@ -1,0 +1,157 @@
+﻿@using Whiskey.Web.Helper;
+@{
+    string themePath = ViewBag.themePath ?? string.Empty;
+    string _tempFile = Path.Combine(themePath, "_Index.cshtml");
+}
+@{
+    if ((ViewBag.themeExist ?? false) && FileHelper.FileIsExist(_tempFile))
+    {
+        Html.RenderPartial(_tempFile);
+    }
+    else
+    {
+        @section Styles{
+            @Html.CssBlock("~/Content/Styles/Layout/shoping.css")
+        }
+        @section Scripts{
+            <script>
+                $.ajax({
+                    type: "post",
+                    url: "/Products/Product/GetStoreProducts",
+                    dataType: 'json',
+                    data: {
+                        PageSize: 8
+                    },
+                    async: true,
+                    beforeSend: function () {
+                        postcomplete = false;
+                    },
+                    complete: function () {
+                        postcomplete = true;
+                    },
+                    success: function (data) {
+                        var html = '';
+                        $(data.Data).each(function(i,item){
+                        	
+                            html += '<li onclick=jumpDetail(this) data-BigProdNum=' + item.BigProdNum + '>' +
+				            '<img class="clothImage" data-src=' + item.ImageOrgPath + '>'+
+				            '<div class="cloth_name">'+item.SeasonName +'&nbsp'+ item.CategoryName  +'</div></li>'
+                        })
+                        $('.cloth_list').html(html);
+                    }
+                });
+                //---------------------------------------------------------------------------------------------- 跳转商品详情
+                function jumpDetail(_this) {
+                    var BigProdNum = $(_this).attr('data-BigProdNum');
+                    window.open("/products/product/detail?BigProdNum=" + BigProdNum);
+                }
+
+                lazyLoadImage();
+                $(window).scroll(function(){
+                    lazyLoadImage();
+                });
+                function lazyLoadImage(){
+                    var imageArr = $('img');
+                    for(var i = 0 ; i < imageArr.length ; i++){
+                        if(!$('img').eq(i).attr('src')){
+                            var dis = $('img').eq(i).offset().top - $(document).scrollTop() - $(window).height();
+                            if(dis < 1000 ){
+                                $('img').eq(i).attr('src',$('img').eq(i).attr('data-src'))
+                            }
+                        }
+                    }
+                }
+            </script>
+        }
+        <div class="part partHeader">
+            <img class="header_cloth_bg" data-src="/content/images/shoping/part1_bg.png" />
+            <img class="header_cloth" data-src="/content/images/shoping/header_img.png" />
+        </div>
+        <div class="part part1">
+            <img class="part_cloth" data-src="/content/images/shoping/part1_cloth.png" />
+        </div>
+        <div class="part2">
+            <img class="part1_bg" data-src="/content/images/shoping/part2_bg.png" />
+            <a class="more" href="javascript:void(0);" onclick="$.fashion.web.load({url:'@Url.Action("Online")',_p_flag:'-1'})"><img data-src="/content/images/shoping/more.png" /></a>
+        </div>
+        <div class="part3">
+            <a class="part3_title" href="javascript:void(0);" onclick="$.fashion.web.load({url:'@Url.Action("Online")',_p_flag:'-1'})">
+                <span>MORE</span><img data-src="/content/images/shoping/more_gloden.png" />
+            </a>
+            <div class="part3_cloth_list">
+                <ul class="clearfix cloth_list">
+                    <li>
+                        <img data-src="/content/images/shoping/MR5A9103.jpg" />
+                        <div class="cloth_name">白色无袖连衣裙</div>
+                    </li>
+                    <li>
+                        <img data-src="/content/images/shoping/MR5A9180.jpg" />
+                        <div class="cloth_name">白色半袖连衣裙</div>
+                    </li>
+                    <li>
+                        <img data-src="/content/images/shoping/MR5A9186.jpg" />
+                        <div class="cloth_name">军绿色长款风衣</div>
+                    </li>
+                    <li>
+                        <img data-src="/content/images/shoping/MR5A9253.jpg" />
+                        <div class="cloth_name">黑色无袖连衣裙</div>
+                    </li>
+                    <li>
+                        <img data-src="/content/images/shoping/MR5A9303.jpg" />
+                        <div class="cloth_name">黑色半袖上衣</div>
+                    </li>
+                    <li>
+                        <img data-src="/content/images/shoping/MR5A9339.jpg" />
+                        <div class="cloth_name">藏蓝高腰阔腿裤</div>
+                    </li>
+                    <li>
+                        <img data-src="/content/images/shoping/MR5A9349.jpg" />
+                        <div class="cloth_name">白色连体裤</div>
+                    </li>
+                    <li>
+                        <img data-src="/content/images/shoping/MR5A9367.jpg" />
+                        <div class="cloth_name">黑色连衣裙</div>
+                    </li>
+                </ul>
+                <div class="product-more"><img data-src="/content/images/shoping/shoplistMore.png" /></div>
+            </div>
+            <div class="part3_bottom">
+                <img data-src="/content/images/shoping/part3_bottom.png" />
+            </div>
+        </div>
+        <div class="part4">
+            <div class="clearfix part4contain">
+                <div style="margin-top: 57%;"></div>
+                <div class="content">
+                    <div>
+                        <ul>
+                            <li class="JOURNAL">
+                                <div>JOURNAL</div>
+                            </li>
+                            <li class="JOURNALBottom"><img data-src="/content/images/shoping/dp(45).jpg" /></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul>
+                            <li class="MoreTop"><img data-src="/content/images/shoping/dp(5).jpg" /></li>
+                            <li class="MORE">
+                                <div><a href="javascript:void(0);" onclick="$.fashion.web.load({url:'@Url.Action("collocation")',_p_flag:'-1'})">MORE</a></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul>
+                            <li><img data-src="/content/images/shoping/dp(9).jpg" /></li>
+                            <li><img data-src="/content/images/shoping/dp(14).jpg" /></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <img data-src="/content/images/shoping/0fashion.png" />
+        </div>
+
+       
+    }
+}

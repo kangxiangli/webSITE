@@ -1,0 +1,219 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model ExamQuestionEntity
+<style>
+    .modal-content {
+        width: 800px;
+    }
+    .in_item{
+        width:20% !important;
+        display:inline-block;
+        margin-bottom:20px;
+        margin-right:5px;
+    }
+    .row_item{
+        line-height:6;
+    }
+</style>
+<div id="edit-vm">
+    <ul id="product" class="nav nav-tabs">
+        <li class="active">
+            <a href="#base" data-toggle="tab">题目信息</a>
+        </li>
+
+    </ul>
+    <input type="file" accept="images/jpeg,image/png" v-on:change="onChange" style="display:none" />
+    <input id="question-img" type="file" accept="images/jpeg,image/png" v-on:change="changeQuestionImg" style="display:none" />
+    <div class="tab-content">
+        <div class="tab-pane fade active in ">
+
+            <div class="tab-content">
+                <div class="tab-pane fade active in " id="base">
+
+                    <div class="panel">
+                        <ul class="list-group">
+                            <template>
+                                <!--单选题-->
+                                <li class="list-group-item">
+
+
+                                    <div class="form-group">
+                                        <div class="col-md-2">
+                                            <label>题目名称:</label>
+
+                                        </div>
+                                        <div class="col-md-4">
+
+                                            <textarea class="form-control" v-model.trim="question.Title"></textarea>
+                                        </div>
+                                        <div class="btn-group btn-group-sm col-md-5">
+
+                                            <button type="button" class="btn btn-padding-right btn-info" v-on:click="uploadQuestionImg">选择图片</button>
+                                            <button type="button" class="btn btn-padding-right btn-success" v-on:click="addAnswer(question)">新增答案</button>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-2">
+
+                                            <label>分值:</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input v-model.number="question.Score" type="number" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-2">
+                                            <label>正确答案:</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            {{question.RightAnswer}}
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="row row_item" v-if="question.ImgUrl&&question.ImgUrl.length>0">
+                                        <div class="col-xs-6 col-md-3">
+                                            <img v-bind:src="question.ImgUrl" class="thumbnail img-thumbnail" />
+                                        </div>
+                                        <a class="btn btn-danger" v-on:click.prevent="question.ImgUrl=''">删除</a>
+                                    </div>
+                                   
+                                    
+                                    <ul class="list-group">
+                                        <template v-for="(answer,subindex) in question.AnswerOptions">
+                                            <li>
+                                                ({{answer.Value}})
+                                                <input class="form-control in_item" type="text" v-model="answer.Title" />
+
+                                                <label v-if="!question.IsMulti">
+                                                    <input type="radio" v-bind:value="answer.Value" v-model="question.RightAnswer" />是否答案
+                                                </label>
+                                                <label v-else>
+                                                    <input type="checkbox" v-bind:value="answer.Value" v-model="question.RightAnswer" /> 是否答案
+                                                </label>
+
+                                                <button class="btn btn-success" v-on:click.prevent="upload(subindex)">选择图片</button>
+                                                <button type="button" class="btn btn-danger" v-on:click="removeAnswer(question,subindex)">X</button>
+                                                <div class="row row_item" v-if="answer.ImgUrl&&answer.ImgUrl.length>0">
+                                                    <div class="col-xs-6 col-md-3">
+                                                        <img v-bind:src="answer.ImgUrl" class="thumbnail img-thumbnail" />
+
+                                                    </div>
+                                                    <a class="btn btn-danger" v-on:click.prevent="answer.ImgUrl=''">删除图片</a>
+
+                                                </div>
+                                            </li>
+                                        </template>
+
+                                    </ul>
+                                </li>
+
+                               
+                            </template>
+
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var examQuestionEditVM = null;
+    $(function () {
+
+        var data = JSON.parse('@Html.Raw(ViewBag.dto)');
+        if (!data.IsMulti) {
+            data.RightAnswer = data.RightAnswer[0];
+        }
+        console.log(data);
+
+        examQuestionEditVM = new Vue({
+            el: '#edit-vm',
+            data: {
+                question: data,
+                currentUploadIndex:''
+            },
+            methods: {
+                upload: function (index) {
+                    this.currentUploadIndex = index;
+                    document.querySelector("input[type=file]").click();
+                },
+                uploadQuestionImg: function () {
+                    $("#question-img").trigger('click');
+                },
+                changeQuestionImg: function (e) {
+                    
+                    var _self = this;
+                    var inputFile = e.target;
+                    if (!e.target.files || e.target.files.length <= 0) { return; }
+                    debugger
+             
+                    var file = e.target.files[0]
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function (e) {
+                        _self.question.ImgUrl = e.target.result;
+                        inputFile.value = '';
+                    };
+
+                },
+                onChange: function (e) {
+                    if (!e.target.files || e.target.files.length <= 0) { return; }
+                    var inputFile = e.target;
+                    var _self = this;
+                    var index = _self.currentUploadIndex;
+
+                    debugger
+                    var answerEntry = _self.question.AnswerOptions[index];
+                    var file = e.target.files[0]
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function (e) {
+                        answerEntry.ImgUrl = e.target.result;
+                        inputFile.value = '';
+                    };
+                },
+                addAnswer: function (questionEntry) {
+                    // 获取已经添加的答案的ABCD的值,然后往后新增一个
+                    if (questionEntry.AnswerOptions.length > 0) {
+                        questionEntry.AnswerOptions.sort(function (a, b) { return a.Value.charCodeAt() - b.Value.charCodeAt() });
+                        var maxVal = questionEntry.AnswerOptions[questionEntry.AnswerOptions.length - 1].Value;
+                        var newVal = String.fromCharCode((maxVal.charCodeAt() + 1));
+                        questionEntry.AnswerOptions.push({
+                            "Title": "新答案",
+                            "Value": newVal,
+                            "ImgUrl":''
+                        });
+                    }
+                    else {
+                        questionEntry.AnswerOptions.push({
+                            "Title": "新答案",
+                            "Value": "A",
+                            "ImgUrl": ''
+                        });
+                    }
+
+                },
+                removeAnswer: function (questionEntry, index) {
+                    questionEntry.AnswerOptions.splice(index, 1);
+
+                    // 重置正确答案
+                    if (questionEntry.IsMulti) {
+                        questionEntry.RightAnswer = [];
+                    }
+                    else {
+                        questionEntry.RightAnswer = '';
+                    }
+                    // 重排
+                    var baseChar = "A".charCodeAt();
+                    questionEntry.AnswerOptions.forEach(function (option) {
+                        option.Value = String.fromCharCode(baseChar++);
+                    })
+
+                }
+            }
+        })
+    });
+</script>

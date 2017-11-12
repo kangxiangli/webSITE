@@ -1,0 +1,106 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.Utility.Helper
+
+
+@helper showVerity(int veritytype)
+{
+    
+        if (veritytype==(int)VerifyFlag.NoPass)
+        {
+           @:审核不通过
+        }
+        else if (veritytype == (int)VerifyFlag.Pass)
+        {
+           @:通过
+        }
+        else if (veritytype == (int)VerifyFlag.Waitting)
+        {
+            @:待确认
+        }
+        else
+        {
+            @:审核中
+        }
+}
+@helper showDeleted(bool IsDeleted)
+{
+
+    if (IsDeleted == true)
+    {
+        @:已删除
+    }   
+    else
+    {
+        @:未删除
+    }
+}
+@helper showEnabled(bool IsEnabled)
+{
+
+    if (IsEnabled == true)
+    {
+        @:已启用
+    }
+    else
+    {
+        @:未启用
+    }
+}
+
+@helper showOperator(Administrator admin)
+{
+        string strName = string.Empty;
+        if (admin != null)
+        {
+            @:@admin.Member.MemberName
+        }
+        else
+        {
+            @:   
+        }        
+}
+@helper showTrueFalse(bool istrue)
+{
+    if (istrue)
+    {
+        @:是
+    }
+    else {
+        @:否
+    }
+}
+
+@helper showApiAttenFlag(int apiAttenFlag)
+{
+        if (apiAttenFlag == (int)ApiAttenFlag.Absence)
+        {
+           @:未签到
+        }
+        else if (apiAttenFlag == (int)ApiAttenFlag.Late)
+        {
+           @:迟到
+        }
+        else if (apiAttenFlag == (int)ApiAttenFlag.LeaveEarly)
+        {
+            @:早退
+        }
+        else if (apiAttenFlag == (int)ApiAttenFlag.NoSignOut)
+        {
+            @:未签退
+        }
+        else
+        {
+            @:未知
+        }
+}
+
+@helper ApiUrl()
+{
+    @ConfigurationHelper.GetAppSetting("ApiUrl");
+}
+@helper WebUrl()
+{
+    @ConfigurationHelper.GetAppSetting("WebUrl");
+}

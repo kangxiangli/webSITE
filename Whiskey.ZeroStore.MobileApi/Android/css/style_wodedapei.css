@@ -1,0 +1,163 @@
+@charset 'utf-8'
+* {
+  -webkit-touch-callout: none;
+  /*-webkit-user-select: none;*/
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+h1,h2,h3,p,ul,ol,form,fieldset,figure {margin: 0;padding: 0;}
+div,figure,img,input,button {box-sizing: border-box;}
+body,html{  font-size: 17px;margin: 0;padding: 0;overflow: hidden; height: 100%;background:url('../img/erjiyemian.png')no-repeat;background-size:cover;font-family:"Helvetica Neue", Helvetica, Arial, "Microsoft Yahei UI", "Microsoft YaHei", SimHei, "\5B8B\4F53", simsun, sans-serif;}
+img {display: block;max-width: 100%;}
+ul,ol{list-style: outside none none;}
+li{display:block;}
+a {text-decoration: none;display: block;}
+.clearfix:after {
+	content:".";  
+	height:0;  
+	visibility:hidden;  
+	display:block;  
+	clear:both;  
+}
+
+
+
+/*header*/
+.header{height: 7%;border-bottom:1px solid silver;width: 93%;margin:0 auto;position: relative;}
+.header .contain{height: 100%;line-height: 100%;width: 100%;}
+.header .contain .back a{color: #fff;position: absolute;top:53%;left: 4%;width: 20%}
+.header .contain .back a img{display: inline;height:12px;padding-right: 2px;}
+.header .contain .location a{ color: #fff;position: absolute;top: 50%;left: 34.5%;font-size: 1.5em}
+.header .title{width:115px;height:23px;position: absolute;top: 50%;margin-top:2px;left: 50%;margin-left: -35.5px; color:#FFFFFF;font-size: 1.2em;letter-spacing: 2px;}
+.header .selection>img{position: absolute;right: 9px;bottom: 4px; width: 23px; height: 23px;}
+.header .selection .addandsearch{display: none;width:180px;height:145px;position: absolute;right: 0;top:100%;z-index: 999;}
+.header .selection .addandsearch>img{width: 100%;height: 100%}
+.header .selection .addandsearch>ul{position: absolute;top: 20%;right: 26%;width: 169px;height: 97px;}
+.header .selection .addandsearch>ul>li{width: 128%;height: 10%;letter-spacing: .6em;font-size: 2.2em;color: #969696;margin-bottom: 9px;text-align: center;text-align: center;line-height: 48px;}
+.header .selection .addandsearch>ul>li:first-child{border-bottom: 2px solid #969696;padding-bottom: 47px;}
+/*内容*/
+.container{height: 84%;position:relative;}
+/*卡片*/
+ @-webkit-keyframes animation{from{opacity:0; -webkit-transform:scale(1.2) rotateX(45deg);transform:scale(1.2) rotateX(45deg);} to{ }}
+
+    @-webkit-keyframes animation2{from{opacity:0; -webkit-transform:scale(1.2) rotateX(45deg);transform:scale(1.2) rotateX(45deg);} to{ }}
+
+    .slider div p{color:#1c1c1c;position:absolute;bottom:-55px; font-family:Raleway; font-size:16px;}
+    .slider{
+   	position: absolute;
+    -webkit-animation: animation ease 1s;
+    animation-delay: .8s;
+    animation-fill-mode: backwards;
+    perspective: 3990px;
+    transition: ease-in-out .2s;
+        /*-webkit-transform:rotateX(45deg);
+        -webkit-transform-style:preserve-3d;
+        position:absolute;*/
+    }
+    /*.slider:active{ -webkit-transform:rotateZ(10deg);}*/
+    .slide img { text-align:center;width:100%; height:100%; -webkit-user-drag:none;user-drag:none;-moz-user-drag:none; border-radius:2px;}
+    .slide{
+        -webkit-user-select:none;
+        user-select:none;
+        -moz-user-select:none;
+        position:absolute;
+        box-shadow: 0px 10px 30px 0px rgba(0,0,0,0.3);
+        -webkit-transform-style:preserve-3d;
+        transform-style:preserve-3d;
+        -moz-transform-style:preserve-3d;
+        text-align:center;
+        /*overflow:hidden;*/
+        box-sizing:border-box;
+        border-bottom:55px white solid;
+        border-radius:5px; 
+    }
+    .transition {
+        -webkit-transition: cubic-bezier(0,1.95,.49,.73) .4s ;
+        -moz-transition: cubic-bezier(0,1.95,.49,.73) .4s ;
+        transition: cubic-bezier(0,1.95,.49,.73) .4s ;
+    }
+/*一级页面底*/
+.pageone>footer{position:absolute;bottom: 0;width: 100%; height:9%;border-top: 1px solid #AAAAAA;}
+.pageone>footer ul li{float:left;width:25%;}
+.pageone>footer ul li a{padding-left: 25%;}
+.pageone>footer ul li a img{width:36px;height: 35px;}
+.pageone>footer ul li a p{color:#ccc;font-size:14px;margin-left: 6px;}
+/*二级页面头*/
+.pagetwo{width: 100%;height: 100%;}
+.pageone{height: 100%;width: 100%;}
+.pagetwo .header .contain .back span{color: #fff;position: absolute;top:53%;left: 4%;width: 20%}
+.pagetwo .header .contain .back span>img{display: inline;height:12px;padding-right: 2px;}
+.pagetwo .header .contain .location>span{ color: #fff;position: absolute;top: 50%;left: 34.5%;font-size: 1.5em}
+/*三级页面*/
+.pagethree{display:none;width:100%;height: 100%;position: absolute;right: -100%;}
+.pagethree .header .contain .color{color: #fff;position: absolute;right:16%;bottom: 12%;}
+.pagethree .header .contain .fengge{color: #fff;position: absolute;right: 0;bottom: 12%;}
+.pagethree .header .contain .color img{position: absolute;right:125%;bottom: -13%}
+.pagethree .header .contain .fengge img{position: absolute;right:121%;bottom: -27%}
+
+/*内容*/
+.pagetwo >.contain{height:84%;}
+.canvas-container{position: relative;width: 100% !important;overflow: hidden;}
+/*footer*/
+.pagetwo>footer{position:relative; position:absolute;bottom: 0;width: 100%; height:9%;border-top: 1px solid #AAAAAA;background:#AAAAAA}
+.pagetwo>footer  li  img{width:36px;height: 35px;}
+.pagetwo>footer  li  p{color:black;font-size:14px;margin-left: 6px;}
+.pagetwo>footer>.img-box{position: absolute;left: 0;top:-230%;width: 100%;display: none;}
+.pagetwo>footer>.img-box >img{float:left;display: block;width:50px;height: 50px}
+.pagetwo>footer>.img-box >.wu{float:left;background:#fff ;width:50px;height: 50px;position: relative;}
+.pagetwo>footer>.img-box >.wu b{position: absolute;top:50%;left: 50%;color: black}
+.addtxt{display: none;position: fixed;top:74%;left:30%;width: 200px;height: 200px;color: #fff;}
+.sucai_img{position: absolute;left: 0;top:-230%;width: 100%;display: none;}
+.sucai_img >img{float:left;display: block;width:80px;height: 80px}
+
+/*底栏滑动*/
+.swiper-container {
+        width: 100%;
+        height: 300px;
+        margin: 20px auto;
+    }
+    .swiper-slide {
+        text-align: center;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+/*iphone6 plus以上*/
+@media (min-width:414px){
+	header .logo{top:19%;}
+	footer ul li a {padding-top: 8%;}
+}
+/*iphone4*/
+@media (max-width:320px){
+header{height:11%;}
+.contain{height:80%;}
+footer ul li a p {margin-left: 2px}
+footer ul li a img {width: 30px;height: 25px}
+}
+
+
+/*在768 和991 像素之间的屏幕里，小屏幕，主要是PAD/pad mini*/
+@media (min-width: 768px){
+
+.header .title{font-size:1.9em; margin-left: -52.5px;width: 150px;}
+.header .contain .back a{font-size:2em}
+.pageone>footer ul li img {width: 46px;height: 46px;}
+.pageone>footer ul li  p {font-size: 19px; margin-left: 4px;}
+.header .selection img{width: 50px;height: 50px;}
+.pageone>footer ul li  {padding-left: 36%;}
+}
+
+
+

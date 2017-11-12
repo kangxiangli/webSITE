@@ -1,0 +1,34 @@
+﻿
+<div>
+    <div>
+        <div class="form-group no-margin-hr">
+            <label class="control-label col-md-3">采购单编号：</label>
+            <div class="col-md-8">
+                <input type="text" value="@ViewBag.purchaseNum" class="form-control" disabled="disabled" />
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="form-group no-margin-hr">
+            <label class="control-label col-md-3">审核不通过原因：</label>
+            <div class="col-md-8">
+                <textarea id="auditNoMes" style="height:80px" class="form-control" placeholder="请输入审核不通过理由，不可为空……"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="purId" value="@ViewBag.purchaseNum" />
+  
+
+</div>
+<script>
+    $(function () {
+        $("#auditNoMes").parents(".modal-content").find("[data-bb-handler='success']").attr("disabled", "disabled");
+        $("#auditNoMes").on("keyup", function () {
+            if ($(this).val().trim().length > 0)
+                $("#auditNoMes").parents(".modal-content").find("[data-bb-handler='success']").removeAttr("disabled");
+            else
+                $("#auditNoMes").parents(".modal-content").find("[data-bb-handler='success']").attr("disabled", "disabled");
+        })
+    })
+</script>

@@ -1,0 +1,206 @@
+﻿@using Whiskey.ZeroStore.ERP.Models;
+@using Whiskey.ZeroStore.ERP.Models.Entities;
+@model SalesCampaign
+<style>
+	 .clre:hover {
+	 	display: inline-block;
+	 	width: 57px;
+	 	height: 26px;
+	 	line-height: 26px;
+	 	background: #000000;
+	 }
+	 
+	 .clre {
+	 	display: inline-block;
+	 	width: 57px;
+	 	height: 26px;
+	 	line-height: 26px;
+	 	background: #e5603b;
+	 }
+	 
+	 #pagiDiv>span {
+	 	border: 1px solid rgba(0, 0, 0, 0.1);
+	 	font-size: 12px;
+	 	padding: 6px 11px;
+	 	background-color: rgba(0, 0, 0, 0.2);
+	 }
+	 
+	 .clwid .modal-content {
+	 	width: 1000px;
+	 }
+	 
+	 #productCount {
+	 	font-size: 12px;
+	 	border: 1px solid rgba(0, 0, 0, 0.1);
+	 	padding: 0px 11px;
+	 	margin-left: 4px;
+	 	background-color: rgba(0, 0, 0, 0.2);
+	 }
+	 
+	 .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a span.check-mark {
+	 	margin-top: 0px !important;
+	 }
+	 
+	 #tblCampCreate {
+	 	width: 962px;
+	 }
+</style>
+
+<link href="~/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<div class="partiCreat" id="base">
+    <input type="hidden" id="hideStoreIds" name="hideStoreIds" value="@Model.StoresIds" />
+    <input type="hidden" id="hideCampaignNumber" name="hideCampaignNumber" value="@Model.CampaignNumber" />
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-3">活动名称:</label>
+        <div class="col-md-8" style="z-index:9999">
+            @Html.TextBox("CampaignName",Model.CampaignName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">所属店铺:</label>
+        <div class="col-md-4" style="z-index:9999">
+            <select id="CampaignStore" name="CampaignStore" class="form-control" multiple></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">活动时间:</label>
+        <div class="col-md-8">
+            <div class="input-daterange input-group">
+                <span style="position: relative; z-index: 9998;">
+                    @Html.TextBox("StartDate", Model.CampaignStartTime.ToString("yyyy-MM-dd"), new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                </span>
+
+                <span class="input-group-addon">至</span>
+                <span style="position: relative; z-index: 9998;">
+                    @Html.TextBox("EndDate", Model.CampaignEndTime.ToString("yyyy-MM-dd"), new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-3">活动参与者:</label>
+        <div class="col-md-3 ">
+            <select id="selectpicker" class="form-control membonl selectpicker">
+                <option value="0" @(Model.SalesCampaignType== SalesCampaignType.NoMemberOnly?"selected='selected'":"")>仅非会员</option>
+                <option value="1" @(Model.SalesCampaignType== SalesCampaignType.MemberOnly?"selected='selected'":"")>仅会员</option>
+                <option value="2" @(Model.SalesCampaignType== SalesCampaignType.EveryOne?"selected='selected'":"")>不限定</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-3">活动折扣:</label>
+        <div class="">
+            <div class="col-md-3">
+                <label id="" class="control-label ">会员专享:</label>
+                <input type="number" id="membDisc" max="10" min="1" step="0.1" value="@Model.MemberDiscount" @(Model.SalesCampaignType== SalesCampaignType.NoMemberOnly?"disabled":"") />
+            </div>
+            <div class="col-md-4">
+                <label id="" class="control-label ">非会员:</label>
+                <input name="noMemb" id="nomembDisc" type="number" max="10" min="1" step="0.1" value="@Model.NoMmebDiscount" @(Model.SalesCampaignType== SalesCampaignType.MemberOnly?"disabled":"") />
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-3">活动描述:</label>
+        <div class="col-md-8">
+            <textarea name="Descript" id="Descript" class="form-control">@Model.Descript</textarea>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label id="" class="control-label col-md-5">是否可以同时参与其他活动:</label>
+        <div class="col-md-3">
+            <div class="col-md-4">
+                <input id="otherCamp" type="checkbox" class="form-control" @(Model.OtherCampaign?"checked":"")/>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="" class="control-label col-md-5">是否可以与代金券一同使用:</label>
+        <div class="col-md-3">
+            <div class="col-md-4">
+                <input id="cashCoupon" type="checkbox"  class="form-control" @(Model.OtherCashCoupon?"checked":"")/>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label id="" class="control-label col-md-3">参与活动的商品:</label>
+        <div class="col-md-2">
+            <input class="swithP" type="checkbox" data-class="switcher-default" checked="checked">
+        </div>
+
+        <div class="col-md-4">
+            <button id="btn_sel" class="btn btn-success">单击选择</button>
+            <a id="btnBatchUpload" class="btn" style="display:none;">批量上传</a>
+        </div>
+        <div class="form-group">
+            <div>
+                <label>商品总数量:</label><span id="productCount">@((ViewBag.OriginNumberList as List<ProductOriginNumber>).Count)</span>
+            </div>
+            <table id="tblCampCreate" style="margin-top: 4%;" class="table table-list tblCampCreate_box valign-middle" width="90%">
+               
+                <thead>
+                    <tr role="row">
+                        <th class="sorting_disabled" rowspan="1" colspan="1">id</th>
+                        <th class="sorting_disabled" rowspan="1" colspan="1">商品名</th>
+                        <th class="sorting_disabled" rowspan="1" colspan="1">商品款号</th>
+                        <th class="sorting_disabled" rowspan="1" colspan="1">品牌</th>
+                        <th class="sorting_disabled" rowspan="1" colspan="1">品类</th>
+                        <th class="sorting_disabled" rowspan="1" colspan="1">季节</th>
+                        <th class="sorting_disabled" rowspan="1" colspan="1">图片</th>
+                        <th class="sorting_disabled" rowspan="1" colspan="1">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.OriginNumberList as List<ProductOriginNumber>)
+                    {
+                   <tr>
+                       <td>@item.Id</td>
+                       <td>@item.ProductName</td>
+                       <td>@item.BigProdNum</td>
+                       <td>@item.Brand.BrandName</td>
+                       <td>@item.Category.CategoryName</td>
+                       <td>@item.Season.SeasonName</td>
+                       <td><div class="thumbnail-img_five_box"> <div class="thumbnail-img_five"> <div class="thumbnail-img_f"><img class="popimg" src="@item.ThumbnailPath"/></div></div></div></td>
+                       <td>
+                           <a href="javascript:;" class="clre">删除</a>
+                       </td>
+                   </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div id="pagiDiv" align="center" style="width:1200px;margin-top: 4%;">
+                <span id="spanFirst">首页</span>&nbsp;&nbsp;
+                <span id="spanPre">上一页</span>&nbsp;&nbsp;
+                <span id="spanNext">下一页</span>&nbsp;&nbsp;
+                <span id="spanLast">末页</span>&nbsp;&nbsp;
+                第&nbsp;<span id="spanPageNum"></span>&nbsp;当前/总页&nbsp;<span id="spanTotalPage"></span>&nbsp;页
+            </div>
+
+        </div>
+
+    </div>
+</div>                                                       
+<script src="~/Content/Scripts/lodash/lodash.min.js"></script>                   
+<script src="~/Content/Scripts/Bootstrap/bootstrap-multiselect.js"></script>
+<script src="~/Content/plupload-2.1.8/js/plupload.full.min.js"></script>
+<script src="~/Content/plupload-2.1.8/js/jquery.plupload.queue/jquery.plupload.queue.min.js"></script>
+<script src="~/wwwroot/built/myPage.js"></script>
+<script src="~/wwwroot/built/CreateSaleCompaign.js"></script>
+<script>
+    firstPage();
+    // selectpicker 初始化
+    $(function () {
+        $('#selectpicker').selectpicker();
+        $('#selectpicker').selectpicker('refresh');
+    })
+</script>
+
+

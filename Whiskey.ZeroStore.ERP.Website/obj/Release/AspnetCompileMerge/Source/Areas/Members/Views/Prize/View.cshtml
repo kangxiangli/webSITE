@@ -1,0 +1,126 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Prize
+
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+<link rel="stylesheet" href="/content/editor/themes/default/default.css" />
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<style>
+    .li_empt {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+</style>
+
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #e5603b"></span>
+</div>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#addImage" data-toggle="tab">上传图片</a>
+    </li>
+     
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.PrizeName) :
+            </label>
+            <div class="col-md-8">
+                @Model.PrizeName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Quantity) :
+            </label>
+            <div class="col-md-8">
+                @Model.Quantity
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.GetQuantity) :
+            </label>
+            <div class="col-md-8">
+                @Model.GetQuantity
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.ReceiveQuantity) :
+            </label>
+            <div class="col-md-8">
+                @Model.ReceiveQuantity
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-8">
+                @Model.Notes
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.UpdatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.UpdatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CreatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.CreatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsEnabled) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsDeleted) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                操作人员 :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+            </div>
+        </div>
+     </div>
+
+    <div id="addImage" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                图片:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="@Model.RewardImagePath" alt="图片" id="CouponImagePath" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ 
+</div>

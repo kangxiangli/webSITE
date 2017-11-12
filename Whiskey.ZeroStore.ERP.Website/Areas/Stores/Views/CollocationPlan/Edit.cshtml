@@ -1,0 +1,356 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model CollocationPlan
+<style>
+    .modal-content {
+        width: 1200px;
+    }
+    span.keyword {
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active"><a href="#tab-baseinfo" data-toggle="tab">基本信息</a></li>
+    <li><a href="#tab-tag" data-toggle="tab">属性标签</a></li>
+    <li><a href="#tab-template" data-toggle="tab">模版设置</a></li>
+</ul>
+<div id="add-template" class="tab-content">
+
+    <input type="file" style="display:none;" v-on:change="handleFileChange"/>
+    <!--基本信息tab-->
+    <div class="tab-pane fade in active" id="tab-baseinfo">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="form-group">
+                    <label class="control-label col-md-2">
+                        方案名称 :
+                    </label>
+                    <div class="col-md-8">
+                        <input type="text" v-model.trim="name" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2">
+                        方案描述 :
+                    </label>
+                    <div class="col-md-8">
+                        <textarea type="text" v-model.trim="desc" style="height:200px;" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2">
+                        封面图片 :
+                    </label>
+                    <div class="col-md-8">
+                        <div class="thumbnail" v-on:click="upload('coverImg')" style="border:2px dashed #fff;min-height:200px;">
+                            <img v-if="coverImg && coverImg.length" v-bind:src="coverImg" class="img-thumbnail" style="height:100%"/>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="tab-pane fade in clearfix" id="tab-tag">
+       
+        <div class="col-md-6">
+            <ul>
+                <li is="collocation-tag" class="item" v-for="model in attrs" v-bind:model="model"></li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            已选择{{checkedAttrs.length}}(双击移除):<span v-for="attr in checkedAttrs" class="keyword" v-on:dblclick="removeTag(attr)">{{attr}}</span>
+        </div>
+    </div>
+
+    <div class="tab-pane fade in clearfix" id="tab-template">
+
+        <!--模版选择区-->
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                模版选择 :
+            </label>
+
+            <div class="col-md-8">
+                <select class="selectpicker" v-model="selectedTemplate" v-on:change="updateSelectedTemplate">
+                    <option v-for="item in templates" v-bind:value="item">{{item.Name}}</option>
+                </select>
+            </div>
+        </div>
+
+        <!--单品选择区-->
+        <div class="clearfix">
+            <div class="col-md-2 col-md-offset-1" v-for="(rule,index) in rules">
+                <div style="border:2px dashed #fff;min-height:150px;">
+                    <div v-if="rule.productNumber" style="height:200px;">
+                        <img v-bind:src="pchost+rule.productCollocationImg" style="height: 100%;width:100%;" />
+                    </div>
+                    <div v-else >
+
+                        <h1 class="text-center">{{index+1}}</h1>
+                        <p>品类:{{rule.categoryName}}</p>
+                        <p>标签:<span class="keyword" v-for="tag in rule.tags">{{tag}}</span></p>
+                    </div>
+
+                </div>
+                <div>
+                    <div>
+                        <label>货号:{{rule.productNumber}}</label>
+                    </div>
+                    <button v-on:click="selectProduct(rule)" class="btn btn-danger" type="button">单品</button>
+                    <button v-bind:disabled="!rule.productNumber"  v-on:click="rule.isSelected = !rule.isSelected" class="btn btn-primary" type="button">{{rule.isSelected?"已选择":"选择"}}</button>
+                </div>
+            </div>
+            
+        </div>
+
+        <hr />
+        
+        <!--单品组合搭配区-->
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                已选择 :{{selectedRules}}
+            </label>
+
+            <div class="col-md-8">
+                
+                <button type="button" 
+                        v-bind:disabled="!selectedRules.length"
+                        v-on:click="addSuggestion" 
+                        class="btn btn-primary">添加搭配建议
+                </button>
+            </div>
+        </div>
+        <table class="table">
+            <tr>
+                <th>编号</th>
+                <th>搭配顺序</th>
+                <th>会员搭配</th>
+                <th>操作</th>
+            </tr>
+            <tr v-for="(item,index) in suggestions">
+                <td>{{index+1}}</td>
+                <td>{{item.ruleOrder}}</td>
+                <td><img-suspension v-bind:path="item.memberCollocationImagePath" host="https://api.0-fashion.com"></img-suspension></td>
+                <td>
+                    <button type="button" v-on:click="selectMemberCollocation(item)" class="btn btn-primary">绑定搭配</button>
+                    <button type="button" v-on:click="suggestions.splice(index,1)" class="btn btn-danger">移除</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    var baseUrl = "/Stores/CollocationPlan";
+    let rules = []
+    let suggestions = []
+    let tags  =[]
+    try {
+
+        rules = JSON.parse('@Html.Raw(Model.Rules)')
+
+        suggestions = JSON.parse('@Html.Raw(Model.Suggestions)')
+
+        tags = '@Model.Tags'.split(',')
+    } catch (e) {
+
+    }
+    rules.forEach(i => i.isSelected = false)
+    var editPlanVM = new Vue({
+        el: '#add-template',
+        data: {
+            pchost:"https://www.0-fashion.com",
+            id:'@Model.Id',
+            name: '@Model.Name',
+            desc:`@Model.Desc`,
+            attrs: [],  // 所有标签
+            coverImg: '@Model.CoverImg',
+            selector: '',
+            fileSizeLimit: 500 * 1024,  //500KB
+            templates: [],             // 模版列表
+            selectedTemplate: {},       // 选中的模版
+            rules: rules,  // 选中模版的搭配规则
+            suggestions: suggestions, //搭配建议
+
+        },
+        created: function () {
+
+        },
+        methods: {
+            addSuggestion() {
+                var arr = this.selectedRules.slice();
+                if (!arr.length) {
+                    alert("请选择要组合的单品")
+                    return
+                }
+
+                // 判断重复
+                if (this.suggestions.some(x => x.ruleOrder.length === arr.length && x.ruleOrder.every(i => arr.indexOf(i) !== -1))) {
+                    alert("组合序号重复,请检查")
+                    return
+                }
+
+                this.suggestions.push({
+                    memberCollocationId: '',
+                    memberCollocationImagePath: '',
+                    ruleOrder: arr        //选中的顺序
+                })
+
+                // 重置按钮状态
+                this.rules.forEach(i => i.isSelected = false)
+
+            },
+            
+            updateSelectedTemplate() {
+                var arr = [];
+                try {
+                    arr = JSON.parse(this.selectedTemplate.CollocationRules);
+                    arr.forEach(item => {
+                        item.productNumber = '';
+                        item.productCollocationImg = '';
+                        item.isSelected = false;
+                    })
+
+                } catch (e) {
+
+                }
+
+                // 重置单品列表及搭配建议
+                this.rules = arr;
+                this.suggestions = [];
+            },
+            removeTag(attr) {
+
+                this.attrs.forEach(item => {
+
+                    var idx = item.Children.findIndex(n => n.AttributeName == attr)
+                    if (idx !== -1) {
+                        item.Children[idx].IsChecked = false;
+                    }
+                })
+            },
+            upload: function (selector) {
+                this.selector = selector;
+                document.querySelector("input[type=file]").click();
+            },
+
+            handleFileChange: function (e) {
+                var _self = this;
+                if (!e.target.files || e.target.files.length <= 0) { return; }
+                if (e.target.files[0].size > _self.fileSizeLimit) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "图片大小超过了限制, 请修剪后重新上传！",
+                        callback: function () {
+                        }
+                    });
+                    return;
+
+                }
+                var inputFile = e.target;
+                var selector = _self.selector;
+
+
+                var file = e.target.files[0]
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function (e) {
+                    var ImgUrl = e.target.result;
+                    _self[selector] = ImgUrl;
+                    inputFile.value = '';
+                };
+            },
+            selectProduct(ruleItem) {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "选择单品",
+                    actionUrl: baseUrl + "/ProductSelect",
+                    getParams: { categoryId: ruleItem.categoryId, categoryName: ruleItem.categoryName, tags: ruleItem.tags.join(',') },
+                    lockButton: $(this),
+                    formValidator: function () {
+
+                        var data = productSelectVM.selectedProduct;
+                        ruleItem.productNumber = data.productNumber;
+                        ruleItem.productCollocationImg = data.productCollocationImg;
+                        $("#app-product-select").parents(".modal-dialog").find("button.bootbox-close-button").trigger('click');
+                        return false;
+                    }
+                });
+            },
+            selectMemberCollocation(item) {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "选择搭配",
+                    actionUrl: baseUrl + "/MemberCollocation",
+                    getParams: {  },
+                    lockButton: $(this),
+                    formValidator: function () {
+                        debugger
+                        var data = collocationSelectVM.selected;
+                        item.memberCollocationId = data.Id;
+                        item.memberCollocationImagePath = data.ImagePath;
+                        $("#app-member-collocation-select").parents(".modal-dialog").find("button.bootbox-close-button").trigger('click');
+                        return false;
+                    }
+                });
+            }
+
+        },
+        mounted: function () {
+            var _self = this;
+            $.getJSON("/common/GetProductAttr")
+                .done(function (res) {
+                    _self.attrs = res.Data;
+                    
+                    if (tags && tags.length) {
+                        var childs = _.flatMap(_self.attrs.map(i => i.Children.map(i => i)))
+                        childs.forEach(i => {
+                            if (tags.indexOf(i.AttributeName) !== -1) {
+                                i.IsChecked = true;
+                            }
+                        })
+                    }
+                })
+            $.getJSON(baseUrl+"/GetCollocationTemplate")
+                .done(function (res) {
+                    _self.templates = res.Data;
+                    _self.$nextTick(function () {
+                        $(".selectpicker").selectpicker({ title: "请选择模版" })
+                    })
+                })
+
+        },
+        computed: {
+            selectedRules: function () {
+                var arr = [];
+                this.rules.forEach((val, index) => {
+                    if (val.isSelected) {
+                        arr.push(index+1)
+                    }
+                })
+                return arr;
+            },
+            checkedAttrs: function () {
+
+                var res = [];
+                this.attrs.forEach(item => {
+                    if (item.IsChecked) {
+                        res.push(item.AttributeName)
+                    }
+                    var temp = item.Children.filter(n => n.IsChecked).map(n => n.AttributeName)
+                    if (temp.length) {
+                        res = res.concat(temp)
+                    }
+                })
+                return res
+            }
+        }
+    })
+</script>

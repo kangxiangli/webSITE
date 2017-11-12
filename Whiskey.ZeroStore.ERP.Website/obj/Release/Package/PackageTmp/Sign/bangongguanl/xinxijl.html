@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta id="viewport" name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <title>信息记录</title>
+    <script>
+        (function (w) {
+            s();
+            var e = ("onorientationchange" in w) ? "orientationchange" : "resize";
+            w.addEventListener(e, function () {
+                setTimeout(function () {
+                    s()
+                }, 200)
+            }, false);
+            function s() {
+                var a = w.innerWidth;
+                var b = 20 * (a / 320);
+                if (b > 40) {
+                    b = 40;
+                }
+                document.querySelector("html").style.fontSize = b + "px";
+            }
+        })(window);
+    </script>
+    <link href="../mobiscroll/css/mobiscroll.css" rel="stylesheet" type="text/css">
+    <link href="../mobiscroll/css/mobiscroll_002.css" rel="stylesheet" type="text/css">
+    <link href="../mobiscroll/css/mobiscroll_003.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="../css/public.css"/>
+    <link rel="stylesheet" href="css/bangongguanli.css"/>
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <!--头标题-->
+    <div class="til_bak" id="backTil">
+        <p class="back_befo record_info">
+            <img src="../img/nav_fh@2x.png" alt="png"/><span>返回</span>
+        </p>信息记录
+    </div>
+    <form  action="" id="record_form">
+        <input name="AdminId"  type="hidden" id="admin_id"/>
+
+        <input name="recordTil" class="inp_txt record_til" type="text" placeholder="标题"/>
+        <input name="shopId" class="inp_txt shop_id" type="text" placeholder="店铺"/>
+        <!-- 店铺弹出层-->
+        <div id="store_box" class="select_box">
+            <ul id="select_store" class="select_li">
+                <li>零时尚</li>
+                <li>国贸店</li>
+                <li>华茂店</li>
+                <li>新龙城店</li>
+                <li>当代店</li>
+                <li>华彩店</li>
+            </ul>
+        </div>
+        <input name="typeTxt" class="inp_txt type_txt" type="text" placeholder="类型"/>
+        <!-- 类型弹出层-->
+        <div id="type_box" class="select_box">
+            <ul id="type_cost" class="select_li">
+                <li>水费</li>
+                <li>电费</li>
+                <li>房租</li>
+                <li>工资</li>
+                <li>杂费</li>
+                <li>税金</li>
+            </ul>
+        </div>
+        <input name="moneyIp" class="inp_txt money_ip" type="text" placeholder="总金额(￥)"/>
+        <input name="startTime" class="inp_txt" id="start_time" type="text" placeholder="开始时间"/>
+        <input name="endTime" class="inp_txt" id="end_time"  type="text" placeholder="结束时间"/>
+        <input class="inp_btn record_btn" id="recordBtn" type="button" value="提  交"/>
+    </form>
+
+    <!-- 提示信息-->
+    <div class="showMgBg"></div>
+    <div class="showMg">
+        <p class="prom">温馨提示</p>
+        <p class="msg_info">信息有误</p>
+        <input class="sure_btn" type="button" value="确  定"/>
+    </div>
+
+    <script src="../js/fastclick.js" type="text/javascript"></script>
+    <script src="../js/global.js" type="text/javascript"></script>
+    <!--日历-->
+    <script src="../mobiscroll/js/mobiscroll_002.js" type="text/javascript"></script>
+    <script src="../mobiscroll/js/mobiscroll_004.js" type="text/javascript"></script>
+    <script src="../mobiscroll/js/mobiscroll.js" type="text/javascript"></script>
+    <script src="../mobiscroll/js/mobiscroll_003.js" type="text/javascript"></script>
+    <script src="../mobiscroll/js/mobiscroll_005.js" type="text/javascript"></script>
+    <script src="js/bangonggl.js"></script>
+    <script>
+        $(function () {
+            FastClick.attach(document.getElementById("backTil"));
+            FastClick.attach(document.getElementById("recordBtn"));
+            //   日期选择
+            var currYear = (new Date()).getFullYear();
+            var opt = {};
+            opt.date = {preset: 'date'};
+            opt.datetime = {preset: 'datetime'};
+            opt.time = {preset: 'time'};
+            opt.default = {
+                theme: 'android-ics light', //皮肤样式
+                display: 'modal', //显示方式
+                mode: 'scroller', //日期选择模式
+                dateFormat: 'yyyy-mm-dd',
+                lang: 'zh',
+                showNow: true,
+                nowText: "今天",
+                startYear: currYear - 20, //开始年份
+                endYear: currYear + 5 //结束年份
+            };
+
+            var opDate = $.extend(opt['date'], opt['default']);
+
+            $("#start_time").mobiscroll(opDate).date(opDate);  
+            $("#end_time").mobiscroll(opDate).date(opDate);  
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

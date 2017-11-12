@@ -1,0 +1,265 @@
+﻿
+
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Member
+@using Whiskey.ZeroStore.ERP.Models
+@model Collocation
+
+<style>
+    #myTabContent ul li {
+        list-style-type: none;
+        float: left;
+        margin-left: 15px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+    <li><a href="#pwd_tab" data-toggle="tab">修改密码</a></li>
+
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        <div id="" class="">
+            <div class="tab-pane fade in active" id="baseinfo_tab">
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.Admini.Id)
+                <div class="update-div">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">
+                            搭配师编号 :
+                        </label>
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.Admini.Member.UniquelyIdentifies, new { @class = "form-control", @readonly = "readonly", @style = "background-color:#dddddd" })
+                        </div>
+                        <div class="control-detail col-md-4">
+                            @Html.ValidationMessageFor(m => m.Admini.Member.UniquelyIdentifies)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-4">
+                            @Html.DisplayNameFor(m => m.CollocationName) :
+                        </label>
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.CollocationName, new { @class = "form-control" })
+                        </div>
+                        <div class="control-detail col-md-4">
+                            @Html.ValidationMessageFor(m => m.CollocationName)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-4">
+                            @Html.DisplayNameFor(m => m.Admini.Member.MemberName) :
+                        </label>
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.Admini.Member.MemberName, new { @class = "form-control", @readonly = "readonly", @style = "background-color:#dddddd" })
+                        </div>
+                        <div class="control-detail col-md-4">
+                            @Html.ValidationMessageFor(m => m.Admini.Member.MemberName)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-4">
+                            预约状态 :
+                        </label>
+                        <div class="col-md-4">
+                            <input type="hidden" id="hid_stat" value="@ViewBag.stat"/>
+                            <select name="State" class="form-control selectpicker ">
+                                <option value="1">已被预约</option>
+                                <option value="0">未预约</option>
+                            </select>
+                        </div>
+                        
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="control-label col-md-4">
+                            @Html.DisplayNameFor(m => m.Admini.DepartmentId) :
+                        </label>
+                        <div class="col-md-4">
+                            <input type="hidden" id="hid_depar" value="@Model.Admini.DepartmentId" />
+                            @Html.DropDownListFor(m => m.Admini.DepartmentId, (List<SelectListItem>)ViewBag.Departments, new { @class = "form-control selectpicker " , data_live_search="true"})
+
+                        </div>
+                    </div>
+                   
+                    <div class="form-group">
+                        <label class="control-label col-md-4">
+                            @Html.DisplayNameFor(m => m.Admini.Member.Email) :
+                        </label>
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.Admini.Member.Email, new { @class = "form-control" })
+                        </div>
+                        <div class="control-detail col-md-4">
+                            @Html.ValidationMessageFor(m => m.Admini.Member.Email)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-4">
+                            @Html.DisplayNameFor(m => m.Admini.Member.MobilePhone) :
+                        </label>
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.Admini.Member.MobilePhone, new { @class = "form-control" })
+                        </div>
+                        <div class="control-detail col-md-4">
+                            @Html.ValidationMessageFor(m => m.Admini.Member.MobilePhone)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-4">
+                            @Html.DisplayNameFor(m => m.Admini.Member.RealName) :
+                        </label>
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.Admini.Member.RealName, new { @class = "form-control" })
+                        </div>
+                        <div class="control-detail col-md-4">
+                            @Html.ValidationMessageFor(m => m.Admini.Member.RealName)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-4">
+                            @Html.DisplayNameFor(m => m.Admini.Member.Gender) :
+                        </label>
+                        <div class="col-md-4">
+                            <input type="hidden" id="hid_gend" value="@((int)Model.Admini.Member.Gender)" />
+                            <select name="Admini.Member.Gender" id="Admini.Member.Gender" class="form-control selectpicker">
+                                <option value="@((int)GenderFlag.Male)">男</option>
+                                <option value="@((int)GenderFlag.Female)">女</option>
+                            </select>
+                        </div>
+                        <div class="control-detail col-md-4">
+                            @Html.ValidationMessageFor(m => m.Admini.Member.Gender)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-4">
+                            @Html.DisplayNameFor(m => m.Notes) :
+                        </label>
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+                        </div>
+                        <div class="control-detail col-md-4">
+                            @Html.ValidationMessageFor(m => m.Notes)
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="tab-pane fade" id="pwd_tab">
+        <label style="color: #5ebd5e">*原密码为空则认为不修改密码</label>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                请输入原密码 :
+            </label>
+            <div class="col-md-4">
+                <input type="text" name="origPass" id="pwd_up" class="form-control" />
+
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                请输入新密码 :
+            </label>
+            <div class="col-md-4">
+                <input type="password" class="form-control new_pwd" />
+            </div>
+            <label><input type="checkbox" id="show_word" />显示明文</label>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                请确认密码 :
+            </label>
+            <div class="col-md-4">
+                <input type="password" name="Admini.Member.MemberPass" class="form-control new_pwd" />
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        var sta = $("#hid_stat").val();
+        $("select[name='State'] option").each(function () {
+            if ($(this).val() == sta)
+                $(this).attr("selected", "selected");
+            else
+                $(this).removeAttr("selected");
+        });
+        $("#show_word").click(function () {
+            if ($(this).is(":checked")) {
+                $(".new_pwd").each(function () {
+                    var pwd = $(this).val();
+                    $(this).attr("type", "text").val(pwd);
+                });
+            }
+            else {
+                $(".new_pwd").each(function () {
+                    var pwd = $(this).val();
+                    $(this).attr("type", "password").val(pwd);
+                });
+            }
+        });
+        $("#pwd_up").change(function () {
+            var id = $("#Admini_Id").val().trim();
+            var pwd = $(this).val().trim();
+            var send = this;
+            if (pwd != "") {
+                $.post("/Authorities/Administrator/ExistPwd", { id: id, pwd: pwd }, function (da) {
+                    if (da.ResultType != 3) {
+                        $("button[data-bb-handler='success']").attr("disabled", "disabled");
+                        $(".new_pwd").attr("disabled", "disabled");
+                        $(send).parents("div:first").addClass("has-error").attr("title", "密码输入不正确")
+                        /////////////////////////////////////////////
+                    }
+                    else {
+                        $(send).parents("div:first").removeClass("has-error").removeAttr("title");
+                        $(".new_pwd").removeAttr("disabled");
+                    }
+                });
+            }
+            else {
+                $(send).parents("div:first").removeClass("has-error").removeAttr("title");
+                $(".new_pwd").removeAttr("disabled");
+            }
+        });
+
+        $(".new_pwd").change(function () {
+            var pwd = $(".new_pwd:first").val().trim();
+            var confpwd = $(".new_pwd:last").val().trim();
+            if (confpwd != pwd) {
+                $("button[data-bb-handler='success']").attr("disabled", "disabled");
+                $(".new_pwd:last").parents("div:first").addClass("has-error").attr("title", "两次密码输入不正确");
+
+            }
+            else {
+                $("button[data-bb-handler='success']").removeAttr("disabled");
+                $(".new_pwd:last").parents("div:first").removeClass("has-error").attr("title", "");
+
+            }
+        });
+        $(".update-div select[name='Admini.Member.Gender']").val($("#hid_gend").val());
+    })
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>
+
+
+
+
+
+

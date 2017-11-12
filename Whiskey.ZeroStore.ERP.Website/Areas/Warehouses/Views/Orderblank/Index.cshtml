@@ -1,0 +1,163 @@
+﻿@using Whiskey.Utility.Data
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Warehouse
+@using Whiskey.ZeroStore.ERP.Transfers
+
+@model OrderblankDto
+<style>
+    input[type="text"]:disabled {
+        background: #dddddd;
+    }
+
+    .modal-dialog {
+        width: 760px;
+    }
+
+    
+</style>
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal  seach_2 form-search">
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">发货店铺</label>
+                        <div class="col-md-8">
+                            @Html.DropDownList("OutStoreId", (List<SelectListItem>)ViewBag.outStores, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4 ">收货店铺</label>
+                        <div class="col-md-8">
+                            @Html.DropDownList("ReceiverStoreId", (List<SelectListItem>)ViewBag.inStores, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">配货单号</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("OrderBlankNumber", ViewBag.Number as string, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">状态</label>
+                        <div class="col-md-8">
+                            @Html.EnumDropDownListFor(m => m.Status, "选择状态", new { id = "Status", name = "Status", @class = "form-control selectpicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">类型</label>
+                        <div class="col-md-8">
+                            @Html.EnumDropDownListFor(m => m.OrderblankType, "选择类型", new { id = "OrderblankType", name = "OrderblankType", @class = "form-control selectpicker" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">备注信息</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Notes", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">创建日期</label>
+                        <div class="col-md-8">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("OrderblankStartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("OrderblankEndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="order_Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="order_Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                    <a id="CreateOrd" href="javascript:void(0);" onclick="$.whiskey.web.load({url:'/Warehouses/Orderblank/Create'})" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>直接创建配货单</span></a>
+                    <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                    <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-2 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-4">
+
+            </div>
+            <div class="col-md-6 text-right">
+                @*<span>
+                        <input class="toggle-cancel" type="checkbox" data-class="switcher-default">
+                    </span>*@
+            </div>
+        </div>
+        <table class="table table-orderblank order_li table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+<script src="~/Content/Scripts/Common/comm.js"></script>
+<script src="~/wwwroot/built/orderblank.js"></script>
+<script>
+    $(function () {
+        
+        @if (ViewBag.IsDesigner!=true) {
+            <Text>
+        $("#OutStoreId,#ReceiverStoreId").queryAllStore();
+            </Text>
+        }else
+        {
+            <Text>
+        $("#OutStoreId,#ReceiverStoreId").prop("disabled", true);
+            </Text>
+        }
+
+         $('.selectpicker').selectpicker();
+    })
+    
+</script>

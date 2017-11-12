@@ -1,0 +1,156 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model PartnerDto
+
+@*<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />*@
+@Html.HiddenFor(x=>x.Id)
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#addCoverImage" data-toggle="tab">上传图片</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.PartnerName) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.PartnerName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsCooperation) :
+            </label>
+            <div class="col-md-1">
+                @Html.CheckBoxFor(x => x.IsCooperation, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.PartnerAddress) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.PartnerAddress, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Contacts) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.Contacts, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group worktime">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.TelPhone) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.TelPhone, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group worktime">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.PhoneNum) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.PhoneNum, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Email) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-7">
+                @Html.TextAreaFor(m => m.Notes, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade clearfix" id="addCoverImage">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                照片预览:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="@Model.IconPath" alt="" id="Icon" />
+                    </a>
+                </div>
+                <input type="hidden" name="IconPath" id="hidIcon" value="@Model.IconPath" />
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    上传:
+                </label>
+                <div class="col-md-10">
+                    <div class="dropzone-box uploadImage">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file"  />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+
+
+
+    $(function () {
+        //初始化上传封面图片控件
+        var myDropzone = new Dropzone(".uploadImage", {
+            url: "@Url.Action("UploadImage")",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            maxFiles: 1,
+            paramName:"file",
+            maxFilesize: 0.5,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (data.ResultType == 3) {
+                        $(".bootbox #Icon").attr("src", data.Data)
+                        $(".bootbox #hidIcon").attr("value", data.Data);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+
+                });
+            }
+        });
+    })
+</script>

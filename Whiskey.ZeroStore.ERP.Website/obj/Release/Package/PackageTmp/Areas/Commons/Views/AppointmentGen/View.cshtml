@@ -1,0 +1,91 @@
+
+@using Whiskey.ZeroStore.ERP.Models
+@model AppointmentGen
+
+<style>
+   .modal-dialog .modal-content {
+        max-width: 1000px !important;
+    }
+</style>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Members) :
+    </label>
+    <div class="col-md-10">
+        @(string.Join(",", Model.Members.Select(s => s.RealName != null ? s.RealName : s.MemberName)))
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Products) :
+    </label>
+    <div class="col-md-10">
+        @(string.Join(",", Model.Products.Select(s => s.ProductNumber)))
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        预约时间 :
+    </label>
+    <div class="col-md-10">
+        @Model.StartTime 至 @Model.EndTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(f => f.Notes, new { @rows = 10, @class = "form-control", @readonly = "" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+        @UiHelper.showEnabled(Model.IsEnabled)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+        @UiHelper.showDeleted(Model.IsDeleted)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.OperatorId) :
+    </label>
+    <div class="col-md-10">
+        @UiHelper.showOperator(Model.Operator)
+    </div>
+</div>
+
+<script>
+    $(function () {
+        
+
+    });
+</script>
+

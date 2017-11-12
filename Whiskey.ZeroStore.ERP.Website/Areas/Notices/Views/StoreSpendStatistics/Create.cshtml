@@ -1,0 +1,150 @@
+﻿
+<div class="form-group">
+    <label class="control-label col-md-2">
+        标题 :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBox("Title", "", new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        店铺 :
+    </label>
+    <div class="col-md-10">
+        <select id="StoreId" name="StoreId" class="CreateStoreId form-control"></select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        类型 :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownList("SpendType", (List<SelectListItem>)ViewBag.SpendType, new { @class = "form-control selectpicker" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        总金额(￥) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBox("Amount", "", new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        备注 :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBox("Notes", "", new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group mode-date">
+    <label class="control-label col-md-2">
+        时间 :
+    </label>
+    <div class="col-md-5">
+        <span style="position: relative; z-index: 9999;">
+            @Html.TextBox("StartTime", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+        </span>
+    </div>
+    <div class="col-md-5">
+        <span style="position: relative; z-index: 9999;">
+            @Html.TextBox("EndTime", "", new { @class = "start-date input-sm form-control", @placeholder = "结束日期" })
+        </span>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">缴费凭证 :</label>
+    <div class="col-md-10">
+        <div class="dropzone-box">
+            <div class="dz-default dz-message">
+                <i class="fa fa-cloud-upload"></i>
+                点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+            </div>
+            <div class="fallback">
+                <input name="file" type="file" accept="image/jpeg,image/gif,image/png,image/jpg" multiple="" />
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("OrderImg")
+</div>
+<script type="text/javascript">
+    $(".CreateStoreId").queryManageStore();
+    $(".mode-date input").datepicker({
+        //showOtherMonths: true,
+    });
+   
+    var dropper_create;
+    dropper_create = new Dropzone(".dropzone-box", {
+        url: "/Upload/Multiple",
+        init: function () {
+            this.on("successmultiple", function (file, data) {
+                for (i = 0; i < data.files.length; i++) {
+                    dropper_create.options.dictFiles.put("img-" + this.options.dictCounter, data.files[i]);
+                    this.options.dictCounter++;
+                }
+                SetImages();
+                if (dropper_create.getUploadingFiles().length === 0 && dropper_create.getQueuedFiles().length === 0) {
+                    debugger
+                    var editorHtml = "";
+                    for (i = 0; i <= dropper_create.options.dictFiles.size() ; i++) {
+                        if (dropper_create.options.dictFiles.get("img-" + i) != null) {
+                            editorHtml += "<img title='" + i + "' src='" + dropper_create.options.dictFiles.get("img-" + i) + "' /><br /><br />";
+                        }
+                    }
+                }
+            });
+            this.on("errormultiple", function (file, data) {
+            });
+            this.on("removedfile", function (file) {
+                dropper_create.options.dictCounter--;
+                SetImages();
+            });
+            this.on("sendingmultiple", function (file, xhr, formData) {
+                formData.append("ExtType", "Image");
+                formData.append("SaveDir", "Products");
+            });
+        }
+    });
+    function SetMajorImage(wrapper) {
+        var imageIndex = $(wrapper).children().children("img").attr("title");
+        if (typeof (dropper_create.options.dictFiles) != "undefined" && imageIndex >= 0) {
+            $("#OriginalPath").animate({
+                opacity: "0.1",
+            }, 'slow', function () {
+                $("#OriginalPath").animate({
+                    opacity: "1.0",
+                });
+            });
+            $("#OriginalPath").val(dropper_create.options.dictFiles.get("img-" + imageIndex));
+        }
+    }
+
+    function SetImages() {
+
+        var detailImages = "";
+        var dictLength = dropper_create.options.dictFiles.size();
+        for (i = 0; i <= dictLength ; i++) {
+            if (dropper_create.options.dictFiles.get("img-" + i) != null) {
+                detailImages += dropper_create.options.dictFiles.get("img-" + i) + ",";
+            }
+        }
+        $("#OrderImg").val(detailImages);
+        $("#OriginalPath").animate({
+            opacity: "0.1",
+        }, 'slow', function () {
+            $("#OriginalPath").animate({
+                opacity: "1.0",
+            });
+        });
+        $("#OriginalPath").val(dropper_create.options.dictFiles.getLast());
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

@@ -1,0 +1,131 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Transfers
+@model AppVerManageDto
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.AppType) :
+    </label>
+    <div class="col-md-10">
+        @Html.EnumDropDownListFor(f => f.AppType, new { @class = "form-control selectpicker" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.FileTag) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.FileTag, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Version) :
+    </label>
+    <div class="col-md-2">
+        @Html.TextBoxFor(m => m.V1, new { @class = "form-control ", @check_number = "", @check_int = "", @min_value = "0",@Value="0" })
+    </div>
+    <label class="control-label" style="float:left">.</label>
+    <div class="col-md-2">
+        @Html.TextBoxFor(m => m.V2, new { @class = "form-control ", @check_number = "", @check_int = "", @min_value = "0", @Value = "0" })
+    </div>
+    <label class="control-label" style="float:left">.</label>
+    <div class="col-md-2">
+        @Html.TextBoxFor(m => m.V3, new { @class = "form-control ", @check_number = "", @check_int = "", @min_value = "0", @Value = "1" })
+    </div>
+    @Html.HiddenFor(f => f.Version, new { @class = "_Version", @Value = "0.0.1" })
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SavePath) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.SavePath, new { @class = "form-control",@Value="/download/tools/" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.AccessPath) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.AccessPath, new { @class = "form-control",@Value="/app/" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.DownloadPath) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.DownloadPath, new { @class = "form-control" })
+    </div>
+</div>
+<p class="uploadapkbox">
+    <button id="uploadapk" type="button" class="form-control" style="height:260px;border:1px dotted #FFF;">选择文件</button>
+</p>
+
+<script>
+    $(function () {
+        downloadpathchange();
+        function downloadpathchange() {
+            $('#uploadapk').prop("disabled", true);
+            var ver = $("._Version").val();
+            var path = $("#SavePath").val();
+            var tag = $("#FileTag").val();
+            if (ver && path && tag) {
+                //   $("#DownloadPath").val(path + tag + ver + ".apk");
+                $('#uploadapk').prop("disabled", false);
+            }
+        }
+        $("._Ver").bind("keyup blur", function () {
+            var v1 = $("#V1").val();
+            var v2 = $("#V2").val();
+            var v3 = $("#V3").val();
+            var ver = v1 + "." + v2 + "." + v3;
+            $("._Version").val(ver);
+            //    downloadpathchange();
+        });
+        //    $("#SavePath,#FileTag").bind("keyup blur", downloadpathchange);
+
+    });
+</script>
+<script>
+    $(function () {
+
+         $("#uploadapk").dropzone({
+                    url: '@Url.Action("UploadFile")',
+                    paramName: "file",
+                    maxFilesize: 50,
+                    maxFiles: 1,
+                    acceptedFiles: ".ipa,.apk",
+                    init: function () {
+                        var self = this;
+                        this.on("sending", function (file, xhr, formData) {
+                            formData.append("FileTag", $("#FileTag").val());
+                            formData.append("SavePath", $("#SavePath").val());
+                            formData.append("Version", $("._Version").val());
+                        });
+                        this.on("success", function (file, da, eve) {
+                            if (da.ResultType != 3) {
+                                var $prev = $(file.previewElement).removeClass("dz-success").addClass("dz-error");
+                                $prev.find("[data-dz-errormessage]").text(da.Message);
+                                self.removeFile(file);
+                            } else {
+                                $("#DownloadPath").val(da.Data.FilePath);
+                            }
+                        });
+                    },
+                    removedfile: function (file) {
+                        // file.previewElement.parentNode.removeChild(file.previewElement);//移出预览结构
+                        this.files = [];
+                        return this._updateMaxFilesReachedClass();
+                    }
+           });
+    });
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker('refresh');
+    })
+</script>

@@ -1,0 +1,68 @@
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model PartnerStatisticsDto
+
+<style>
+.datepicker{
+	z-index: 99999 !important;
+}
+</style>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.PartnerCount) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.PartnerCount, new { @class = "form-control", @check_number = "", @check_int = "", @min_value = "0" })
+    </div>
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.MemberCount) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.MemberCount, new { @class = "form-control", @check_number = "", @check_int = "", @min_value = "0" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.OrderCount) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.OrderCount, new { @class = "form-control", @check_number = "", @check_int = "", @min_value = "0" })
+    </div>
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.OrderMoney) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.OrderMoney, new { @class = "form-control", @check_number = "", @check_float = "2", @min_value = "0" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SaleCount) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.SaleCount, new { @class = "form-control", @check_number = "", @check_int = "", @min_value = "0" })
+    </div>
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SaleMoney) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.SaleMoney, new { @class = "form-control", @check_number = "", @check_float = "2", @min_value = "0" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        ʱ�� :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.CreatedTime, new { @class = "form-control datepicker", @placeholder = "" })
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $(".datepicker").datepicker();
+ 
+    });
+</script>
+

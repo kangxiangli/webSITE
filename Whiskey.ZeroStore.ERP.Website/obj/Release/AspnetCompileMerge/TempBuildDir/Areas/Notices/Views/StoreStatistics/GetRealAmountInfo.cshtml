@@ -1,0 +1,112 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models.Entities.Notices
+@model StoreStatistics
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("店铺") :
+    </label>
+    <div class="col-md-8">
+        @Model.StoreName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("实际总消费(￥)") :
+    </label>
+    <div class="col-md-8">
+        @Model.RealRetailAmount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("现金(￥)") :
+    </label>
+    <div class="col-md-8">
+        @Model.CashConsume
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("刷卡(￥)") :
+    </label>
+    <div class="col-md-8">
+        @Model.SwipCardConsume
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("储值(￥)") :
+    </label>
+    <div class="col-md-8">
+        @Model.BalanceConsume
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("储值成本(￥)") :
+    </label>
+    <div class="col-md-8">
+        @Model.RealBalanceConsume
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("积分") :
+    </label>
+    <div class="col-md-8">
+        @Model.ScoreConsume
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("抹去(￥)") :
+    </label>
+    <div class="col-md-8">
+        @Model.Erase
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("找零(￥)") :
+    </label>
+    <div class="col-md-8">
+        @Model.ReturnMoney
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("商品活动参与次数") :
+    </label>
+    <div class="col-md-8">
+        @Model.SaleCampaignConsumeCount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("店铺活动参与次数") :
+    </label>
+    <div class="col-md-8">
+        @Model.StoreActivityConsumeCount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("优惠券使用次数") :
+    </label>
+    <div class="col-md-8">
+        @Model.CouponConsumeCount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayName("优惠券抵扣金额(￥)") :
+    </label>
+    <div class="col-md-8">
+        @Model.CouponConsumeMoney
+    </div>
+</div>
+
+
+
+ 

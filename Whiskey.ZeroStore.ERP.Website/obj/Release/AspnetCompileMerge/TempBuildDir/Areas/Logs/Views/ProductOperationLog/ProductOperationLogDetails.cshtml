@@ -1,0 +1,241 @@
+﻿@using System.Web.Mvc.Html
+
+
+
+<style>
+    .modal-content {
+        width: 1000px;
+    }
+</style>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="prod_detail_tab">
+        <div>
+            <div class="row">
+                <div class="panel panel-search">
+                    <div class="panel-heading clearfix">
+                        <div class="form-group" style="float:left">
+                            <label class="control-label col-md-4">商品流水号：@ViewBag.proNum</label>
+                            <div class="col-md-4" style="margin-left: 10px;">
+                                @Html.TextBox("OnlyFlag", "", new { @class = "form-control", @maxLength = 4 })
+                            </div>
+                            <div class="pull-right">
+                                <button id="Search_par" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>查询</span></button>
+                                <button id="Clear_par" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table id="nwe_table_detail" class="table table-list  valign-middle" width="100%">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    var datatable_install;
+    $(document).ready(function () {
+
+        var dts = $("#nwe_table_detail").dataTable({
+            "bScrollCollapse": true,
+            "bSort": false,
+            "bScrollInfinite": false,
+            "sPaginationType": "full_numbers",
+            "sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-5 info"i><"col-md-7 text-right"p>>',
+            "sAjaxSource": "/Logs/ProductOperationLog/GetProductOperationLogByNumber",
+
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group(); conditions.Operate = "or";
+                var OnlyFlag = '@ViewBag.proNum' + $("#OnlyFlag").val();
+                if ($("#OnlyFlag").val() != "") { aoData.push({ name: "OnlyFlag", value: OnlyFlag }); aoData.push({ name: "typeFlag", value: "1" }); }
+                else { aoData.push({ name: "OnlyFlag", value: OnlyFlag }); aoData.push({ name: "typeFlag", value: "2" }); }
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var isEnabled = aData.IsEnabled;
+                if (isEnabled == false) {
+                    $(nRow).css({ "color": " #e5603b" });
+                }
+                $(nRow).find("td:eq(0)").html(iDisplayIndex + 1);
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+
+            },
+
+            "aoColumns": [
+             {
+                 "sTitle": "编号",
+                 "bSortable": false,
+                 "mData": function (data) {
+                     return data.ProductNumber;
+                 },
+             },
+                             {
+                                 "sTitle": "操作类型",
+                                 "bSortable": false,
+                                 "mData": function (data) {
+                                     return data.OperationType;
+                                 },
+
+                             },
+              {
+                  "sTitle": "出货店铺",
+                  "bSortable": false,
+                  "mData": function (data) {
+                      return data.ProductNumber;
+                  },
+              },
+
+                {
+                    "sTitle": "收货店铺",
+                    "bSortable": false,
+                    "mData": function (data) {
+                        return data.StoreName;
+                    },
+
+                },
+                                {
+                                    "sTitle": "发货人",
+                                    "bSortable": false,
+                                    "mData": function (data) {
+                                        data.OutgoingPerson = data.OutgoingPerson || "";
+                                        return data.OutgoingPerson == "" ? "-" : data.OutgoingPerson;
+                                    },
+
+                                },
+                                                {
+                                                    "sTitle": "收货人",
+                                                    "bSortable": false,
+                                                    "mData": function (data) {
+                                                        data.Consignee = data.Consignee || "";
+                                                        return data.Consignee == "" ? "-" : data.Consignee;
+                                                    },
+                                                },
+               {
+                   "sTitle": "操作时间",
+                   "bSortable": false,
+                   "mData": function (data) {
+                       return $.whiskey.tools.dateFormat(data.CreatedTime, "yyyy/MM/dd HH:mm");
+                   },
+               },
+           {
+               "sTitle": "操作明细",
+               "bSortable": false,
+               "mData": function (data) {
+                   if (data.OperationType == "配货") {
+                       var restult = "";
+                       var status = data.Description.substring(0, 1);
+                       var Description = data.Description.substring(1);
+                       switch (status) {
+                           case "0":
+                               restult = '<font color="#54FF9F">&nbsp;(未配货)</font>';
+
+                               break;
+                           case "1":
+                               restult = '<font color="#54FF9F">&nbsp;(已配货)</font>';
+
+                               break;
+                           case "2":
+                               restult = '<font color="#54FF9F">&nbsp;(拒绝配货)</font>';
+
+                               break;
+                           case "3":
+                               restult = '<font color="#54FF9F">&nbsp;(被废除)</font>';
+
+                               break;
+                           case "4":
+                               restult = '<font color="#54FF9F">&nbsp;(收货)</font>';
+
+                               break;
+                           case "5":
+                               restult = '<font color="#54FF9F">&nbsp;(拒绝收货)</font>';
+
+                               break;
+                       }
+                       return Description + restult;
+                   }
+                   else { return data.Description; }
+
+               },
+           },
+
+            {
+                "sTitle": "操作人",
+                "bSortable": false,
+                "mData": function (data) {
+                    return data.AdminName;
+                },
+            }
+            ]
+
+        });
+        $(dts).addClass("table table-striped");
+        $.whiskey.datatable.instances[0] = dts;
+
+        $("#Search_par").click(function () {
+            if ($("#OnlyFlag").val() != "") { $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]); }
+            else { $.whiskey.web.alert({ type: "warning", content: "输入的内容不能为空", callback: function () { } }) }
+
+        });
+
+
+
+        $("body").delegate("#nwe_table_1 .px", "click", function () {
+
+            //var par = $("#nwe_table_1 td input[type=checkbox]:checked").parents("tr").prevAll(".treegrid-expanded").children("td:first").children().children(":checkbox");
+
+            var par = $(this).parents("tr:first").attr("class");
+
+            var regex = /.+treegrid-parent-(\S+)/;
+            var resul = regex.exec(par);
+
+            if (resul != null) {
+                var chisty = ".treegrid-" + resul[1];
+                if ($(this).is(":checked")) {
+                    $(chisty).children("td:first").children().children().prop("checked", "checked");
+                }
+                var checkcou = 0;
+                $(chisty).nextAll(".treegrid-parent-" + resul[1]).each(function () {
+
+                    if ($(this).children("td:first").children().children().is(":checked")) {
+                        checkcou++;
+                    }
+                });
+                if (checkcou > 0)
+                    $(chisty).children("td:first").children().children().prop("checked", "checked");
+                else
+                    $(chisty).children("td:first").children().children().prop("checked", false);
+            }
+            else {
+
+                var regex = /.+treegrid-(DE\d+)/;
+                var ischecked = $(this).is(":checked");
+                if (regex.exec(par).length < 1) return false;
+                var parid = regex.exec(par)[1];
+
+                var id = ".treegrid-" + parid;
+                var parentid = ".treegrid-parent-" + parid;
+
+                $(id).nextAll(parentid).each(function () {
+
+                    // alert($(this).children("td:first").children().children().attr("checked"));
+
+                    $(this).children("td:first").children().children().prop("checked", ischecked);
+                });
+
+
+            }
+        })
+
+    });
+
+    $("#Clear_par").click(function () {
+        $("#OnlyFlag").val("");
+    });
+    $("#OnlyFlag").on("keyup", function () { numberValidOverride($(this)); });
+</script>

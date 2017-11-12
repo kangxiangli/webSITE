@@ -1,0 +1,123 @@
+﻿
+<!--<link rel="stylesheet" href="/Content/Styles/Layout/MemberInfo/nav.css" />-->
+<style>
+	*{
+	margin: 0;
+	padding: 0;
+}
+
+#nav-info-wrapper{
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 100%;
+	font-size: 14px;
+	font-family: "STHeiti Light";
+	z-index: 1000000;
+}
+.info-menu{
+    position: fixed;
+    top: 0;
+    left: 190px;
+}
+.info-menu-o>div{
+	color: #FFF;
+	text-align: center;
+}
+.info-menu>li{
+	float: right;
+	position: relative;
+}
+.info-menu-o{
+	width: 100px;
+	/*height: 70px;*/
+	padding: 15px 10px;
+	background: rgba(0,0,0,.2);
+	margin:0 10px;
+}
+.info-menu-o>img{
+	width: 25px;
+	display: inline-block;
+	vertical-align: middle;
+}
+.info-menu-o>span{
+	font-size: 14px;
+	margin-left: 5px;
+	color: rgba(255,255,255,.75);
+	font-family:"华文细黑","microsoft yahei","Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.info-menu-o .info-menu-alt{
+	width: 100%;
+	color: rgba(255,255,255,.75);
+	position: absolute;
+	display: none;
+	left: 0;
+	top: 100%;
+	padding: 5px;
+	text-align: center;
+	background: rgba(0,0,0,.2);
+	border-bottom: 5px solid rgba(0,0,0,.25);
+}
+.activeMenu{
+	background: rgba(0,0,0,.5);
+}
+
+</style>
+<div id="nav-info-wrapper">
+    <ul class="info-menu">
+        <li class="info-menu-o">
+            <img src="/Content/Images/information/money.png" />
+            <span class="Balance">0</span>
+            <div class="info-menu-alt">
+                储值
+            </div>
+        </li>
+        <li class="info-menu-o">
+            <img src="/Content/Images/information/diamonds.png" />
+            <span class="Score">0</span>
+            <div class="info-menu-alt">
+                积分
+            </div>
+        </li>
+        <li class="info-menu-o">
+            <img src="/Content/Images/information/skirt.png" />
+            <span class="BuyCount">0</span>
+            <div class="info-menu-alt">
+                消费记录
+            </div>
+        </li>
+        <!--<li class="info-menu-o">
+            <img src="/Content/Images/information/buycar.png" />
+            <span>0<span>
+            <div class="info-menu-alt">
+                购物车
+            </div>
+        </li>-->
+    </ul>
+</div>
+<script>
+	$(function(){
+		 $('.info-menu-o').hover(function () {
+	        $(this).find('.info-menu-alt').stop().slideDown()
+	    }, function () {
+	        $(this).find('.info-menu-alt').stop().slideUp()
+	    })
+		 
+	    $.ajax({
+	        type: "post",
+	        url: "/Members/Member/GetMemberInfoExt",
+	        dataType: 'json',
+	        data: {},
+	        success: function (data) {
+	            //console.log(JSON.stringify(data))
+	            if (data.ResultType == 3) {
+	                var data = data.Data;
+	                $('.Balance').html(data.Balance)
+	                $('.Score').html(data.Score)
+	                $('.BuyCount').html(data.BuyCount)
+	            }
+	        }
+	    });
+	})
+   
+</script>

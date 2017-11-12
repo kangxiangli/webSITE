@@ -1,0 +1,182 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model MemberDto
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StoreId) :
+    </label>
+    <div class="col-md-5 ">
+        <input type="text" readonly="readonly" id="storeName" class="form-control" value="@Model.StoreName" />
+        <input type="hidden" id="StoreId" name="StoreId" value="@Model.StoreId" />
+    </div>
+    @*<div class="col-md-3">
+            <button type="button" class="btn btn-default" id="getStore">
+                选择店铺
+            </button>
+        </div>*@
+</div>
+<input type="hidden" value="/Content/Images/logo-_03.png" name="UserPhoto" />
+<div class="form-group">
+    <label class="control-label col-md-3">
+        搭配师 :
+    </label>
+    <div class="col-md-5">
+        <input type="text" readonly="readonly" id="collocationName" class="form-control" />
+        <input type="hidden" id="CollocationId" name="CollocationId" />
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-success" id="getCollocation">
+            选择搭配师
+        </button>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.MemberName) :
+    </label>
+    <div class="col-md-7 divName">
+        @Html.TextBoxFor(m => m.MemberName, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.MemberPass) :
+    </label>
+    <div class="col-md-7 divMemberPass">
+        @Html.PasswordFor(m => m.MemberPass, new { @class = "form-control", @oncopy = "document.selection.empty()", @onpaste = "return false" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.SecondPass) :
+    </label>
+    <div class="col-md-7">
+        @Html.PasswordFor(m => m.SecondPass, new { @class = "form-control", @oncopy = "document.selection.empty()", @onpaste = "return false" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.MemberTypeId) :
+    </label>
+    <div class="col-md-7">
+        @Html.DropDownListFor(m => m.MemberTypeId, (List<SelectListItem>)ViewBag.MemberType, new { @class = "form-control selectpicker" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Gender) :
+    </label>
+    <div class="col-md-7">
+        <select class="form-control selectpicker" id="Gender" name="Gender">
+            <option value="0">女</option>
+            <option value="1">男</option>
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Email) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.MobilePhone) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.MobilePhone, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.RealName) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.RealName, new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group ">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IDCard) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.IDCard, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.DateofBirth) :
+    </label>
+    <div class="col-md-7">
+        <div class="input-daterange input-group">
+            @Html.TextBox("DateofBirth", "", new { @class = "start-date input-sm form-control", @placeholder = "点击选择" })
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        //获取选择店铺列表
+        @*$("#getStore").on("click", function () {
+            $.whiskey.ajaxLoading({
+                url: "@Url.Action("StoreList","Member",new {area="Members"})",
+                type: 'get',
+                success: function (data) {
+                    bootbox.dialog({
+                        message: data,
+                        // message:formBody,
+                        title: "店铺列表",
+                        buttons: {
+                            cancel: {
+                                label: "关闭",
+                                icon: "fa-close",
+                                className: "btn-default",
+                                callback: function () {
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        });*@
+
+        //获取选择搭配师列表
+        $("#getCollocation").on("click", function () {
+            $.whiskey.ajaxLoading({
+                url: "@Url.Action("CollocationList", "Member", new { area = "Members" })",
+                type: 'get',
+                success: function (data) {
+                    bootbox.dialog({
+                        message: data,
+                        title: "搭配师列表",
+                        buttons: {
+                            cancel: {
+                                label: "关闭",
+                                icon: "fa-close",
+                                className: "btn-default",
+                                callback: function () {
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+
+        });
+    })
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

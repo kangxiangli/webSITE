@@ -1,0 +1,56 @@
+﻿@{
+    var isAjaxView = ViewContext.ViewBag.isAjaxView;
+    if (isAjaxView == null || !isAjaxView)
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+}
+@using Whiskey.ZeroStore.ERP.Models
+@{
+    Module BreadCrumb = ViewBag.BreadCrumb;
+    string themePath = ViewBag.themePath ?? string.Empty;
+}
+
+<div id="content-wrapper">
+    @if (!(ViewBag.themeExist ?? false) || (BreadCrumb.ModuleName.Length > 0 && BreadCrumb.ModuleName != "首页统计面板"))
+            {
+        <div class="page-header">
+            @if (BreadCrumb.ModuleName.Length > 0)
+            {
+                <h1><i class="fa @BreadCrumb.Icon page-header-icon "></i>&nbsp;&nbsp;@BreadCrumb.ModuleName</h1>
+            }
+            else
+            {
+                <h1><i class="fa fa-dashboard page-header-icon "></i>&nbsp;&nbsp; @ViewBag.ModuleName @RenderSection("ModuleName", required: false)</h1>
+            }
+        </div>
+    }
+    <div class="container">
+        @RenderBody()
+        @Html.Partial("_AuthVerify", new { strFlag = ViewBag.inval })
+    </div>
+</div>
+@{
+    if (!(ViewBag.themeExist ?? false))
+    {
+        <div id="main-menu-bg"></div>
+    }
+}
+
+@{
+    if (isAjaxView != null && isAjaxView)
+    {
+        <script>
+            $(function () {
+                $.whiskey.web.init();
+            });
+        </script>
+    }
+}
+@RenderSection("Scripts", required: false)
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

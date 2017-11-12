@@ -1,0 +1,299 @@
+﻿
+<style>
+   .modal-content{
+       width:1200px;
+   }
+</style>
+<p>
+    <button id="browse" class="form-control" style="display:inline;width:30%;margin-right:10px">选择文件</button><label id="filename">未选择文件……</label><label id="up_state"></label>
+    <button id="start_upload" class="form-control btn btn-success" style="margin-top:10px;">开始上传</button>
+</p>
+<div id="import-member">
+    <form class="form-horizontal form-search" style="min-height:50px;">
+        <div class="col-md-4">
+            <div class="form-group no-margin-hr">
+                <label class="control-label col-md-4">性别设置</label>
+                <div class="col-md-8">
+                    <select id="gender" class="form-control selectpicker" v-model="gender">
+
+                        <option v-for="option in genderOptions" v-bind:value="option">{{option.text}}</option>
+
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group no-margin-hr">
+                <label class="control-label col-md-4">店铺设置</label>
+                <div class="col-md-8">
+                    <select class="form-control" id="defaultStore"></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group no-margin-hr">
+                <label class="control-label col-md-4">创建日期</label>
+                <div class="col-md-8">
+                    <div class="input-daterange input-group">
+                        <input type="text" id="CreateStartDate"  class = "start-date input-sm form-control" value="" placeholder = "开始日期"/>
+                        <span class="input-group-addon">至</span>
+                        <input type="text" id="CreateEndDate" class="start-date input-sm form-control" value="" placeholder="结束日期" />
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </form>
+
+
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    @*<span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>*@
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>姓名</th>
+                        <th>手机号</th>
+                        <th>性别</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{index+1}}</td>
+
+                        <td>{{item.RealName}}</td>
+                        <td>{{item.MobilePhone}}</td>
+                        <td>{{item.Gender}}</td>
+
+                        <td>
+                            <button type="button" class="btn btn-danger" v-on:click="removeFromList(index)">移除</button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+    </div>
+
+</div>
+
+<script src="~/Content/plupload-2.1.8/js/plupload.full.min.js"></script>
+<script src="~/Content/plupload-2.1.8/js/jquery.plupload.queue/jquery.plupload.queue.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+
+    $(function () {
+
+        var uploader = new plupload.Uploader(
+        {
+            runtimes: 'silverlight,html4,html5,flash',
+            browse_button: 'browse',
+            url: '@Url.Action("ExcelFileUpload")',
+            flash_swf_url: '~/Content/plupload-2.1.8/js/Moxie.swf">~/Content/plupload-2.1.8/js/Moxie.swf',
+            filters: {
+                mime_types: [
+                    { title: "txt", extensions: "txt" },
+                    { title: "excel", extensions: "xls,xlsx" }
+                ],
+                max_file_size: '400kb',
+                prevent_duplicates: true
+            }
+
+        });
+
+        uploader.init();
+        uploader.bind('FilesAdded', function (uploader, files) {
+            $("#filename").html(files[0].name);
+            $("#up_state").html("");
+        });
+        uploader.bind('BeforeUpload', function (uploader, file) {
+            $("#up_state").html("正在上传……")
+        }); //
+        uploader.bind('FileUploaded', function (uploader, file, obj) {
+            $("#up_state").html("上传成功");
+            var res = JSON.parse($(obj.response).text());
+            if (res.ResultType === 3 && res.Data.length > 0) {
+                res.Data.forEach(x => importMemberVM.addData(x));
+                importMemberVM.search();
+            }
+
+        });
+
+        $('#start_upload').click(function () {
+            uploader.start();
+        });
+    });
+
+</script>
+
+<script>
+    var baseUrl = '/Members/Member'
+    const genderOptions = [
+        { value: '', text: '默认' },
+        { value: 0, text: '女' },
+        { value: 1, text: '男' },
+    ];
+    var importMemberVM = new Vue({
+        el: "#import-member",
+        data: {
+            genderOptions: genderOptions,
+            gender: genderOptions[0],
+            members: [],
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            },
+            pageDatas: [],
+
+        },
+        mounted() {
+            this.$nextTick(function () {
+                $("#defaultStore").queryAllStore({ onlyAttach: true })
+                $("#gender").selectpicker();
+                $(".input-daterange").datepicker();
+
+            })
+        },
+        methods: {
+
+            addData(item) {
+                if (this.members.findIndex(x => x.RealName === item.RealName) !== -1) {
+                    return;
+                }
+                if (this.gender.value !== '' && !isNaN(this.gender.value)) {
+                    item.Gender = this.gender.text;
+                }
+                this.members.push(item);
+            },
+            search: function (filter) {
+                var _self = this;
+                var searchData = {
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+                }
+
+
+                var pageInfo = {
+                    totalCount: this.members.length,
+                    pageCount: Math.ceil(this.members.length / searchData.pageSize),
+                    pageSize: searchData.pageSize
+                };
+
+                //　数据为空的情况
+                if (pageInfo.pageCount == 0) {
+                    searchData.pageIndex = 1;
+                    pageInfo.pageIndex = 1;
+                    _self.pageDatas = [];
+                    _self.pageInfo = pageInfo;
+                    return;
+                }
+
+                if (searchData.pageIndex > pageInfo.pageCount) {
+                    searchData.pageIndex = pageInfo.pageCount;
+
+                }
+                pageInfo.pageIndex = searchData.pageIndex;
+                var startIndex = 0;
+                if (searchData.pageIndex > 1) {
+                    startIndex = (searchData.pageIndex - 1) * searchData.pageSize;
+                }
+
+
+                var pageData = this.members.slice(startIndex, startIndex + searchData.pageSize);
+
+                _self.pageDatas = pageData;
+                _self.pageInfo = pageInfo;
+
+            },
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+                debugger
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            },
+
+            removeFromList: function (index) {
+
+                this.members.splice(index, 1);
+                this.search();
+            },
+            saveMember: function () {
+                if (this.members.length <= 0) {
+                    alert("数据不能为空");
+                    return;
+                }
+
+                let overwriteGender = this.gender.value !== '' && !isNaN(this.gender.value);
+                let memberData = this.members.map(m => {
+                    let localGender = overwriteGender ? this.gender.value : m.Gender.trim() === "男" ? 1 : 0;
+                    return {
+                        RealName: m.RealName.trim(),
+                        Gender: localGender,
+                        MobilePhone: m.MobilePhone.trim(),
+                        StoreId: $("#defaultStore").val()
+                    }
+                });
+                var postData = {
+                    members: memberData,
+                    CreateStartDate: $("#CreateStartDate").val(),
+                    CreateEndDate: $("#CreateEndDate").val()
+                };
+
+
+                $.post(baseUrl + '/SaveMember', postData, function (res) {
+
+                    if (res.ResultType == 3) {
+
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: `成功${res.Data.succCount}条,跳过${res.Data.skipCount}条`,
+                            callback: function () {
+                                $("button[data-bb-handler=cancel]").trigger('click');
+                                memberImportVM.search();
+
+                            }
+                        });
+
+                    }
+                    else {
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: res.Message,
+                            callback: function () {
+                            }
+                        });
+                        return;
+                    }
+                });
+            }
+        }
+
+    })
+</script>

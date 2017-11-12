@@ -1,0 +1,59 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Models.Enums
+@using Whiskey.Utility.Extensions
+@model MemberCollocation
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>精心搭配个性时尚衣着</title>
+    <link href="~/Areas/Shares/Content/css/media.css-750.css" rel="stylesheet" />
+    <link href="~/Areas/Shares/Content/css/all.css" rel="stylesheet" />
+    <style type="text/css">
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class='@Html.Raw(Model.IsNull()?"errorBody":"downFashion")'>
+    @{
+        var WebUrl = UiHelper.WebUrl();
+    }
+
+    @if (Model.IsNotNull())
+    {
+        var ApiUrl = UiHelper.ApiUrl();
+
+        <!--云-->
+        <div class="cloud">
+            <img class="cloulLeft" src="~/Areas/Shares/Content/img/yunL.png" />
+            <img class="tilte" src="~/Areas/Shares/Content/img/til.png" />
+            <img class="cloulRight" src="~/Areas/Shares/Content/img/yunR.png" />
+        </div>
+        <!--搭配图-->
+        <div class="math">
+            @{
+                var modCE = Model.MemberColloEles.FirstOrDefault(f => f.IsEnabled && !f.IsDeleted && f.ParentId == null && f.EleType == (int)MemberColloEleFlag.ImageEle);
+                var colimg = modCE?.ImagePath ?? string.Empty;
+            }
+            <img src="@ApiUrl@colimg" />
+        </div>
+        <!--个人信息-->
+                <div class="infoSelsf">
+                    <div class="photo_img">
+                        <img src="@WebUrl@Model.Member.UserPhoto" />
+                    </div>
+                    <div class="name">
+                        <p>@Model.Member.MemberName</p>
+                        <p>优秀设计师</p>
+                    </div>
+                </div>
+                }
+    <!--app下载-->
+    <a href="@WebUrl/app/0fashion/" class="@Html.Raw(Model.IsNull()? "downLogo" : "downLoad")">
+        <img src="~/Areas/Shares/Content/img/logo.png" />
+    </a>
+</body>
+</html>

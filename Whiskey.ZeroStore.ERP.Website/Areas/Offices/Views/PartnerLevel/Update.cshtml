@@ -1,0 +1,44 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model PartnerLevelDto
+
+@Html.HiddenFor(x=>x.Id)
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.LevelName) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.LevelName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Level) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Level, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Experience) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Experience, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Price) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.CouponQuantity) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.CouponQuantity, new { @class = "form-control" })
+    </div>
+</div>

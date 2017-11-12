@@ -1,0 +1,404 @@
+﻿@model Whiskey.ZeroStore.ERP.Models.AppointmentPacking
+<style>
+    .modal-content {
+        width: 1200px;
+    }
+    input.form-control{
+        color:#fff;
+    }
+</style>
+<div id="appointment-packing-orderblank" class="row">
+    <div class="col-md-7">
+        <div id="left_content">
+            <div class="panel panel-primary panel-dark widget-profile">
+                <div class="panel-heading">
+                    <div class="widget-profile-bg-icon"></div>
+                    <div class="widget-profile-header text-center">
+                        <h3>请使用扫码枪将商品流水号扫入下边文本框</h3>
+                    </div>
+                </div>
+                <div class="list-group-item no-border-hr clearfix valign-middle">
+                    <div>
+
+                        <div class="" style="padding-left:0;margin-bottom:10px">
+                            <input type="text" tabindex="1" id="scanNumber" v-model="scanNumber" v-bind:disabled="isFinish || !toStorageId" placeholder="扫码或输入" class="scan-number text-center form-control" v-on:keyup.enter="addBarcode" />
+
+                        </div>
+                        <div class="col-md-3"></div>
+                        <div>
+                            <input class="form-control" v-on:click="productList" type="button" value="选择商品……" style="font-weight: bold;" />
+                            @*<input class="form-control" id="selec_prodBatch_list" type="button" value="批量导入……" style="font-weight: bold;" />*@
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget-profile-counters clearfix">
+                    <div class="col-xs-4">
+                        <label class="label label-info scan-queue-count">{{queue.length}}</label>
+                        <br />
+                        队列数量
+                    </div>
+                    <div class="col-xs-4">
+                        <label class="label label-success scan-queue-count" v-on:click="showValids">{{valids.length}}</label>
+                        <br />
+                        有效数量
+                    </div>
+                    <div class="col-xs-4">
+                        <label class="label label-danger scan-queue-count" v-on:click="showInvalids">{{invalids.length}}</label>
+                        <br />
+                        无效数量
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="stat-panel">
+            <div class="stat-row">
+                <div class="stat-cell padding-sm-hr bordered valign-top" style="padding-bottom:0">
+                    <ul class="list-group no-margin" style="margin-bottom: 0;">
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4">出货店铺</label>
+                            <div class="col-md-8">
+                                <input v-bind:value="fromStore" class="form-control" disabled />
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4">出货仓库</label>
+                            <div class="col-md-8">
+                                <input v-bind:value="fromStorage" class="form-control" disabled />
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4">收货店铺</label>
+                            <div class="col-md-8">
+                                <input class="form-control" v-bind:value="toStore" disabled />
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4">收货仓库</label>
+                            <div class="col-md-8">
+                                <input class="form-control" v-if="toStorageId>0" v-bind:value="toStorage" disabled />
+                                <select class="form-control" v-else id="toStorage" v-model="toStorageId"></select>
+                            </div>
+                        </li>
+
+
+                        <li class="list-group-item no-border-hr no-border-b padding-xs-vr no-bg no-border-radius clearfix">
+                            <div>
+
+                                <button type="button" v-on:click="finishPacking" v-if="!isFinish" v-bind:disabled="!canFinish" class="btn btn-success  btn-padding-right"><i class="fa fa-arrow-right"></i> 配货完成</button>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-12">
+        <div class="panel  panel-list">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <h5><i class="fa fa-list"></i> 已扫描商品</h5>
+                </div>
+                <span class="text-right list-info"></span>
+            </div>
+            <div>
+                <table class="table table-list table-hover valign-middle" width="100%">
+                    <thead>
+                        <tr>
+                            <td>编号</td>
+                            <td>流水号</td>
+                            <td>商品货号</td>
+                            <td>品牌</td>
+                            <td>品类</td>
+                            <td>颜色</td>
+                            <td>尺码</td>
+                            <td>图片</td>
+                            <td>操作</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item,index) in items">
+                            <td>{{index+1}}</td>
+                            <td>
+                                {{item.ProductBarcode}}
+                            </td>
+                            <td>{{item.ProductNumber}}</td>
+                            <td>{{item.BrandName}}</td>
+                            <td>{{item.CategoryName}}</td>
+                            <td>{{item.ColorName}}</td>
+                            <td>{{item.SizeName}}</td>
+                            <td>
+                                <img-suspension v-bind:path="item.ProductCollocationImg"></img-suspension>
+                            </td>
+
+                            <td>
+                                <button v-if="state!=='已装箱'&&item.ProductBarcode&&item.ProductBarcode.length" v-on:click="removeBarcode(index)" class="btn btn-danger">移除</button>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div style="display:none">
+
+
+        <div id="info-valids">
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <td>编号</td>
+                        <td>流水号</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in valids">
+                        <td>{{index+1}}</td>
+                        <td>{{item}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="info-invalids">
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <td>编号</td>
+                        <td>流水号</td>
+                        <td>信息</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in invalids">
+                        <td>{{index+1}}</td>
+                        <td>{{item.code}}</td>
+                        <td>{{item.msg}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var editPlanVM = new Vue({
+        el: '#appointment-packing-orderblank',
+        data: {
+            id: '@Model.Id',
+            fromStore: '@Model.FromStore.StoreName',
+            fromStorage: '@Model.FromStorage.StorageName',
+            toStore: '@Model.ToStore.StoreName',
+            toStoreId: '@Model.ToStoreId',
+            toStorage: '@Model.ToStore.StoreName',
+            toStorageId: '@Model.ToStorageId',
+            state:'@Model.State',
+            items: [],
+            queue: [],
+            valids: [],
+            invalids:[],
+            scanNumber:''
+
+        },
+        created: function () {
+
+        },
+        methods: {
+            productList() {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "添加数据",
+                    actionUrl:"@Url.Action("ProductSelect")",
+                    getParams: { id: _self.id },
+                    lockButton: $(this),
+                    formValidator: function () {
+                        
+                        let codes = appointmentPackingProductSelectVM.checkedCodes.concat([])
+                        console.log(codes)
+                        appointmentPackingProductSelectVM.closeDialog();
+                        if (!Array.isArray(codes) || !codes.length) { return; }
+                        codes.forEach(code => _self.queue.push(code));
+
+                    }
+                });
+            },
+            getPackingItem() {
+                var _self = this;
+                $.getJSON('@Url.Action("GetPackingItem")', { id: this.id })
+                    .done(function (res) {
+
+                        _self.items = res.Data;
+                    })
+                },
+            showInvalids() {
+                bootbox.dialog({ message: document.getElementById("info-invalids").innerHTML, title: '无效数据' })
+            },
+            showValids() {
+                bootbox.dialog({ message: document.getElementById("info-valids").innerHTML, title: '有效数据' })
+            },
+            closeDialog() {
+                $(this.$el).parents(".modal-dialog").find("button.bootbox-close-button").trigger('click');
+            },
+            finishPacking() {
+
+                var _self = this
+                var postData = {
+                    id: _self.id
+                }
+                $.post("@Url.Action("FinishPacking")", postData)
+                    .done(function (res) {
+                        if (res.ResultType !== 3) {
+                            bootbox.alert(res.Message);
+                        }
+                        else {
+                            _self.closeDialog();
+                            $.whiskey.web.load({ url: "/WareHouses/AppointmentPacking/index"})
+                        }
+                    })
+            },
+            addBarcode() {
+                let number = this.scanNumber;
+                this.scanNumber = '';
+                if (!number) {
+                    return;
+                }
+                if (number.indexOf(",") !== -1) {
+                    var arr = number.split(',');
+                    arr.forEach(i => this.queue.push(i));
+                }
+                else {
+                    this.queue.push(number);
+                }
+
+            },
+            removeBarcode(index) {
+                let _self = this
+                bootbox.confirm({
+                    message: '确定要移除这件商品吗?',
+                    callback: function (isSure) {
+                        if (isSure) {
+                            let item = _self.items[index];
+
+                            if (!item.ProductBarcode) {
+                                return;
+                            }
+
+                            var postData = {
+                                id: _self.id,
+
+                                productBarcode: item.ProductBarcode
+                            }
+                            $.post("@Url.Action("removeBarcode")", postData)
+                                .done(function (res) {
+                                    if (res.ResultType !== 3) {
+                                        bootbox.alert(res.Message);
+                                    }
+                                    else {
+                                        item.ProductBarcode = null;
+                                    }
+                             })
+                        }
+                    }
+                })
+            },
+            startWorker() {
+                var _self = this;
+                var cb = function (time=1000) {
+                    setTimeout(function () {
+                        _self.startWorker(_self);
+                    }, time)
+                }
+
+                if (!_self.queue.length) {
+                    cb();
+                    return;
+                }
+
+                let step = 1;
+                var codes = _self.queue.splice(0, step)
+                    var postData = {
+                        id: _self.id,
+                        toStorageId: _self.toStorageId,
+                        productBarcodes:codes
+                    }
+                    if (!postData.toStorageId) {
+                        alert("请选择收货仓库")
+                        cb();
+                        return;
+                    }
+                    $.post('@Url.Action("AddBarcode")', postData)
+                     .done(function (res) {
+                         if (res.ResultType === 3) {
+
+                             for (let key in res.Data) {
+                                 if (res.Data[key].Item1) {
+                                     _self.valids.push(key)
+                                     let [item] = _self.items.filter(i => i.ProductNumber == res.Data[key].Item3);
+                                     item.ProductBarcode = key;
+                                 }
+                                 else {
+                                     _self.invalids.push({
+                                         code: key,
+                                         msg: res.Data[key].Item2
+                                     })
+                                 }
+                             }
+                         }
+                     })
+                     .always(function () {
+                         cb()
+                     })
+
+            }
+        },
+        mounted: function () {
+            var _self = this;
+            this.getPackingItem();
+            this.$nextTick(function () {
+
+                if (!_self.toStorageId) {
+                    // 初始化仓库列表
+                    $("#toStorage").queryAllStorage({ storeId: _self.toStoreId });
+                }
+
+            })
+            setTimeout(function () {
+                $("#scanNumber").focus();
+            }, 200)
+            this.startWorker();
+
+
+
+        },
+        computed: {
+
+            canFinish() {
+                return this.items.length &&  this.items.every(i => i.ProductBarcode);
+            },
+            isFinish() {
+                return this.state === "已装箱";
+            }
+        },
+        watch:{
+            scanNumber: function (newVal) {
+                if (!newVal) {
+                    this.scanNumber = '';
+
+                }
+                else {
+
+                 this.scanNumber= newVal.toUpperCase().replace(/[\u4e00-\u9fa5]/g, '')
+                }
+            }
+        }
+    })
+</script>

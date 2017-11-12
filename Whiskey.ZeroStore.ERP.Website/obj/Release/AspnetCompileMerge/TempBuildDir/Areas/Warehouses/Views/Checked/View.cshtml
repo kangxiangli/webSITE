@@ -1,0 +1,96 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model Checker
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.StoreId) :
+    </label>
+    <div class="col-md-7">
+		@Model.StoreId
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.StorageId) :
+    </label>
+    <div class="col-md-7">
+		@Model.StorageId
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.CheckerName) :
+    </label>
+    <div class="col-md-7">
+		@Model.CheckerName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.BeforeCheckQuantity) :
+    </label>
+    <div class="col-md-7">
+		@Model.BeforeCheckQuantity
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m => m.AfterCheckQuantity) :
+    </label>
+    <div class="col-md-7">
+		@Model.AfterCheckQuantity
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.Notes) :
+    </label>
+    <div class="col-md-7">
+		@Model.Notes
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.UpdatedTime) :
+    </label>
+    <div class="col-md-7">
+		@Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.CreatedTime) :
+    </label>
+    <div class="col-md-7">
+		@Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-7">
+		@Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		@Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-7">
+		@Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+		操作人员 :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

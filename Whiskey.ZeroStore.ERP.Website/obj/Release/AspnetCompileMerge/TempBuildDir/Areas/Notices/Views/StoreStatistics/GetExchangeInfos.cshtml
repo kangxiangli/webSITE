@@ -1,0 +1,43 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model List<ExchangeOrderItem>
+<style>
+    .tit {
+        font-size: 12px;
+    }
+
+    .diacl .modal-dialog {
+        width: 60%;
+    }
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+</ul>
+<div id="myTabContent" class="tab-content">
+    <!--tab1-->
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>换货单号</td>
+                    <td>商品流水号</td>
+                    <td>吊牌价</td>
+                    <td>换货零售价</td>
+                </tr>
+            </thead>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ExchangeNumber</td>
+                    <td>@item.ProductBarcode</td>
+                    <td>@item.TagPrice</td>
+                    <td>@item.RetailPrice</td>
+                </tr>
+            }
+        </table>
+    </div>
+
+</div>

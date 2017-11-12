@@ -1,0 +1,334 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model JobPositionDto
+
+<style>
+    .modal-content {
+        width: 1000px;
+    }
+
+    .btn-inline {
+        display: inline !important;
+    }
+    .bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a i.check-mark {
+    margin-top: 0em !important;
+}
+</style>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        部门 :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(x => x.DepartmentName, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+    @Html.HiddenFor(x=>x.DepartmentId)
+    <button onclick="depart()" title="部门" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>选择部门</span></button>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.JobPositionName) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(x => x.JobPositionName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsLeader) :
+    </label>
+    <div class="col-md-6">
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.IsLeader, true)是</label>
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.IsLeader, false, new { @checked = "checked" })否</label>
+    </div>
+</div>
+@*<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsShopkeeper) :
+    </label>
+    <div class="col-md-6">
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.IsShopkeeper, true)是</label>
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.IsShopkeeper, false, new { @checked = "checked" })否</label>
+    </div>
+</div>*@
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.AllowPwd) :
+    </label>
+    <div class="col-md-6">
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.AllowPwd, true)是</label>
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.AllowPwd, false, new { @checked = "checked" })否</label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CheckLogin) :
+    </label>
+    <div class="col-md-6">
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.CheckLogin, true, new { @checked = "checked" })是</label>
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.CheckLogin, false)否</label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CheckMac) :
+    </label>
+    <div class="col-md-6">
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.CheckMac, true, new { @checked = "checked" })是</label>
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.CheckMac, false)否</label>
+    </div>
+</div>
+@*<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsDesigner) :
+    </label>
+    <div class="col-md-6">
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.IsDesigner, true)是</label>
+        <label class="radio-inline">@Html.RadioButtonFor(f => f.IsDesigner, false, new { @checked = "checked" })否</label>
+    </div>
+</div>*@
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Auditauthority) :
+    </label>
+    <div class="col-md-6">
+        <label class="checkbox-inline">人事<input type="checkbox" value="1" name="Auditauthority" id="isVestIn_true3" /></label>
+        <label class="checkbox-inline">技术<input type="checkbox" value="2" name="Auditauthority" id="isVestIn_false3" /></label>
+        <label class="checkbox-inline">财务<input type="checkbox" value="3" name="Auditauthority" id="isVestIn_false3" /></label>
+    </div>
+</div>
+<div class="form-group" id="divWorkTime">
+    <label class="control-label col-md-2">
+        工作时间 :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(x => x.WorkTimeName, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+    @Html.HiddenFor(x=>x.WorkTimeId)
+    <button onclick="workTime()" title="工作时间" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>选择时间</span></button>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        年假 :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(x => x.AnnualLeaveName, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+    @Html.HiddenFor(x => x.AnnualLeaveId)
+    <button onclick="annualLeave()" title="年假" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>选择年假</span></button>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.DepartIds) :
+    </label>
+    <div class="col-md-7">
+        <select class="form-control selectpicker bla bla bli" id="DepartIds" name="DepartIds" multiple data-live-search="true"></select>
+    </div>
+    <button onclick="viewDepart()" title="可查看部门" type="button" class="btn btn-success btn-padding-right btn-inline"><i class="fa fa-plus"></i> <span>可查看部门</span></button>
+    <button onclick="removeDepart()" title="清除所选" type="button" class="btn btn-danger btn-padding-right btn-inline"><i class="fa fa-refresh"></i> <span>清除选择</span></button>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.FactoryIds) :
+    </label>
+    <div class="col-md-7">
+        <select class="form-control selectpicker bla bla bli" id="FactoryIds" name="FactoryIds" multiple data-live-search="true"></select>
+    </div>
+    <button onclick="viewFactory()" title="可查看工厂" type="button" class="btn btn-success btn-padding-right btn-inline"><i class="fa fa-plus"></i> <span>可查看工厂</span></button>
+    <button onclick="removeFactory()" title="清除所选" type="button" class="btn btn-danger btn-padding-right btn-inline"><i class="fa fa-refresh"></i> <span>清除选择</span></button>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.AppVerIds) :
+    </label>
+    <div class="col-md-7">
+        <select class="form-control selectpicker bla bla bli" id="AppVerIds" name="AppVerIds" multiple data-live-search="true"></select>
+    </div>
+    <button onclick="viewAppVer()" title="授权App" type="button" class="btn btn-success btn-padding-right btn-inline"><i class="fa fa-plus"></i> <span>授权App</span></button>
+    <button onclick="removeAppVer()" title="清除所选" type="button" class="btn btn-danger btn-padding-right btn-inline"><i class="fa fa-refresh"></i> <span>清除选择</span></button>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<link href="/Content/Styles/Bootstrap/BootstrapSelect/bootstrap-select.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/BootstrapSelect/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.selectpicker').selectpicker({
+            'selectedText': 'cat',
+            'noneSelectedText': "请选择",
+            'noneResultsText': '没有搜索到'
+        });
+    })
+    //获取部门
+    function depart() {
+        $.ajax({
+            url: "@Url.Action("Department", "Department", new { area = "Authorities" })",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "chooseIndex",
+                    title: "部门",
+                    buttons: {
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".chooseIndex").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    //获取可查看下属部门
+    function viewDepart() {
+
+        $.ajax({
+            url: "@Url.Action("Depart")",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "chooseIndex",
+                    title: "部门",
+                    buttons: {
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".chooseIndex").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+    //获取可查看工厂
+    function viewFactory() {
+        $.ajax({
+            url: "@Url.Action("Factory")",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "chooseIndex",
+                    title: "工厂",
+                    buttons: {
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".chooseIndex").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+    //获取可查看APP
+    function viewAppVer() {
+        $.ajax({
+            url: "@Url.Action("AppVer")",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "chooseIndex",
+                    title: "App",
+                    buttons: {
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".chooseIndex").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function removeDepart() {
+        $("#DepartIds").html('');
+        $('.selectpicker').selectpicker('refresh');
+    }
+    function removeFactory() {
+        $("#FactoryIds").html('');
+        $('.selectpicker').selectpicker('refresh');
+    }
+    function removeAppVer() {
+        $("#AppVerIds").html('');
+        $('.selectpicker').selectpicker('refresh');
+    }
+
+    //获取工作时间
+    function workTime() {
+        $.ajax({
+            url: "@Url.Action("WorkTime","WorkTime")",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "chooseIndex",
+                    title: "工作时间",
+                    buttons: {
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".chooseIndex").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    //获取年假
+    function annualLeave() {
+        $.ajax({
+            url: "@Url.Action("annualLeave", "annualLeave")",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "chooseIndex",
+                    title: "年假",
+                    buttons: {
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".chooseIndex").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>

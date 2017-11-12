@@ -1,0 +1,35 @@
+﻿
+<template type="text/x-template" id="template-suspension">
+    <div class="thumbnail_outer_img">
+        <div class="thumbnail_inner_img">
+            <div class="thumbnail_current_img">
+                <img class="suspension_img"
+                     v-bind:src="src"
+                     onerror="imgloaderror(this);"
+                     onmouseover="onImgMouseOver(this)"
+                     onmouseout="onImgMouseOut(this)" />
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    Vue.component('img-suspension', {
+        template: '#template-suspension',
+        props: {
+            path: {
+                type: String
+            },
+            host: {
+                type: String,
+                default: 'https://www.0-fashion.com'
+            }
+        },
+
+        computed: {
+            src() {
+                return this.host + this.path;
+            }
+        }
+    })
+</script>

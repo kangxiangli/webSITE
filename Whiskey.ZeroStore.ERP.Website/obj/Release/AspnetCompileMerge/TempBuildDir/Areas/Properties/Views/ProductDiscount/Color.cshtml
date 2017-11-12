@@ -1,0 +1,132 @@
+﻿
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+
+                <div class="col-md-7">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">颜色名称</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("ColorName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right"                
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $(".table-list").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("ColorList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));               
+                $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+
+            {
+                "sTitle": "颜色名称",
+                "bSortable": false,
+                "sName": "ColorName",
+                "mData": function (data) {
+                    return data.StoreName;
+                },
+            },             
+            {
+                 "sTitle": "选择",
+                 "bSortable": false,
+                 "sName": "",
+                 "mData": function (data) {
+                     return '<button type="button" onclick="choose(this)"  class="btn btn-default" data-name="' + data.ColorName + '"  data-id="' + data.Id + '">选择</button>';
+                 },
+             },
+             
+            ]
+
+        });            
+
+        $("#Search").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+
+        $("#Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+       
+    });
+    
+    //选择店铺
+    function choose(my) {
+        var name = $(my).attr("data-name");
+        var id = $(my).attr("data-id");
+        $("#form1 #ColorName").attr("value", name);
+        $("#form1 #ColorId").attr("value", id);
+        $(".bootbox").modal("hide");
+    }
+</script>

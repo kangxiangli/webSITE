@@ -1,0 +1,167 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model Module
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.ParentId) :
+    </label>
+    <div class="col-md-8">
+		@if (Model.Parent == null)
+        {
+            <span>无</span>
+        }
+        else { 
+        @Model.Parent.ModuleName
+        }
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.ModuleType) :
+    </label>
+    <div class="col-md-8">
+        @Html.Raw(Model.ModuleType == 0 ? "一级菜单" : "二级菜单")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.ModuleName) :
+    </label>
+    <div class="col-md-8">
+		@Model.ModuleName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.Icon) :
+    </label>
+    <div class="col-md-8">
+		@Model.Icon
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-8">
+		@Model.Description
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.PageUrl) :
+    </label>
+    <div class="col-md-8">
+		@Model.PageUrl
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.OverrideUrl) :
+    </label>
+    <div class="col-md-8">
+        @Model.OverrideUrl
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.PageArea) :
+    </label>
+    <div class="col-md-8">
+		@Model.PageArea
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.PageController) :
+    </label>
+    <div class="col-md-8">
+		@Model.PageController
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.PageAction) :
+    </label>
+    <div class="col-md-8">
+        @Model.PageAction
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.ColorValue) :
+    </label>
+    <div class="col-md-8">
+        @Model.ColorValue
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.BadgeTag) :
+    </label>
+    <div class="col-md-8">
+        @Model.BadgeTag
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.BadgeUrl) :
+    </label>
+    <div class="col-md-8">
+        @Model.BadgeUrl
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.onClickScripts) :
+    </label>
+    <div class="col-md-8">
+		@Model.onClickScripts
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.UpdatedTime) :
+    </label>
+    <div class="col-md-8">
+		@Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.CreatedTime) :
+    </label>
+    <div class="col-md-8">
+		@Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-8">
+		@Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-8">
+		@Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		操作人员 :
+    </label>
+    <div class="col-md-8">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

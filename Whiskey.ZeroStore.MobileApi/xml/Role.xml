@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Role>
+  <Member>
+    <Model id="1"></Model>
+    <Model id="2"></Model>
+    <Model id="3"></Model>
+    <Model id="4"></Model>
+  </Member>
+  <Admin>
+    <Model id="1"></Model>
+    <Model id="2"></Model>
+    <Model id="3"></Model>
+    <Model id="4"></Model>
+  </Admin>
+  <Collo>
+    <Model id="1"></Model>
+    <Model id="2"></Model>
+    <Model id="3"></Model>
+    <Model id="4"></Model>
+  </Collo>  
+</Role>

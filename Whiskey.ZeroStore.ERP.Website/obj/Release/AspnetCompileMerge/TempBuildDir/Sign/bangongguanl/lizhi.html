@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta id="viewport" name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <title>离职单</title>
+
+    <link href="../mobiscroll/css/mobiscroll.css" rel="stylesheet" type="text/css">
+    <link href="../mobiscroll/css/mobiscroll_002.css" rel="stylesheet" type="text/css">
+    <link href="../mobiscroll/css/mobiscroll_003.css" rel="stylesheet" type="text/css">
+    <link href="../css/public.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/style.css" />  
+    <link href="css/bangongguanli.css" rel="stylesheet" /> 
+     
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+        (function (w) {
+            s();
+            var e = ("onorientationchange" in w) ? "orientationchange" : "resize";
+            w.addEventListener(e, function () {
+                setTimeout(function () {
+                    s()
+                }, 200)
+            }, false);
+            function s() {
+                var a = w.innerWidth;
+                var b = 20 * (a / 320);
+                if (b > 40) {
+                    b = 40;
+                }
+                document.querySelector("html").style.fontSize = b + "px";
+            }
+        })(window);
+    </script>
+</head>
+<body>
+    <!-- 离职单-->
+    <div class="lizhi">
+        <div class="til_bak">
+            <p class="back_befo" id="leave">
+                <img src="../img/nav_fh@2x.png" alt="png" /><span>返回</span>
+            </p>离职申请
+        </div>
+        <form action="" id="leave_form">
+            <input name="AdminId" id="ResignationId" value="0" type="hidden" />
+            <p>
+                <label for="leaveOffice" class="leave_txt">时间</label><input type="text" name="ResignationDate" id="leaveOffice" placeholder="离职时间" readonly="readonly">
+            </p>
+            <p>
+                <label for="leave_because" class="because_txt">原因</label><textarea name="ResignationReason" id="leave_because" cols="30" rows="10"></textarea>
+            </p>
+            <input type="button" value="确定" class="btn_sure" id="leave_btn" />
+        </form>
+        <!--离职返回状态-->
+        <div class="leave_info">
+            <ul class="state">
+                <li><b>通过</b><img src="../img/pass.png" alt="通过" /></li>
+                <li><b>未通过</b><img src="../img/not_pass.png" alt="未通过" /></li>
+                <li><b>审核中</b><img src="../img/audit.png" alt="审核中" /></li>
+            </ul>
+
+            <p><label>离职时间:</label><input type="text" class="dateTm" value="2016-8-12" /></p>
+            <p><label class="bf_leave">离职原因:</label><span class="leaveBf"></span></p>
+
+            <ul class="leave_ul">
+                <li class="pass"><span>人事审核</span><a href="#" class="tooltip-test" data-toggle="tooltip" title="通过"><img src="../img/pass.png" alt="通过" /></a></li>
+                <li class="audit"><span>技术审核</span><a href="#" class="tooltip-test" data-toggle="tooltip" title="审核中 "><img src="../img/audit.png" alt="审核中" /></a></li>
+                <li class="notPass"><span>领导审核</span><a href="#" class="tooltip-test" data-toggle="tooltip" title="未通过"><img src="../img/not_pass.png" alt="未通过" /></a></li>
+            </ul>
+        </div>
+        <div id="leave_prompt">
+            <h3>温馨提示</h3>
+            <div class="leavePtxt">
+                <p>1.请核对好离职时间</p>
+                <p>2.离职之前请做好交接工作</p>
+                <p>3.请到人事部门办理离职手续</p>
+                <p>4.账号有关信息将在离职当天被注销</p>
+                <p>5.一旦提交了离职申请单,则不可更改</p>
+            </div>
+        </div>
+        <div class="warmPromptBg"></div>
+        <!-- 单按钮 -->
+        <div class="warmSure">
+            <p class="infTil">温馨提示</p>
+            <p class="xinXi">离职原因</p>
+            <input class="hideWarm" type="button" name="sure" value="确定" />
+        </div>
+        <!-- 双按钮 -->
+        <div class="warmPrompt">
+            <p class="noCheg">温馨提示</p>
+            <p class="yuanyin">离职原因</p>
+            <div class="btnAll">
+                <input class="btnSure" type="button" name="sure" value="确定" />
+                <input class="btnNo" type="button" name="no" value="取消" />
+            </div>
+        </div>
+    </div>
+    <script src="../js/global.js"></script>
+<!--日历-->
+    <script src="../mobiscroll/js/mobiscroll_002.js" type="text/javascript"></script>
+    <script src="../mobiscroll/js/mobiscroll_004.js" type="text/javascript"></script>
+    <script src="../mobiscroll/js/mobiscroll.js" type="text/javascript"></script>
+    <script src="../mobiscroll/js/mobiscroll_003.js" type="text/javascript"></script>
+    <script src="../mobiscroll/js/mobiscroll_005.js" type="text/javascript"></script>       
+<!--<script src="js/initial_date.js"></script>-->
+    <script src="js/bangonggl.js"></script>
+
+    <script>
+        //离职申请
+        //   日期选择
+        var currYear = (new Date()).getFullYear();
+        var opt = {};
+        opt.date = {preset: 'date'};
+        opt.datetime = {preset: 'datetime'};
+        opt.time = {preset: 'time'};
+        opt.default = {
+            theme: 'android-ics light', //皮肤样式
+            display: 'modal', //显示方式
+            mode: 'scroller', //日期选择模式
+            dateFormat: 'yyyy-mm-dd',
+            lang: 'zh',
+            showNow: true,
+            nowText: "今天",
+            startYear: currYear - 20, //开始年份
+            endYear: currYear + 5 //结束年份
+        };
+
+        var opDate = $.extend(opt['date'], opt['default']);
+        var optDateTime = $.extend(opt['datetime'], opt['default']);
+        var optTime = $.extend(opt['time'], opt['default']);
+
+        $("#leaveOffice").mobiscroll(opDate).date(opDate);  //离职日期
+    </script>
+</body>
+</html>

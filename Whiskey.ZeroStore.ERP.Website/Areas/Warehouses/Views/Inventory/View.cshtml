@@ -1,0 +1,295 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Inventory
+<style>
+    .diacl .modal-dialog {
+        width: 80% !important;
+    }
+
+    thead th {
+        text-align: center;
+    }
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+    <li><a href="#detail_tab" data-toggle="tab">详细列表</a></li>
+
+</ul>
+<div id="invent_li" class="tab-content">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                所属店铺名：
+
+            </label>
+            <div class="col-md-6">
+                @Model.Store.StoreName
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                所属仓库名：
+            </label>
+            <div class="col-md-6">
+                @Model.Storage.StorageName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                商品编号：
+            </label>
+            <div class="col-md-6">
+                <span id="invent_prn" style="color:blue">
+                    @{
+                        var num = Model.ProductNumber;
+                        if (string.IsNullOrEmpty(num))
+                        {
+                            num = ViewBag.num;
+                        }
+                        @num
+                    }
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                商品名：
+            </label>
+            <div class="col-md-6">
+                @Model.Product.ProductName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                原始货号：
+            </label>
+            <div class="col-md-6">
+                @Model.Product.OriginNumber
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                库存数：
+            </label>
+            <div class="col-md-6">
+                @ViewBag.StoragCou
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Product.ProductOriginNumber.TagPrice)<i>(￥)</i> :
+            </label>
+            <div class="col-md-6">
+                @Model.Product.ProductOriginNumber.TagPrice
+            </div>
+        </div>
+        @*<div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.RetailPrice)<i>(￥)</i> :
+                </label>
+                <div class="col-md-6">
+                    @Model.RetailPrice
+                </div>
+            </div>*@
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Product.ProductOriginNumber.WholesalePrice)<i>(￥)</i>  :
+            </label>
+            <div class="col-md-6">
+                @Model.Product.ProductOriginNumber.WholesalePrice
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Product.ProductOriginNumber.PurchasePrice)<i>(￥)</i>  :
+            </label>
+            <div class="col-md-6">
+                @Model.Product.ProductOriginNumber.PurchasePrice
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.LocationCode) :
+            </label>
+            <div class="col-md-6">
+                @Model.LocationCode
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.UpdatedTime) :
+            </label>
+            <div class="col-md-6">
+                @Model.UpdatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.CreatedTime) :
+            </label>
+            <div class="col-md-6">
+                @Model.CreatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsEnabled) :
+            </label>
+            <div class="col-md-6">
+                @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsDeleted) :
+            </label>
+            <div class="col-md-6">
+                @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                操作人员 :
+            </label>
+            <div class="col-md-6">
+                @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+            </div>
+        </div>
+
+    </div>
+    <div class="tab-pane fade" id="detail_tab">
+        <table class="table table-list_view table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        var showDetail = '@ViewBag.ShowDetail';
+        if (showDetail == 1) {
+            $("a[href=#detail_tab]").tab('show');
+        }
+        $(document).ready(function () {
+            $.whiskey.datatable.instance = $(".table-list_view").dataTable({
+                "bPaginate": true,
+                "bFilter": true,
+                "bLengthChange": 20,
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("GetInventorysByProductNum")",
+                "oLanguage": {
+                    "sZeroRecords": "对不起，查询不到任何相关数据",
+                    "sInfoEmtpy": "找不到相关数据"
+
+                },
+                // "fnRowCallback": function (nRow, aData, iDisplayIndex) { },
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+
+                    if ($(".trusher").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                        if ($(".enabler").is(":checked")) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                        } else {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                        }
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                        if ($(".enabler").is(":checked")) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                        } else {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                        }
+                    }
+
+                    var pnu= $("#invent_li #invent_prn").text().trim();
+                    conditions.Rules.push(new $.whiskey.filter.rule("ProductNumber", pnu, "equal"));
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                    $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+
+                    return nRow;
+                },
+
+                "aoColumns": [
+                    {
+                        "bVisible": false,
+                        "bSearchable": false,
+                        "sName": "Id",
+                        "mData": "Id"
+                    },
+                    {
+                        "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                        "sName": "Id",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            return $.whiskey.datatable.tplListCheckbox(data.Id);
+                        }
+                    },
+                      {
+                          "sTitle": "编号",
+                          "bSortable": false,
+                          "sName": "ProductId",
+                          "mData": function (data) {
+                              return "";
+                          },
+                      },
+
+                    {
+                        "sTitle": "条码",
+                        "bSortable": false,
+                        "sName": "ProductId",
+                        "mData": function (data) {
+                            return "<span style='color:blue'>" + data.ProductBarcode + "</span>";
+                        },
+                    },
+
+                    {
+                        "sTitle": "状态",
+                        "bSortable": false,
+                        "sName": "Count",
+                        "mData": function (data) {
+                            return data.Status;
+                        },
+                    },
+                    {
+                        "sTitle": "是否禁用",
+                        "bSortable": false,
+                        "sName": "Count",
+                        "mData": function (data) {
+                            return (!data.IsEnabled)?"是":"否";
+                        },
+                    },
+                    {
+                        "sTitle": "创建时间",
+                        "bSortable": false,
+                        "sName": "UpdatedTime",
+                        "mData": function (data) {
+                            return $.whiskey.tools.dateFormat(data.CreatedTime);
+                        }
+                    },
+                    {
+                        "sTitle": "更新时间",
+                        "bSortable": false,
+                        "sName": "UpdatedTime",
+                        "mData": function (data) {
+                            return $.whiskey.tools.dateFormat(data.UpdatedTime);
+                        }
+                    },
+
+                ]
+
+            });
+
+        });
+    })
+</script>

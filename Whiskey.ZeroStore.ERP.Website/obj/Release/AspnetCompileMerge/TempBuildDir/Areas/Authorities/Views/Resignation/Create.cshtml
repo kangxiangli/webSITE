@@ -1,0 +1,227 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model ResignationDto
+
+<div class="createDiv">
+    <div class="form-group">
+        <label class="control-label col-md-2">
+            离职人手机 :
+        </label>
+        <div class="col-md-8">
+            <div class="input-group">
+                @Html.TextBox("MobilePhone", "", new { @class = "form-control" })
+                @Html.HiddenFor(x => x.ResignationId, new { @class = "adminId" })
+                <span class="btn sel-btn input-group-addon" style="z-index: 1000">确认</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">
+            部门 :
+        </label>
+        <div class="col-md-7">
+            @Html.TextBox("DepartmentName", "", new { @class = "start-date input-sm form-control", @readonly = "readonly" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">
+            离职人 :
+        </label>
+        <div class="col-md-7">
+            @Html.TextBox("RealName", "", new { @class = "start-date input-sm form-control", @readonly = "readonly" })
+            <input type="hidden" id="ResignationId" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">
+            交接情况  :
+        </label>
+        <div class="col-md-8">
+            <label style="margin-left:20px">
+                <input type="checkbox" id="documentation" />@Html.DisplayNameFor(m => m.Documentation)
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">
+            交接人部门:
+        </label>
+        <div class="col-md-8">
+            <div class="col-md-6">
+                @Html.DropDownList("HandoverManDepartmentId", (List<SelectListItem>)ViewBag.depList, new { @class = "form-control ser_sel cur_selectpicker", data_live_search="true" })
+            </div>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">
+            交接人 :
+        </label>
+        
+        <div class="col-md-8"> 
+            <div class="col-md-6">
+                <select id="HandoverManId" class="form-control  cur_selectpicker selectpicker_people"></select>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">
+            @Html.DisplayNameFor(m => m.ResignationDate) :
+        </label>
+        <div class="col-md-8">
+            @Html.TextBoxFor(x => x.ResignationDate, new { @class = "form-control datetime", @placeholder = "离职时间" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">
+            @Html.DisplayNameFor(m => m.ResignationReason) :
+        </label>
+        <div class="col-md-8">
+            @Html.TextAreaFor(m => m.ResignationReason, new { @class = "form-control", })
+        </div>
+    </div>
+</div>
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+    //获取当前时期并赋值给日期控件
+    var myDate = new Date();
+    var date = myDate.toLocaleDateString();
+    //$(".datetime").attr("value", date);
+    //初始化日期控件
+    $(".createDiv #ResignationDate").datetimepicker({
+        // startDate: date,
+        format: 'yyyy/mm/dd',
+        autoclose: false,
+        minView: 'month',
+        todayBtn: true,
+        //forceParse:false
+    });
+
+    $(function () {
+        $(".createDiv #HandoverManDepartmentId").change(function () {
+            GetUser();
+        });
+        GetUser();
+        $(".sel-btn").click(function () {
+            if ($(".createDiv #MobilePhone").val() != "") {
+                GetMemberInfoByMobilePhone();
+            }
+        });
+    });
+
+    function GetUser() {
+        var optionHtml = "<option value=''>请选择</option>";
+        if ($(".createDiv #HandoverManDepartmentId").val() != "") {
+            $.post("/Authorities/Resignation/GetUserList", { departmentId: $(".createDiv #HandoverManDepartmentId").val() }, function (msg) {
+                var data = eval(msg);
+                $(data).each(function () {
+                    var admin_Id = this.Id;
+                    if (admin_Id.toString() != $(".createDiv #ResignationId ").val()) {
+                        optionHtml += "<option value='" + this.Id + "'>" + this.RealName + "</option>";
+                    }
+                });
+                $(".createDiv #HandoverManId").html(optionHtml);
+                $('.selectpicker_people').selectpicker();
+                $('.selectpicker_people').selectpicker('refresh');
+            });
+        } else {
+            $(".createDiv #HandoverManId").html(optionHtml);
+        }
+    }
+
+    function GetMemberInfoByMobilePhone() {
+        $.post("/Authorities/Resignation/GetMemberInfoByMobilePhone", { MobilePhone: $(".createDiv #MobilePhone").val() }, function (da) {
+            if (da.type == 1) {
+                $(".createDiv #RealName").val(da.RealName);
+                $(".createDiv #ResignationId").val(da.Id);
+                $(".createDiv #DepartmentName").val(da.DepartmentName);
+            }
+            else {
+                $.whiskey.web.alert({
+                    type: "error",
+                    content: da.errorMsg,
+                    callback: function () {
+
+                    }
+                });
+            }
+        });
+    }
+
+    function dataValiPost() {
+        var errcou = 0;
+        var da = [];
+        var ResignationId = $(".createDiv #ResignationId ").val();
+        var name = $(".createDiv #RealName ").val();
+        if (name.trim().length == 0) {
+
+            $(".createDiv #MobilePhone").css({ "border": "2px solid  #e5603b" }).attr("title", "请选择离职人员");
+            errcou += 1;
+        }
+        else {
+            $(".createDiv #MobilePhone").css({ "border": "" });
+            da.push({ "ResignationId": ResignationId });
+        }
+
+        if ($(".createDiv  #documentation").is(':checked')) {
+            $(".createDiv #documentation").css({ "border": "" });
+            da.push({ "Documentation": true });
+        } else {
+            $(".createDiv #documentation").css({ "border": "2px solid  #e5603b" }).attr("title", "请勾选确认交接文档资料");
+            da.push({ "Documentation": false });
+        }
+
+        var HandoverManDepartment = $(".createDiv #HandoverManDepartmentId").val();
+        if (HandoverManDepartment == "") {
+            $(".createDiv #HandoverManDepartmentId").css({ "border": "2px solid  #e5603b" }).attr("title", "请选择交接人部门");
+            errcou += 1;
+        }
+        else {
+            $(".createDiv #HandoverManDepartmentId").css({ "border": "" });
+            da.push({ "DepartmentId": HandoverManDepartment });
+        }
+        var HandoverManId = $(".createDiv #HandoverManId").val();
+        if (HandoverManId == "") {
+            $(".createDiv #HandoverManId").css({ "border": "2px solid  #e5603b" }).attr("title", "请选择交接人");
+            errcou += 1;
+        }
+        else {
+            $(".createDiv #HandoverManId").css({ "border": "" });
+            da.push({ "HandoverManId": HandoverManId });
+        }
+
+        var ResignationDate = $(".createDiv #ResignationDate").val();
+        if (ResignationDate == "") {
+            $(".createDiv #ResignationDate").css({ "border": "2px solid  #e5603b" }).attr("title", "请选择离职日期");
+            errcou += 1;
+        }
+        else {
+            $(".createDiv #ResignationDate").css({ "border": "" });
+            da.push({ "ResignationDate": ResignationDate });
+        }
+        var ResignationReason = $(".createDiv #ResignationReason").val();
+        if (ResignationReason == "") {
+            $(".createDiv #ResignationReason").css({ "border": "2px solid  #e5603b" }).attr("title", "请填写离职原因");
+            errcou += 1;
+        }
+        else {
+            $(".createDiv #ResignationReason").css({ "border": "" });
+            da.push({ "ResignationReason": ResignationReason });
+        }
+        if (errcou == 0) {
+            return { error: 0, data: da };
+        }
+        else {
+
+            return { error: 1 }
+        }
+    }
+</script>
+<script>
+    // cur_selectpicker 初始化
+    $(function () {
+        $('.cur_selectpicker').selectpicker();
+    })
+</script>

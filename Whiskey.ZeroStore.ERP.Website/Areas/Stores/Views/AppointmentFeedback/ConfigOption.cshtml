@@ -1,0 +1,120 @@
+﻿<div id="appointment-feedback-option">
+
+    <div class="row">
+
+        <div class="panel_content">
+            <ul class="list-group">
+                <template v-for="(item,index) in items">
+                    <!--多选题-->
+                    <li class="list-group-item">
+                        ({{index+1}})
+
+
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                <label>标题:</label>
+                            </div>
+                            <div class="col-md-4">
+                                <textarea class="form-control" style="height:80px;" v-model.trim="item.Title"></textarea>
+                            </div>
+                            <div class="btn-group btn-group-sm col-md-5">
+                                <button type="button" class="btn btn-padding-right btn-danger" v-on:click="items.splice(index,1)">移除</button>
+
+                                <button type="button" class="btn btn-padding-right btn-success" v-on:click="addOption(item)">增加选项</button>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                <label>允许多选:</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="checkbox" v-bind:checked="item.Multiple" />
+                            </div>
+                        </div>
+
+
+                        <ul class="list-group">
+                            <template v-for="(option,subindex) in item.Options">
+                                <li>
+
+                                    <div class="form-group">
+                                        <div class="col-md-2">{{option.Value}}:</div>
+                                        <div class="col-md-4">
+                                            <input v-model.trim="option.Title" class="form-control" />
+                                        </div>
+
+                                        <div class="col-md-2" style="display: flex;">
+                                            <button type="button" class="btn btn-padding-right btn-danger" v-on:click="item.Options.splice(subindex,1)">移除</button>
+                                        </div>
+                                    </div>
+
+                                </li>
+                            </template>
+                        </ul>
+
+                    </li>
+                </template>
+            </ul>
+            <a href="javascript:;" class="btn btn-padding-right btn-block btn-success" v-on:click.prevent="addItem">新增选择项</a>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var appointmentFeecbackOptionVM = new Vue({
+        el: "#appointment-feedback-option",
+        data: {
+            items: []
+        },
+        mounted: function () {
+            var _self = this;
+            $.getJSON('/Stores/AppointmentFeedback/GetOptions')
+                .done(function (res) {
+                    if (res.ResultType === 3) {
+                        _self.items = res.Data;
+                    }
+                })
+
+        },
+
+        methods: {
+            addOption(item) {
+                let maxId = 0
+                
+                if (item.Options.length) {
+                    maxId = parseInt(item.Options[item.Options.length - 1].Value)
+                    if (isNaN(maxId)) {
+                        maxId = 0
+                    }
+                }
+
+                item.Options.push({
+                    Value: maxId + 1,
+                    Title: ''
+                })
+            },
+            addItem() {
+                let maxId = 0;
+                if (this.items.length) {
+                    maxId = parseInt(this.items[this.items.length - 1].Id);
+                    if (isNaN(maxId)) { maxId = 0 }
+                }
+                this.items.push({
+                    Id: maxId + 1,
+                    Title: "",
+                    Multiple: true,
+                    Options: [],
+                    Remarks: ""
+                })
+            }
+            , closeDialog() {
+                $(this.$el).parents(".modal-dialog").find("button.bootbox-close-button").trigger('click');
+            }
+
+        }
+    })
+
+</script>

@@ -1,0 +1,13 @@
+﻿@{
+    string themePath = ViewBag.themePath ?? string.Empty;
+}
+@{
+    if (ViewBag.themeExist ?? false)
+    {
+        Html.RenderPartial(Path.Combine(themePath, "_Head.cshtml"), ViewBag as object);
+    }
+    else
+    {
+        @Styles.Render("~/bundles/styles_basic")
+    }
+}

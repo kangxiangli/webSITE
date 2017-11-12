@@ -1,0 +1,56 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model MemberFavouriteDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.MemberId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.MemberId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ProductId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ProductId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.TagPrice) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.TagPrice, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.RetailPrice) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.RetailPrice, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.WholesalePrice) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.WholesalePrice, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PurchasePrice) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PurchasePrice, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m=> m.Id)

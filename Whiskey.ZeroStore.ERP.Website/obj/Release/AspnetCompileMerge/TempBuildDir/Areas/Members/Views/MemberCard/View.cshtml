@@ -1,0 +1,120 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model MemberCard
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.CardName) :
+    </label>
+    <div class="col-md-10">
+		@Model.CardName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.CardNumber) :
+    </label>
+    <div class="col-md-10">
+		@Model.CardNumber
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.CardKey) :
+    </label>
+    <div class="col-md-10">
+		@Model.CardKey
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-10">
+		@Model.Description
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Balance) :
+    </label>
+    <div class="col-md-10">
+		@Model.Balance
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.StartTime) :
+    </label>
+    <div class="col-md-10">
+		@Model.StartTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.EndTime) :
+    </label>
+    <div class="col-md-10">
+		@Model.EndTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.IsUsed) :
+    </label>
+    <div class="col-md-10">
+		@Model.IsUsed
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Notes) :
+    </label>
+    <div class="col-md-10">
+		@Model.Notes
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+		@Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+		@Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+		@Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+		@Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		操作人员 :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

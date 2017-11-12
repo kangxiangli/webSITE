@@ -1,0 +1,40 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model SubjectAttributeDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ParentId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ParentId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.AttributeName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.AttributeName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Description, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.AttributeLevel) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.AttributeLevel, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m=> m.Id)

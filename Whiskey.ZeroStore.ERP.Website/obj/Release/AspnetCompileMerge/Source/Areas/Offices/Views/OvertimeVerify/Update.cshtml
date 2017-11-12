@@ -1,0 +1,69 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+@model OvertimeDto
+
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.OvertimeReason) :
+    </label>
+    <div class="col-md-10">
+        <label class="control-label">
+            @Model.OvertimeReason
+        </label>        
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        加班时间 :
+    </label>
+    <div class="col-md-8">        
+        <div class="input-group control-label">
+            @Model.StartTime
+            <span style="color: #5ebd5e">至</span>
+            @Model.EndTime
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        加班天数 :
+    </label>
+    <div class="col-md-2">
+        <label class="control-label">
+            @Model.OvertimeDays 天
+        </label>        
+    </div>
+</div> 
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.VerifyType) :
+    </label>
+    <div class="col-md-10">
+        <select class="form-control selectpicker" id="VerifyType" name="VerifyType">            
+            <option value="@((int)VerifyFlag.Pass)">审核通过</option>
+            <option value="@((int)VerifyFlag.NoPass)">审核不通过</option>
+        </select>
+    </div>
+</div>
+@Html.HiddenFor(x=>x.Id)
+@Html.HiddenFor(x => x.AdminId)
+<script type="text/javascript">
+    $(function () {
+        var type = "@Model.VerifyType";
+        $("#VerifyType option").each(function () {
+            var value = $(this).val();
+            if (value ==type) {
+                $(this).attr("selected", "selected");
+            }
+        })
+    });
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+$('.selectpicker').selectpicker('refresh');
+    })
+</script>

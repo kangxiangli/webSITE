@@ -1,0 +1,175 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Member
+
+@model Administrator
+
+<div id="myTabContent" class="">
+    <div id="baseinfo_tab">
+        <div class="creat_div" style="margin-top:20px;margin-left:-50px">
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.DepartmentId) :
+                </label>
+                <div class="col-md-4">
+                    @Html.DropDownListFor(m => m.DepartmentId, (List<SelectListItem>)ViewBag.Departments, new { @class = "form-control selectpicker", data_live_search="true" })
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    搭配师编号 :
+                </label>
+                <div class="col-md-4  no-margin-hr">
+                    <div class="input-group">
+                        @Html.HiddenFor(f=>f.MemberId)
+                        @Html.TextBox("Member.UniquelyIdentifies", "", new { @class = "input-sm form-control", @placeholder = "", @readonly = "readonly", @style = "background-color:#dddddd" })
+                        <span class="btn sel-btn input-group-addon" style="z-index:2">选择</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Member.MemberName) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Member.MemberName, new { @class = "form-control", @readonly = "readonly", @style = "background-color:#dddddd" })
+                </div>
+                <div class="control-detail col-md-3">
+                    @Html.ValidationMessageFor(m => m.Member.MemberName)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Member.Email) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Member.Email, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Member.MobilePhone) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Member.MobilePhone, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Member.RealName) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Member.RealName, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    别名 :
+                </label>
+                <div class="col-md-4">
+                    <input name="CollocationName" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Member.Gender) :
+                </label>
+                <div class="col-md-4">
+                    <select name="Member.Gender" class="form-control selectpicker" disabled>
+                        <option value="@((int)GenderFlag.Male)">男</option>
+                        <option value="@((int)GenderFlag.Female)">女</option>
+                    </select>
+
+                </div>
+                <div class="control-detail col-md-3">
+                    @Html.ValidationMessageFor(m => m.Member.Gender)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Notes) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+                </div>
+                <div class="control-detail col-md-3">
+                    @Html.ValidationMessageFor(m => m.Notes)
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    debugger
+    $(function () {
+        $("button[data-bb-handler='success']").attr("disabled", "disabled");
+
+        $(".sel-btn").click(function () {
+            $(".creat_div").parents(".modal-content:first").hide();
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "会员列表",
+                actionUrl: "@Url.Action("MembList")",
+                lockButton: $(this),
+                diacl: "dia",
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                successEvent: function () {
+                    var mid = $("input[type='radio']:checked").val();
+                    $.post("@Url.Action("GetInfoById")", { Id: mid }, function (dat) {
+                        $(".creat_div").parents(".modal-content:first").show();
+                        if (dat != "") {
+                            var da = dat.Data;
+                            $(".creat_div #Member_UniquelyIdentifies").val("").val(da.MembNum)
+                            $(".creat_div #Member_MemberName").val("").val(da.MemberName);
+                            $(".creat_div #Member_Email").val("").val(da.Email);
+                            $(".creat_div #Member_MobilePhone").val("").val(da.MobilePhone);
+                            $(".creat_div #Member_RealName").val("").val(da.RealName);
+                            $(".creat_div #MemberId").val("").val(da.Id);
+                            var gend = da.Gender;
+                            $(".creat_div select[name='Member.Gender'] option").each(function () {
+                                if ($(this).val() == gend)
+                                    $(this).attr("selected", "selected");
+                            });
+                            if (dat.ResultType != 3) {
+                                $(".creat_div #Member_MemberName").parents("div:first").addClass("has-error").attr("title", "该搭配师已存在");
+
+                            } else {
+                                $(".creat_div #Member_MemberName").parents("div:first").removeClass("has-error").removeAttr("title");
+                                $("button[data-bb-handler='success']").removeAttr("disabled");
+                            }
+
+                        }
+
+                    });
+                },
+                closeEvent: function () {
+                    $(".creat_div").parents(".modal-content:first").show();
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(false);
+                    return true;
+                },
+            });
+        });
+    })
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

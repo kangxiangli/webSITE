@@ -1,0 +1,96 @@
+﻿<div class="view par_view">
+    <ul id="_tab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#baseinfo-tab" data-toggle="tab">
+                基本信息
+            </a>
+        </li>
+        @*<li><a href="#defaright_tab" data-toggle="tab">默认权限</a></li>*@
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="baseinfo-tab">
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    组名称 :
+                </label>
+                <div class="col-md-7">
+                    @Html.TextBox("GroupName", "", new { @class = "form-control", placeholder = "请输入中文、字母或数字" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    组描述 :
+                </label>
+                <div class="col-md-7">
+                    <textarea name="Description" class="form-control" placeholder="请输入必要的描述信息" id="Description"></textarea>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    是否启用 :
+                </label>
+
+                <div class="col-md-7" style="margin-top:5px">
+                    <label><input type="radio" value="1" name="IsEnabled" checked="checked" />是</label>
+                    <label><input style="margin-left:5px" name="IsEnabled" value="0" type="radio" />否</label>
+                </div>
+            </div>
+
+        </div>
+        @*<div class="tab-pane fade" id="defaright_tab">
+            @{
+                Html.RenderAction("PermissCell", "Permission");
+            }
+        </div>*@
+    </div>
+</div>
+<style>
+    .modal-dialog {
+        width: 670px;
+    }
+    /*#defaright_tab ul li {
+    float:left;
+    }*/
+</style>
+<script>
+    //debugger
+    $(function () {
+        $("[data-bb-handler='success']").attr("disabled", "disabled");
+
+        $(".par_view #GroupName").keyup(function () {
+            var t = $(this).val().trim().replace(/[^\u4e00-\u9fa5\da-z]/gi, "");
+
+            $(this).val(t);
+            if (t != "") {
+                $("[data-bb-handler='success']").removeAttr("disabled");
+                $(this).parents("div:first").removeClass("has-error");
+            }
+            else {
+                $(this).parents("div:first").addClass("has-error");
+                $(this).attr("title", "部门名称不为空");
+                $("[data-bb-handler='success']").attr("disabled", "disabled");
+            }
+        }).change(function () {
+            var tx = $(this).val().trim();
+            var send = this;
+            if (tx.length > 0) {
+                $.post("/Authorities/Group/Exist", { gName: tx }, function (da) {
+                    if (da.ResultType == 3) {
+                        if (da.Data == "1") {
+                            $("[data-bb-handler='success']").attr("disabled", "disabled");
+                            $(send).parents("div:first").addClass("has-error").attr("title", da.Message);
+                        }
+                        else {
+                            $("[data-bb-handler='success']").removeAttr("disabled");
+                            $(send).parents("div:first").removeClass("has-error").removeAttr("title");
+                        }
+                    }
+                    
+                })
+            }
+        });
+
+    })
+</script>

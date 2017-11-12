@@ -1,0 +1,179 @@
+
+@using Whiskey.ZeroStore.ERP.Models
+@model Game
+
+<style>
+
+</style>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#rule" data-toggle="tab">游戏规则</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Name) :
+            </label>
+            <div class="col-md-10">
+                @Model.Name
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Tag) :
+            </label>
+            <div class="col-md-10">
+                @Model.Tag
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.LimitCount) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.LimitCount > 0 ? Model.LimitCount + "" : "无限制")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.LimitDayCount) :
+            </label>
+            <div class="col-md-10">
+                @Model.LimitDayCount
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.LimitShareCount) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.LimitShareCount > 0 ? Model.LimitShareCount + "" : "无限制")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.LimitShareDayCount) :
+            </label>
+            <div class="col-md-10">
+                @Model.LimitShareDayCount
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.StartTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.StartTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.EndTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.EndTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Introduce) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(f => f.Introduce, new { @readonly = "", @rows = "8", @cols = "65" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(f => f.Notes, new { @readonly = "", @rows = "3", @cols = "65" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.UpdatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.UpdatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CreatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.CreatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsEnabled) :
+            </label>
+            <div class="col-md-10">
+                @UiHelper.showEnabled(Model.IsEnabled)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsDeleted) :
+            </label>
+            <div class="col-md-10">
+                @UiHelper.showDeleted(Model.IsDeleted)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.OperatorId) :
+            </label>
+            <div class="col-md-10">
+                @UiHelper.showOperator(Model.Operator)
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade clearfix" id="rule">
+        <div class="div_allrule">
+            @if (Model.GameRules != null)
+            {
+                foreach (var item in Model.GameRules.OrderByDescending(g => g.GIndex))
+                {
+                    <div class="form-group div-rule">
+                        <label class="control-label col-md-1">
+                            序号 :
+                        </label>
+                        <div class="col-md-2">
+                            <input type="text" value="@item.GIndex" class="form-control" readonly check-number check-int min-value="0" dis-drop dis-paste />
+                        </div>
+                        <label class="control-label col-md-1">
+                            送积分 :
+                        </label>
+                        <div class="col-md-2">
+                            <input type="text" value="@item.Score" class="form-control" readonly check-number check-int min-value="0" dis-drop dis-paste />
+                        </div>
+                        <label class="control-label col-md-1">
+                            概率 :
+                        </label>
+                        <div class="col-md-2 input-group">
+                            <input type="text" value="@item.Rate" class="form-control" readonly check-number check-float="2" min-value="0" max-value="1" dis-drop dis-paste />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </div>
+                    <hr />
+                }
+            }
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+
+
+    });
+</script>
+

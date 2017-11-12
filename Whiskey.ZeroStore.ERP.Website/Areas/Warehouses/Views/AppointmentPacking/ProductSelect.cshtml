@@ -1,0 +1,136 @@
+﻿<div id="appointment-packing-product-select">
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>选择</th>
+                        <th>编号</th>
+                        <th>商品货号</th>
+                        <th>商品流水号</th>
+                        <th>图片</th>
+                        <th>品类</th>
+                        <th>颜色</th>
+                        <th>尺码</th>
+                        <th>季节</th>
+                        <th>品牌</th>
+                        <th>吊牌价</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td><input type="checkbox" v-model="checkedCodes" v-bind:value="item.ProductBarcode" /></td>
+                        <td>{{index+1}}</td>
+                        <td>{{item.ProductNumber}}</td>
+                        <td>{{item.ProductBarcode}}</td>
+                        <td>
+                            <img-suspension v-bind:path="item.ProductCollocationImg"></img-suspension>
+                        </td>
+                        <td>{{item.CategoryName}}</td>
+                        <td>{{item.ColorName}}</td>
+                        <td>{{item.SizeName}}</td>
+                        <td>{{item.SeasonName}}</td>
+                        <td>{{item.BrandName}}</td>
+                        <td>{{item.TagPrice}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+            <p>已选择:{{checkedCodes.length}}</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    var appointmentPackingProductSelectVM = new Vue({
+        el: "#appointment-packing-product-select",
+        data: {
+            checkedCodes:[],
+            productNumbers:'@ViewBag.ProductNumbers',
+            isDeleted: false,
+            isEnabled: true,
+            pageDatas: [], //分页数据
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            }
+        },
+        mounted: function () {
+            this.search();
+        },
+        methods: {
+            closeDialog() {
+                $(this.$el).parents(".modal-dialog").find("button.bootbox-close-button").trigger('click');
+            },
+            search: function (filter) {
+
+                var _self = this;
+
+                var searchData = {
+
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+                    productNumbers: this.productNumbers
+                }
+
+                var name = '', val = '';
+                $(this.$el).find("input[name],select[name]").each(function (index, elem) {
+                    name = elem.getAttribute("name")
+                    val = elem.value;
+                    if (val) {
+                        searchData[name] = val;
+                    }
+                })
+
+
+                if (filter) {
+                    searchData = _.extend(searchData, filter)
+                }
+
+                $.getJSON('@Url.Action("ProductList")', searchData).done(function (res) {
+
+                    if (res.ResultType !== 3) {
+                        //console
+                        return;
+                    }
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+                })
+            },
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            }
+
+        }
+
+    })
+</script>

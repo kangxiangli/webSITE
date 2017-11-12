@@ -1,0 +1,133 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Coupon
+
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+<link rel="stylesheet" href="/content/editor/themes/default/default.css" />
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<style>
+    .li_empt {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+</style>
+
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #e5603b"></span>
+</div>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#addImage" data-toggle="tab">上传图片</a>
+    </li>
+    <li class="">
+        <a href="#QRCode" data-toggle="tab">二维码</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.CouponName) :
+            </label>
+            <div class="col-md-8">
+                @Model.CouponName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsForever) :
+            </label>
+            <div class="col-md-8">
+                @Html.Raw(Model.IsForever == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsRecommend) :
+            </label>
+            <div class="col-md-1">
+                @Html.Raw(Model.IsRecommend == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.CouponPrice) :
+            </label>
+            <div class="col-md-8">
+                @Model.CouponPrice
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Quantity) :
+            </label>
+            <div class="col-md-8">
+                @Model.Quantity
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                有效时间 :
+            </label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBoxFor(x => x.StartDate, new { @class = "form-control datetime", @placeholder = "开始时间", @readonly = "readonly" })
+                    <span class="input-group-addon">至</span>
+                    @Html.TextBoxFor(x => x.EndDate, new { @class = "form-control datetime", @placeholder = "结束时间", @readonly = "readonly" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group showSection">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-8">
+                @Model.Notes
+            </div>
+        </div>
+    </div>
+
+    @*<div id="addImage" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                图片:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="@Model.CouponImagePath" alt="图片" id="CouponImagePath" />
+                    </a>
+                </div>
+             </div>
+         </div>
+    </div>*@
+
+    <div id="QRCode" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                二维码:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <div id="qrcodeimg" style="width:150px;height:150px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(function () {
+        $("#qrcodeimg").qrcode({
+            render: "canvas",
+            width: 150,
+            height: 150,
+            typeNumber: -1,
+            background: "#ffffff",
+            foreground: "#000000",
+            text: "@UiHelper.WebUrl()" + "/Coupon/Get/?num=" + "@Model.CouponNum"
+        });
+    });
+</script>

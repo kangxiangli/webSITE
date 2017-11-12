@@ -1,0 +1,179 @@
+﻿<style>
+    .modal-dialog {
+        width: 60% !important;
+    }
+</style>
+<div>
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#valid_tab" data-toggle="tab">
+                有效验证列表
+            </a>
+        </li>
+        <li><a href="#invalid_tab" data-toggle="tab">无效验证列表</a></li>
+        <button class="btn export_dat_excel">导出数据到excel文件</button>
+    </ul>
+  
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="valid_tab">
+            <table id="nwe_table_1" class="table table-striped table-condensed table-list table-hover valign-middle" width="100%">
+                <thead>
+                </thead>
+                <tbody><tr><td>数据加载中……</td></tr></tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="invalid_tab">
+            <table id="nwe_table_2" class="table table-striped table-condensed table-list table-hover valign-middle" width="100%">
+                <thead>
+                </thead>
+                <tbody><tr><td>数据加载中……</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+    <input value="@ViewBag.actid" id="hid_actid" type="hidden" />
+</div>
+
+<script>
+    debugger
+    var datatable_install;
+    $(document).ready(function () {
+        var actind = $("#hid_actid").val();
+        if (actind == "0")
+            $("a[href='#valid_tab']").click();
+        else {
+            $("a[href='#invalid_tab']").click();
+        }
+
+
+        var dts = $("#nwe_table_1").dataTable({
+            "sDom": 't<"F clearfix datatable-footer"<"col-md-2"i><"col-md-3 text-left"l><"col-md-7 text-right"p>>',
+            "sAjaxSource": "/Products/Product/GetValidDa",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) { },
+            "aoColumns": [{
+                "sTitle": "序号",
+                "sName": "Id",
+                "bSortable": false,
+                "mData": "Id"
+            },
+
+              {
+                  "sTitle": "条码编号",
+                  "bSortable": false,
+                  "sName": "ProductNumber",
+                  "mData": function (data) {
+                      return data.bcoe;
+                  },
+              }
+           ,
+            {
+                "sTitle": "备注",
+                "bSortable": false,
+                "sName": "Notes",
+                "mData": "Notes"
+            }
+            ]
+
+        });
+
+        var dts1 = $("#nwe_table_2").dataTable({
+            "sDom": 't<"F clearfix datatable-footer"<"col-md-2"i><"col-md-3 text-left"l><"col-md-7 text-right"p>>',
+            "sAjaxSource": "/Products/Product/GetInvalidDa",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) { },
+            "aoColumns": [
+                {
+                    "sTitle": "序号",
+                    "sName": "Id",
+                    "bSortable": false,
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": "条码编号",
+                    "bSortable": false,
+                    "sName": "Num",
+                    "mData": "Num"
+
+                },
+           {
+               "sTitle": "标识符",
+               "bSortable": false,
+               "sName": "Gui",
+               "mData": "Gui"
+
+           },
+            {
+                "sTitle": "备注",
+                "bSortable": false,
+                "sName": "Note",
+                "mData": "Note"
+
+            }
+            ]
+
+        });
+        $(".export_dat_excel").click(function () {
+            $("this").attr("disabled", "disabled").val("导出中……");
+            var time = new Date();
+            $(".export_dat_excel").parents("form").attr("action", "");
+            //$.dynamicSubmit("/Warehouses/Transfer/ExceptionDataExportToExcel", "");
+            //location.href = "/Warehouses/Transfer/ExceptionDataExportToExcel";
+            window.open("/Warehouses/Transfer/ExceptionDataExportToExcel?startdate=" + time, "_self", null);
+
+           // window.open('/Warehouses/Transfer/ExceptionDataExportToExcel', '', 'height=500,width=611,scrollbars=yes,status =yes');
+            //$.dynamicSubmit("/Warehouses/Transfer/ExceptionDataExportToExcel");
+            return false;
+        });
+    });
+
+    $.dynamicSubmit = function (url, datas) {
+
+        var form = $('#dynamicForm');
+
+        if (form.length <= 0) {
+            form = $("<form>");
+            form.attr('id', 'dynamicForm');
+            form.attr('style', 'display:none');
+            form.attr('target', '');
+            form.attr('method', 'post');
+
+            $('body').append(form);
+        }
+
+        form = $('#dynamicForm');
+        form.attr('action', url);
+        form.empty();
+
+        if (datas && typeof (datas) == 'object') {
+            for (var item in datas) {
+                var $_input = $('<input>');
+                $_input.attr('type', 'hidden');
+                $_input.attr('name', item);
+                $_input.val(datas[item]);
+
+                $_input.appendTo(form);
+            }
+        }
+
+        form.submit();
+    }
+
+
+
+
+
+    function validAddRow(da) {
+        if (da != undefined && da != null && da != "") {
+
+            var str = "<tr><td >" + da.Id + "</td><td style='width:20%'>" + da.Num + "</td><td style='width:20%'>" + da.bcoe + "</td><td style='width:15%'>" + da.Bran + "</td><td style='width:10%'>" + da.Seas + "</td><td style='width:15%'>" + da.Col + "</td><td style='width:15%'>" + da.Siz + "</td><td style='width:15%'>" + da.Amo + "</td></tr>";
+            return str;
+
+        }
+
+    }
+    function invalidAddRow(da) {
+        if (da != undefined && da != null && da != "") {
+            var str = "<tr><td>" + da.Num + "</td><td>" + da.Gui + "</td><td>" + da.Note + "</td></tr>";
+            return str;
+        }
+
+    }
+</script>

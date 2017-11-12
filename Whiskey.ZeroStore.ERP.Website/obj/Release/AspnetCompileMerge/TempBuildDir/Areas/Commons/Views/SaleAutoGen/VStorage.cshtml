@@ -1,0 +1,273 @@
+﻿<style>
+    .modal-content {
+        width: 1055px !important;
+    }
+
+    #hoverStyle_8 span:hover {
+        width: 62px;
+        border-radius: 0%;
+        background: black !important;
+    }
+
+    #hoverStyle_8 {
+        width: 62px;
+        border-radius: 0% !important;
+    }
+
+        #hoverStyle_8 > i {
+            display: block;
+            width: 0px;
+            height: 0px;
+        }
+
+        #hoverStyle_8 span {
+            width: 62px;
+            display: inline-block;
+            height: 28px;
+            line-height: 25px;
+        }
+
+   #hoverStyle_8.btn-default {
+            background: #666;
+        }
+
+        #hoverStyle_8.btn-success {
+            background: #5ebd5e;
+        }
+    #dt_product_paginate{
+        width:104%;
+    }
+</style>
+<div id="v_product_div">
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search text-left">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">店铺</label>
+                            <div class="col-md-9">
+                                <select class="form-control _select_input" id="StoreId" name="StoreId"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">仓库名称：</label>
+                            <div class="col-md-9">
+                                @Html.TextBox("StorageName", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">仓库类型：</label>
+                            <div class="col-md-9">
+                                <select class="form-control _select_input selectpicker" id="StorageType" name="StorageType">
+                                    <option value="">请选择</option>
+                                    <option value="0">线上</option>
+                                    <option value="1">线下</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+                <div class="pull-left">
+                    <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>清除</span></button>
+                </div>
+                <div class="pull-right">
+                    <button id="SelectAll" title="选择本页所有项" type="button" class="btn btn-success btn-padding-right"><i class=""></i> <span>选择本页</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%" id="dt_product">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#v_product_div .form-search #StoreId").queryManageStore({
+            defaultSelect: false,
+        });
+
+        var _div_dt = $("#v_product_div #dt_product").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "StorageList",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                $("#v_product_div .form-search input[name][name!='StartDate'][name!='EndDate'],.form-search select").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0 && value != "-1") {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, $(this).hasClass("_select_input") ? "equal" : "contains"));
+                    }
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+            {
+                "sTitle": "仓库名称",
+                "bSortable": false,
+                "sName": "StorageName",
+                "mData": function (data) {
+                    return data.StorageName;
+                },
+            },
+            {
+                "sTitle": "仓库类型",
+                "bSortable": false,
+                "sName": "TagPrice",
+                "mData": function (data) {
+                    return data.StorageType == 0 ? "线上" : "线下";
+                },
+            },
+            {
+                "sTitle": "盘点锁定",
+                "bSortable": false,
+                "sName": "CheckLock",
+                "mData": function (data) {
+                    return $.whiskey.datatable.lblColor(data.CheckLock ? "是" : "否", data.CheckLock ? "danger" : "default");
+                },
+            },
+            {
+                "sTitle": "所属店铺",
+                "bSortable": false,
+                "sName": "StoreName",
+                "mData": function (data) {
+                    return data.StoreName;
+                },
+            },
+            {
+                "sTitle": "仓库地址",
+                "bSortable": false,
+                "sName": "StorageAddress",
+                "mData": function (data) {
+                    return data.StorageAddress;
+                },
+            },
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    if (data.CheckLock) {
+                        return "被锁定";
+                    }
+                    var txt = "选择";
+                    var color = "default";
+                    if ($("#ReceiveStorageIds option[value=" + data.Id + "]").length > 0) {
+                        color = "success ";
+                        txt = "已选择";
+                    }
+                    return '<button id="hoverStyle_8" type="button" onclick="choose(this)" class="btn btn-' + color + ' btn_select" data-name="' + data.StorageName + '" data-Id="' + data.Id + '" data-StoreId="' + data.StoreId + '" data-StoreName="' + data.StoreName + '"><span>' + txt + '</span></button>';
+                },
+            },
+            ]
+        });
+
+        $("#v_product_div #Search").on("click", function () {
+            $.whiskey.datatable.reset(false, _div_dt);
+        });
+
+        $("#v_product_div #Clear").on("click", function () {
+            $.whiskey.web.clearForm("#v_product_div .panel-search");
+        });
+
+        $("#v_product_div #SelectAll").on("click", function () {
+            $("#v_product_div #dt_product .btn_select:not(.btn-success)").click();
+        });
+    });
+
+    function choose(my) {
+        var name = $(my).attr("data-name");
+        var columnValue = $(my).attr("data-Id");
+        var storeid = $(my).attr("data-StoreId");
+        var storename = $(my).attr("data-StoreName");
+        var $sel = $("#ReceiveStorageIds");
+        if ($sel.find("option[value='" + columnValue + "']").length > 0) {
+            $sel.find("option[value='" + columnValue + "']").remove();
+            $(my).text("选择").removeClass("btn-success").addClass("btn-default");
+        } else {
+            $(my).text("已选择").removeClass("btn-default").addClass("btn-success");
+            var option = '<option value="' + columnValue + '" selected="selected" data-storeid="' + storeid + '" data-storename="' + storename + '">' + name + '</option>';
+            $sel.append(option);
+        }
+        $('.selectpicker').selectpicker('refresh');
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>
+<script>
+    $(document).on("mouseover", ".popimg", function () {
+        var imgsrc = $(this).attr("src");
+        if (imgsrc == "/Content/Images/noimage.png" || imgsrc == "") {
+
+            return;
+        }
+        if (this.tagName == "IMG") {
+            var strImg = "<img src=" + this.src + " style='width:200px;'>";
+
+            toolTip(strImg);
+            //  console.log(this.src);
+        } else {
+            $(this).find("img").each(function () {
+                var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                toolTip(strImg);
+            });
+        }
+    }).on("mouseout", function () {
+        $("body").find("#toolTipLayer").hide();
+    });
+
+</script>

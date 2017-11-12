@@ -1,0 +1,184 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.Utility.Data
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+        上班时间  :
+    </label>
+    <div class="col-md-3" id="showStartTime">
+    </div>
+    <button id="startTime" title="签到" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>签到</span></button>
+</div>
+<div class="form-group" id="qiandao_div" style="display:none">
+    <label class="control-label col-md-4">
+        签到时间 :
+    </label>
+    <div class="col-md-3" id="qiandao">
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        下班时间 :
+    </label>
+    <div class="col-md-3" id="showEndTime">
+    </div>
+    <button id="endTime" title="签退" type="button" class="btn btn-success btn-padding-right" style="padding: 6px 23px"><i class="fa fa-plus"></i> <span>签退</span></button>
+</div>
+<div class="form-group" id="qiantui_div" style="display:none">
+    <label class="control-label col-md-4">
+        签退时间 :
+    </label>
+    <div class="col-md-3" id="qiantui">
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+
+        var EnableLoginIn = "@ViewBag.EnableLoginIn";
+        var EnableLoginOut = "@ViewBag.EnableLoginOut";
+        var loginInTime = "@ViewBag.LoginInTime";
+        var loginOutTime = "@ViewBag.LoginOutTime";
+        $("#showStartTime").text("@ViewBag.StartTime");
+        $("#showEndTime").text("@ViewBag.EndTime");
+        if (EnableLoginIn == "False") {
+            $("#startTime").attr("class", "btn btn-default btn-padding-right");
+            $("#startTime").attr("disabled", true);
+            $("#qiandao_div").css("display", "");
+            $("#qiandao").text(loginInTime);
+            $("#startTime span").text("已签到");
+            if (loginOutTime != "") {
+                $("#qiantui_div").css("display", "");
+                $("#qiantui").text(loginOutTime);
+            }
+        }
+        if (EnableLoginOut == "False") {
+            $("#endTime").attr("class", "btn btn-default btn-padding-right");
+            $("#endTime").attr("disabled", true);
+        }
+
+        var loginType = 0;
+        //签到
+        $("#startTime").on("click", function () {
+            loginType = 1;
+            initLogin(loginType);
+        })
+        //签退
+        $("#endTime").on("click", function () {
+            loginType = 2;
+            initLogin(loginType);
+        })
+    });
+
+    //获取当前用户的MAC
+    function initLogin(loginType) {
+        $.ajax({
+            type: "get",
+            url: "http://geeqee.com/axapp/m/wx_local_connect.do?callback=_jqjsp&_1462946419979=",
+            timeout: 2000,
+            beforeSend: function (XMLHttpRequest) {
+            },
+            dataType: "jsonp",
+            jsonp: 'callback',
+            success: function (data, textStatus) {
+                var macAdd = data.miniMac;
+                if (macAdd == null || macAdd == "" || macAdd == undefined) {
+                    $.whiskey.web.alert({
+                        type: "请在打卡环境内打卡",
+                        content: data.Message,
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+                if (loginType == 1) { //签到
+                    loginIn(macAdd)
+                } else if (loginType == 2) { //签退
+                    loginOut(macAdd)
+                } else {
+                    $.whiskey.web.alert({
+                        type: "请在打卡环境内打卡",
+                        content: data.Message,
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+            },
+            error: function () {
+                //请求出错处理
+                $.whiskey.web.alert({
+                    type: "请在打卡环境内打卡",
+                    content: data.Message,
+                    callback: function () {
+                    }
+                });
+            }
+        });
+    }
+
+
+    //签到
+    function loginIn(macAdd) {
+        $.ajax({
+            url: "@Url.Action("LoginIn")",
+            type: 'Get',
+            data: { Mac: macAdd },
+            success: function (data) {
+                if (data.ResultType == "@((int)OperationResultType.Success)") {
+                    $("#qiandao").text(data.Data);
+                    $("#qiandao_div").css("display", "");
+                    $("#startTime").attr("class", "btn btn-default btn-padding-right");
+                    $("#startTime").attr("disabled", false);
+                    $("#startTime span").text("已签到");
+                    $.whiskey.web.alert({
+                        type: "success",
+                        content: "签到成功！",
+                        callback: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                }
+                else {
+                    $.whiskey.web.alert({
+                        type: "danger",
+                        content: data.Message,
+                        callback: function () {
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    //签退
+    function loginOut(macAdd) {
+        $.ajax({
+            url: "@Url.Action("LoginOut")",
+            type: 'Get',
+            data: { Mac: macAdd },
+            success: function (data) {
+                if (data.ResultType == "@((int)OperationResultType.Success)") {
+                    $("#qiantui").text(data.Data);
+                    $("#qiantui_div").css("display", "");
+                    $.whiskey.web.alert({
+                        type: "success",
+                        content: "签退成功！",
+                        callback: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                }
+                else {
+                    $.whiskey.web.alert({
+                        type: "danger",
+                        content: data.Message,
+                        callback: function () {
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>

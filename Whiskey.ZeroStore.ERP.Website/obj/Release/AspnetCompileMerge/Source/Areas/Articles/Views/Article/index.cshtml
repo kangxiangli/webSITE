@@ -1,0 +1,723 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+<style>
+#ProductAll,#Product{
+	background-color: #eac85e;
+}
+</style>
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">
+                            文章栏目：
+                        </label>
+                        <div class="col-md-7">
+                        	<select class="form-control selectpicker" style="width: 40%; float: left" id="searchCondition">
+                                <option value="0">全部</option>
+                                <option value="1">发布者</option>
+                                <option value="2">文章标题</option>
+                            </select>
+                            @*@Html.DropDownList("ArticleAttriButeId", (List<SelectListItem>)ViewBag.ArticleAttribute, new { @class = "form-control" })*@
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-5">搜索：</label>
+                        <div class="col-md-5">
+                            
+                            <input type="text" id="keyWords" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="col-md-6">
+                    <label class="control-label col-md-3">快速查看：</label>
+                    <label class="control-label col-md-2" style="cursor:pointer;margin-left:-5%" id="all"  >全部</label>
+                    <label class="control-label col-md-2" style="cursor:pointer;margin-left:-5%" id="top">置顶</label>
+                    <label class="control-label col-md-2" style="cursor:pointer;margin-left:-5%" id="hot">热门</label>
+                    <label class="control-label col-md-2" style="cursor:pointer;margin-left:-5%" id="recommend">推荐</label>
+                    <label class="control-label col-md-2" style="cursor:pointer;margin-left:-5%">评论</label>                        
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                    <button id="Create" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right btn-padding-right_box"><i class="fa fa-plus"></i> <span>新增数据</span></button>
+                    <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right btn-padding-right_box"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                    @*<button id="VerifyAll" title="将选择的项通过审核" type="button" class="btn btn-verify btn-padding-right btn-padding-right_box"><i class="fa fa-verify"></i> <span>审核文章</span></button>*@
+                    <button id="SetAttrubuteAll" style="background-color: #4c94c8;" title="设置选择项的属性" type="button" class="btn btn-view btn-padding-right btn-padding-right_box"><i class="fa fa-view"></i> <span>设置属性</span></button>
+                    <button id="Product"  title="批量生成文章" type="button" class="btn btn-view btn-padding-right btn-padding-right_box"><i class="fa fa-view"></i> <span>批量生成</span></button>
+                    <button id="ProductAll" title="全部生成文章" type="button" class="btn btn-view btn-padding-right btn-padding-right_box "><i class="fa fa-view"></i> <span>全部生成</span></button>
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <span style="margin-right:10px;"><input class="verifier" type="checkbox" data-class="switcher-default" ></span>
+                <span><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+@section Scripts{
+ <script type="text/javascript">
+    $(document).ready(function () {
+        var hot = "";
+        var top = "";
+        var recommend = "";
+        $.whiskey.datatable.instance = $(".table-list").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("List")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var endDate = $(".end-date").val();
+                //var keywords = $(".keywords").val();
+                var searchType = $("#searchCondition").val();//1表示发布者，2标题
+                var keyWords = $("#keyWords").val();
+                if (searchType == "1") {
+                    //conditions.Rules.push(new $.whiskey.filter.rule("Publisher", keyWords, "contains"));
+                }
+                else if (searchType == "2") {
+                    conditions.Rules.push(new $.whiskey.filter.rule("Title", keyWords, "contains"));
+                }
+                //var articleAttriButeId = $("#ArticleAttriButeId").val();
+
+                //if (articleAttriButeId.length > 0 && articleAttriButeId != -1 && articleAttriButeId != 0) {
+                //    conditions.Rules.push(new $.whiskey.filter.rule("ArticleAttributes", articleAttriButeId, "equal"));
+                //}
+                //if (startDate.length > 0 && endDate.length > 0) {
+                //    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                //    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                //}
+                if (hot == "true") {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsHot", "true", "equal"));
+                }
+                if (top == "true") {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsTop", "true", "equal"));
+                }
+                if (recommend == "true") {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsRecommend", "true", "equal"));
+                }
+
+                if ($(".trusher").is(":checked")) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                    if ($(".verifier").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("VerifyType", "@((int)VerifyFlag.Verifing)", "equal"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("VerifyType", "@((int)VerifyFlag.Pass)", "equal"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+
+                    }
+                } else {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                }
+
+
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            }, {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            }, {
+                "sTitle": "封面图",
+                "sName": "ThumbnailPath",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplThumbnail(data.CoverImagePath);
+
+                }
+            }, {
+                "sTitle": "标题",
+                "bSortable": false,
+                "sName": "Title",
+                "mData": "Title",
+            },
+             {
+                 "sTitle": "作者",
+                 "bSortable": false,
+                 "sName": "RealName",
+                 "mData": "RealName",
+             },
+            {
+                "sTitle": "栏目",
+                "bSortable": false,
+                "sName": "AttributeItem",
+                "mData": "AttributeItem",
+            },
+            {
+                "sTitle": "查看",
+                "sName": "ArticlePath",
+                "mData": function (data) {
+                    return '<a href="' + data.ArticlePath + '" target="_blank" >查看</a>'
+                },
+            },
+            
+            {
+                "sTitle": "属性",
+                "sName": "Attrubute",
+                "mData": function (data) {
+                    var resultType = "";
+                    if (data.IsTop == true) {
+                        resultType += " 顶 ";
+                    }
+                    if (data.IsHot == true) {
+                        resultType += " 热 ";
+                    }
+                    if (data.IsRecommend == true) {
+                        resultType += " 荐 ";
+                    }
+                    return resultType;
+                },
+            }, {
+                "sTitle": "点击量",
+                "sName": "Hits",
+                "mData": function (data) {
+                    return data.Hits;
+                },
+            }, {
+                "sTitle": "审核状态",
+                "bSortable": false,
+                "sName": "VerifyType",
+                "mData": function (data) {
+                    if (data.VerifyType == "@((int)VerifyFlag.Verifing)") {
+                        return "审核中";
+                    }
+                    else if (data.VerifyType == "@((int)VerifyFlag.NoPass)") {
+                        return "审核不通过";
+                    }
+                    else if (data.VerifyType == "@((int)VerifyFlag.Pass)") {
+                        return "审核通过";
+                    }
+
+                },
+            },
+            {
+                "sTitle": "发布日期",
+                "sName": "CreateTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.CreatedTime);
+                },
+            },
+            {
+                "sTitle": "控制操作",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    var controller = $.whiskey.datatable.tplView(data.Id);
+                    if ($(".trusher").is(":checked")) {
+
+                        controller += $.whiskey.datatable.tplUpdate(data.Id);
+                        controller += $.whiskey.datatable.tplRemove(data.Id);
+                        if ($(".verifier").is(":checked")) {
+                            controller += $.whiskey.datatable.tplVerify(data.Id);
+                        }
+                    } else {
+                        controller += $.whiskey.datatable.tplRecovery(data.Id);
+                    }
+
+                    return controller;
+
+                }
+            }
+            ]
+
+        });
+        $("#Create").on("click", function () {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "创建数据",
+                actionUrl: "@Url.Action("Create")",
+                lockButton: $(this),
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(false);
+                    return true;
+                },
+            });
+        });
+
+        //生成数据
+        $("#Product").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var printer = new $.whiskey.web.ajaxConfirm({
+                    actionUrl: "@Url.Action("Product")",
+                    question: "确认要将这些文章重新生成吗？",
+                    notes: "",
+                    lockButton: $(this),
+                    topMargin: "2%",
+                    leftMargin: "4%",
+                    contentWidth: "93.5%",
+                    contentHeight: "100%",
+                    params: list,
+                    complete: function () {
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: "生成成功！",
+                            callback: function () {
+                            }
+                        });
+                    }
+                });
+
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+        //批量生成
+        $("#ProductAll").on("click", function () {
+            var printer = new $.whiskey.web.ajaxConfirm({
+                actionUrl: "@Url.Action("ProductAll")",
+                question: "确认要全部文章重新生成吗？",
+                notes: "",
+                lockButton: $(this),
+                topMargin: "2%",
+                leftMargin: "4%",
+                contentWidth: "93.5%",
+                contentHeight: "100%",
+                complete: function () {
+                    $.whiskey.web.alert({
+                        type: "success",
+                        content: "生成成功！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+        });
+
+
+
+        $("#Print").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var printer = $.whiskey.printer.ajaxPreview({
+                    actionUrl: "@Url.Action("Print")",
+                    lockButton: $(this),
+                    topMargin: "2%",
+                    leftMargin: "4%",
+                    contentWidth: "93.5%",
+                    contentHeight: "100%",
+                    params: list
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+
+
+
+        $("#Export").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var printer = $.whiskey.exporter.ajaxExport({
+                    actionUrl: "@Url.Action("Export")",
+                    lockButton: $(this),
+                    fileName: "新导出文件",
+                    topMargin: 10,
+                    leftMargin: 10,
+                    contentWidth: "98%",
+                    contentHeight: "100%",
+                    params: list
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+        //批量审核数据
+        $("#VerifyAll").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要将这些数据审核通过吗？",
+                    notes: "",
+                    actionUrl: "@Url.Action("Verify")",
+                    params: list,
+                    complete: function () {
+                        $.whiskey.datatable.reset(false);
+                    }
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+        $("#RemoveAll").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要将这些数据移至回收站吗？",
+                    notes: "提示：数据移动到回收站后，随时可以从回收站中将其恢复",
+                    actionUrl: "@Url.Action("Remove")",
+                    params: list,
+                    complete: function () {
+                        $.whiskey.datatable.reset(false);
+                    }
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+        $("#RecoveryAll").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要将这些数据恢复吗？",
+                    notes: "提示：将数据从回收站移动至正常数据列表里",
+                    actionUrl: "@Url.Action("Recovery")",
+                    params: list,
+                    complete: function () {
+                        $.whiskey.datatable.reset(false);
+                    }
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+
+        $("#DeleteAll").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要将这些数据彻底删除吗？",
+                    notes: "提示：数据删除后将不可能再恢复，请谨慎操作！",
+                    actionUrl: "@Url.Action("Recovery")",
+                    params: list,
+                    complete: function () {
+                        $.whiskey.datatable.reset(false);
+                    }
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+        //批量设置属性
+        $("#SetAttrubuteAll").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var dialog = $.whiskey.web.ajaxDialog({
+                    caption: "设置属性",
+                    actionUrl: "@Url.Action("SetAttrubute")",
+                    lockButton: $(this),
+                    params: list,
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+            }
+            else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+
+        });
+
+        $("#Barcode").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var dialog = new $.whiskey.web.ajaxView({
+                    caption: "打印商品条码",
+                    actionUrl: "@Url.Action("Barcode")",
+                    buttonType: 1,
+                    params: list,
+                    lockButton: $(this)
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+        $("#Search").on("click", function () {
+            $.whiskey.datatable.reset(false);
+
+        });
+
+        $("#Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+
+        //热帖搜索
+        $("#hot").on("click", function () {
+            hot = "true";
+            $.whiskey.datatable.reset(false);
+            hot = "";
+        });
+
+        //置顶搜索
+        $("#top").on("click", function () {
+            top = "true";
+            $.whiskey.datatable.reset(false);
+            top = "";
+        });
+
+        //推荐搜索
+        $("#recommend").on("click", function () {
+            recommend = "true";
+            $.whiskey.datatable.reset(false);
+            recommend = "";
+        });
+
+        //展示全部数据
+        $("#all").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+    });
+
+    //刷新数据列表
+    function RefreshList() {
+        var start = self.setInterval(function () {
+            $.whiskey.datatable.reset(false);
+            clearInterval(start);
+        }, 5000)
+    }
+
+
+    function View(sender, Id) {
+        var view = new $.whiskey.web.ajaxView({
+            caption: "详细信息",
+            actionUrl: "@Url.Action("View")",
+            params: { Id: Id },
+            lockButton: $(sender),
+        });
+    }
+
+
+    function Update(sender, Id) {
+        var dialog = new $.whiskey.web.ajaxDialog({
+            caption: "修改信息",
+            actionUrl: "@Url.Action("Update")",
+            getParams: { Id: Id },
+            lockButton: $(sender),
+            formValidator: function () {
+                var $form = $(".modal-form");
+                if (!$form.valid()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            postComplete: function () {
+                $.whiskey.datatable.reset(true);
+                return true;
+            },
+        });
+    }
+
+    function Remove(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要将这条数据移至回收站吗？",
+            notes: "提示：数据移动到回收站后可从随时将其恢复",
+            actionUrl: "@Url.Action("Remove")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    function Recovery(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要恢复这条数据吗？",
+            notes: "提示：将数据从回收站移动至正常数据列表里",
+            actionUrl: "@Url.Action("Recovery")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    function Delete(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要彻底删除这条数据吗？",
+            notes: "提示：数据彻底删除后不可恢复，请谨慎操作！",
+            actionUrl: "@Url.Action("Delete")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+
+    function Verify(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要将这件商品通过审核吗？",
+            notes: "提示：商品通过审核后信息不可再修改",
+            actionUrl: "@Url.Action("Verify")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    function Reject(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要驳回这件商品的审核吗？",
+            notes: "提示：商品若未被销售或采购才能驳回审核",
+            actionUrl: "@Url.Action("Reject")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    function Enable(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要启用这件商品吗？",
+            notes: "提示：启用后商品才可以被采购",
+            actionUrl: "@Url.Action("Enable")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    function Disable(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要禁用这件商品吗？",
+            notes: "提示：禁用后商品不能再被采购",
+            actionUrl: "@Url.Action("Disable")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+
+</script>
+}

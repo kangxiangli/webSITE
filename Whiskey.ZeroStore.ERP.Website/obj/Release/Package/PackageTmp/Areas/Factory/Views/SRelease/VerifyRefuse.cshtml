@@ -1,0 +1,13 @@
+@using Whiskey.ZeroStore.ERP.Models.Entities
+@model ProductOriginNumber
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        ¾Ü¾øÔ­Òò :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(f => f.RefuseReason, new { @class = "form-control", @rows = "12", @resize = "none" })
+    </div>
+</div>
+
+@Html.HiddenFor(f=>f.Id)

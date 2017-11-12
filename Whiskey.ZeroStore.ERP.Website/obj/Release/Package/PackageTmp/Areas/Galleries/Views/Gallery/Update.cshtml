@@ -1,0 +1,315 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model GalleryDto
+
+
+<link href="/content/styles/jquery/jquery.zTreeStyle.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/jquery.ztree.core-3.5.min.js"></script>
+<script src="/content/scripts/jquery/jquery.ztree.excheck-3.5.js"></script>
+
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">图片上传</a>
+    </li>
+    <li class="">
+        <a href="#image" data-toggle="tab">属性选择</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-2">图片预览 :</label>
+            <div class="col-md-10">
+                <div class="upload-wrapper">
+                    <canvas id="upload-preview" width="470" height="250"></canvas>
+                </div>
+            </div>
+            @Html.HiddenFor(m => m.OriginalPath)
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                <div class="upload-file text-left">
+                    <a href="javascript:void(0)" class="upload-image text-center"><label for="upload-file">重新上传图片</label></a>
+                    <input id="fileupload" type="file" accept="image/jpeg,image/gif,image/png,image/jpg">
+                </div>
+                <div class="upload-progress"></div>
+            </div>
+        </div>
+        <div class="color-details form-group">
+            <label class="control-label col-md-2">
+                图片色彩 :
+            </label>
+            <div class="col-md-10">
+                <div class="color-wrapper clearfix">
+                    <ul>
+                        @Html.Raw(Model.ColoursHtml)
+                    </ul>
+                </div>
+            </div>
+            @Html.HiddenFor(m => m.Colours)
+        </div>
+    </div>
+
+
+    <div class="tab-pane fade clearfix" id="image">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                图片属性 :
+            </label>
+            <div class="col-md-10">
+                <div class="attribute-wrapper left">
+                    <ul class="Attributes ztree"></ul>
+                </div>
+            </div>
+            @Html.HiddenFor(m => m.Attributes)
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Tags) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Tags, new Dictionary<string, object> { { "class", "form-control" }, { "data-role", "tagsinput" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Description) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+            </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+
+@Styles.Render("~/bundles/upload/styles")
+@Scripts.Render("~/bundles/upload/scripts")
+@Scripts.Render("~/bundles/tags")
+<script type="text/javascript">
+    var tree;
+    $(document).ready(function () {
+
+        loadImage("@Model.OriginalPath");
+
+        $('#fileupload').fileupload({
+            url: "/Upload/Partial",
+            dataType: 'json',
+            sequentialUploads: true,
+            limitConcurrentUploads: 1,
+            maxNumberOfFiles: 1,
+            progressInterval: 100,
+            maxChunkSize: 10000,
+            formData: { ExtType: "Image", SaveDir: "Galleries", FileName: $.whiskey.tools.dateFormat(new Date(), "HHmmssffff") },
+            send: function (data) {
+                $(".upload-file").hide();
+                $(".upload-progress").show();
+            },
+            done: function (e, d) {
+                var data = d.result;
+                if (typeof (data) == "object") {
+                    if (data.ResultType == 3) {
+                        $("#OriginalPath").val(data.Data.file);
+                        $(".color-details").show();
+                        loadImage(data.Data.file);
+                    } else {
+                        $.whiskey.web.alert({
+                            type: "danger",
+                            content: data.Message,
+                            callback: function () {
+                            }
+                        });
+                    }
+                }
+                $(".upload-file").show();
+                $(".upload-progress").hide();
+            },
+            progressall: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('.upload-progress').progressbar({ value: progress });
+            }
+        }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+        var setting = {
+            check: {
+                enable: true,
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+                    idKey: "id",
+                    pIdKey: "pid",
+                    rootPId: null
+                }
+            },
+            async: {
+                enable: true,
+                url: "@Url.Action("TreeList", "GalleryAttribute")",
+                autoParam: ["id", "name"],
+            },
+            callback: {
+                onCheck: onTreeChecked,
+                onAsyncSuccess: function (event, treeId, treeNode, msg) {
+                    //tree.expandAll(true);
+                    var categories = "@Model.Attributes";
+                    if (categories != undefined && categories.length > 0) {
+                        var ids = categories.split(",");
+                        for (var i = 0; i < ids.length; i++) {
+                            tree.checkNode(tree.getNodeByParam("id", ids[i], null), true, true);
+                        }
+                    }
+                }
+            }
+        };
+
+        tree = $.fn.zTree.init($(".Attributes"), setting);
+
+        tree.setting.check.chkboxType = { "Y": "p", "N": "s" };
+        tree.setting.view.fontCss["font-size"] = "14px";
+        tree.setting.view.fontCss["line-height"] = "20px";
+
+
+    });
+
+
+    function loadImage(filePath) {
+        $(".color-details").show();
+        $(".color-wrapper ul li").unbind("click");
+        $(".color-wrapper ul li").on("click", function () {
+            if (!!$(this).hasClass("selected")) {
+                $(this).removeClass("selected");
+            } else {
+                $(this).addClass("selected");
+            }
+            SetColor();
+        });
+        if (filePath == undefined || filePath == null) return;
+        var canvas = document.getElementById('upload-preview');
+        var maxWidth = canvas.width;
+        var maxHeight = canvas.height;
+        var ctx = canvas.getContext('2d');
+        var img = new Image();
+        img.onload = function () {
+            if (img.height > maxHeight) {
+                img.width *= maxHeight / img.height;
+                img.height = maxHeight;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+            canvas.onmouseover = function (event) {
+                canvas.style.cursor = "crosshair";
+            }
+            canvas.onmousedown = function (event) {
+                canvas.onmousemove = function (event) {
+                }
+                canvas.onmouseup = function () {
+
+                    canvas.style.cursor = "crosshair";
+                    var canvasOffset = $(canvas).offset();
+                    var canvasX = Math.floor(event.pageX - canvasOffset.left);
+                    var canvasY = Math.floor(event.pageY - canvasOffset.top);
+                    var imageData = ctx.getImageData(canvasX, canvasY, 1, 1);
+                    var pixel = imageData.data;
+
+
+                    $.whiskey.web.ajaxRequest({
+                        actionUrl: "@Url.Action("Calculate", "Color", new { area = "Properties" })",
+                        params: { R: pixel[0], G: pixel[1], B: pixel[2] },
+                    method:"POST",
+                    lockButton: null,
+                    complete: function (data) {
+                        if (typeof (data) == 'object') {
+                            if (data.ResultType == 3) {
+                                $(".color-wrapper ul").append("<li  data-id='" + data.Data.Id + "'><a href='javascript:void(0);' style='background-color:" + data.Data.RGB + ";' title='颜色：" + data.Data.ColorName + "，" + Math.round(data.Data.Hue * 360) + "Deg，纯度：" + Math.round(data.Data.Saturation * 100) + "%,明度：" + Math.round(data.Data.Lightness * 100) + "%'></a><i></i></li>");
+                                $(".color-wrapper ul li").unbind("click");
+                                $(".color-wrapper ul li").on("click", function () {
+                                    if (!!$(this).hasClass("selected")) {
+                                        $(this).removeClass("selected");
+                                    } else {
+                                        $(this).addClass("selected");
+                                    }
+                                    SetColor();
+                                });
+                                                    
+                            } else {
+                                $.whiskey.web.alert({
+                                    type: "danger",
+                                    content: data.Message,
+                                    callback: function () {
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+
+
+
+                    canvas.onmousemove = null;
+                    canvas.onmouseup = null;
+                    canvas.onmouseover = null;
+                }
+            }
+
+        }
+        img.src =filePath;
+    }
+
+
+    function onTreeChecked(event, treeId, treeNode) {
+        var nodes = tree.getCheckedNodes(true);
+        var ids = "";
+        for (var n = 0; n < nodes.length; n++) {
+            ids.length == 0 ? ids = nodes[n].id : ids += "," + nodes[n].id;
+        }
+        $("#Attributes").val(ids);
+        SetPopover(treeNode.id);
+    }
+
+    function SetPopover(id) {
+        $.whiskey.web.ajaxRequest({
+            actionUrl: "@Url.Action("Tooltip", "GalleryAttribute", new { area="Galleries" })",
+            params: { Id:id },
+        method: "POST",
+        lockButton: null,
+        complete: function (data) {
+            if (typeof (data) == 'object') {
+                if (data.ResultType == 3) {
+                    $(".attribute-wrapper").popover('destroy').popover({
+                        content: data.Data.Description ,
+                        trigger: "manual",
+                        placement: "top"
+                    }).popover('show');
+                }
+            }
+        }
+    });
+    }
+
+    function SetColor() {
+        var ids = "";
+        $(".selected").each(function () {
+            if (ids.length == 0) {
+                ids = $(this).attr("data-id");
+            } else {
+                ids += "," + $(this).attr("data-id");
+            }
+        });
+        $("#Colours").val(ids);
+    }
+
+
+
+</script>
+
+
+@Html.HiddenFor(m => m.Id)

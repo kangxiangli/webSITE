@@ -1,0 +1,17 @@
+﻿
+<style>
+    .activeDate {
+        background-image: url("/Content/Images/themes/dh.png");
+        background-repeat: no-repeat;
+        background-size: 70% 70%;
+        background-position: 11px 7px;
+    }
+</style>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        打卡签退 :
+    </label>
+    <div class="col-md-4"  style="display: flex;height: 32px;line-height: 32px;">
+        <input type="text" maxlength="3" style="flex: 1; margin-right: 15px;" value="@ViewBag.PunchOut" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" class="form-control" id="PunchOut" />分钟
+    </div>
+</div>

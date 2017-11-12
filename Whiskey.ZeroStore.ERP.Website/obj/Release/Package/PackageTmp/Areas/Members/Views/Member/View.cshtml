@@ -1,0 +1,739 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@model Member
+<style>
+    .thumbnail {
+        height: auto !important;
+    }
+    .thumbnail {
+        height: auto !important;
+    }
+
+
+    .div-friend {
+        width: 75px;
+        float: left;
+        margin: 5px;
+        text-align: center;
+    }
+  
+</style>
+
+<ul class="nav nav-tabs">
+    <li class="tab-pane active" id="lableMember">
+        <a href="#base" data-toggle="tab">添加会员</a>
+    </li>
+    <li class="tab-pane">
+        <a href="#collo" data-toggle="tab">搭配信息</a>
+    </li>
+    <li class="tab-pane">
+        <a href="#behavior" data-toggle="tab">行为分析</a>
+    </li>
+    <li class="tab-pane">
+        <a href="#purchaseHistory" data-toggle="tab">已购买</a>
+    </li>
+    <li class="tab-pane">
+        <a href="#appointmentHistory" data-toggle="tab">已预约</a>
+    </li>
+    <li class="tab-pane">
+        <a href="#memberfriends" data-toggle="tab">我的好友</a>
+    </li>
+</ul>
+
+
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.MemberName)：
+            </label>
+            <div class="col-md-10">
+                @Model.MemberName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CollocationId) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.CollocationId == null ? "" : Model.Collocation.CollocationName)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.StoreId) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.StoreId == null ? "" : Model.Store.StoreName)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.MemberTypeId)：
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.MemberTypeId == null ? "" : Model.MemberType.MemberTypeName)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Balance) :
+            </label>
+            <div class="col-md-10">
+                @Model.Balance
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Score) :
+            </label>
+            <div class="col-md-10">
+                @Model.Score
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                充值系数 :
+            </label>
+            <div class="col-md-10">
+                @ViewBag.Quotiety
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CardNumber) :
+            </label>
+            <div class="col-md-10">
+                @Model.CardNumber
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Email) :
+            </label>
+            <div class="col-md-10">
+                @Model.Email
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.MobilePhone) :
+            </label>
+            <div class="col-md-10">
+                @Model.MobilePhone
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.RealName) :
+            </label>
+            <div class="col-md-10">
+                @Model.RealName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Gender) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.Gender == 0 ? "女" : "男")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.DateofBirth) :
+            </label>
+            <div class="col-md-10">
+                @Model.DateofBirth
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IDCard) :
+            </label>
+            <div class="col-md-10">
+                @Model.IDCard
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.UserPhoto) :
+            </label>
+            <div class="col-md-2">
+                <div class="row">
+                    <div class="col-xs-160 col-md-300">
+                        <a class="thumbnail">
+                            <img src="@Model.UserPhoto" alt="会员照片" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.LoginCount) :
+            </label>
+            <div class="col-md-10">
+                @Model.LoginCount
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.LoginTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.LoginTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.RecommendId) :
+            </label>
+            <div class="col-md-10">
+                @Model.RecommendId
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-10">
+                @Model.Notes
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsLockedStore) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsLockedStore == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.UpdatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.UpdatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CreatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.CreatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsEnabled) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsDeleted) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                操作人员 :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+            </div>
+        </div>
+    </div>
+
+    <div id="collo" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                上装尺码 :
+            </label>
+            <div class="col-md-5 ">
+                @ViewBag.ShangSize
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                下装尺码 :
+            </label>
+            <div class="col-md-5 ">
+                @ViewBag.XiaSize
+            </div>
+        </div>
+        <div class="form-group divColor">
+            <label class="control-label col-md-3">
+                偏好颜色 :
+            </label>
+            <div class="col-md-5 ">
+                @ViewBag.PreColor
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                身材类型 :
+            </label>
+            <div class="col-md-5 ">
+                @ViewBag.FigureType
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                身材描述 :
+            </label>
+            <div class="col-md-5">
+                @ViewBag.FigureDes
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                年龄 :
+            </label>
+            <div class="col-md-5 ">
+                @ViewBag.Age
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                身高（cm） :
+            </label>
+            <div class="col-md-5 ">
+                @ViewBag.Height
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                体重（kg） :
+            </label>
+            <div class="col-md-5 ">
+                @ViewBag.Weight
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                肩宽（cm） :
+            </label>
+            <div class="col-md-5 ">
+                @ViewBag.Shoulder
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                胸围（cm） :
+            </label>
+            <div class="col-md-5 ">
+                @ViewBag.Bust
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                腰围（cm） :
+            </label>
+            <div class="col-md-5">
+                @ViewBag.Waistline
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                臀围（cm） :
+            </label>
+            <div class="col-md-5">
+                @ViewBag.Hips
+            </div>
+        </div>
+
+        @foreach (var item in ViewBag.CollocationQuestionnaireDic)
+        {
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @item.Key :
+                </label>
+                <div class="col-md-5">
+                    @foreach (var val in item.Value)
+                    {
+                        @val<br/>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div id="behavior" class="tab-pane fade clearfix">
+        @*<div class="form-group">
+            <label class="control-label col-md-3">
+                品类 :
+            </label>
+            <div class="col-md-5 ">
+
+            </div>
+        </div>*@
+    </div>
+
+
+    <div class="tab-pane fade clearfix" id="purchaseHistory">
+        <div>
+
+            <div class="row">
+                <div class="panel panel-search">
+                    <div class="panel-heading clearfix">
+                        <div class="col-md-4 panel-title">
+                            <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                        </div>
+                        <div class="col-md-8 text-right">
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-horizontal form-search">
+                            <div>
+                                <div class="form-group no-margin-hr">
+                                    <label class="control-label col-md-4">零售单号</label>
+                                    <div class="col-md-8">
+                                        <input v-on:keyup.enter.stop="search({pageIndex:1})" class="form-control" type="text" name="retailNumber" id="retailNumber" placeholder="请输入零售单号" />
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="panel-footer text-right clearfix ">
+
+                        <div class="pull-left">
+                            <button v-on:click="search({pageIndex:1})" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                            <button v-on:click="document.querySelector('.form-search').reset()" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                        </div>
+
+                        <div class="pull-right">
+                            <div class="button-normal">
+
+                            </div>
+                            <div class="button-recycle">
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="panel panel-list">
+                    <div class="panel-heading clearfix">
+                        <div class="col-md-4 panel-title">
+                            <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                        </div>
+                        <div class="col-md-8 text-right">
+                            @*<span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>*@
+                        </div>
+                    </div>
+                    <table class="table table-list table-hover valign-middle" width="100%">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>图片</th>
+                                <th>零售单号</th>
+
+                                <th>流水号</th>
+                                <th>品牌</th>
+                                <th>出货仓库</th>
+                                <th>吊牌价</th>
+                                <th>零售价</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item,index) in pageDatas">
+                                <td>{{index+1}}</td>
+                                <td v-html="suspension({imgPath:item.ThumbnailPath})"></td>
+                                <td>{{item.RetailNumber}}</td>
+                                <td>{{item.ProductBarcode}}</td>
+                                <td>{{item.BrandName}}</td>
+                                <td>{{item.StorageName}}</td>
+                                <td>{{item.ProductTagPrice}}</td>
+                                <td>{{item.ProductRetailPrice}}</td>
+
+
+                            </tr>
+                        </tbody>
+                    </table>
+                    <my-page v-bind:current="pageInfo.pageIndex"
+                             v-bind:total="pageInfo.totalCount"
+                             v-bind:page-size="pageInfo.pageSize"
+                             v-bind:page-size-opts="[10,20]"
+                             @@on-change="changePage"
+                             @@on-page-size-change="changePageSize">
+                    </my-page>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="tab-pane fade clearfix" id="appointmentHistory">
+        <div>
+
+            <div class="row">
+                <div class="panel panel-search">
+                    <div class="panel-heading clearfix">
+                        <div class="col-md-4 panel-title">
+                            <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                        </div>
+                        <div class="col-md-8 text-right">
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-horizontal form-search">
+                            <div>
+                                <div class="form-group no-margin-hr">
+                                    <label class="control-label col-md-4">货号</label>
+                                    <div class="col-md-8">
+                                        <input v-on:keyup.enter="search({pageIndex:1})" class="form-control" type="text" name="productNumber" id="productNumber" placeholder="请输入货号" />
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="panel-footer text-right clearfix ">
+
+                        <div class="pull-left">
+                            <button v-on:click="search({pageIndex:1})" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                            <button v-on:click="document.querySelector('.form-search').reset()" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                        </div>
+
+                        <div class="pull-right">
+                            <div class="button-normal">
+
+                            </div>
+                            <div class="button-recycle">
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="panel panel-list">
+                    <div class="panel-heading clearfix">
+                        <div class="col-md-4 panel-title">
+                            <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                        </div>
+                        <div class="col-md-8 text-right">
+                            @*<span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>*@
+                        </div>
+                    </div>
+                    <table class="table table-list table-hover valign-middle" width="100%">
+                        <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>图片</th>
+                                <th>货号</th>
+                                <th>品牌</th>
+                                <th>品类</th>
+                                <th>颜色</th>
+                                <th>尺码</th>
+                                <th>吊牌价</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item,index) in pageDatas">
+                                <td>{{index+1}}</td>
+                                <td v-html="suspension({imgPath:item.ThumbnailPath})"></td>
+                                <td>{{item.ProductNumber}}</td>
+                                <td>{{item.BrandName}}</td>
+                                <td>{{item.CategoryName}}</td>
+                                <td>{{item.ColorName}}</td>
+                                <td>{{item.SizeName}}</td>
+                                <td>{{item.TagPrice}}</td>
+                                <td>{{item.State}}</td>
+
+
+                            </tr>
+                        </tbody>
+                    </table>
+                    <my-page v-bind:current="pageInfo.pageIndex"
+                             v-bind:total="pageInfo.totalCount"
+                             v-bind:page-size="pageInfo.pageSize"
+                             v-bind:page-size-opts="[10,20]"
+                             @@on-change="changePage"
+                             @@on-page-size-change="changePageSize">
+                    </my-page>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+  
+    <div class="tab-pane fade clearfix" id="memberfriends">
+            @foreach (dynamic item in ViewBag.Friends)
+            {
+                <div class="form-group div-friend">
+                    <img src="@item.UserPhoto" class="img-circle" style="width:60px;" />
+                    <label class="control-label ">
+                        @item.MemberName
+                    </label>
+                </div>
+            }
+    
+    </div>
+</div>
+@{
+    Html.RenderPartial("Page", null);
+}
+<script>
+    var baseUrl = '/Members/Member';
+
+    var vmPurchaseHistory = new Vue({
+        el: "#purchaseHistory",
+        data: {
+            memberId:@ViewBag.MemberId,
+            isDeleted: false,
+            isEnabled: true,
+            pageDatas: [], //分页数据
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            }
+        },
+        mounted: function () {
+            this.search();
+        },
+        methods: {
+
+            search: function (filter) {
+
+                var _self = this;
+
+                var searchData = {
+                    memberId: this.memberId,
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+                }
+
+                var retailNumber = $("#retailNumber").val();
+
+                if (retailNumber && retailNumber.length > 0) {
+
+                    searchData.retailNumber = retailNumber;
+
+                }
+
+                if (filter) {
+
+                    searchData = _.extend(searchData, filter)
+                }
+
+                $.getJSON(baseUrl + '/PurchaseHistoryList', searchData).done(function (res) {
+                    if (res.ResultType !== 3) {
+                        //console
+                        return;
+                    }
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+                })
+            },
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            }
+
+        }
+
+    })
+
+
+    var vmAppointmentHistory= new Vue({
+        el: "#appointmentHistory",
+        data: {
+            memberId:@ViewBag.MemberId,
+            isDeleted: false,
+            isEnabled: true,
+            pageDatas: [], //分页数据
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            }
+        },
+        mounted: function () {
+            this.search();
+        },
+        methods: {
+
+            search: function (filter) {
+
+                var _self = this;
+
+                var searchData = {
+                    memberId: this.memberId,
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+                }
+
+                var productNumber = $("#productNumber").val();
+
+                if (productNumber && productNumber.length > 0) {
+                    searchData.productNumber = productNumber;
+
+                }
+
+                if (filter) {
+
+                    searchData = _.extend(searchData, filter)
+                }
+
+                $.getJSON(baseUrl + '/AppointmentHistoryList', searchData).done(function (res) {
+                    if (res.ResultType !== 3) {
+                        //console
+                        return;
+                    }
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+                })
+            },
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            }
+
+        }
+
+    })
+</script>
+

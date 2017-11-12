@@ -1,0 +1,295 @@
+﻿<div id="app">
+
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    <switcher-search></switcher-search>
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-5">创建日期：</label>
+                            <div class="col-md-7">
+                                <div class="input-daterange input-group">
+                                    @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                    <span class="input-group-addon">至</span>
+                                    @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button v-on:click="search(null)" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button v-on:click="document.querySelector('.form-search').reset()" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+                        <button v-on:click="importMember" title="导入数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>生成数据</span></button>
+                    </div>
+                    <div class="button-recycle">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    @*<span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>*@
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>活动名称</th>
+                        <th>充值数量</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{index+1}}</td>
+                        <td>{{item.ActivityName}}</td>
+                        <td><span class="label label-success" style="cursor:pointer;" v-on:click="view(item.Id)">{{item.RechargeCount}}</span></td>
+                       
+                        <td>{{item.CreatedTime|datetime}}</td>
+                        <td>
+                            <button title="修正数据" type="button" v-on:click="fix(item.Id)" class=" btn-opt-box" >  <i  class="btn-xiuzheng-icon"></i> </button>
+                            <button type="button" title="查看详细信息" v-on:click="view(item.Id)" class="btn-opt-box"><i class="btn-view-icon"></i></button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+    </div>
+
+
+</div>
+
+@{
+    Html.RenderPartial("Page", null);
+}
+<script>
+    var rechargeVM;
+    $(function () {
+        var baseUrl = '/Commons/RechargeGenerate';
+        var memberIds = [];
+        rechargeVM = new Vue({
+            el: "#app",
+            data: {
+                pageFlags: @Html.Raw(ViewBag.PageFlags),
+                id: 0,
+                isLimit: 0,
+                isDeleted: false,
+                isEnabled: true,
+                recommendIds: memberIds.concat([]),
+                numbers: [],
+                pageDatas: [], //分页数据
+                currentId: 0,
+                pageInfo: {
+                    pageIndex: 1,
+                    pageSize: 10,
+                    pageCount: 0,
+                    totalCount: 0
+                },
+                checkedIds: [],
+                currentId: 0,
+            },
+            updated() {
+                this.pageFlags.forEach(selector => $(selector).remove());
+            },
+            mounted: function () {
+                this.search();
+                $(".input-daterange").datepicker();
+            },
+            methods: {
+                 view: function (id) {
+                    var _self = this;
+                    var dialog = new $.whiskey.web.ajaxView({
+                        caption: "查看数据",
+                        actionUrl: "@Url.Action("View")",
+                        lockButton: $(this),
+                        params: { Id:id}
+
+                    });
+                },
+                showMember(recordId) {
+                    var dialog = new $.whiskey.web.ajaxView({
+                            caption: "创建数据",
+                            actionUrl: "@Url.Action("MemberSelect")",
+                            lockButton: $(this),
+                            params: { recordId: recordId },
+
+                     });
+                 },
+                 importMember() {
+                     //[批量导入]按钮
+                    // $.whiskey.web.load({ url: "/Commons/RechargeGenerate/Generate" })
+
+
+                         var dialog = new $.whiskey.web.ajaxDialog({
+                            caption: "选择会员",
+                            actionUrl: "@Url.Action("Generate")",
+                            lockButton: null,
+
+                            formValidator: function () {
+                                rechargeGenerateVM.save();
+
+                                return false;
+                            },
+                            postComplete: function () {
+                                return;
+                            },
+
+                     });
+                },
+                 fix(id) {
+                     $.post("@Url.Action("Fix")", { id: id })
+                         .done(function (res) {
+                             if (res.ResultType !== 3) {
+                                 $.whiskey.web.alert({
+                                     type: "info",
+                                     content: res.Message,
+                                     callback: function () {
+                                     }
+                                 });
+                                 return;
+                             }
+
+                             else {
+                                 $.whiskey.web.alert({
+                                     type: "success",
+                                     content:"操作成功",
+                                     callback: function () {
+                                     }
+                                 });
+                             }
+                         })
+                 },
+
+                 search: function (filter) {
+
+                     var _self = this;
+
+                     var searchData = {
+
+                         pageIndex: this.pageInfo.pageIndex,
+                         pageSize: this.pageInfo.pageSize,
+                     }
+                     var startDate = $("#StartDate").val();
+                     var endDate = $("#EndDate").val();
+
+                     if (startDate) {
+                         searchData.startDate = startDate;
+                     }
+                     if (endDate) {
+                         searchData.endDate = endDate;
+                     }
+
+                     if (this.isLimit === 1) {
+                         searchData.recommendIds = memberIds.join(',');
+                     }
+                     if (filter) {
+
+                         searchData = _.extend(searchData, filter)
+                     }
+
+                     $.getJSON(baseUrl + '/List', searchData).done(function (res) {
+                         if (res.ResultType !== 3) {
+                             //console
+                             return;
+                         }
+                         var pageInfo = res.Data.pageInfo;
+                         var pageData = res.Data.pageData;
+                         //判断是否已在列表中
+
+                         _self.pageDatas = pageData;
+                         _self.pageInfo = pageInfo;
+                     })
+                 },
+                 changePage: function (page) {
+                     this.pageInfo.pageIndex = page;
+                     this.search();
+                 },
+                 changePageSize: function (newSize) {
+
+                     this.pageInfo.pageSize = newSize;
+                     this.pageInfo.pageIndex = 1;
+                     this.search();
+                 },
+                 addMemberId: function (memberId) {
+                     if (this.recommendIds.indexOf(memberId) === -1) {
+                         this.recommendIds.push(memberId);
+                     }
+                 },
+                 removeMemberId: function (memberId) {
+                     var index = this.recommendIds.findIndex(x => x == memberId);
+                     if (index !== -1) {
+                         this.recommendIds.splice(index, 1);
+                     }
+                 },
+                 batchRecommend: function () {
+                     var ids = this.pageDatas.map(i => i.Id);
+                     ids.forEach(id => this.addMemberId(id));
+
+                 },
+                 batchRemoveRecommend: function () {
+                     debugger
+                     var ids = this.pageDatas.map(i => i.Id);
+                     ids.forEach(id => this.removeMemberId(id));
+                 },
+                 save: function () {
+                     debugger
+                     var data = {
+                         id: this.id,
+                         recommendMemberIds: this.recommendIds
+                     };
+                     $.post(baseUrl + "/SaveMemberId", data)
+                         .done(function (res) {
+                             if (res.ResultType !== 3) {
+                                 alert(res.Message);
+                                 return;
+                             }
+                             else {
+
+                                 $("button[data-dismiss=modal]").trigger('click');
+                                 $.whiskey.datatable.reset(false);
+                             }
+                         })
+                 }
+
+            }
+
+        })
+    })
+
+</script>

@@ -1,0 +1,11 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.Utility.Helper
+
+@helper ApiUrl()
+{
+    @ConfigurationHelper.GetAppSetting("ApiUrl");
+}
+@helper WebUrl()
+{
+    @ConfigurationHelper.GetAppSetting("WebUrl");
+}

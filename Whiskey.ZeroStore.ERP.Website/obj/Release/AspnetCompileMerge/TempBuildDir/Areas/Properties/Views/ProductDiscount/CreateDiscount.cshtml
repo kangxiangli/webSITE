@@ -1,0 +1,31 @@
+﻿
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#deta_tab" data-toggle="tab">
+            精确设置
+        </a>
+    </li>
+    <li><a href="#bigcate_tab" data-toggle="tab">分类设置</a></li>
+    <div class="col-md-8 text-right switcher_rig">
+        <input class="switcher_hidd" type="checkbox" data-class="switcher-default">
+    </div>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="deta_tab">
+        @{
+           
+            Html.RenderPartial("batchProductDiscount");
+           
+        }
+    </div>
+    <div class="tab-pane fade" id="bigcate_tab">
+        @{
+            Html.RenderPartial("bigCategoryDiscount");
+        }
+    </div>
+</div>
+@section Scripts{
+    <script src="~/Areas/Properties/Content/ProductDiscount/js/batchProductDiscount.js"></script>
+   <script src="~/Areas/Properties/Content/ProductDiscount/js/bigCategoryDiscount.js"></script>
+}

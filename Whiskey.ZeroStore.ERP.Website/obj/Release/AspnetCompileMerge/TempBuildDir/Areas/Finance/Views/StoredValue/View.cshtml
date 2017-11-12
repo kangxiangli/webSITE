@@ -1,0 +1,152 @@
+﻿
+
+@using Whiskey.ZeroStore.ERP.Models
+@model StoreValueRule
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        活动名称 :
+    </label>
+    <div class="col-md-7">
+        @Model.StoreValueName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        会员类型 :
+    </label>
+    <div class="col-md-7">
+        @{
+            <select class="form-control selectpicker">
+                @foreach (var item in ViewData["names"] as List<string>)
+                {
+                    <option>@item</option>
+                }
+            </select>
+        }
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Price) :
+    </label>
+    <div class="col-md-7">
+        @Model.Price
+    </div>
+</div>
+<div class="form-group" id="ScoreDiv">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Score) :
+    </label>
+    <div class="col-md-7">
+        @Model.Score
+    </div>
+</div>
+<div class="form-group" id="RewardMoneyDiv">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.RewardMoney) :
+    </label>
+    <div class="col-md-7">
+        @Model.RewardMoney
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsForever) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsForever == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StartDate) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsForever == true ? "永久" : Model.StartDate.ToString())
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.EndDate) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsForever == true ? "永久" : Model.EndDate.ToString())
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        备注 :
+    </label>
+    <div class="col-md-7">
+        @Model.Descrip
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.CreatedTime
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        上传图片 ：
+    </label>
+    <div class="col-md-10">
+        <img id="ImageUrl" src="@Model.ImageUrl" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        操作人员 :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        if(@Model.RuleType==0){
+            $("#RewardMoneyDiv").css("display","");
+            $("#ScoreDiv").css("display","none");
+        }else{
+            $("#RewardMoneyDiv").css("display","none");
+            $("#ScoreDiv").css("display","");
+
+        }
+    });
+</script>
+
+
+
+
+
+
+

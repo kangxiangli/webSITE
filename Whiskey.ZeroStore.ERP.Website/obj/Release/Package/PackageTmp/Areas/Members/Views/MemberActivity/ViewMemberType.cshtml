@@ -1,0 +1,42 @@
+﻿
+<style>
+    .modal-content {
+        width: 1000px;
+    }
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#store_tab" data-toggle="tab">
+            会员类型
+        </a>
+    </li>
+   
+
+</ul>
+<div id="myTabContent" class="tab-content">
+   
+    <div class="tab-pane active" id="store_tab">
+        <div class="panel panel-list">
+
+            <div class="panel-body">
+                @foreach (var item in ViewBag.MemberTypes as List<SelectListItem>)
+                {
+                    <div class="col-md-2">
+
+                        <label>
+                            <input type="checkbox" value="@item.Value" checked disabled />
+                            @item.Text
+                        </label>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+
+</script>

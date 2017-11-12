@@ -1,0 +1,179 @@
+﻿@using Whiskey.ZeroStore.ERP.Models;
+@using Whiskey.ZeroStore.ERP.Website.Areas.Authorities.Models;
+@model  Department
+<style>
+    .par_view label {
+        padding-top: 0px !important;
+    }
+
+    /*#defright_tab ul li {
+        clear: both;
+        list-style-type: none;
+        margin-left: 10px;
+    }*/
+
+    .chil li {
+        float: left;
+    }
+</style>
+<div>
+    <ul id="conta" class="nav nav-tabs">
+        <li class="active">
+            <a href="#baseinfo_tab" data-toggle="tab">
+                基本信息
+            </a>
+        </li>
+        @*<li><a href="#defright_tab" data-toggle="tab">部门默认权限</a></li>*@
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="baseinfo_tab">
+            <div class="view par_view">
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        部门编号 :
+                    </label>
+                    <div class="col-md-7">
+                        @Model.Id
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.DepartmentName) :
+                    </label>
+                    <div class="col-md-7">
+                        @Model.DepartmentName
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.DepartmentType) :
+                    </label>
+                    <div class="col-md-7">
+                        @Model.DepartmentType.ToString()
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.Description) :
+                    </label>
+                    <div class="col-md-7">
+                        @Model.Description
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        部门负责人 :
+                    </label>
+                    <div class="col-md-7">
+                        @ViewBag.RealName
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.MacAddress) :
+                    </label>
+                    <div class="col-md-7">
+                        @Model.MacAddress
+                    </div>
+                </div>
+                @*<div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.SubordinateId) :
+                    </label>
+                    <div class="col-md-7">
+                        @Html.Raw(Model.Subordinate == null ? "" : Model.Subordinate.Member.RealName)                        
+                    </div>
+                </div>*@
+                @*<div class="form-group">
+                    <label class="control-label col-md-3">
+                        上级部门 :
+                    </label>
+                    <div class="col-md-7">                        
+                        @Html.Raw(Model.Parent == null ? "" : Model.Parent.DepartmentName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        下属部门 :
+                    </label>
+                    <div class="col-md-7">
+                        @ViewBag.Children
+                    </div>
+                </div>*@
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.IsDeleted) :
+                    </label>
+                    <div class="col-md-7">
+                        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.IsEnabled) :
+                    </label>
+                    <div class="col-md-7">
+                        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.UpdatedTime) :
+                    </label>
+                    <div class="col-md-7">
+                        @Model.UpdatedTime
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.CreatedTime) :
+                    </label>
+                    <div class="col-m-7">
+                        @Model.CreatedTime
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <input type="hidden" value="@Model.Id " />
+        @*<div class=" tab-pane fade" id="defright_tab" style="height:auto">
+            <div>
+                @if (((List<ModuPermission>)ViewBag.da) == null || ((List<ModuPermission>)ViewBag.da).Count() == 0)
+                {
+                    <span style="text-align:center">无数据</span>}
+                else
+                {
+                    <ul>
+                        
+                        @foreach (var item in (List<ModuPermission>)ViewBag.da)
+                        {
+                            <li>
+                                <span style="font-weight:bold">@item.Name.Trim()</span>
+                                <div style="margin-left:10px;">
+                                    @foreach (var t in item.Child)
+                                    {
+                                        <label style="font-weight:500" title="@t.Description">
+                                            @t.Name<input type="checkbox" checked="checked" disabled="disabled" />
+                                        </label>
+                                    }
+                                </div>
+                            </li>
+
+                        }
+
+                    </ul>
+                }
+
+            </div>
+        </div>*@
+    </div>
+
+</div>
+<script>
+
+</script>
+
+
+
+

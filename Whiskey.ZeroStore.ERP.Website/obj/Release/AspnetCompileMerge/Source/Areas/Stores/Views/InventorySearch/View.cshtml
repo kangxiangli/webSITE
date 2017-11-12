@@ -1,0 +1,210 @@
+﻿
+<style>
+    .diacl .modal-dialog {
+        width: 75%;
+        max-width: 75%;
+    }
+    thead tr th{
+        text-align: center;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-2 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-4">
+                <h5><span class="invent_cou"></span></h5>
+            </div>
+            <div class="col-md-6 text-right">
+
+            </div>
+        </div>
+        <table class="table table-list-parvie table-hover valign-middle" width="100%">
+            <thead>
+
+            </thead>
+        </table>
+    </div>
+    <input type="hidden" value="@ViewBag.pNum" id="productnum_hida" />
+</div>
+<script>
+	$(".table-list-img").on("mouseover", ".popimg", function () {
+		var imgsrc= $(this).attr("src");
+                if(imgsrc=="/Content/Images/noimage.png"||imgsrc==""){
+                	
+                	return;
+                }
+                if (this.tagName == "IMG") {
+                    var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                    
+                    toolTip(strImg);
+                   // console.log(this.src);
+                } else {
+                    $(this).find("img").each(function () {
+                        var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                        toolTip(strImg);
+                    });
+                }
+                
+            }).on("mouseout", function () {
+                $("body").find("#toolTipLayer").hide();
+            });
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $.whiskey.datatable.instances[1] = $(".table-list-parvie").dataTable({
+            "bPaginate": true,
+            "bFilter": true,
+            "bLengthChange": 20,
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("GetProductsByProdNum")",
+
+            // "fnRowCallback": function (nRow, aData, iDisplayIndex) { },
+            "fnServerParams": function(aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var value = $("#productnum_hida").val();
+                value = value.toUpperCase().trim();
+                if (value.length > 11)
+                    value = value.subStr(0, 11);
+                conditions.Rules.push(new $.whiskey.filter.rule("ProductNumber", value, "equal"));
+
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+
+            "fnRowCallback": function(nRow, aData, iDisplayIndex) {
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                $("td:eq(1)", nRow).text(iDisplayIndex + 1).css({ "width": "6%" });
+                $("td:eq(2)", nRow).css({ "width": "12%", "font-family": "黑体", "font-size": "16px", "color": "blue" });
+                return nRow;
+            },
+            "fnDrawCallback": function(osetting) {
+
+                $(".checked-all").click(function() {
+                    var checkedStatus = this.checked;
+                    $(".table tr td input[type=checkbox]").each(function() {
+                        this.checked = checkedStatus;
+                    });
+
+                });
+                $(".table tr td input[type=checkbox]").checked = true;
+                $(".treegrid-expander").css({ "margin-left": 0, "float": "left" });
+            },
+            "aoColumns": [
+                {
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function(data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "序号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function(data) {
+                        var index = data.iDisplayIndex + 1;
+                        return '' + index + '';
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "ProductNumber",
+                    "mData": function(data) {
+                        return data.ProductNumber;
+                    }
+                },
+                {
+                    "sTitle": "条码",
+                    "bSortable": false,
+                    "sName": "ProductBarcode",
+                    "mData": function(data) {
+                        return data.ProductBarcode;
+                    }
+                },
+                 {
+                    "sTitle": "图片",
+                    "bSortable": false,
+                    "sName": "ThumbnailPath",
+                    "mData": function (data) {
+                        return suspension(
+                        	{
+                        	imgPath:data.ThumbnailPath 
+                        	});
+
+                    },
+                },
+                  {
+                      "sTitle": "店铺",
+                      "bSortable": false,
+                      "sName": "StoreName",
+                      "mData": function (data) {
+                          return data.StoreName;
+                      }
+                  },
+                    {
+                        "sTitle": "仓库",
+                        "bSortable": false,
+                        "sName": "StorageName",
+                        "mData": function (data) {
+                            return data.StorageName;
+                        }
+                    },
+                {
+                    "sTitle": "品牌",
+                    "bSortable": false,
+                    "sName": "BrandName",
+                    "mData": function(data) {
+                        return data.BrandName;
+                    },
+                },
+               
+                {
+                    "sTitle": "款式",
+                    "bSortable": false,
+                    "sName": "CategoryName",
+                    "mData": function(data) {
+                        return data.CategoryName;
+                    },
+                },
+                {
+                    "sTitle": "季节",
+                    "bSortable": false,
+                    "sName": "SeasonName",
+                    "mData": function(data) {
+                        return data.SeasonName;
+                    },
+                },
+                {
+                    "sTitle": "尺码",
+                    "bSortable": false,
+                    "sName": "SizeName",
+                    "mData": function(data) {
+                        return data.SizeName;
+                    },
+                },
+                {
+                    "sTitle": "颜色",
+                    "bSortable": false,
+                    "sName": "ColorName",
+                    "mData": function(data) {
+                        if (data.ParentId == "") return "";
+                        return "<img width='35px' src=" + data.IconPath + " title=" + data.ColorName + " onerror='imgloaderror(this);'>";
+                    },
+                },
+            ]
+
+        });
+    });
+</script>

@@ -1,0 +1,153 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model StorageDto
+<style>
+    input[type="checkbox"] {
+      float:left;
+      width:25px;
+    }
+    .diacl .modal-dialog {
+        width: 60%;
+    }
+</style>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.StoreId)：
+    </label>
+    <div class="col-md-6 storage-create">
+        <select id="StoreId" name="StoreId" class="form-control"></select>
+        @*@Html.TextBoxFor(m=> m.StoreId, new { @class = "form-control" })*@
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.StorageType)：
+    </label>
+    <div class="col-md-6"> 
+        <select id="StorageType" name="StorageType" class="form-control selectpicker">
+            <option value="0">线上店铺仓库</option>
+            <option value="1">线下店铺仓库</option>
+        </select>
+        @*@Html.TextBoxFor(m=> m.StorageType, new { @class = "form-control" })*@
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.StorageCategory)：
+    </label>
+    <div class="col-md-6">
+        <select id="StorageType" name="StorageType" class="form-control selectpicker">
+            <option value="0">商品仓(可零售)</option>
+            <option value="1">设备仓(不可零售)</option>
+        </select>
+        @*@Html.TextBoxFor(m=> m.StorageType, new { @class = "form-control" })*@
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.StorageName)：
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.StorageName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.TelePhone)：
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.TelePhone, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.StorageAddress)：
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m => m.StorageAddress, new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.Description)：
+    </label>
+    <div class="col-md-6">
+        <textarea name="Description" id="Description" class="form-control"></textarea>
+    </div>
+</div>
+@*<div class="form-group">
+    <label class="control-label col-md-4 checkbox-inline">
+        @Html.DisplayNameFor(m => m.IsVestIn)：
+    </label>
+    <div class="col-md-6">
+        <input type="checkbox" value="false" id="IsVestIn" name="IsVestIn" class="form-control" />
+    </div>
+</div>*@
+
+<div class="form-group">
+    <label class="control-label col-md-4 checkbox-inline">
+        @Html.DisplayNameFor(m => m.IsEnabled)：
+    </label>
+    <div class="col-md-6">
+        <input type="checkbox" value="false" id="IsEnabled" name="IsEnabled" class="form-control" />
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-4 checkbox-inline">
+        @Html.DisplayNameFor(m => m.IsOrderStorage)：
+    </label>
+    <div class="col-md-6">
+        <input type="checkbox" value="false" id="IsOrderStorage" name="IsOrderStorage" class="form-control" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.IsDefaultStorage)：
+    </label>
+    <div class="col-md-6">
+        <input type="checkbox" value="false" id="IsDefaultStorage" name="IsDefaultStorage" class="form-control" />
+        <h6 style="color: #5ebd5e">*如果已经有默认仓库，则当前的勾选会替换之前的操作</h6>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.IsTempStorage) :
+    </label>
+    <div class="col-md-6">
+        <input type="checkbox" value="false" id="IsTempStorage" name="IsTempStorage" class="form-control" />
+        <h6 style="color: #5ebd5e">*如果已经有临时仓库，则当前的勾选会替换之前的操作</h6>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4 checkbox-inline">
+        @Html.DisplayNameFor(m => m.IsForAddInventory)：
+    </label>
+    <div class="col-md-6">
+        <input type="checkbox" value="false" id="IsForAddInventory" name="IsForAddInventory" class="form-control" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.IsPublicInfo)：
+    </label>
+    <div class="col-md-6">
+        <input type="checkbox" value="false" id="IsPublicInfo" name="IsPublicInfo" class="form-control" />
+    </div>
+</div>
+
+<script>
+    
+    $(function () {
+        $(".selectpicker").selectpicker();
+        $(".storage-create #StoreId").queryManageStore();
+        $(":checkbox").click(function () {
+            if ($(this).is(":checked")) {
+                $(this).val("true");
+            }
+            else {
+                $(this).val("false");
+            }
+        });
+    })
+</script>

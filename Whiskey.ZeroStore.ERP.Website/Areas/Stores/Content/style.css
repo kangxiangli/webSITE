@@ -1,0 +1,69 @@
+﻿label.label-success.disabled, .label[disabled] {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.65;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.btn {
+    padding: 5px 13px;
+}
+
+.thumbnail .caption {
+    color: white;
+    padding: 0;
+    margin-left: 15px;
+    position: relative;
+}
+
+.thumbnail {
+    height: 466px;
+    padding: 10px 0;
+}
+
+    .thumbnail img {
+        width: 100%;
+    }
+
+.caption p {
+    font-family: "Microsoft YaHei";
+    line-height: 21px;
+    letter-spacing: 1px;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 14px;
+}
+
+.thumbnail_outer {
+    height: 260px;
+    overflow: hidden;
+}
+
+.imageSrc {
+    width: 40% !important;
+    position: absolute;
+    bottom: 142px;
+    left: -2%;
+    /*firefox*/
+    -moz-box-shadow: 2px 3px 5px 1px rgba(0, 0, 0, 0.3);
+    /*webkit*/
+    -webkit-box-shadow: 2px 3px 5px 1px rgba(0, 0, 0, 0.3);
+    /*opera或ie9*/
+    box-shadow: 2px 3px 5px 1px rgba(0, 0, 0, 0.3);
+}
+
+.red {
+    color: #e5603b;
+}
+
+.green {
+    color: #5ebd5e;
+}
+
+.gray {
+    color: #888
+}

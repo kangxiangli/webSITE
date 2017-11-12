@@ -1,0 +1,78 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+@model FieldDto
+
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.FieldReason) :
+    </label>
+    <div class="col-md-10">
+        <label class="control-label">
+            @Model.FieldReason
+        </label>        
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        外勤时间 :
+    </label>
+    <div class="col-md-8">        
+        <div class="input-group control-label">
+            @Model.StartTime
+            <span style="color: #e5603b">至</span>
+            @Model.EndTime
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        外勤天数 :
+    </label>
+    <div class="col-md-2">
+        <label class="control-label">
+            @Model.FieldDays 天
+        </label>        
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        工作天数 :
+    </label>
+    <div class="col-md-2">
+        <label class="control-label">
+            @Model.FieldWorkDays 天
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.VerifyType) :
+    </label>
+    <div class="col-md-10">
+        <select class="form-control selectpicker" id="VerifyType" name="VerifyType">            
+            <option value="@((int)VerifyFlag.Pass)">审核通过</option>
+            <option value="@((int)VerifyFlag.NoPass)">审核不通过</option>
+        </select>
+    </div>
+</div>
+@Html.HiddenFor(x=>x.Id)
+@Html.HiddenFor(x => x.AdminId)
+<script type="text/javascript">
+    $(function () {
+        var type = "@Model.VerifyType";
+        $("#VerifyType option").each(function () {
+            var value = $(this).val();
+            if (value ==type) {
+                $(this).attr("selected", "selected");
+            }
+        })
+    });
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

@@ -1,0 +1,38 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@model List<NotificationAnswerers>
+
+<div class="worktimeDetail">
+    <div class="row job_per">
+        @Html.Raw(ViewBag.htmlStr)
+
+        <input type="hidden" value="" id="hdAnswerRecord" />
+        <input type="hidden" value="@ViewBag.Ids" id="hdIds" />
+    </div>
+</div>
+<link href="/Content/Styles/Bootstrap/BootstrapSelect/bootstrap-select.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/BootstrapSelect/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+    var answers = new Array();
+    function Answer(qguidId, content) {
+        var conditions = new $.whiskey.filter.group();
+
+        var beflag = false;
+        for (var i = 0; i < answers.length; i++) {
+            if (answers[i][0] == qguidId) {
+                answers[i][1] = content;
+                beflag = true;
+            }
+        }
+
+        if (!beflag) {
+            var model = new Array();
+            model[0] = qguidId;
+            model[1] = content;
+
+            answers[answers.length] = model;
+        }
+
+        $("#hdAnswerRecord").val(JSON.stringify(answers));
+    }
+</script>

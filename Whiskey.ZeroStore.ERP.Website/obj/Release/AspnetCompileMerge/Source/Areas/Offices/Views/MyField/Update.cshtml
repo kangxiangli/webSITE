@@ -1,0 +1,136 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Data
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+@model FieldDto
+
+<div class="form-group" id="warning" style="display:none">
+    <label class="control-label col-md-8" style="color: #5ebd5e">
+        *审核通过，不能进行编辑
+    </label>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.FieldReason) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.FieldReason, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        外勤时间 :
+    </label>
+    <div class="col-md-10">
+        <div class="input-group">
+            @Html.TextBoxFor(x => x.StartTime, new { @class = "form-control datetime", @placeholder = "开始时间", @onchange = "computeDay(this)" })
+            <span class="input-group-addon">至</span>
+            @Html.TextBoxFor(x => x.EndTime, new { @class = "form-control datetime", @placeholder = "结束时间", @onchange = "computeDay(this)" })
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(x => x.FieldDays) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.FieldDays, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(x => x.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(x => x.Id)
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+
+    $("#StartTime").datetimepicker({
+        startDate: new Date().toLocaleDateString(),
+        language: 'zh-CN',
+        minView: 'hour',
+        todayBtn: true,
+        format: 'yyyy/mm/dd hh:ii'
+    });
+
+    $('#EndTime').datetimepicker({
+        startView: 1,
+        minView: 0,
+        maxView: 1,
+        language: 'zh-CN',
+        format: 'yyyy/mm/dd hh:ii'
+    });
+    $("#StartTime").val("@Model.StartTime");
+    $("#EndTime").val("@Model.EndTime");
+    $(function () {
+        //审核通过后不能修改
+        var verifyType = "@Model.VerifyType";
+        if (verifyType == "@((int)VerifyFlag.Pass)") {
+            $("#warning").css("display", "block");
+            $(".bootbox .btn-primary").attr("disabled", "disabled");
+        }
+    });
+
+    //计算出勤天数
+    function computeDay(obj) {
+        var startTime = $(".bootbox #StartTime").val();
+        var endTime = $(".bootbox #EndTime").val();
+        var id = $(obj).attr("id");
+        if ($(obj).attr("name") == "StartTime") {
+            if ($(obj).val() != "") {
+                $('#EndTime').val($("#StartTime").val());
+            }
+        }
+        if (startTime != "" && endTime != "") {
+            $.ajax({
+                url: "@Url.Action("ComputeWorkDay")",
+                type: 'post',
+                data: { StartDate: startTime, EndDate: endTime },
+                success: function (data) {
+                    if (data.ResultType == "@((int)OperationResultType.Success)") {
+                        if (parseFloat(data.Data) > 0) {
+                            $(".bootbox #FieldDays").val(data.Data);
+                        } else {
+                            if (id != "StartTime") {
+                                $.whiskey.web.alert({
+                                    type: "danger",
+                                    content: "外勤时间必须大于0",
+                                    callback: function () {
+                                       
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    else {
+                        $.whiskey.web.alert({
+                            type: "danger",
+                            content: data.Message,
+                            callback: function () {
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    //获取当前时期并赋值给日期控件
+    var myDate = new Date();
+    var date = myDate.toLocaleDateString();
+    //$(".datetime").attr("value", date);
+    //初始化日期控件
+    $(".datetime").datetimepicker({
+        startDate: date,
+        format: 'yyyy/mm/dd hh:ii',
+        autoclose: false,
+        minView: 'hour',
+        todayBtn: true,
+        //forceParse:false
+    });
+</script>

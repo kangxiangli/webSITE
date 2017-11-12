@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<AppModel>  
+  <Parameter type="0" id="1">    
+    <name>每日签到</name>
+  </Parameter>
+  <Parameter type="0" id="2">
+    <name>发布文章</name>
+  </Parameter>
+  <Parameter type="0" id="3">
+    <name>粉丝管理</name>
+  </Parameter>
+  <Parameter type="0" id="4">
+    <name>我的任务</name>
+  </Parameter>
+  <Parameter type="0" id="5">
+    <name>我的收益</name>
+  </Parameter>
+  <Parameter type="0" id="6">
+    <name>投诉建议</name>
+  </Parameter>
+  <Parameter type="0" id="7">
+    <name>穿衣数据</name>
+  </Parameter>
+  <Parameter type="0" id="8">
+    <name>测试报告</name>
+  </Parameter>
+  <Parameter type="0" id="9">
+    <name>我的钱包</name>
+  </Parameter>
+  <Parameter type="0" id="10">
+    <name>我的圈子</name>
+  </Parameter>
+  <Parameter type="0" id="11">
+    <name>我的商品</name>
+  </Parameter>
+  <Parameter type="0" id="12">
+    <name>消息通知</name>
+  </Parameter>
+</AppModel>

@@ -1,0 +1,40 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model MemberGiftDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.MemberId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.MemberId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.StoreId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.StoreId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Score) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Score, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m=> m.Id)

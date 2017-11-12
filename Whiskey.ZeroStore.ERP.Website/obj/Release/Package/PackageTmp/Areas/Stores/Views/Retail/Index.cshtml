@@ -1,0 +1,251 @@
+﻿<style>
+    input {
+        text-align: center;
+    }
+
+    .panel-search label {
+        padding-top: 15px;
+    }
+
+    thead th {
+        font-size: 12px;
+    }
+
+    .remove_ico {
+        cursor: pointer;
+        	opacity: 0.7;
+    }
+
+.remove_ico:hover{
+	opacity: 1;
+	 cursor: pointer;
+}
+    .mes_warn {
+        margin-bottom: 10px;
+    }
+
+    .moncou_span {
+        display: inline-block;
+        color:  #5ebd5e;
+    }
+    .prodisc>.open>ul.dropdown-menu > li > a{
+      	width: 103px;
+      }
+</style>
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<style type="text/css">
+    h1 {
+        font-family: "微软雅黑";
+        font-size: 40px;
+        margin: 20px 0;
+        padding-bottom: 20px;
+        letter-spacing: 2px;
+    }
+
+    .time-item strong {
+        color: #fff;
+        line-height: 49px;
+        font-size: 20px;
+        font-family: Arial;
+        padding: 0 10px;
+        margin-right: -20px;
+        border-radius: 5px;
+    }
+
+    #day_show {
+        float: left;
+        line-height: 49px;
+        color: #c71c60;
+        font-size: 32px;
+        margin: 0 10px;
+        font-family: Arial,Helvetica,sans-serif;
+    }
+
+    .item-title .unit {
+        background: none;
+        line-height: 49px;
+        font-size: 24px;
+        padding: 0 10px;
+        float: left;
+    }
+    button#but_prod_sel:hover,#but_prod_succ:hover {
+    background-color: #000 !important;
+}
+</style>
+<div class="time-item" id="timer" style="position:absolute;top:4px;left:124px;display:none;">
+    <strong id="hour_show">0时</strong>
+
+    <strong id="minute_show">0分</strong>
+
+    <strong id="second_show">0秒</strong>
+
+</div>
+
+<div class="row">
+    <div class="panel panel-mem">
+        <div class="step1">
+            <!-- #region 步骤1 选择商品,得到合计金额-->
+            <div class="" style="margin-bottom:10px">
+                <!--搜索区-->
+                <div class="form-group no-margin-hr" style="margin:20px auto">
+                    <div class="col-md-3 stor_li_box">
+                        <label class="control-label col-md-4">商品流水号：</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("ProductNumber", "", new { @class = "form-control", })
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-md-2_retail_box">
+                        <button id="but_prod_succ" style="display:inline;width:auto" class="btn but_prod_succ btn-success">确定</button>
+                        <button id="but_prod_sel" style="display:inline;width:auto" class="btn but_prod_sel btn-success">选择商品</button>
+                    </div>
+                    <div class="col-md-3 stor_li stor_li_box">
+                        <label class="control-label col-md-4">选择店铺：</label>
+                        <div class="col-md-6 col-md-6_retail_box">
+                            <select class="form-control" id="outstoreid" name="outstoreid"></select>
+                        </div>
+                    </div>
+
+                </div>
+                <!--库存列表区-->
+                <div class="">
+                    <div class="panel panel-list">
+                        <div class="panel-heading clearfix">
+                            <div class="col-md-5 panel-title">
+                                <h5>
+                                    <i class="fa fa-list"></i> <span>已添加商品</span>
+                                    <span style="margin-left:30px"><i class="hidden prod_i fa fa-chevron-down" onclick="memb_hide(this, $('#prodlis_tab tbody'))"></i></span>
+                                </h5>
+                            </div>
+                            <div class="pull-right">
+                                <div class="button-normal">
+                                    <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                                    <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                                    <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                                </div>
+                                <div class="button-recycle">
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!--库存列表-->
+                        <table id="prodlis_tab" class="table table-list table-hover valign-middle" width="100%">
+                            <thead>
+                            </thead>
+                        </table>
+                        <!--合计金额-->
+                        <div class="bottom">
+                            <div class="couinf col-md-5"></div>
+                            <div class="moncou center">
+                                <span style="padding-left:25px;font-size:15px">
+                                    <span style="font-weight:bold">合计(￥):</span><span class="moncou_span"></span><span style="font-weight:bold;margin:5px">元</span>
+                                </span>
+                            </div><div class="clear"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!--会员登录区-->
+            <div class="memb-cu">
+                <div class="col-md-11">
+                    <input class="swithP" type="checkbox" data-class="switcher-default" checked="checked">
+                </div>
+                <hr style="clear:both;margin-top:0" />
+                <!--会员/非会员信息区-->
+                <div class="mes_warn"><span style="color: #5ebd5e;font-size:12px;margin:10px 120px">*登录名可以是会员昵称、注册时填写的电话号码、会员卡号</span></div>
+                <div class="col-md-11 memb-cl" style="margin-bottom: 10px">
+                    <div><label class="control-label col-md-3">会员登录名：</label></div>
+                    <div class="col-md-2">
+                        <input type="text" class="form-control" id="membNum" value="" />
+                        <input type="hidden" id="hidden_memberId" value="" />
+                    </div>
+                    <label class="control-label col-md-1">会员密码：</label>
+                    <div class="col-md-2"><input type="password" class="form-control memb_pwd" value="" /></div>
+
+
+                    <div class="col-md-3">
+                        <button class="form-control but_memb_succ" style="display: inline; width: auto">确定</button>
+                        <button class="form-control btn btn-applogin" style="display: inline; width: auto">app登录</button>
+                        @if (ViewBag.CanSelectMember)
+                        {
+                            <button class="form-control but_memb_sel" style="display:inline;width:auto">选择会员</button>
+                        }
+                    </div>
+                    <div class="col-md-2">
+
+                       
+                    </div>
+                </div>
+                <div class="col-md-11 memb-cl" style="margin-bottom:10px">
+                    <div><label class="control-label col-md-3 " style="margin: 8px 0;">姓名：</label></div>
+                    <div class="col-md-2"><input id="membName" disabled="disabled" style="background-color:#dddddd" class="form-control" /></div>
+                </div>
+                <div class="col-md-11 memb-cl" style="margin-bottom:10px">
+                    <div><label class="control-label col-md-3">现有储值：</label></div>
+                    <div class="col-md-2"><input disabled="disabled" style="background-color:#dddddd" class="form-control curr_mon" /></div>
+                    <label class="control-label col-md-1">积分：</label>
+                    <div class="col-md-2"><input disabled="disabled" style="background-color:#dddddd" class="form-control score_cou" /></div>
+                    <div class="col-md-3">
+
+                    </div>
+                    <div class="col-md-2">
+
+                    </div>
+                </div>
+                <div class="col-md-11" style="margin-bottom: 10px">
+                    <div><label class="control-label col-md-3">搭配师编号：</label></div>
+                    <div class="col-md-2 input-append">
+                        <div class="input-group">
+                            <input class="input-sm form-control collocation_num" />
+                            <span class="btn input-group-addon collocation_succ">确定</span>
+                        </div>
+                    </div>
+                    <label class="control-label col-md-1">姓名：</label>
+                    <div class="col-md-2"><input disabled="disabled" style="background-color:#dddddd" class="form-control collocation_name" /></div>
+                    <div class="col-md-3">
+
+                    </div>
+                    <div class="col-md-2">
+
+                    </div>
+                </div>
+
+                <!-- #endregion -->
+
+                <hr style="clear:both" />
+
+            </div>
+            <!-- #endregion -->
+            <div class="row">
+                <div class="col-md-12 container">
+                    <a href="javascript:;" id="btnStep2" class="btn btn-success pull-right">
+                        <span class="fa fa-arrow-right"></span>下一步
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="step2">
+            <!-- #region 步骤2 会员/非会员 通过使用优惠券券,店铺活动,得到总消费金额-->
+            <!-- #endregion -->
+        </div>
+
+        <div class="step3">
+            <!-- #region 步骤3 使用各种支付方式完成支付 -->
+            <!-- #endregion -->
+        </div>
+
+
+
+    </div>
+</div>
+
+@section Scripts{
+    <script src="/Content/Scripts/lodash/lodash.min.js"></script>
+    <script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+    <script src="/wwwroot/built/RetailStep1.js"></script>
+}
+

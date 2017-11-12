@@ -1,0 +1,392 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@model Orderblank
+<style>
+    .modal-content {
+        width: 1200px !important;
+    }
+   
+</style>
+<script>
+$(".mytabcontent_box").on("mouseover", ".popimg", function () {
+		
+                if (this.tagName == "IMG") {
+                    var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                    
+                   toolTip(strImg);
+                    console.log(this.src);
+                } else {
+                    $(this).find("img").each(function () {
+                        var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                        toolTip(strImg);
+                    });
+                }
+            }).on("mouseout", function () {
+                $("body").find("#toolTipLayer").hide();
+            });
+
+</script>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+    <li><a href="#detail_tab" data-toggle="tab">详细列表</a></li>
+
+</ul>
+<input type="hidden" id="hid_ordid" value="@Model.OrderBlankNumber" />
+<div id="mytabcontent" class="tab-content mytabcontent_box">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.OrderBlankNumber) :
+            </label>
+            <div class="col-md-6  orderBlankNumber">
+                @Model.OrderBlankNumber
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.OutStorageId) :
+            </label>
+            <div class="col-md-6">
+                @TempData["storageOut"]
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.ReceiverStoreId) :
+            </label>
+            <div class="col-md-6">
+                @TempData["ReceiverId"]
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.ReceiverStorageId) :
+            </label>
+            <div class="col-md-6">
+                @TempData["ReceiverStorageId"]
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Status) :
+            </label>
+            <input type="hidden" value="@Model.Status" id="hid_stat" />
+            <div class="col-md-6" style="color: #5ebd5e" id="pur_stat">
+                @Html.DisplayTextFor(m => m.Status)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-6">
+                @Model.Notes
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsEnabled) :
+            </label>
+            <div class="col-md-6">
+                @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                @Html.DisplayNameFor(m => m.IsDeleted) :
+            </label>
+            <div class="col-md-6">
+                @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                创建人 :
+            </label>
+            <div class="col-md-6">
+                @Html.DisplayTextFor(m => m.Operator.Member.MemberName)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                创建时间:
+            </label>
+            <div class="col-md-6">
+                @Model.CreatedTime.ToString("yyyy-MM-dd HH:mm:ss")
+            </div>
+        </div>
+        @if (Model.DeliveryTime.HasValue)
+        {
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    发货人 :
+                </label>
+                <div class="col-md-6">
+                    @Html.DisplayTextFor(m => m.DeliverAdmin.Member.MemberName)
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    发货时间 :
+                </label>
+                <div class="col-md-6">
+                    @Model.DeliveryTime.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                </div>
+            </div>
+
+        }
+        @if (Model.ReceiveTime.HasValue)
+        {
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    收货人 :
+                </label>
+                <div class="col-md-6">
+                    @Html.DisplayTextFor(m => m.ReceiverAdmin.Member.MemberName)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    收货时间 :
+                </label>
+                <div class="col-md-6">
+                    @Model.ReceiveTime.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                </div>
+            </div>
+
+        }
+
+    </div>
+    <div class="tab-pane fade" id="detail_tab">
+        <div class="row">
+            <div class="panel panel-search">
+
+                <div class="panel-body">
+                    <div class="col-md-11">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">商品条码：</label>
+                            <div class="col-md-4">
+
+                                @Html.TextBox("ProductBarcode", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">商品品牌：</label>
+                            <div class="col-md-4">
+                                @Html.DropDownList("BrandId", ViewBag.Brands as List<SelectListItem>, new { @class = "form-control selectpicker" })
+                            </div>
+                            <div>
+                                <a href="javascript:;" id="btnSearchFromOrderblank" class="btn btn-primary">搜索</a>
+                                <a href="javascript:;" id="btnExportAll" class="btn btn-warning btn-padding-right">导出全部</a>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div>
+            <table id="table-orderblankitem" class="table table-orde table-list table-hover valign-middle" width="100%">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script>
+    var uuid = $.whiskey.tools.UUID();
+    $(function () {
+
+        $("#btnExportAll").on('click', function () {
+            //跳转
+            var orderblankNumber = '@Model.OrderBlankNumber';
+            location.href = "@Url.Action("ExportOrderblankItem")" + "?orderblankNumber=" + orderblankNumber;
+        });
+
+
+        var ordid = $("#hid_ordid").val();
+        $("#btnSearchFromOrderblank").click(function () {
+            $tableInstance.api().draw(false);
+        });
+        var $tableInstance = $(".table-orde").dataTable({
+            "aaSorting": [[0, 'desc']],
+            "sAjaxSource": "/Warehouses/Orderblank/OrderblankViewList",
+            "sDom": 't<"F clearfix datatable-footer"<"col-md-2"l>r<"col-md-3"><"col-md-7 text-right"p>>',
+            "fnServerParams": function (aoData) {
+                var num = '@Model.OrderBlankNumber';
+                aoData.push({ name: "orderblankNumber", value: num });
+                //brand
+                var brandId = parseInt($("#BrandId").val());
+                if (!isNaN(brandId) && brandId > 0) {
+                    aoData.push({ name: "brandId", value: brandId });
+                }
+
+                var barcode = $("#ProductBarcode").val();
+                if (barcode && barcode.length > 0) {
+                    aoData.push({ name: "barcode", value: barcode });
+                }
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+                $(".table-list").treegrid({
+                    saveState: true,
+                    treeColumn: 2, //在第三列上显示伸缩节点
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                return nRow;
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "UpdateTime",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            }
+                , {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (da) {
+                    return "";
+                }
+
+            }
+                , {
+                "sTitle": "商品货号",
+                "bSortable": false,
+                "sName": "ProductNumber",
+                "mData": function (da) {
+                    if (da.ParentId == "")
+                        return da.Number;
+                    return "";
+                }
+
+            },
+            {
+                "sTitle": "仓库",
+                "bSortable": false,
+                "sName": "Storage",
+                "mData": function (da) {
+                    if (da.ParentId != "" && da.Storage != undefined)
+                        return da.Storage;
+                    return "";
+                }
+            },
+            {
+                "sTitle": "条码",
+                "bSortable": false,
+                "sName": "ProductName",
+                "mData": function (da) {
+                    if (da.ParentId != "")
+                        return da.Number;
+                    return "";
+                }
+            },
+            {
+                "sTitle": "品牌",
+                "bSortable": false,
+                "sName": "Brand",
+                "mData": function (da) {
+                    if (da.Brand == undefined) return "";
+                    return da.Brand;
+                }
+            },
+            {
+                "sTitle": "尺码",
+                "bSortable": false,
+                "sName": "Size",
+                "mData": "Size",
+                "mData": function (da) {
+                    if (da.Size == undefined) return "";
+                    return da.Size;
+                }
+            },
+            {
+                "sTitle": "季节",
+                "bSortable": false,
+                "sName": "Season",
+                "mData": function (da) {
+                    if (da.Season == undefined) return "";
+                    return da.Season;
+                }
+
+            },
+            {
+                "sTitle": "颜色",
+                "bSortable": false,
+                "sName": "Color",
+                "mData": function (da) {
+                    if (da.Color == undefined) return "";
+                    return da.Color;
+                }
+            },
+
+            {
+                "sTitle": "图片",
+                "sName": "Thumbnail",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (da) {
+                    if (da.ParentId != "") return "";
+                        return '<div class="thumbnail-img_five_box"><div class="thumbnail-img_five"><div class="thumbnail-img_f popimg"><img class="img-responsive" src="'+ da.Thumbnail +'"> </div></div></div>';
+                }
+            },
+            {
+                "sTitle": "配货数量",
+                "sName": "Amount",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (da) {
+                    if (da.ParentId == "")
+                        return da.Quantity;
+                    return "";
+                }
+            }
+            ]
+
+        });
+
+    })
+
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+$('.selectpicker').selectpicker('refresh');
+    })
+</script>

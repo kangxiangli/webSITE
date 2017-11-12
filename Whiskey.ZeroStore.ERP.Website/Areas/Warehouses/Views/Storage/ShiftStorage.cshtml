@@ -1,0 +1,40 @@
+﻿<div class="shiftstorage">
+    <div class="form-group">
+        <label class="control-label col-md-2">
+            转移到 :
+        </label>
+        <div class="col-md-5">
+            <select name="StoreId" id="StoreId"></select>
+        </div>
+        <div class="col-md-5">
+            <select name="StorageId" id="StorageId"></select>
+        </div>
+    </div>
+    <input type="hidden" name="Id" value="@ViewBag.Id" />
+</div>
+<script>
+    $(function () {
+        $(".shiftstorage #StorageId").selectpicker();
+
+        $(".shiftstorage #StoreId").queryAllStore();
+        $(".shiftstorage #StoreId").change(function () {
+            var storeid = $(this).val();
+            $.whiskey.web.ajaxRequest({
+                method: "post",
+                actionUrl: "GetStoragesByStoreId",
+                params: { StoreId: storeid },
+                lockButton: $(this),
+                complete: function (data) {
+                    var $storeageid = $(".shiftstorage #StorageId").html("");
+                    var opts = "";
+                    $.each(data, function () {
+                        var id = this.Id;
+                        var name = this.Name;
+                        opts += "<option value=" + id + " " + (this.IsDefault ? "selected" : "") + ">" + name + "</option>";
+                    });
+                    $storeageid.html(opts).selectpicker('refresh');
+                }
+            });
+        })
+    });
+</script>

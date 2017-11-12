@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        
+        <meta name="viewport"
+        content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+
+    <link href="../css/public.css" rel="stylesheet" type="text/css" />
+	<style>
+		#scanner{width: 100%;height: auto;overflow: hidden;}
+	</style>
+	
+  </head>
+<body class="um-vp " ontouchstart>
+    <div id="til_dk" class="til_dk">
+        <div class="til_bak">
+            <p class="back_tx back_ig" id="leave">
+                <img src="../img/nav_fh@2x.png" alt="png" /><span>返回</span>
+            </p>扫描
+        </div>
+    </div>
+	<div class="conbor">
+			<div class="consj">				
+				<span>条形码值为:</span>
+				<div class="tcxx" id="scanner"></div>
+			</div>
+			<br>
+		</div>
+</body>
+<script type="text/javascript" charset="utf-8" src="../js/global.js"></script>
+<script>
+    if(window.localStorage){
+        var result=localStorage.datas;
+         $('#scanner').html(result);
+    }else{
+        alert();
+    }
+  $(function() {
+    $(".back_tx").click(function () {
+            window.location.href = '../dk.html';
+        })
+  })
+   
+</script>
+</html>

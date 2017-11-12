@@ -1,0 +1,211 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model CollocationTemplate
+<style>
+    .modal-content {
+        width: 1200px;
+    }
+
+    span.keyword {
+        margin-right: 5px;
+        cursor: pointer;
+    }
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active"><a href="#baseinfo_tab" data-toggle="tab">基本信息</a></li>
+</ul>
+<div id="add-template" class="tab-content">
+
+
+    <!--基本信息tab-->
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        <div class="row">
+            <div class="col-md-6">
+
+
+                <div class="form-group">
+                    <label class="control-label col-md-4">
+                        模版名称 :
+                    </label>
+                    <div class="col-md-8">
+                        <input type="text" v-model.trim="name" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-4">
+                        品类 :
+                    </label>
+                    <div class="col-md-8">
+
+                        <select class="form-control selectpicker" v-model="selectedCategoryId">
+                            <option v-for="option in categories" v-bind:value="option.Id">{{option.CategoryName}}</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-4">
+                        属性标签 :
+                    </label>
+                    <div class="col-md-8">
+
+
+                        <ul>
+                            <collocation-tag class="item" v-for="model in attrs" v-bind:model="model"></collocation-tag>
+                        </ul>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h5>规则预览:</h5>
+                <div class="well text-left">
+                    品类:<span class="keyword">{{selectedCategory.CategoryName}}</span>
+                    <br />
+                    标签(双击移除):<span v-for="attr in checkedAttrs" class="keyword" v-on:dblclick="removeTag(attr)">{{attr}}</span>
+                </div>
+
+                <h5>已添加规则:</h5>
+                <div class="panel col-md-5 col-md-offset-1" v-for="(rule,index) in rules">
+                    <div class="panel-body">
+                        <div class="clearfix">
+                            <button class="close" type="button" v-on:click="removeRule(index)">x</button>
+                        </div>
+
+
+                        <div class="col-sm-5">
+                            编号:
+                        </div>
+                        <div class="col-sm-7">{{index+1}}</div>
+
+
+
+                        <div class="col-sm-5">
+                            品类:
+                        </div>
+                        <div class="col-sm-7"><span class="keyword">{{rule.categoryName}}</span></div>
+
+                        <div class="col-sm-5">
+                            标签:
+                        </div>
+                        <div class="col-sm-7">
+                            
+                            <span v-for="tag in rule.tags" class="keyword">{{tag}}</span>
+
+                        </div>
+                    </div>
+                </div>
+                <button type="button" v-on:click="addRule" class="btn btn-success btn-block btn-primary">添加搭配规则</button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    var str = '@Html.Raw(Model.CollocationRules)';
+    var arr = [];
+    try {
+        var temp = JSON.parse(str);
+        arr = Array.isArray(temp)?temp:[]
+    } catch (e) {
+
+    }
+
+
+    var baseUrl = "/Stores/CollocationTemplate";
+    var addTemplateVM = new Vue({
+        el: '#add-template',
+        data: {
+            id:'@Model.Id',
+            name: '@Model.Name',
+            categories: [],
+            selectedCategoryId: 0,
+            attrs: [],
+            rules: arr
+        },
+        methods: {
+            addRule() {
+                if (!this.selectedCategory || !this.selectedCategory.Id) {
+                    alert('请选择品类');
+                    return;
+                }
+
+                this.rules.push({
+                    categoryId: this.selectedCategory.Id,
+                    categoryName: this.selectedCategory.CategoryName,
+                    tags: this.checkedAttrs.concat([]),
+                })
+
+                // 重置选择状态
+                this.attrs.forEach(item => {
+                    item.IsChecked = false;
+                    item.Children.forEach(i=>i.IsChecked = false);
+                })
+
+                this.selectedCategoryId = 0;
+                
+
+            },
+            removeRule(index) {
+                this.rules.splice(index, 1);
+            },
+            removeTag(attr) {
+
+                this.attrs.forEach(item => {
+
+                    var idx = item.Children.findIndex(n => n.AttributeName == attr)
+                    if (idx !== -1) {
+                        item.Children[idx].IsChecked = false;
+                    }
+                })
+            }
+
+        },
+        mounted: function () {
+            var _self = this;
+            $.getJSON("/common/GetCategory")
+                .done(function (res) {
+                    _self.categories = res.Data;
+                    _self.$nextTick(function () {
+                        $(".selectpicker").selectpicker({ title: "请选择品类" })
+                    })
+
+                })
+            $.getJSON("/common/GetProductAttr")
+                .done(function (res) {
+                    _self.attrs = res.Data;
+                })
+
+        },
+        computed: {
+            selectedCategory: function () {
+                let defaultOption = { CategoryId: '', CategoryName: '' };
+                let categoryId = this.selectedCategoryId;
+                if (!categoryId) {
+                    return defaultOption;
+                }
+                var arr = this.categories.filter(c => c.Id == categoryId);
+                if (!arr || !arr.length) {
+                    return defaultOption;
+                }
+                return arr[0];
+            },
+            checkedAttrs: function () {
+
+                var res = [];
+                this.attrs.forEach(item => {
+                    if (item.IsChecked) {
+                        res.push(item.AttributeName)
+                    }
+                    var temp = item.Children.filter(n => n.IsChecked).map(n => n.AttributeName)
+                    if (temp.length) {
+                        res = res.concat(temp)
+                    }
+                })
+                return res
+            }
+        }
+    })
+</script>

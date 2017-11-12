@@ -1,0 +1,241 @@
+﻿<style>
+    .modal-content {
+        width: 800px;
+    }
+
+    #barcodetarget label {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        padding-top: 0;
+        padding-bottom: 0;
+        font-size: 12px;
+        color: black;
+    }
+
+    .rowt {
+        margin-top: 1px;
+        margin-bottom: 1px;
+        padding-left: 20px;
+    }
+
+    .barcodeImg {
+        margin: 1px 0px;
+    }
+
+    .labodd {
+        padding-left: 0;
+    }
+
+    .labeve {
+        padding-left: 4px;
+    }
+
+    .fir {
+        margin-top: 3px;
+    }
+
+    .lat {
+        margin-bottom: 2px;
+    }
+</style>
+
+
+
+<style type="text/css">
+
+</style>
+<div>
+    <div style="overflow-y: scroll;padding:auto;overflow-x:hidden;">
+        <div id="barcodetarget" class="col-md-12" style="max-height: 500px"></div>
+    </div>
+    <div id="templa_code" style="display: none">
+        <div class="col-md-6" style="float:left;margin-top:20px">
+            <div style="border-color: #000; border-style: dashed; border-width: 1px;border-width: 1px;">
+                <div class="" style="position:relative;">
+
+                    <div class="form-group no-margin-hr rowt">
+                        <label class="control-label labeve">品牌：</label>
+                        <label class="control-label labodd prodtagpric">
+                            $prodbrandname
+                        </label>
+                    </div>
+                    <div class="form-group no-margin-hr rowt">
+                        <label class="control-label labeve">颜色：</label>
+                        <label class="control-label labodd prodcolor">
+                            $prodcolor
+                        </label>
+                        <label class="control-label labeve">尺码：</label>
+                        <label class="control-label labodd prodsize">
+                            $prodsize
+                        </label>
+                        <label class="control-label labeve print_4">等级：</label>
+                        <label class="control-label labodd level print_4">
+                            $level
+                        </label>
+                    </div>
+                    <div class="form-group no-margin-hr rowt">
+                        <label class="control-label labeve">款式：</label>
+                        <label class="control-label labodd prodcategory">
+                            $prodcategory
+                        </label>
+                    </div>
+                    <div class="form-group no-margin-hr rowt print_4">
+                        <label class="control-label labeve">安全类别：</label>
+                        <label class="control-label labodd category">
+                            $category
+                        </label>
+                        <label class="control-label labeve">检验员：</label>
+                        <label class="control-label labodd inspector">
+                            $inspector
+                        </label>
+                    </div>
+                    <div class="form-group no-margin-hr rowt print_4">
+                        <label class="control-label labeve">品名：</label>
+                        <label class="control-label labodd proname">
+                            $proname
+                        </label>
+                        <label class="control-label labeve">执行标准：</label>
+                        <label class="control-label labodd standard">
+                            $standard
+                        </label>
+                    </div>
+                    <div class="form-group no-margin-hr rowt print_4">
+                        <label class="control-label labeve">制造商：</label>
+                        <label class="control-label labodd manufacturer">
+                            $manufacturer
+                        </label>
+                    </div>
+                    <div class="form-group no-margin-hr rowt lat print_4">
+                        <label class="control-label labeve">邮编：</label>
+                        <label class="control-label labodd postcode">
+                            $postcode
+                        </label>
+                        <label class="control-label labeve">地址：</label>
+                        <label class="control-label labodd productionplace">
+                            $productionplace
+                        </label>
+                    </div>
+                    <div class="form-group no-margin-hr rowt print_4">
+                        <label class="control-label labeve">成分：</label>
+                        <label class="control-label labodd fabric">
+                            $fabric
+                        </label>
+                        <label class="control-label labeve print_4 print_4_shuban">里料：</label>
+                        <label class="control-label labodd material print_4 print_4_shuban">
+                            $material
+                        </label>
+                    </div>
+                    <div class="form-group no-margin-hr rowt" style="position:absolute!important;right:2%;bottom:70%;">
+                        <label class="control-label labeve">原价(￥)：</label>
+                        <label class="control-label labodd prodtagpric">
+                            $prodtagpric
+                        </label>
+                        <label class="control-label labeve print_4">款号：</label>
+                        <label class="control-label labodd bigprodnum print_4">
+                            $bigprodnum
+                        </label>
+                    </div>
+                    <div class="form-group no-margin-hr rowt">
+                        <label class="control-label col-md-11 prodbarcode" style="padding-left:0px;margin-left:-6px">
+                            $prodbarcode
+                        </label>
+                    </div>
+                    <div class="form-group no-margin-hr rowt lat">
+                        <label class="control-label col-md-6 labodd prodnumb" style="margin-left:5px;">
+                            $prodnumb
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <div class="qrocde_show" style="position:absolute!important;right:9%;bottom:10%;">
+                        $qrcode_sh
+                    </div>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+    </div>
+
+</div>
+
+<script src="~/Content/Scripts/Jquery/jquery-barcode.js"></script>
+<script src="~/Content/Scripts/Jquery/jquery.qrcode.min.js"></script>
+<script>
+    $(function () {
+        initialPage();
+        intibarcode();
+    });
+    function initialPage() {
+        var defalutpaper = '@ViewBag.defaultpaper';
+        var paperDirection = '@ViewBag.paperDirection';
+        if (defalutpaper == "1") {
+            $(".print_4").show();
+            if (paperDirection == "1") {
+                $(".print_4_shuban").show();
+            } else {
+                $(".print_4_shuban").hide();
+            }
+        } else {
+            $(".print_4").hide();
+        }
+    }
+    function intibarcode() {
+        var check = $(".table-list tbody tr :checkbox:checked");
+        var nums = [];
+        check.each(function (i, v) {
+            var selnum = $(v).parents("tr:first").find("td:eq(4)").children().text();
+            if (selnum != "")
+                nums.push(selnum.trim());
+        });
+        getbarcode(nums);
+    }
+    function getbarcode(nums) {
+        if (nums != undefined && nums.length > 0) {
+            $.post("/Products/Barcode/GetProductInfo", { nums: nums }, function (da) {
+                if (da.aaData.length > 0) {
+                    var te = "";
+                    for (var i = 0; i < nums.length; i++) {
+                        te = drawbarcode("targ_" + i, da.aaData[i]);
+                        $("#barcodetarget").append(te);
+                        code128("targ_" + i, nums[i] + "xxx");
+                        var qrdat = da.aaData[i].HtmlPath;
+                        if (qrdat == null || qrdat == "")
+                            qrdat = nums[i] + "xxx";
+                        qrcode("targ_" + i, qrdat);
+                    }
+                }
+            });
+        }
+    }
+    function drawbarcode(_id, dat) {
+        var html = $("#templa_code").html();
+        html = html.replace("$prodbrandname", dat.BrandName)
+            .replace("$prodcategory", dat.CategoryName)
+            .replace("$prodcolor", dat.ColorName).replace("$prodtagpric", dat.TagPrice)
+            .replace("$prodsize", dat.SizeName)
+            .replace("$prodbarcode", '<div class="barcodeImg" id="' + _id + '"/>')
+            .replace("$prodnumb", dat.ProductNumber + "xxx")
+            .replace("$standard", dat.Standard)
+            .replace("$bigprodnum", dat.BigProdNum).replace("$category", dat.Category).replace("$level", dat.Level)
+            .replace("$proname", dat.ProductName).replace("$inspector", dat.Inspector)
+            .replace("$productionplace", dat.ProductionPlace).replace("$fabric", dat.Fabric)
+            .replace("$material", dat.Material)
+            .replace("$manufacturer", dat.Manufacturer).replace("$postcode", dat.PostCode)
+            .replace("$qrcode_sh", '<div id="qr_' + _id + '"></div>');
+
+        return html;
+
+    }
+    function code128(_id, num) {
+        var t = $("#" + _id).empty().barcode(num, "code128", { barWidth: 1, barHeight: 20, showHRI: false });
+        return t.html();
+    }
+    function qrcode(_id, qrda) {
+        return $('#qr_' + _id).qrcode({
+            render: "table",
+            width: 60,
+            height: 60,
+            text: qrda
+        });
+    }
+</script>

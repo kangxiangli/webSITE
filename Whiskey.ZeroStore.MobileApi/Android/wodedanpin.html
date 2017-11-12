@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=640,user-scalable=no">
+    <title>我的单品</title>
+    <link rel="stylesheet" href="css/style_wodedanpin.css">
+     <link rel="stylesheet" href="css/reset.css"/>
+    <link rel="stylesheet" href="css/pullToRefresh.css"/>
+     <link rel="stylesheet" href="css/swiper.css">
+    <script src="js/jquery-2.1.1.min.js"></script>
+     <script src="js/appcan.js"></script>
+    
+
+</head>
+
+<script type="text/javascript" charset="utf-8">
+  function closedanpin(){
+           appcan.window.close(-1);
+        }
+       $(function(){
+          $('.img_bg').click(function(){
+              appcan.window.open({
+                   name:'danpin',
+                  data:'danpin.html',
+                  aniId:10,
+              })   
+       })
+       $('.add').click(function(){
+           appcan.window.open({
+                   name:'add_danpin',
+                  data:'adddanpin.html',
+                  aniId:10,
+              })   
+                  $(".mobile-inner-nav").slideUp('fast');
+       })
+ })
+               
+    
+        
+       
+</script>
+<body>
+    <!-- 一级页面 -->
+    <div class="pageone">
+<div class="header">
+    <div class="contain mobile-inner-header">
+      <div class="back"><a href="javascript:void(0)" onclick="closedanpin();"><img src="img/l@2x.png" alt="">返回</a></div>
+        <img class="logo" src="img/login_logo_@2x.png" alt="">
+
+        <div class="selection select mobile-inner-header-icon mobile-inner-header-icon-out"><span>+</span></div>
+         <div class="mobile-inner-nav">
+                <img src='img/nav_drop box@2x.png'alt="">
+                                <ul>
+                                    <li><img src="" alt="">搜索</li>
+                                    <li class="add"><img src="" alt="">添加</li>
+                                    <li><img src="" alt="">批量</li>
+                                </ul>                
+        </div>
+        <script type="text/javascript" charset="utf-8">
+             $(".mobile-inner-header-icon").click(function(){
+        $(".mobile-inner-nav").slideToggle('fast');
+      });
+      
+        </script>
+    </div>
+</div>
+
+<div class="main">
+    <div class="top_yichu">
+        <div class="border_rg">
+            <span></span><img class="img_bg sz" src="img/SZ@2X.png" alt="png"/>
+            <img class="top_cil" src="img/D@2X.png" alt="png"/>
+            <a class="tp_a">上装 <b>23</b></a>
+        </div>
+        <div class="border_rg">
+            <span></span><img class="img_bg" src="img/YT@2X.png" alt="png"/>
+            <img class="top_cil" src="img/D@2X.png" alt="png"/>
+            <a class="tp_a">连体 <b>23</b></a>
+        </div>
+        <div>
+            <span></span><img class="img_bg" src="img/XZ@2X.png"/>
+            <a class="tp_a">下装 <b>23</b></a>
+        </div>
+    </div>
+    <div class="bottom_yichu">
+        <div class="border_rg">
+            <span></span><img class="img_bg mag_bt" src="img/WJ@2X.png" alt="png"/>
+            <img class="bot_cil" src="img/D@2X.png" alt="png"/>
+            <a class="bt_a">围巾 <b>23</b></a>
+        </div>
+        <div class="border_rg">
+            <span></span><img class="img_bg mag_bt" src="img/B@2X.png" alt="png"/>
+            <img class="bot_cil" src="img/D@2X.png" alt="png"/>
+            <a class="bt_a">包 <b>23</b></a>
+        </div>
+        <div class="border_rg">
+            <span></span><img class="img_bg mag_bt" src="img/SP@2X.png"/>
+            <img class="bot_cil" src="img/D@2X.png" alt="png"/>
+            <a class="bt_a">饰品<b>23</b></a>
+        </div>
+        <div id="last_border_rg">
+            <span></span><img class="img_bg mag_bt" src="img/X@2X.png"/>
+            <a class="bt_a">鞋 <b>23</b></a>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

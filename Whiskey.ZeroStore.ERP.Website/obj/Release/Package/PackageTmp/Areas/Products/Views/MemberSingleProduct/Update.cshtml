@@ -1,0 +1,235 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model MemberSingleProductDto
+@using Whiskey.Utility.Data
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+<link rel="stylesheet" href="/content/editor/themes/default/default.css" />
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<style>
+    .li_empt {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+</style>
+@Html.HiddenFor(x=>x.MemberId)
+@Html.HiddenFor(x => x.Id)
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #5ebd5e"></span>
+</div>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">添加单品</a>
+    </li>
+    <li class="">
+        <a href="#attach" data-toggle="tab">上传封面</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CollocationName):
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.CollocationName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Price):
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.ColorName) :
+            </label>
+            <div class="col-md-10 divName">
+                @Html.TextBoxFor(m => m.ColorName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.ColorCode) :
+            </label>
+            <div class="col-md-10 divMemberPass">
+                @Html.TextBoxFor(m => m.ColorCode, new { @class = "form-control" })
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Season) :
+            </label>
+            <div class="col-md-10 divMemberPass">
+                @Html.TextBoxFor(m => m.Season, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Shape) :
+            </label>
+            <div class="col-md-10 divMemberPass">
+                @Html.TextBoxFor(m => m.Shape, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Situation) :
+            </label>
+            <div class="col-md-10 divMemberPass">
+                @Html.TextBoxFor(m => m.Situation, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Size) :
+            </label>
+            <div class="col-md-10 divMemberPass">
+                @Html.TextBoxFor(m => m.Size, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Status) :
+            </label>
+            <div class="col-md-10">
+                <select id="Status" name="Status" class="form-control">
+                    @*1、上装；2、下装；3、饰品；4、包；5、鞋子*@
+                    <optgroup label="上装" data-value="1">
+                        <option value="10">套头</option>
+                        <option value="11">开衫</option>
+                    </optgroup>
+                    <optgroup label="下装" data-value="2">
+                        <option value="20">裤子</option>
+                        <option value="21">裙子</option>
+                        <option value="22">连体</option>
+                    </optgroup>
+                    <optgroup label="饰品" data-value="3">
+                        <option value="30">围巾</option>
+                        <option value="31">帽子</option>
+                    </optgroup>
+                    <optgroup label="包" data-value="4">
+                        <option value="40">包</option>
+                    </optgroup>
+                    <optgroup label="鞋子" data-value="5">
+                        <option value="50">鞋子</option>
+                    </optgroup>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Style) :
+            </label>
+            <div class="col-md-10 divMemberPass">
+                @Html.TextBoxFor(m => m.Style, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Brand) :
+            </label>
+            <div class="col-md-10 divMemberPass">
+                @Html.TextBoxFor(m => m.Brand, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Notes, new { @class = "form-control", @rel = "tooltip", @title = "", @onfocus = "removeTitle(this)" })
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade clearfix" id="attach">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                照片预览:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="/Content/Images/logo-_03.png" alt="会员照片" id="CoverImage" />
+                    </a>
+                </div>
+                
+                @Html.HiddenFor(x => x.CoverImage, new { @id = "hidCoverImage" })
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    上传:
+                </label>
+                <div class="col-md-10">
+                    <div class="dropzone-box">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传会员照片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file" multiple="multiple" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        //初始化类型
+        $(".bootbox #Status option").each(function () {
+            var temp = $(this).val();
+            if (temp=="@(Model.Status)") {
+                $(this).attr("selected", "selected");
+            }
+        });
+
+        //初始化封面图
+        var path = $(".bootbox #hidCoverImage").val();
+        $(".bootbox #CoverImage").attr("src", path);
+        //初始化上传控件
+        var myDropzone = new Dropzone(".dropzone-box", {
+            url: "/Products/MemberCollocation/UploadImage",
+            acceptedFiles: "image/jpg,image/jpeg,image/png",
+            uploadMultiple: true,
+            parallelUploads: 1,
+            maxFilesize: 0.5,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (data.ResultType == 3) {
+                        $(".bootbox #CoverImage").attr("src", data.Path)
+                        $(".bootbox #hidCoverImage").attr("value", data.Path);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+
+                });
+            }
+        });
+    });   
+</script>
+
+

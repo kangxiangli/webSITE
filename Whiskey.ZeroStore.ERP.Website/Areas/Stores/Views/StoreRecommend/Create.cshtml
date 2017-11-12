@@ -1,0 +1,486 @@
+﻿@using Whiskey.Utility.Data;
+<style>
+    #left_content {
+        opacity: 0.5;
+    }
+
+    .modal-content {
+        width: 900px;
+    }
+
+    #create-recommend .row th {
+        text-align: center;
+    }
+
+    .thumbnail-img_five_box {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        margin: 0 auto;
+        border: 1px solid #eaeaea;
+    }
+
+    .thumbnail-img_five {
+        left: 0;
+        padding: 2px;
+        position: absolute;
+        height: 96%;
+        overflow: hidden;
+    }
+
+    .thumbnail-img_f {
+        max-width: 60px;
+        margin: 0 auto 0 auto;
+        position: relative;
+        padding-bottom: 60px;
+        height: 0;
+        overflow: hidden;
+    }
+
+    .thumbnail-img_five img {
+        width: 100%;
+    }
+
+    #table > tbody > tr > td {
+        vertical-align: middle !important;
+    }
+</style>
+
+<div class="container" id="create-recommend">
+
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+                </div>
+            </div>
+            <div class="panel-body">
+
+            </div>
+            <div class="panel-footer text-right clearfix ">
+                <div class="pull-left">
+                    <button id="Create" type="button" v-on:click="open_dialog" style="" class="btn btn-success btn-padding-right" title="选择款号"><i class="fa fa-plus"></i>选择</button>
+                    <button class="btn btn-warning btn-padding-right" v-on:click="upload">批量导入……</button>
+                    <button id="Save" type="button" v-on:click="submit" style="background-color: #4c94c8;" v-bind:disabled="!canSubmit" class="btn btn-default btn-padding-right"><i class="fa fa-save"></i>提交</button>
+                    <button id="EditConfig" v-on:click="editConfig" title="配置修改" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>配置修改</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+
+                        <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                        <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                        <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                    </div>
+                    <div class="button-recycle">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="">
+                <table id="table" class="table  " align="center">
+                    <thead>
+                        <tr>
+                            <th>款号</th>
+                            <th>图片</th>
+                            <th>品牌</th>
+                            <th>款式</th>
+                            <th>季节</th>
+                            <th>是否推荐</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(number,index) in numbers">
+                            <td style="vertical-align: middle;">{{number.BigProductNumber}}</td>
+                            <td style="vertical-align: middle;">  <div class="thumbnail-img_five_box"> <div class="thumbnail-img_five"> <div class="thumbnail-img_f"><img class="popimg" v-bind:src="number.ThumbnailPath" onerror="imgloaderror(this);" /></div></div></div></td>
+                            <td style="vertical-align: middle;">{{number.BrandName}}</td>
+                            <td style="vertical-align: middle;">{{number.CategoryName}}</td>
+                            <td style="vertical-align: middle;">{{number.Season}}</td>
+                            <td style="vertical-align: middle;">{{number.IsRecommend?"已推荐":"未推荐"}}</td>
+                            <td style="vertical-align: middle;"><a href="javascript:;" class="btn btn-danger" v-on:click="remove(index)">移除</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin: 0 0 13px 22px;padding-bottom: 13px;">
+                    已添加 <span class="label label-default">{{numbers.length}}</span> 款
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document" style="width:1000px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">商城款号设置</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="panel panel-search">
+                            <div class="panel-heading clearfix">
+                                <div class="col-md-4 panel-title">
+                                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                                </div>
+                                <div class="col-md-8 text-right">
+                                    <div class="switcher switcher-default">
+                                        <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body" style="display: block;">
+                                <div class="form-horizontal form-search">
+                                    <div class="col-md-6">
+                                        <div class="form-group no-margin-hr">
+                                            <label class="control-label col-md-4">款号</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" type="text" v-model="searchParam.BigProductNumber">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group no-margin-hr">
+                                            <label class="control-label col-md-4">品牌</label>
+                                            <div class="col-md-8">
+                                                <select class="form-control cur_selectpicker" v-model="searchParam.BrandId">
+                                                    <option v-for="option in brandOptions" v-bind:value="option.Value">
+                                                        {{option.Text}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group no-margin-hr">
+                                            <label class="control-label col-md-4">品类</label>
+                                            <div class="col-md-8">
+                                                <select class="form-control cur_selectpicker" v-model="searchParam.CategoryId">
+                                                    <option v-for="option in categoryOptions" v-bind:value="option.Value">
+                                                        {{option.Text}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group no-margin-hr">
+                                            <label class="control-label col-md-4">季节</label>
+                                            <div class="col-md-8">
+                                                <select class="form-control cur_selectpicker" v-model="searchParam.SeasonId">
+                                                    <option v-for="option in seasonOptions" v-bind:value="option.Value">
+                                                        {{option.Text}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer text-right clearfix ">
+
+                                <div class="pull-right">
+                                    <button id="Search" v-on:click="search('btn')" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                                    <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="panel panel-list">
+                            <div class="panel-heading">
+                                数据列表
+                            </div>
+                            <div class="panel-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>款号</th>
+                                            <th>图片</th>
+                                            <th>品牌</th>
+                                            <th>款式</th>
+                                            <th>季节</th>
+                                            @*<th>是否推荐</th>*@
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(number,index) in pageDatas">
+                                            <td style="vertical-align: middle;">{{number.BigProductNumber}}</td>
+                                            <td style="vertical-align: middle;"><div class="thumbnail-img_five_box"> <div class="thumbnail-img_five"> <div class="thumbnail-img_f"><img class="popimg" v-bind:src="number.ThumbnailPath" onerror="imgloaderror(this);" /></div></div></div></td>
+
+                                            <!--  <td><img v-bind:src="number.ThumbnailPath" style='max-height:120px;' onerror='imgloaderror(this);' /></td>-->
+                                            <td style="vertical-align: middle;">{{number.BrandName}}</td>
+                                            <td style="vertical-align: middle;">{{number.CategoryName}}</td>
+                                            <td style="vertical-align: middle;">{{number.Season}}</td>
+                                            @*<td>{{number.IsRecommend?"已推荐":"未推荐"}}</td>*@
+                                            <td style="vertical-align: middle;">
+
+                                                <div v-if="number.IsRecommend">
+                                                    <span class="label btn btn-warning btn-padding-right">已推荐</span>
+                                                </div>
+                                                <div v-else>
+                                                    <a class="btn btn-sm btn-success" v-bind:disabled="number.InTable" v-on:click="addFromDialog(number)">添加</a>
+                                                    <a class="btn btn-sm btn-danger" v-bind:disabled="!number.InTable" v-on:click="removeFromDialog(number)">移除</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <my-page :current="pageInfo.CurrentPage"
+                                         :total="pageInfo.TotalCount"
+                                         :page-size="pageInfo.PageSize"
+                                         @@on-change="changePage"
+                                         @@on-page-size-change="changePageSize">
+                                </my-page>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    var baseUrl = '/Stores/StoreRecommend';
+    $(function () {
+
+
+var vm = new Vue({
+        el: "#create-recommend",
+        data: {
+            numbers: [],
+            pageDatas: [],
+            brandOptions: [],
+            categoryOptions: [],
+            seasonOptions: [],
+
+            searchParam: {
+                BigProductNumber: '',
+                BrandId: -1,
+                CategoryId: '',
+                SeasonId: ''
+            },
+            pageInfo: {
+                CurrentPage: 1,
+                PageCount: 0,
+                PageSize: 10,
+                TotalCount: 0
+            },
+            canSubmit: true
+        },
+        mounted: function () {
+            var _self = this;
+            this.$nextTick(function () {
+                $.getJSON(baseUrl + '/GetOptions', {}).done(function (res) {
+                    if (res.ResultType !== 3) {
+                        console.log('GetOptions fail');
+                        return;
+                    }
+                    _self.brandOptions = res.Data.brandOptions;
+                    _self.categoryOptions = res.Data.categoryOptions;
+                    _self.seasonOptions = res.Data.seasonOptions;
+                    Vue.nextTick(function () {
+					  $('.cur_selectpicker').selectpicker();
+					})
+                });
+            });
+
+        },
+        methods: {
+            editConfig: function () {
+                 var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "创建数据",
+                    actionUrl: "@Url.Action("EditConfig")",
+                    lockButton: $(this),
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+            },
+            addFromDialog: function (number) {
+
+                var index = _.findIndex(this.numbers, function (n) { return n.BigProductNumber === number.BigProductNumber });
+                if (index === -1) {
+                    number.InTable = true;
+                    this.numbers.push(number)
+                }
+            },
+            removeFromDialog: function (number) {
+
+                var index = _.findIndex(this.numbers, function (n) { return n.BigProductNumber === number.BigProductNumber });
+                if (index !== -1) {
+                    number.InTable = false;
+                    this.numbers.splice(index, 1);
+                }
+            },
+            remove: function (index) {
+                this.numbers.splice(index, 1);
+            },
+            open_dialog: function () {
+                $("#myModal").modal('show');
+                this.search();
+            },
+            search: function (type) {
+                if (type == "btn") {
+                    this.pageInfo.CurrentPage = 1;
+                }
+                var _self = this;
+                var searchData = {
+                    BigProductNumber: this.searchParam.BigProductNumber,
+                    BrandId: this.searchParam.BrandId,
+                    CategoryId: this.searchParam.CategoryId,
+                    SeasonId: this.searchParam.SeasonId,
+                    CurrentPage: this.pageInfo.CurrentPage,
+                    PageSize: this.pageInfo.PageSize
+                }
+                $.getJSON(baseUrl + '/GetNumbersAsync', searchData).done(function (res) {
+                    if (res.ResultType !== 3) {
+                        return;
+                    }
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+                    _.each(pageData, function (number) {
+                        var index = _.findIndex(_self.numbers, function (n) { return n.BigProductNumber === number.BigProductNumber });
+                        if (index !== -1) {
+                            number.InTable = true;
+                        }
+                    })
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+                    console.log(res);
+                    $(".panel-body").show();
+                })
+            },
+            upload: function () {
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "批量导入",
+                    successTit: "确定",
+                    successEvent: this.select_check_Access,
+                    actionUrl: baseUrl + "/BatchImport",
+                    noneheader: true,
+                    lockButton: null,
+                    methType: "post",
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            $(".modal-dialog").parent("div").animate({ scrollTop: 20 }, 500);
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        //$.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+            },
+            select_check_Access: function () {
+                var _self = this;
+                //var num = $("#hid-ordernum_dat").val();
+                var tableData = window.gloablDataTableObj.data();
+                var barcodes = [];
+                for (var i = 0; i < tableData.length; i++) {
+                    barcodes.push(tableData[i].value);
+                }
+                var postData = { numbers: barcodes.join(",") };
+                $.post(baseUrl + "/ValidateNumber", postData).done(function (data) {
+                    if (data.ResultType != 3) {
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: data.Message,
+                            callback: function () {
+                            }
+                        });
+                        return;
+                    }
+                    var numberInfo = data.Data;
+                    for (var i = 0; i < numberInfo.length; i++) {
+                        _self.addFromDialog(numberInfo[i]);
+                    }
+
+                })
+
+            },
+            submit: function () {
+                var _self = this;
+                var arr = _.map(this.numbers, function (number) { return number.BigProductNumber });
+                if (!arr || arr.length <= 0) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！"
+                    });
+                    return;
+                }
+                //_self.canSubmit = false;
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认保存吗？",
+                    notes: "",
+                    lockButton: $('#Save'),
+                    actionUrl: "@Url.Action("Save")",
+                    params: { numbers: arr.join(',') },
+                    complete: function () {
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: "生成成功！",
+                            callback: function () {
+                                location.reload();
+                            }
+                        });
+                    }
+
+                });
+            },
+            changePage: function (page) {
+                this.pageInfo.CurrentPage = page;
+                console.log(page);
+                this.search('page');
+            },
+            changePageSize: function (newSize) {
+                console.log(newSize);
+                this.pageInfo.PageSize = newSize;
+                this.pageInfo.CurrentPage = 1;
+                this.search('page');
+            }
+
+
+
+        }
+
+        })
+    });
+
+</script>

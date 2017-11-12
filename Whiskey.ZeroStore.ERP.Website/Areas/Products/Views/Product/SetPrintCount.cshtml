@@ -1,0 +1,202 @@
+﻿<style>
+    .modal-content {
+        width: 760px;
+    }
+</style>
+<div>
+    <div class="form-group">
+        <label class="control-label col-md-2">批量设置打印份数:</label>
+        <div class="col-md-3">
+            <input id="defaultPrcou" type="number" class="form-control" value="" min="0" />
+        </div>
+        <div class="col-md-2"><button class="btn" id="bitchsetprintcout">确定</button></div>
+        <!-- <button class="btn btn-primary " style="margin-left:15px" id="bitprintbut">打印</button>-->
+        @if (ViewBag.jumpPrinter == true)
+        {
+            <label class="control-label col-md-2">打印时间:</label>
+            <div class="col-md-3">
+                <div class="input-daterange input-group">
+                    @Html.TextBox("PrintTime", "", new { @class = "start-date input-sm form-control", @placeholder = "点击选择" })
+                </div>
+            </div>
+        }
+    </div>
+    <div style="margin-left:10px" id="">
+        <table class="table pintdata_li_table table-list table-hover valign-middle" width="100%" style="width:100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+    @if (ViewBag.jumpPrinter != true)
+    {
+        <div style="margin-top: 10px"><div style="color:  #5ebd5e;padding-left:15px">*仅支持IE浏览器</div></div>
+    }
+</div>
+@if (ViewBag.jumpPrinter == true)
+{
+    <link href="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <script src="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        $(function () {
+            $("#PrintTime").datetimepicker({
+                language: 'zh-CN',
+                minView: 'hour',
+                todayBtn: true,
+                format: "yyyy-mm-dd hh:ii:ss"
+            });
+        });
+    </script>
+}
+<script>
+    $(function () {
+        $(".pintdata_li_table").dataTable({
+            "bScrollCollapse": false,
+            "bStateSave": true,
+            "sDom": '<"H clearfix datatable-header text-center"r>t<"F clearfix datatable-footer"<"col-md-5"<"col-md-5 info  text-left"i><"pcou col-md-7 text-left info">><"col-md-7 text-right">>',
+            "sAjaxSource": "/Products/Barcode/GetProductInfo",
+            "aLengthMenu": [10],
+            "fnServerParams": function (aoData) {
+                var nums = getPrintNums();
+                aoData.push({ name: "nums", value: nums });
+                // $.whiskey.tools.other(conditions);
+            },
+            "fnPreDrawCallback": function (oSettings) {
+                $(".pintdata_li_table .prsel_all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".pintdata_li_table tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                $("td:eq(0)", nRow).addClass("text-right");
+
+                $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+                $("td:eq(2)", nRow).css({ "width": "12%", "padding-left": "0" });
+                //$("td:eq(4)", nRow).css({ "float": "left","width":"13%" });
+                $("td:last", nRow).addClass("text-middle").css({ "width": "13%" });
+                $("td:last button", nRow).css({ "margin": "2px" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+
+            "aoColumns": [
+                {
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox("prsel_all"),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "排序",
+                    "bSortable": false,
+                    "sName": "Number",
+                    "mData": function (data) {
+                        return "";
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "ProductNumber",
+                    "mData": function (data) {
+                        return data.ProductNumber;
+                    }
+                },
+                {
+                    "sTitle": "商品图片",
+                    "sName": "ThumbnailPath",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        if (data.ThumbnailPath == null || data.ThumbnailPath == "null" || data.ThumbnailPath == "")
+                            return "";
+                        else
+                            return '<div style="display:block;width:80px;height:80px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;"><img src="' + data.ThumbnailPath + '" style="margin:2px;max-width:72px;" /></div>';;
+                    }
+                },
+                {
+                    "sTitle": "品牌",
+                    "bSortable": false,
+                    "sName": "BrandName",
+                    "mData": function (data) {
+                        return data.BrandName;
+                    }
+                },
+                {
+                    "sTitle": "款式",
+                    "bSortable": false,
+                    "sName": "BrandName",
+                    "mData": function (data) {
+                        return data.CategoryName;
+                    }
+                },
+                {
+                    "sTitle": "尺码",
+                    "bSortable": false,
+                    "sName": "SizeName",
+                    "mData": function (data) {
+                        return data.SizeName;
+                    }
+                },
+                {
+                    "sTitle": "颜色",
+                    "bSortable": false,
+                    "sName": "ColorName",
+                    "mData": function (data) {
+                        if (data.ParentId == "") {
+                            return ""
+                        } else {
+                            var st = "<img src='" + data.IconPath + "' title='" + data.ColorName + "' style='width:40px;margin:0 auto;'>";
+
+                            return st;
+                        }
+
+                    }
+                },
+                {
+                    "sTitle": "打印份数",
+                    "bSortable": false,
+                    "sName": "SizeName",
+                    "mData": function (data) {
+                        return "<input type='number' value='1' min='0'/>";
+                    }
+                }
+            ]
+
+        });
+
+        $("#bitchsetprintcout").click(function () {
+            var cou = $("#defaultPrcou").val().trim();
+            if (cou != "")
+                $(".pintdata_li_table input[type='number']").val(cou);
+            return false;
+        });
+        $("#bitprintbut").click(function () {
+            var dat = getprintInfo();
+            if (dat != null)
+                startPrint(dat, 0);
+        });
+    });
+    function getprintInfo() {
+        //ProductNumber: _num, PrintCount: _cou
+        var da = [];
+        $(".pintdata_li_table tbody tr").each(function () {
+            var num = $(this).children("td").eq(2).text();
+            var cou = $(this).children("td").eq(-1).find("input").val();
+            da.push({ ProductNumber: num, PrintCount: cou });
+        });
+        return da;
+    }
+</script>

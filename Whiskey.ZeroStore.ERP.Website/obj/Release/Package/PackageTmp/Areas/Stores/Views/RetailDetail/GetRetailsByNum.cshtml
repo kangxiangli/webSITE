@@ -1,0 +1,106 @@
+﻿
+<div class="">
+    <table class="table detail-table-list-view table-hover valign-middle" width="100%">
+        <thead>
+        </thead>
+    </table>
+</div>
+<input type="hidden" value="@ViewBag.renum" id="renum" />
+<input type="hidden" value="@ViewBag.pnum" id="pnum" />
+
+<script>
+    debugger
+    $(function () {
+        $(document).ready(function () {
+            var renum = $("#renum").val();
+            var pnum = $("#pnum").val();
+            var url = pnum != "" ? "/Stores/RetailDetail/GetDetailsByProductNum" : "/Stores/RetailDetail/GetDetailsByRetailNum";
+            $.whiskey.datatable.instance = $(".detail-table-list-view").dataTable({
+                "sDom": "",
+                "bScrollCollapse": false,
+                "sAjaxSource": url,
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    if (pnum != "") {
+
+                        conditions.Rules.push(new $.whiskey.filter.rule("Product.ProductNumber", pnum, "equal"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("Retail.RetailNumber", renum, "equal"));
+
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("RetailNumber", renum, "equal"));
+                    }
+
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+
+                },
+                "fnDrawCallback": function (osetting) {
+
+                    $(".detail-table-list-view").treegrid({
+                        initialState: "collapsed",
+                        treeColumn: 1,
+                        expanderExpandedClass: 'treegrid-expander-expanded',
+                        expanderCollapsedClass: 'treegrid-expander-collapsed',
+
+                    });
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                    $("td:eq(0)", nRow).html(iDisplayIndex + 1);
+                 
+                    $("td:eq(1),td:eq(2)", nRow).css({ "font-family": "黑体", "font-size": "16px", "width": "30%", "text-align": "right" });
+                    $("th").css({ "text-align": "center" });
+
+                },
+
+                "aoColumns": [
+                    {
+                        "bVisible": false,
+                        "bSearchable": false,
+                        "sName": "Id",
+                        "mData": "Id"
+                    },
+
+                    {
+                        "sTitle": "<span class='tit'>编号</span>",
+                        "bSortable": false,
+                        "sName": "RowNumber",
+                        "mData": function (data) {
+                            var index = data.iDisplayIndex + 1;
+                            return '' + index + '';
+                        }
+                    },
+                    {
+                        "sTitle": "商品编号",
+                        "bSortable": false,
+                        "sName": "RetailNumber",
+                        "mData": function (data) {
+                            if (data.Pnum == undefined) return "";
+                            else
+                                return data.Pnum;
+                        },
+                    },
+                   {
+                       "sTitle": "一维码",
+                       "bSortable": false,
+                       "sName": "RetailNumber",
+                       "mData": function (data) {
+                           if (data.num == undefined) return ""; else
+                               return data.num;
+                       },
+                   },
+                    {
+                        "sTitle": "状态",
+                        "bSortable": false,
+                        "sName": "Count",
+                        "mData": function (data) {
+                            return data.status;
+                        },
+                    }
+
+                ]
+
+            });
+
+        });
+    });
+</script>

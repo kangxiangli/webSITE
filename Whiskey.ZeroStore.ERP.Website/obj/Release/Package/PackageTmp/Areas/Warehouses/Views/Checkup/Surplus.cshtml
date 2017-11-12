@@ -1,0 +1,367 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Warehouse;
+
+<style>
+	#LackClear {
+    background: #888 !important;
+}
+</style>
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search surplusSearch">
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">货号</label>
+                        <div class="col-md-8">
+                            <input type="text" name="ProductNumber" id="ProductNumber" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">名称</label>
+                        <div class="col-md-8">
+                            <input type="text" name="ProductName" id="ProductName" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">品类</label>
+                        <div class="col-md-8">
+                            <select class="form-control selectpicker" id="CategoryId" name="CategoryId"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">颜色</label>
+                        <div class="col-md-8">
+                            @Html.DropDownList("ColorId", (List<SelectListItem>)ViewBag.Colors, new { @class = "form-control selectpicker_cur" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+            <div class="pull-left">
+                <button id="SurplusSearch" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="SurplusClear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+            <div class="pull-right">
+                <div class="button-normal">
+                    <button id="Create" title="将选择的项入库" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>入库</span></button>
+                    <button id="CreateAll" title="全部入库" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>全部入库</span></button>
+                    <button id="surplusRemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                </div>
+                <div class="button-recycle">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5>
+                    <i class="fa fa-list"></i>
+                    <span>余货列表</span>
+                </h5>
+
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="tableSurplus">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="modal_di"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <img style="position:fixed;top:40%;left:45%" class="modal-body" src="/content/images/ajax_loader.gif">
+</div>
+<script type="text/javascript">
+    var tableSurplus;
+    $(document).ready(function () {
+        tableSurplus = $.whiskey.datatable.instance = $("#tableSurplus").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("CheckerList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("CheckGuid", "@ViewBag.CheckGuid", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("CheckerItemType", "@((int)CheckerItemFlag.Surplus)", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsCheckup", "false", "equal"));
+                $(".surplusSearch select").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                    }
+                });
+                $(".surplusSearch input[name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                $("td:eq(2)", nRow).css({ "float": "left", "width": "100%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+			{
+			    "sTitle": "编号",
+			    "bSortable": false,
+			    "sName": "RowNumber",
+			    "mData": function (data) {
+			        return '';
+			    }
+			},
+            {
+                "sTitle": "一维码",
+                "bSortable": false,
+                "sName": "ProductBarcod",
+                "mData": function (data) {
+                    return data.ProductBarcode;
+                }
+            },
+            {
+                "sTitle": "品类",
+                "bSortable": false,
+                "sName": "CategoryName",
+                "mData": function (data) {
+                    return data.CategoryName;
+                },
+            },
+            {
+                "sTitle": "商品尺码",
+                "bSortable": false,
+                "sName": "SizeName",
+                "mData": function (data) {
+                    return data.SizeName;
+                },
+            },
+            {
+                "sTitle": "商品颜色",
+                "bSortable": false,
+                "sName": "ColorName",
+                "mData": function (data) {
+                    return data.ColorName;
+                },
+            },
+             {
+                 "sTitle": "余货数量",
+                 "bSortable": false,
+                 "sName": "CheckCount",
+                 "mData": function (data) {
+                     return data.Count;
+                 },
+             },
+            {
+                "sTitle": "操作",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    var remove = '<button title="移除数据" class="btn btn-xs order-view btn-padding-right" onclick="removeSurplus(' + data.Id + ')"><i class="fa  fa-delete" ></i></button>';
+                    var plus = '<button title="添加" class="btn btn-xs order-view btn-padding-right" onclick="add(' + data.Id + ')"><i class="fa  fa-plus" ></i></button>';
+                    return plus + remove;
+                }
+            }]
+        });
+
+
+
+        $("#SurplusSearch").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+
+        $("#SurplusClear").on("click", function () {
+            $.whiskey.web.clearForm(".surplusSearch");
+        });
+
+        //添加所选
+        $("#Create").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked("#tableSurplus td input[type=checkbox]");
+            if (list.length > 0) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要将这些数据添加到自己的店铺吗？",
+                    notes: "提示：数据添加后不能修改",
+                    actionUrl: "@Url.Action("AddInventory")",
+                    params: list,
+                    complete: function () {
+                        reloadTableSurplus();
+                    }
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+        //添加所选
+        $("#CreateAll").on("click", function () {
+            var checkerGuid = $("#CheckNum").val().trim();
+            var postData = { checkerGuid: checkerGuid }
+
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要将全部数据添加到自己的店铺吗？",
+                notes: "提示：数据添加后不能修改",
+                actionUrl: "@Url.Action("AddAllInventory")",
+                params: postData,
+                complete: function () {
+                    reloadTableSurplus();
+                }
+            });
+            //getCategory();
+        });
+
+        //移除所选
+        $("#surplusRemoveAll").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked("#tableSurplus td input[type=checkbox]");
+            if (list.length > 0) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要将这些数据移除吗？",
+                    notes: "提示：数据移除后不能恢复",
+                    actionUrl: "@Url.Action("Remove")",
+                    params: list,
+                    complete: function () {
+                        reloadTableSurplus();
+                    }
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+    }); //end ready
+    //移除数据
+    function removeSurplus(Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要将这条数据移至回收站吗？",
+            notes: "提示：数据移除后不能恢复",
+            actionUrl: "@Url.Action("Remove")",
+            params: { Id: Id },
+            //lockButton: $(sender),
+            complete: function () {
+                //$.whiskey.datatable.instances[1].fnDraw(false);
+                //$.whiskey.datatable.reset(true);
+                reloadTableSurplus();
+            }
+        });
+    }
+
+    //添加数据
+    function add(Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要将这些数据添加到自己的店铺吗？",
+            notes: "提示：数据添加后不能修改",
+            actionUrl: "@Url.Action("AddInventory")",
+            params: { Id: Id },
+            complete: function () {
+                reloadTableSurplus();
+            }
+        });
+    }
+
+    //重新加载界面
+    function reloadTableSurplus() {
+        if (tableSurplus != null) {
+            tableSurplus.fnDraw();
+        }
+    }
+
+    //获取品类
+    function getCategory() {
+        $.ajax({
+            url: "@Url.Action("GetCategory")",
+            type: "POST",
+            success: function (data) {
+                initCategory(data);
+            }
+        });
+    }
+
+
+    //初始化品类
+    function initCategory(category) {
+        $("#CategoryId").empty();
+        var indexOption = '<option value="">请选择</option>'
+        $("#CategoryId").append(indexOption);
+        for (var i = 0; i < category.length; i++) {
+            var id = category[i].Id;
+            var categoryName = category[i].CategoryName;
+            var Categories = category[i].Categories;
+            var optgroupStart = "<optgroup label='" + categoryName + "'>";
+            var optgroupEnd = "</optgroup>";
+            for (var j = 0; j < Categories.length; j++) {
+                var childId = Categories[j].Id;
+                var childName = Categories[j].CategoryName;
+                var option = '<option value="' + childId + '">' + childName + '</option>';
+                optgroupStart += option;
+            }
+            optgroupStart += optgroupEnd;
+            $("#CategoryId").append(optgroupStart);
+                  $('#CategoryId').selectpicker();
+            $('#CategoryId').selectpicker('refresh');
+        }
+    }
+
+</script>
+<script>
+    // selectpicker_cur 初始化
+    $(function () {
+        $('.selectpicker_cur').selectpicker();
+$('.selectpicker_cur').selectpicker('refresh');
+    })
+</script>

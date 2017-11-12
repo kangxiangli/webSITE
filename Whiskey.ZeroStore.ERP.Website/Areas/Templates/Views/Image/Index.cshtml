@@ -1,0 +1,367 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Template
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">图片名称</label>
+                        <div class="col-md-9">
+                            @Html.TextBox("ItemName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">创建日期</label>
+                        <div class="col-md-9">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+            <div class="pull-right">
+                <div class="button-normal">
+                    <button id="Create" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增数据</span></button>
+                </div>
+                <div class="button-recycle">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <span><input class="enabler" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                <span style="margin-left:20px;"><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="tablePro">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+@section Scripts{
+    <link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+    <script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+    <script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>     
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $("#tablePro").dataTable({
+            "sAjaxSource": "@Url.Action("List")",
+            "bScrollCollapse": false,
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var startDate = $(".start-date").val();
+                var endDate = $(".end-date").val();
+                if (startDate.length > 0 && endDate.length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                }
+                conditions.Rules.push(new $.whiskey.filter.rule("HtmlItemType", "@((int)HtmlItemFlag.Image)", "equal"));
+                if ($(".trusher").is(":checked")) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                    if ($(".enabler").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                    }
+                } else {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                }
+                $(".form-search select").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                    }
+                });
+                $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var isEnabled = aData.IsEnabled;
+                if (isEnabled == false) {
+                    $(nRow).css({ "color": " #5ebd5e" });
+                }
+                $("td:eq(1)", nRow).addClass("text-left").css({ "width": "25%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".table-list").treegrid({
+                    saveState: true,
+
+                    treeColumn: 1,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "名称",
+                "bSortable": false,
+                "sName": "ItemName",
+                "mData": function (data) {
+                    return data.ItemName;
+                },
+            },
+            {
+                "sTitle": "查看",
+                "bSortable": false,
+                "sName": "SavePath",
+                "mData": function (data) {                    
+                    return '<div style="display:block;width:60px;height:60px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;"><img class="popimg" id="path' + data.Id + '" style="margin:2px;max-width:54px;cursor:pointer "  src="' + data.SavePath + '" data-content="' + data.SavePath + '" onclick="showPath(this)"  /></div>';
+                },
+            },             
+            {
+                "sTitle": "更新时间",
+                "bSortable": false,
+                "sName": "UpdatedTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.UpdatedTime);
+                }
+            },
+            {
+                "sTitle": "控制操作",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    
+                    var controller= $.whiskey.datatable.tplUpdate(data.Id);
+                    if ($(".trusher").is(":checked")) {
+                        controller += $.whiskey.datatable.tplDelete(data.Id);
+                    } else {
+                        controller += $.whiskey.datatable.tplRecovery(data.Id);
+                    }
+                    return controller;
+                }
+            }
+            ]
+
+        });
+        $("#Create").on("click", function () {
+            var dialog = $.whiskey.web.ajaxDialog({
+                caption: "创建数据",
+                actionUrl: "@Url.Action("Create")",
+                lockButton: $(this),
+                noneheader: true,
+                formValidator: function () {
+                     
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(false);
+                    return true;
+                },
+            });
+    });
+
+        $("#Search").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+
+        $("#Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+
+
+    });
+
+    function View(sender, Id) {
+        var view = new $.whiskey.web.ajaxView({
+            caption: "详细信息",
+            actionUrl: "@Url.Action("View")",
+            params: { Id: Id },
+            lockButton: $(sender),
+        });
+    }
+    //显示路径链接
+    function showPath(option) {
+        var id = '#' + option.id;
+        var path = $(id).attr("data-content");
+        var formbody = '<div style="text-align:center"><img src="' + path + '" class="form-controll" style="width:60%;"></div>';
+        var formModel = bootbox.dialog({
+            message: formbody, //formHeader + formBody + formFooter,
+            title: "路径："+path,
+
+        });
+
+    }
+     //修改数据
+    function Update(sender, Id) {
+        var dialog = $.whiskey.web.ajaxDialog({
+            caption: "修改信息",
+            actionUrl: "@Url.Action("Update")",
+            getParams: { Id: Id },
+            lockButton: $(sender),
+            noneheader: true,
+            formValidator: function () {
+                 
+            },
+            postComplete: function (data) {
+                $(".modal-form").modal()
+                $.whiskey.datatable.reset(true);
+                return true;
+            },
+        });
+    }
+
+    function Remove(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要将这条数据移至回收站吗？",
+            notes: "提示：数据移动到回收站后可从随时将其恢复",
+            actionUrl: "@Url.Action("Remove")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    function Recovery(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要恢复这条数据吗？",
+            notes: "提示：将数据从回收站移动至正常数据列表里",
+            actionUrl: "@Url.Action("Recovery")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    function Delete(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要彻底删除这条数据吗？",
+            notes: "提示：数据彻底删除后不可恢复，请谨慎操作！",
+            actionUrl: "@Url.Action("Delete")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+
+    function Enable(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要启用这条数据吗？",
+            notes: "提示：启用才可以在任何地方使用",
+            actionUrl: "@Url.Action("Enable")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    function Disable(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要禁用这条数据吗？",
+            notes: "提示：禁用后数据将不在其他任何地方使用",
+            actionUrl: "@Url.Action("Disable")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+     //初始化添加对话框
+     //yky 2015-9-16
+     function showAddDialog(options) {
+         $.whiskey.ajaxLoading({
+             cache: false,
+             type: "GET",
+             url: options.actionUrl,// + "?r=" + Math.random()
+             data: options.getParams,
+             beforeSend: function () {
+                 $(options.lockButton).attr("disabled", "disabled");
+             },
+             complete: function (result) {
+                 $(options.lockButton).removeAttr("disabled");
+             },
+             success: function (data) {
+                 var formHeader = "<form class=\"modal-form form-horizontal dropzone\" action=\"" + options.actionUrl + "\" enctype=\"multipart\/form-data\">";
+                 var formBody = data;
+                 var formFooter = "</form>";
+                 if (typeof (options.getComplete) == "function") {
+                     options.getComplete();
+                 }
+
+                 var formModel = bootbox.dialog({
+                     message:formBody, //formHeader + formBody + formFooter,
+                     title: options.caption,
+                     
+                 });
+                 //$(".modal-form select").select2();
+             }
+         });
+
+     };
+
+    </script>
+
+}
+

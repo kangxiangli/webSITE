@@ -1,0 +1,68 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Data
+@model WorkOrderDto
+<style>
+    .modal-content {
+        width: 1005px !important;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-list" style="height:100%">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-arrow-circle-left"></i> <a href="@Url.Action("Index")">员工列表</a></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <h5><i class="fa fa-credit-card"></i> <span>基本信息</span></h5>
+            </div>
+        </div>
+        <br />
+        <br />
+        @using (Ajax.BeginForm("Assign", new { }, new AjaxOptions() { HttpMethod = "post", OnSuccess = "afterFun(data)" }, new { id = "form1" }))
+        {
+            @Html.HiddenFor(x => x.Id)
+            <div class="form-group">
+                <label class="control-label col-md-3">员工姓名：</label>
+                <div class="col-md-5">
+                    @Html.TextBox("RealNames", "", new Dictionary<string, object> { { "class", "form-control" }, { "readonly", "readonly" } })
+                    <input type="hidden" id="AdminIds" name="AdminIds" class="form-control" check-number check-int min-value="0" value="" />
+                </div>
+                <div>
+                    <a class="btn btn-dark-gray btn-dark-gray_bg btn-success" onclick="chooseAdmin()">选择员工</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    //返回结果
+    function afterFun(data) {
+        if (data.ResultType == "@((int)OperationResultType.Success)") {
+            location.href = "@Url.Action("Index")";
+        } else {
+            $.whiskey.web.alert({
+                type: "danger",
+                content: data.Message,
+                callback: function () {
+                }
+            });
+        }
+    }
+
+
+    //选择员工
+    function chooseAdmin() {
+        var view = new $.whiskey.web.ajaxView({
+            caption: "员工列表",
+            actionUrl: "@Url.Action("Admin")"
+        });
+    }
+
+    //返回工单列表
+    function getBack() {
+        location.href = "@Url.Action("Index")";
+    }
+
+</script>
+

@@ -1,0 +1,28 @@
+﻿<script>
+    $(function () {
+        AuthVerify("@Model.strFlag");
+    });
+    function AuthVerify(strFlag) {
+        if (strFlag && strFlag.length > 0) {
+            var $main_wrapper = $("#content-wrapper .container");
+            $.each(strFlag.split("|"), function (index, da) {
+                if (da.indexOf("#") == 0 || da.indexOf(".") == 0) {
+                    $(da).remove();
+                    $main_wrapper.bind("_fn_removeEle", $(da), function () { $(da).remove(); });
+                }
+                if (da.indexOf("<") == 0) {
+                    $(da.substr(1)).parent().remove();
+                    $main_wrapper.bind("_fn_removeEle", $(da.substr(1)).parent(), function () { $(da.substr(1)).parent().remove(); });
+                }
+                if (da.indexOf(">") == 0) {
+                    $(da.substr(1)).children().remove();
+                    $main_wrapper.bind("_fn_removeEle", $(da.substr(1)).children(), function () { $(da.substr(1)).children().remove(); });
+                } else {
+                    var ele = "[mod-perm-defaul='" + da + "']";
+                    $(ele).remove();
+                    $main_wrapper.bind("_fn_removeEle", $(ele), function () { $(ele).remove(); });
+                }
+            });
+        }
+    }
+</script>

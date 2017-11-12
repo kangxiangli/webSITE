@@ -1,0 +1,193 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model RoleDto
+<style>
+    .groups_li li {
+        list-style-type: none;
+    }
+
+    .groups_li input {
+        width: 20px;
+        height: 25px;
+    }
+
+    .groups_li a {
+        font-size: 11px;
+        margin-left:10px;
+    }
+
+    .group_li_info {
+       min-height:200px;
+       height:auto;
+    }
+
+    .groups_li {
+        width:40%;
+        float: left;
+        height:auto;
+        border-right:1px solid #dddddd;
+    }
+
+    .group_info {
+        width: 50%;
+        height:auto;
+        float: left;
+        padding-left:15px;
+        padding-right:15px;
+        padding-top:50px;
+    }
+        .group_info p {
+         text-indent:2em;
+        }
+    #roleright_tab ul li {
+     float:left;
+    }
+</style>
+<div class="rolecrea_div">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#baseinfo_tab" data-toggle="tab">
+                基本信息
+            </a>
+        </li>
+        <li><a href="#roleright_tab" data-toggle="tab">角色权限</a></li>
+        @*<li><a href="#group_tab" data-toggle="tab">所属组</a></li>*@
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="baseinfo_tab">
+
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.RoleName) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.RoleName, new { @class = "form-control", placeholder = "角色名称不重复" })
+                </div>
+                <div class="control-detail col-md-3">
+                    @Html.ValidationMessageFor(m => m.RoleName)
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Description) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Description, new { @class = "form-control", placeholder = "角色描述" })
+                </div>
+                <div class="control-detail col-md-3">
+                    @Html.ValidationMessageFor(m => m.Description)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Weight) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Weight, new { @class = "form-control", @readonly = "readonly", @Value = "0" })
+                </div>
+                <div class="control-detail col-md-3">
+                    @Html.ValidationMessageFor(m => m.Weight)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    是否可用 :
+                </label>
+                <div class="col-md-4">
+                    <input type="checkbox" style="width: 25px; height: 30px" name="IsEnabled" checked="checked" />
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="tab-pane fade" id="roleright_tab">
+            @{
+                Html.RenderAction("PermissCell", "Permission");
+            }
+        </div>
+        @*<div class="tab-pane fade" id="group_tab">
+            <button class="btn" id="addtoGroup_btn">将角色添加到已有组中</button>
+            <div class="group_li_info">
+                <div class="groups_li">
+                    
+                </div>
+                <div class="group_info">
+                    
+                </div>
+            </div>
+        </div>*@
+    </div>
+</div>
+<script>
+    //debugger
+    $(function () {
+        $("button[data-bb-handler='success']").attr("disabled", "disabled");
+        $(".rolecrea_div #RoleName").change(function () {
+            //判断是否重名
+            exisName();
+            return false;
+        }).keyup(function () {
+            $(".rolecrea_div #Weight").val("");
+            var t = $(this).val().trim().replace(/[^\u4e00-\u9fa5\da-z]/gi, "");
+
+            $(this).val(t);
+            if (t != "") {
+                $("[data-bb-handler='success']").removeAttr("disabled");
+                $(this).parents("div:first").removeClass("has-error");
+            }
+            else {
+                $(this).parents("div:first").addClass("has-error");
+                $(this).attr("title", "角色名称不为空，且只能为汉字、字母、数字");
+                $("[data-bb-handler='success']").attr("disabled", "disabled");
+            }
+        });
+        $(document).delegate("#roleright_tab .tree :checkbox:not([class*='xianshi'])", "click", function () {
+            var weight = $(".tree .erji>span>:checkbox:checked").length;
+            $("#baseinfo_tab #Weight").val(weight);
+        });
+
+        $(document).delegate(".groups_li a", "click", function () {
+          var id=$(this).parents("li").find(":checkbox").val();
+          $.post("/Authorities/Group/GetGroupInfo", { gid: id }, function (da) {
+              $(".group_info").html("").html("<p>" + da + "</p>");
+          });
+          return false;
+        })
+      
+        //$("#addtoGroup_btn").click(function () {
+        //    $.post("/Authorities/Group/GetGroups", {}, function (da) {
+        //        if (da.length == 0) {
+        //            $(".rolecrea_div .groups_li").html("获取用户组信息失败")
+        //        }
+        //        else {
+        //            $("#addtoGroup_btn").hide();
+        //            var res = "<fieldset><legend>选择组</legend><ul>";
+        //            for (var i = 0; i < da.length; i++) {
+        //                res += "<li><label><input name='Group' value=" + da[i].Id + " type='checkbox' />" + da[i].GroupName + "</label><a href='#'>详情</a></li>";
+
+        //            }
+        //            res + "</ul></fieldset>";
+        //            $(".groups_li").html("").html(res);
+        //        }
+        //    })
+        //    return false;
+        //});
+    })
+    function exisName() {
+        var send= $(".rolecrea_div #RoleName");
+        var t =send.val().trim();
+        if (t != "") {
+            $.post("/Authorities/Role/ExisRoleName", { name: t }, function (da) {
+                if (da.ResultType==3) {
+                    $(send).parents("div:first").addClass("has-error");
+                    $(send).attr("title", "角色名称已存在");
+                    $("[data-bb-handler='success']").attr("disabled", "disabled");
+                }
+            })
+        }
+    }
+</script>
+
+
+

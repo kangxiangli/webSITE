@@ -1,0 +1,174 @@
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model GameDto
+
+<style>
+
+</style>
+
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#rule" data-toggle="tab">游戏规则</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Name) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Tag) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Tag, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.LimitCount) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.LimitCount, new { @class = "form-control", @min_value = "0", @check_number = "", @check_int = "", @dispaste = "", @disdrop = "", @placeholder = "0代表无总次数限制" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.LimitDayCount) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.LimitDayCount, new { @class = "form-control", @min_value = "1", @check_number = "", @check_int = "", @dispaste = "", @disdrop = "" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.LimitShareCount) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.LimitShareCount, new { @class = "form-control", @min_value = "0", @check_number = "", @check_int = "", @dispaste = "", @disdrop = "", @placeholder = "0代表无总次数限制" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.LimitShareDayCount) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.LimitShareDayCount, new { @class = "form-control", @min_value = "0", @check_number = "", @check_int = "", @dispaste = "", @disdrop = "" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.StartTime) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.StartTime, new { @class = "form-control form-time", @placeholder = "点击选择" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.EndTime) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.EndTime, new { @class = "form-control form-time", @placeholder = "点击选择,不填代表无限期" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Introduce) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Introduce, new { @class = "form-control", @rows = "8" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Notes) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", @rows = "4" })
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade clearfix" id="rule">
+        <div class="form-group">
+            <input type="button" id="btn_addRule" class="form-control btn-success btn" value="添加规则" />
+        </div>
+        <div class="div_allrule">
+
+        </div>
+    </div>
+</div>
+
+<!--Clone开始-->
+<div id="div_clone" style="display:none;">
+    <div class="form-group div-rule">
+        <label class="control-label col-md-1">
+            序号 :
+        </label>
+        <div class="col-md-2">
+            <input type="text" id="GIndex" class="form-control" readonly check-number check-int min-value="0" dis-drop dis-paste />
+        </div>
+        <label class="control-label col-md-1">
+            送积分 :
+        </label>
+        <div class="col-md-2">
+            <input type="text" id="Score" class="form-control" check-number check-int min-value="0" dis-drop dis-paste  />
+        </div>
+        <label class="control-label col-md-1">
+            概率 :
+        </label>
+        <div class="col-md-2 input-group">
+            <input type="text" id="Rate" class="form-control" check-number check-float="2" min-value="0" max-value="100" dis-drop dis-paste />
+            <span class="input-group-addon">%</span>
+        </div>
+        <div class="col-md-2 pull-right div_btn_remove" style="margin-top:-31px;">
+            <input type="button" class="form-control btn btn-danger" value="移除" />
+        </div>
+    </div>
+</div>
+
+<!--Clone结束-->
+
+<link href="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Content/Scripts/datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+    $(function () {
+        $(".form-time").datetimepicker({
+            language: 'zh-CN',
+            minView: 'hour',
+            todayBtn: true,
+            format: "yyyy-mm-dd hh:ii"
+        });
+        $("#btn_addRule").click(function () {
+            var $wrapper = $(".tab-content div#rule div.div_allrule");
+            var $div = $("#div_clone .div-rule").clone();
+            var divcount = $wrapper.find(".div-rule").length;
+            if (divcount > 0) {
+                $wrapper.find(".div_btn_remove").remove();
+            }
+            $div.find("#GIndex").val(divcount).attr("name", function () { return "GameRuleDtos[" + divcount + "]." + $(this).attr("id"); });
+            $div.find("#Score").attr("name", function () { return "GameRuleDtos[" + divcount + "]." + $(this).attr("id"); }).attr({ "data-val": true, "data-val-number": "必须是一个数字。", "data-val-required": "字段是必需的。" });
+            $div.find("#Rate").attr("name", function () { return "GameRuleDtos[" + divcount + "]." + $(this).attr("id"); }).attr({ "data-val": true, "data-val-number": "必须是一个数字。", "data-val-required": "字段是必需的。" });
+
+            $wrapper.prepend($div,"<hr/>");
+        });
+
+        $(".div_allrule").on("click", ".div_btn_remove", function () {
+            var $div = $(this).closest(".div-rule");
+            var $clone = $div.find(".div_btn_remove").clone();
+            $div.next().andSelf().remove();
+            $(".div_allrule").find(".div-rule:first").append($clone);
+        });
+    });
+</script>
+

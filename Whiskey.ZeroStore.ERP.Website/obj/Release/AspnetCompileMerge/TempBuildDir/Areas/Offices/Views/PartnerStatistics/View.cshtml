@@ -1,0 +1,66 @@
+
+@using Whiskey.ZeroStore.ERP.Models
+@model PartnerStatistics
+
+<style>
+
+</style>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.PartnerCount) :
+    </label>
+    <div class="col-md-4">
+        @Model.PartnerCount
+    </div>
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.MemberCount) :
+    </label>
+    <div class="col-md-4">
+        @Model.MemberCount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.OrderCount) :
+    </label>
+    <div class="col-md-4">
+        @Model.OrderCount
+    </div>
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.OrderMoney) :
+    </label>
+    <div class="col-md-4">
+        @Model.OrderMoney
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SaleCount) :
+    </label>
+    <div class="col-md-4">
+        @Model.SaleCount
+    </div>
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SaleMoney) :
+    </label>
+    <div class="col-md-4">
+        @Model.SaleMoney
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        Ê±¼ä :
+    </label>
+    <div class="col-md-4">
+        @Model.CreatedTime.ToShortDateString()
+    </div>
+</div>
+
+<script>
+    $(function () {
+        
+
+    });
+</script>
+

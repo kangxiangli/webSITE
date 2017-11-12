@@ -1,0 +1,97 @@
+﻿@using Whiskey.ZeroStore.ERP.Models.DTO
+@model StoreCheckDTO
+<style>
+	.addCheck>.store-check-item{
+		    width: 85%;
+    height: 30px;
+    margin: 5px;
+	}
+</style>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CheckName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.CheckName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.CheckName)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Desc) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Desc, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Desc)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.PunishScore) :
+    </label>
+    <div class="col-md-2">
+        @Html.TextBoxFor(f => f.PunishScore, new { @class = "form-control" })
+        @Html.ValidationMessageFor(f => f.PunishScore)
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Standard) :
+    </label>
+    <div class="col-md-2">
+        @Html.TextBoxFor(f => f.Standard, new { @class = "form-control" })
+        @Html.ValidationMessageFor(f => f.Standard)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ItemsCount) :
+    </label>
+    <div class="col-md-2">
+        @Html.TextBoxFor(f => f.ItemsCount, new { @class = "form-control", disabled = "disabled" })
+       
+        @Html.ValidationMessageFor(f => f.ItemsCount)
+    </div>
+</div>
+<button type="button" class="btn btn-success btn-add-item">增加考核项</button>
+<ol class="check-item-container"></ol>
+
+<script>
+    $(function () {
+        $(".btn-add-item").click(function () {
+            $(".check-item-container").append('<li class="addCheck"><input type="text" class="store-check-item" name="checkItem" value="" /> <a href="javascript:;" class="btn btn-danger" onclick="removeItem(this);">移除</a></li>')
+            increment();
+        });
+    });
+
+    function increment() {
+        var count = parseInt($("#ItemsCount").val());
+
+        if (isNaN(count)) {
+
+            $("#ItemsCount").val(1);
+        }
+        else {
+            $("#ItemsCount").val(++count);
+        }
+    }
+
+    function decrement() {
+        var count = parseInt($("#ItemsCount").val());
+
+        if (isNaN(count)) {
+
+            $("#ItemsCount").val(0);
+        }
+        else {
+
+            $("#ItemsCount").val(Math.max(--count,0));
+        }
+    }
+
+    function removeItem(sender) {
+        $(sender).parents('li').remove();
+        decrement();
+    }
+</script>

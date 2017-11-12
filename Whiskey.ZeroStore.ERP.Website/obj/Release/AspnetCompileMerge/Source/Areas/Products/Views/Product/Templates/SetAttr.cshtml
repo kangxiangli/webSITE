@@ -1,0 +1,66 @@
+﻿<div class="form-group">
+    <label class="control-label col-md-2">折扣分类</label>
+    <div class="col-md-4">
+       <select onchange="GetDetail(this)" class="form-control selectpicker">
+           <option value="-1">请选择折扣类型</option>
+           <option value="0">店铺</option>
+           <option value="1">季节</option>
+           <option value="2">品牌</option>
+           <option value="3">颜色</option>
+           <option value="4">尺码</option>
+       </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">详细分类</label>
+    <div class="col-md-4" >
+        <select id="detail" class="form-control">
+            <option>请选择折扣分类</option>
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">零售折扣</label>
+    <div class="col-md-4">
+        @Html.DropDownList("RetailDiscount", (List<SelectListItem>)ViewBag.Discount, new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group">
+
+    <label class="control-label col-md-2">批发折扣</label>
+    <div class="col-md-4">
+        @Html.DropDownList("WholesaleDiscount", (List<SelectListItem>)ViewBag.Discount, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+
+    <label class="control-label col-md-2">批发折扣</label>
+    <div class="col-md-4">
+        @Html.DropDownList("WholesaleDiscount", (List<SelectListItem>)ViewBag.Discount, new { @class = "form-control" })
+    </div>
+</div>
+
+<script type="text/javascript">
+    function GetDetail(option) {
+        var id = option.value;
+        if (id == -1) {
+            $("#detail").empty();
+            $("#detail").append("<option value='-1'>请选择详细分类</option>");
+        }
+        else {
+            $.ajax({
+                url: '@Url.Action("GetDetail")',
+                type: 'GET',
+                data: { Id: id },
+                success: function (data) {
+                    $("#detail").empty();
+                    $("#detail").append("<option value='-1'>请选择详细分类</option>");
+                    for (var i = 0; i < data.length; i++) {
+                        $("#detail").append("<option value='"+data[i].Id+"'>" + data[i].Name + "</option>");
+                    }
+                }
+            });
+        };
+    };
+</script>

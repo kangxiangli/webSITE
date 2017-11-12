@@ -1,0 +1,578 @@
+﻿@using Whiskey.Utility.Data
+@using Whiskey.ZeroStore.ERP.Models.Enums
+<style>
+	#DataTables_Table_0_wrapper {
+		background: rgba(0, 0, 0, 0.1);
+	}
+	
+	
+</style>
+<div class="row">
+	<div class="panel panel-search">
+		<div class="panel-heading clearfix">
+			<div class="col-md-4 panel-title">
+				<h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+			</div>
+			<div class="col-md-8 text-right">
+				<input class="switcher" type="checkbox" data-class="switcher-default checked" checked="checked">
+			</div>
+		</div>
+		<div class="panel-body">
+			<form class="form-horizontal form-search">
+                <div class="col-md-3">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">品牌</label>
+                        <div class="col-md-9">
+                            @Html.DropDownList("ProductOriginNumber.BrandId", (List<SelectListItem>)ViewBag.Brand, new { @class = "form-control _number_input selectpicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">品类</label>
+                        <div class="col-md-9">
+                            @Html.DropDownList("ProductOriginNumber.CategoryId", (List<SelectListItem>)ViewBag.Category, new { @class = "form-control _number_input selectpicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">款号</label>
+                        <div class="col-md-9">
+                            @Html.TextBox("ProductOriginNumber.BigProdNum", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">颜色</label>
+                        <div class="col-md-9">
+                            @Html.DropDownList("ColorId", (List<SelectListItem>)ViewBag.Color, new { @class = "form-control _number_input selectpicker" })
+                        </div>
+                    </div>
+                </div>
+			</form>
+		</div>
+		<div class="panel-footer text-right clearfix ">
+			<div class="pull-left">
+				<button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+				<button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+			</div>
+            <div class="pull-right form-horizontal u_info">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">手机号</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control u_info_input" id="u_phone" check-number  />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">姓名</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control u_info_input" id="u_name" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5" style="margin-left:-50px;">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">地址</label>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control u_info_input" id="u_address" readonly />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <button id="Lock" title="锁定当前用户" type="button" class="btn btn-primary btn-padding-right" disabled><i class="fa icon-stethoscope"></i> <span class="_lock">锁定</span></button>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+
+<div class="row" style="position:relative;">
+    <div class="div_pic_wrapper" style="width:100%;height:100%;z-index:999;background:rgba(0,0,0,0.3);position:absolute;top:0px;"></div>
+	<div class="product_list" id="product_list" style="width:100%;height:100%; background:rgba(0,0,0,0.1);color: #fff;">
+		<div class="panel-heading clearfix" style="position: relative; ">
+			<div class="col-md-4 panel-title">
+				<h5>
+                    <i class="fa fa-list"></i> <span>图片列表</span>
+                </h5>
+			</div>
+			<div class="col-md-8 text-right">
+			</div>
+			<!--<button id="add_all" class="btn btn-danger add_all" style="position:absolute;right:2%;top:20%;"><span>一键加入购物车</span></button>-->
+		</div>
+		<div class="gallery-containeron online-container-box " style="position: relative; height: 100%;">
+			<!--<div class="polaroid">
+                <div class="brick">
+                    <img " onerror="imgloaderror(this);"alt="" title="" src="https://www.0-fashion.com/Content/UploadFiles/Products/20170420/p_s_1052592811.jpg"><p>条纹背带裙</p><p>款号:SM007B1</p><em></em><div class="dabao" data-num="">
+                        <img src="/Content/Images/img/ck.png" alt="" " onerror="imgloaderror(this);">
+                </div>
+            </div>-->
+		</div>
+	</div>
+	<table class="table table-list table-hover valign-middle" style="display:none;" width="100%"></table>
+</div>
+
+<div class="clothes_selected2">
+	<div class="button-next"></div>
+	<div class="button-prev"></div>
+	<div class="clothes_close"></div>
+	<div class="clothes_decoration swiper-container">
+		<div class="swiper-wrapper">
+			<div class="swiper-slide"><img src="/Content/Images/noimage.png" alt=""></div>
+		</div>
+		<div class="swiper-pagination"></div>
+	</div>
+
+	<div class="polaroid_right">
+		<div class="product-price-box">
+			<div class="product-price-txt">吊牌价&nbsp;:</div>
+			<div class="product-price">&nbsp;8888.00</div>
+		</div>
+		<div class="clothes_color">
+			<div class="clothes_color_txt">颜色:</div>
+			<div><img class="chooseImg" onerror="imgloaderror(this);" src="" alt=""></div>
+		</div>
+		<div class="clothes_size">
+			<div class="clothes_size_txt">尺码:&nbsp;</div>
+			<div class="clothes_size_details">
+				<div class="clothes_size_S">&nbsp;S&nbsp;</div>
+
+			</div>
+
+		</div>
+		<div class="clothes_quantity">
+
+			<div class="clothes_quantity_txt">数量：&nbsp;</div>
+			<div class="clothes_quantity_num">
+				<div class="quantity_left ">-</div> <input class="quantity_num" type="text" check-number check-int min-value="1" value="1" />
+				<div class="quantity_right ">+</div>
+			</div>
+
+		</div>
+
+	</div>
+	<div class="clothes_decision">
+		<!-- <div class="ready_pagked"><b>选购</b></div>-->
+		<div class="go_car">
+			<img src="/Content/Images/img/go_car.png"></img>
+		</div>
+	</div>
+</div>
+
+<div class="clothes_selected">
+	<div class="button-next"></div>
+	<div class="button-prev"></div>
+	<div class="clothes_close"></div>
+	<div class="clothes_decoration swiper-container">
+		<div class="swiper-wrapper">
+			<div class="swiper-slide"><img src="/Content/Images/noimage.png" alt=""></div>
+		</div>
+		<div class="swiper-pagination"></div>
+	</div>
+
+	<div class="polaroid_right">
+		<div class="product-price-box">
+			<div class="product-price-txt">吊牌价&nbsp;:</div>
+			<div class="product-price">&nbsp;8888.00</div>
+		</div>
+		<div class="clothes_color">
+			<div class="clothes_color_txt">颜色:</div>
+			<div><img class="chooseImg" onerror="imgloaderror(this);" src="" alt=""></div>
+
+		</div>
+		<div class="clothes_size">
+			<div class="clothes_size_txt">尺码:&nbsp;</div>
+			<div class="clothes_size_details">
+				<div class="clothes_size_S">&nbsp;S&nbsp;</div>
+
+			</div>
+
+		</div>
+		<div class="clothes_quantity">
+			<div class="clothes_quantity_txt">数量：&nbsp;</div>
+			<div class="clothes_quantity_num">
+				<div class="quantity_left">-</div> <input class="quantity_num" type="text" check-number check-int min-value="1" value="1" />
+				<div class="quantity_right ">+</div>
+			</div>
+		</div>
+
+	</div>
+	<div class="clothes_decision">
+		<!-- <div class="ready_pagked"><b>选购</b></div>-->
+		<div class="go_car">
+			<img src="/Content/Images/img/go_car.png"></img>
+		</div>
+	</div>
+</div>
+<link href="/Content/Styles/Layout/mystyle.css" rel="stylesheet" />
+<link href="/Content/Styles/swiper/swiper.css" rel="stylesheet" />
+<script src="/Content/Scripts/swiper/swiper.min.js"></script>
+@section Scripts{
+<script type="text/javascript">
+    $(function () {
+        $("#ProductOriginNumber_BrandId option[value='-1']:not(:first)").prop("disabled", true);
+		$.whiskey.datatable.instance = $(".table-list").dataTable({
+			aLengthMenu: [16, 20, 50],
+			"sAjaxSource": "@Url.Action("List")",
+			fnServerParams: function(aoData) {
+				var conditions = new $.whiskey.filter.group();
+				$(".form-search input[name!='StartDate'][name!='EndDate'],.form-search select").each(function() {
+					var field = $(this).attr("name");
+					var value = $(this).val();
+					if (value != null && value.length > 0) {
+					    if ($(this).hasClass("_number_input") && value == "-1") {
+
+					    } else {
+					        conditions.Rules.push(new $.whiskey.filter.rule(field, value, $(this).hasClass("_number_input") ? "equal" : "contains"));
+					    }
+					}
+				});
+				aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+			},
+			aoColumns: [{
+				"bVisible": false,
+				"bSearchable": false,
+				"bSortable": false,
+				"sName": "Id",
+				"mData": "Id"
+			}],
+			fnRowCallback: function(dom, data, index) {
+				initData(data);
+			},
+			fnPreDrawCallback: function() {
+				$(".online-container-box").empty();
+			},
+		});
+
+	    $("#Search").on("click", function () {
+	        $.whiskey.datatable.reset(false);
+	    });
+
+	    $("#Clear").on("click", function () {
+	        $.whiskey.web.clearForm(".form-search");
+	    });
+
+	    $("#u_phone").on("keyup", function () {
+	        var uInfo = getUInfo();
+	        var phone = this.value;
+	        var reg = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+	        if (!reg.test(phone)) {
+	            this.focus();
+	            $(this).addClass("input-validation-error");
+	            uInfo.name.prop("readonly", true).val("");
+	            uInfo.address.prop("readonly", true).val("");
+	        } else {
+	            $(this).removeClass("input-validation-error");
+
+	            $.ajax({
+	                url: "getCartInfoByPhone",
+	                type: "post",
+	                data: { phone: phone },
+	                beforeSend: function () {
+	                    uInfo.name.val("");
+	                    uInfo.address.val("");
+	                },
+	                complete: function () {
+	                    uInfo.name.prop("readonly", false);
+	                    uInfo.address.prop("readonly", false);
+	                },
+	                success: function (da) {
+	                    uInfo.name.val(da.Name);
+	                    uInfo.address.val(da.Address);
+	                    checkLockStatus();
+	                },
+	            });
+	        }
+	    });
+
+		/*点击关闭*/
+		$('.clothes_close').bind('click', function() {
+			var close_ready = $(this).parent().siblings('.ready');
+			if(close_ready.length > 0) {
+				$(".brick").removeClass('xuhua');
+				$(this).parent().hide();
+			} else {
+				$(".brick").removeClass('xuhua');
+				$(this).parent().detach();
+				//$('.dabao').bind('click', foo);
+			}
+
+		});
+
+		function getUInfo() {
+		    var $uinfo = $(".u_info");
+		    var phone = $uinfo.find("#u_phone");
+		    var name = $uinfo.find("#u_name");
+		    var address = $uinfo.find("#u_address");
+		    var info = {
+		        phone: phone,
+		        name: name,
+		        address: address
+		    };
+		    return info;
+		}
+
+		$("#Lock").click(function () {
+		    var $this = $(this);
+		    var islock = $this.hasClass("islock");
+		    if (!islock) {
+		        $this.addClass("islock").find("._lock").text("已锁定");
+		        
+		        $(".div_pic_wrapper").hide();
+		    } else {
+		        $this.removeClass("islock").find("._lock").text("锁定");
+		        $(".div_pic_wrapper").show();
+		    }
+
+		    var info = getUInfo();
+		    info.phone.prop("readonly", !islock);
+		    info.name.prop("readonly", !islock);
+		    info.address.prop("readonly", !islock);
+		});
+
+		function checkLockStatus() {
+		    var info = getUInfo();
+		    if (info.phone.val() && info.name.val() && info.address.val()) {
+		        $("#Lock").prop("disabled", false);
+		    } else {
+		        $("#Lock").prop("disabled", true);
+		    }
+		}
+
+		$(".u_info_input").keyup(function () {
+		    checkLockStatus();
+		});
+
+		$(".go_car").click(function() {
+			var $parentdiv = $(this).parents(".clothes_selected:first,.clothes_selected2:first").find(".polaroid_right");
+			var color = $parentdiv.find(".active_color");
+			var size = $parentdiv.find(".active_size");
+			var count = $parentdiv.find(".quantity_num");
+			if(color.length == 1 && size.length == 1 && count.length == 1 && (count.val() > 0)) {
+				var BigProdNum = $(this).attr("data-num");
+				var ColorId = color.attr("data-id");
+				var SizeId = size.attr("data-id");
+				var Quantity = count.val();
+				var info = getUInfo();
+
+				$.whiskey.web.ajaxRequest({
+					method: "post",
+					actionUrl: "AddCart",
+					params: {
+						infos: [{
+							BigProdNum: BigProdNum,
+							ColorId: ColorId,
+							SizeId: SizeId,
+							Quantity: Quantity,
+						}],
+						dtoCart: {
+						    OriginFlag: "@((int)StoreCardOriginFlag.临时)",
+						    Phone: info.phone.val(),
+						    Address: info.address.val(),
+						    Name: info.name.val(),
+						},
+					},
+					lockButton: $(this),
+					complete: function(da) {
+						$.whiskey.web.alert({
+							type: da.ResultType == 3 ? "success" : "error",
+							content: da.ResultType == 3 ? "添加成功" : da.Message,
+						});
+					}
+				});
+
+			} else {
+				$.whiskey.web.alert({
+					type: "warning",
+					content: "颜色和尺码未选择",
+				});
+			}
+		});
+
+	});
+
+	var gouwuche_size = 0; //购物车的数量
+
+	//渲染数据
+	function initData(data) {
+		//$(".online-container-box").empty();
+		var html = "";
+		//设置关键词，进行替换
+		var parts = '<div class="polaroid"><div class="brick"> <div class="img_Box"><img onerror="imgloaderror(this);"alt="" title="" src="~Img"></div><p>~name</p><p>款号：~BigProdNum</p><em></em><div class="dabao" data-num="~BigProdNum" onclick="foo(this)"><img src="/Content/Images/img/ck.png" alt="" onerror="imgloaderror(this);"></div></div></div>';
+		if(data == null) {
+			html = "<div class='text-center'>表中无数据存在！</div><br/>";
+		}
+		var img = data.ThumbnailPath;
+		var name = data.ProductName;
+		var num = data.BigProdNum;
+		html += parts.replace("~Img", img).replace("~name", name).replace(/~BigProdNum/g, num);
+        //var onlineContainerBox = $("#add_all").parents().find(".online-container-box");
+        var onlineContainerBox = $("#product_list").find(".online-container-box");
+		onlineContainerBox.append(html);
+	}
+
+	function getDailogData(option) {
+		//拿到大货号
+		var num = option.attr("data-num");
+		$(".ready_pagked").attr("data-num", num);
+		$(".go_car").attr("data-num", num);
+		$.ajax({
+			url: "@Url.Action("GetColorAndSize")",
+			type: "POST",
+			data: { BigProdNum: num },
+			success: function(data) {
+				initColor(data);
+				initPrice(data);
+				initImage(data);
+			}
+		});
+	}
+
+	//初始化价格
+	function initPrice(data) {
+		$(".product-price-box").empty();
+
+		$(".product-price-box").append("<div class='productpricetxt'>吊牌价：</div>");
+
+		var part = '<div class="product-price">&nbsp;#price</div>';
+		var html = "";
+		var TagPrice = data.Data.TagPrice;
+		html += part.replace(/#price/g, TagPrice);
+
+		$(".product-price-box").append(html);
+	}
+
+	//初始化颜色
+	function initColor(data) {
+		var $clothes_color = $(".clothes_color").empty().append("<div class='clothes_color_txt'>颜色：</div>");
+		var $colorid_sizes = $("<div class='colorid_sizes' />");
+		var $parsize = $(".clothes_size").empty().append("<div class='clothes_size_txt'>尺码：</div>");
+		$.each(data.Data.list, function(index, item) {
+			 var colorindex = index;
+			var $div = $("<div />");
+			$div.append('<img class="chooseImg" src="' + item.ColorImg + '" alt="' + item.ColorName + '" onerror="imgloaderror(this);"/>');
+			index == 0 ? $div.addClass("active_color") : "";
+			$div.attr("data-id", item.ColorId).addClass("clothes_size_details").attr("data-colorindex",colorindex);
+
+			$div.click(function() {
+				$(this).addClass('active_color').siblings().removeClass('active_color');
+				$(".colorid_sizes div[data-colorid='" + item.ColorId + "']").show().siblings().hide();
+				$(".colorid_sizes").find("div[class*='active_size']").removeClass('active_size');
+			});
+
+			$clothes_color.append($div);
+			//------拼size-----
+			var $div_size = $("<div />");
+			index != 0 ? $div_size.hide() : "";
+			$div_size.attr("data-ColorId", item.ColorId);
+			$.each(item.Sizes, function(ind, item2) {
+				var $size = $('<div data-id="' + item2.SizeId + '" >' + item2.SizeName + '</div>');
+				(ind == 0 && index == 0) ? $size.addClass("active_size"): "";
+				$size.click(function() {
+					$(this).addClass('active_size').siblings().removeClass('active_size');
+				});
+				$div_size.append($size);
+			});
+
+			$colorid_sizes.append($div_size);
+		});
+		$parsize.append($colorid_sizes);
+	}
+
+	//初始化图
+
+	function initImage(data) {
+
+		$(".clothes_decoration .swiper-wrapper").empty();
+		var part = '<div class="swiper-slide"><img src="#path" data-colorId="#id" alt="" onerror="imgloaderror(this);"/></div>';
+		var html = "";
+
+		var dataList = data.Data.list;
+		for(var i = 0; i < dataList.length; i++) {
+			var dataList_cur = dataList[i];
+			var ThumbnailSmallPath = dataList_cur.ThumbnailPath;
+			var ColorId=dataList_cur.ColorId;
+               html += part.replace("#path", ThumbnailSmallPath).replace("#id", ColorId);
+		}
+
+		$(".clothes_decoration .swiper-wrapper").append(html);
+
+		//初始化图片控件
+		var mySwiper = new Swiper('.swiper-container', {
+			pagination: '.swiper-pagination',
+			nextButton: '.button-next',
+			prevButton: '.button-prev',
+			slidesPerView: 1,
+			paginationClickable: true,
+			spaceBetween: 30,
+			loop: true,
+			onSlideChangeEnd: function(swiper) {
+				var $wrapper = $(swiper.wrapper[0]);
+				var ColorId = $wrapper.find(".swiper-slide-active img[data-colorid]").attr("data-colorid");
+				$wrapper.parents(".change").find(".polaroid_right .clothes_size_details[data-id='" + ColorId + "']").click();
+			}
+
+		});
+		//点击颜色切换相应的衣服
+		 $('.clothes_size_details').click(function(){
+             var color = $(this);
+			var index1= parseInt(color.attr("data-colorindex"))+1
+         		mySwiper[0].slideTo(index1, 1000, false);//切换到第一个slide，速度为1秒
+            })
+
+	}
+	//数量
+	$(".quantity_left").click(function() {
+		var num = $(".quantity_num").val();
+		num = (num - 1) < 1 ? 1 : (num - 1);
+		$(".quantity_num").val(num);
+
+	});
+	$(".quantity_right").click(function() {
+
+		var num = $(".quantity_num").val();
+		num = (parseInt(num) + parseInt(1)); //两数值相加的时候，要用parseInt()转换一下
+		$(".quantity_num").val(num);
+
+	});
+	//点击眼睛
+	function foo(_this) {
+		var dabao = $(_this);
+		//获取尺码和颜色数据
+		getDailogData(dabao);
+		var offset_left = dabao.offset().left;
+		var body_helf = $('body').width() / 2;
+		var hasdabao = dabao.parent().siblings('.clothes_selected,.clothes_selected2'); //判断是否有打包被选中
+		if(hasdabao.length > 0) {
+			$(".brick").addClass('xuhua');
+			dabao.parent().siblings('.clothes_selected,.clothes_selected2').show(); //点击时候如果不是打包的就显示，不detch
+		} else {
+			if(offset_left <= body_helf) { //判断在屏幕右边还是左边
+				var clothes_selected = $('.clothes_selected:last').clone(true); //克隆一个弹框
+				var brick = dabao.closest('.brick');
+				dabao.closest('.polaroid').append(clothes_selected);
+				brick.siblings('.clothes_selected').addClass('change').animate({ opacity: "1" }, 350);
+				//展示的图片，同加载的图片，后台数据不同src应对应
+				brick.siblings('.clothes_selected').children('.clothes_decoration').append('<img src="' + brick.children('img').attr('src') + '"+/>');
+				$(".brick").addClass('xuhua'); //背景虚化效果
+				//$('.dabao').unbind('click', foo);
+			} else {
+
+				var clothes_selected = $('.clothes_selected2:last').clone(true); //在屏幕右半边就clone第二个弹框
+				var brick = dabao.closest('.brick');
+				dabao.closest('.polaroid').append(clothes_selected);
+				brick.siblings('.clothes_selected2').addClass('change').animate({ opacity: "1", marginLeft: "-5" }, 350);
+				brick.siblings('.clothes_selected2').children('.clothes_decoration').append('<img src="' + brick.children('img').attr('src') + '"+/>');
+				$(".brick").addClass('xuhua');
+				//$('.dabao').unbind('click', foo);
+			}
+
+		}
+
+	}
+</script>
+}

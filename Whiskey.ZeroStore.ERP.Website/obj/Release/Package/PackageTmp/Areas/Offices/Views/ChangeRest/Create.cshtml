@@ -1,0 +1,68 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model RestDto
+
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<div class="form-group">
+    <label class="control-label col-md-2">
+        加班时间 :
+    </label>
+    <div class="col-md-10">
+        <div class="input-daterange input-group">
+            @Html.TextBoxFor(x => x.WorkDay, new { @class = "start-date input-sm form-control", @placeholder = "日期" })
+        </div>        
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        是否使用 :
+    </label>
+    <div class="col-md-1">
+        @Html.CheckBoxFor(m => m.IsUsed, new { @class = "form-control" })        
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        休息时间 :
+    </label>
+    <div class="col-md-10" >
+        <div class="input-daterange input-group">
+            @Html.TextBoxFor(x => x.RestDay, new { @class = "start-date input-sm form-control", @placeholder = "日期" })
+        </div> 
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        备注 :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control",   })
+    </div>
+</div>
+
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+    $(function () {
+        //获取当前时期并赋值给日期控件
+        var myDate = new Date();
+        var date = myDate.toLocaleDateString();
+        $("#WorkDay").attr("value", date);
+        $("#RestDay").attr("value", date);
+        //初始化工作日期控件
+        $("#WorkDay").datetimepicker({
+            startDate: date,
+            format: 'yyyy/mm/dd',
+            autoclose: true,
+            minView: 'month',
+            todayBtn: true
+        });
+        //初始化休息日期控件
+        $("#RestDay").datetimepicker({
+            startDate: date,
+            format: 'yyyy/mm/dd',
+            autoclose: true,
+            minView: 'month',
+            todayBtn: true
+        });
+    })
+</script>

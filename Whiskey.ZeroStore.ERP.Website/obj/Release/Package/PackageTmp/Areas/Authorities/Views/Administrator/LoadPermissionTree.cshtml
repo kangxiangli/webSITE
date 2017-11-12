@@ -1,0 +1,14 @@
+﻿<link href="~/Content/Styles/PermissionTree/permissionTree.css" rel="stylesheet" />
+<script src="~/Content/Scripts/PermissionTree/PermissionTree.js"></script>
+<div>
+    <div class="tree" style="height:600px;"></div>
+</div>
+<script>
+    $(function () {
+        var id = $("#Id").val();
+
+        $.post("/Authorities/Administrator/GetTree?aid=" + id, function (data) {
+            $(".tree").loadTree(data);
+        });
+    });
+</script>

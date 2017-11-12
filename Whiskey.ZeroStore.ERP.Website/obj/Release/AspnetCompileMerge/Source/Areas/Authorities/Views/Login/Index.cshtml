@@ -1,0 +1,242 @@
+﻿@{
+    Layout = null;
+    string themePath = ViewBag.themePath ?? string.Empty;
+}
+
+@using Whiskey.ZeroStore.ERP.Models;
+@model Administrator
+
+<script>
+     history.pushState(null, "", window.location.href);
+</script>
+@{
+    if (ViewBag.themeExist ?? false)
+    {
+        Html.RenderPartial(Path.Combine(themePath, "_Index.cshtml"));
+    }
+    else
+    {
+        <!DOCTYPE html>
+        <!--[if IE 8]><html class="ie8"><![endif]-->
+        <!--[if IE 9]><html class="ie9 gt-ie8"><![endif]-->
+        <!--[if gt IE 9]><!-->
+        <html class="gt-ie8 gt-ie9 not-ie">
+        <!--<![endif]-->
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+            <title>零时尚ERP管理平台 V2 —  — 我们的任务是让你的工作变得更简单！</title>
+            <meta id="keywords" name="Keywords" content="零时尚产品，进销存管理系统，零时尚ERP系统，零时尚内部管理系统，产品进销存管理系统" />
+            <meta id="description" name="Description" content="零时尚是一家整合奢侈品资源的高端销售平台，期待你的加盟！ " />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+            @Styles.Render("~/bundles/global_styles")
+            @Styles.Render("~/bundles/default_styles")
+            @Scripts.Render("~/bundles/scripts")
+            <script src="~/Content/Scripts/crypto/aeshelper-min.js"></script>
+        </head>
+        <body class="theme-default page-signin">
+            <script>var init = [];</script>
+            <script src="/content/scripts/layout/themes.js"></script>
+            <div id="page-signin-bg">
+                <div class="overlay"></div>
+                <img src="~/Content/Images/login-bg-first.jpg" alt="">
+            </div>
+            <div class="signin-container">
+
+                <div class="signin-info text-center">
+                    <a href="@Url.Action("Index")" class="logo">
+                        <img src="/Content/Images/logo.png" alt="" style="width:100px;margin-top: -5px;">&nbsp;
+                    </a>
+                    <div class="slogan text-center">
+                        零时尚ERP管理平台 Ver2.0
+                    </div>
+                    <div class="slogan text-center text-sm">
+                        简单 . 易用
+                    </div>
+                    <ul>
+                        <li><i class="fa fa-sitemap signin-icon"></i> 全新的无刷新用户操作界面</li>
+                        <li><i class="fa fa-file-text-o signin-icon"></i> 健全的日志记录系统</li>
+                        <li><i class="fa fa-outdent signin-icon"></i> 完善的细粒度权限控制体系</li>
+                        <li><i class="fa fa-heart signin-icon"></i> 准确无误的数据统计</li>
+                    </ul>
+                </div>
+
+                <div id="modals-alerts-success" class="modal modal-alert modal-success fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <i class="fa fa-check-circle"></i>
+                            </div>
+                            <div class="modal-title"></div>
+                            <div class="modal-body"></div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" data-dismiss="modal">确定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="modals-alerts-danger" class="modal modal-alert modal-danger fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <i class="fa fa-times-circle"></i>
+                            </div>
+                            <div class="modal-title"></div>
+                            <div class="modal-body"></div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">确定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="modals-alerts-warning" class="modal modal-alert modal-warning fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <i class="fa fa-warning"></i>
+                            </div>
+                            <div class="modal-title"></div>
+                            <div class="modal-body"></div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-warning" data-dismiss="modal">确定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="modals-alerts-info" class="modal modal-alert modal-info fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <i class="fa fa-info-circle"></i>
+                            </div>
+                            <div class="modal-title"></div>
+                            <div class="modal-body"></div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-info" data-dismiss="modal">确定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="signin-form">
+                    <form class="login-form">
+                        <div class="signin-text">
+                            <span>登录零时尚ERP管理平台</span>
+                        </div>
+
+                        <div class="form-group w-icon">
+                            @Html.TextBoxFor(m => m.Member.MemberName, new { @class = "form-control input-lg signin-input", @placeholder = "请输入你的帐号、邮箱或手机号" })
+                            <span class="fa fa-user signin-form-icon"></span>
+                        </div>
+
+                        <div class="form-group w-icon">
+                            @Html.PasswordFor(m => m.Member.MemberPass, new { @class = "form-control input-lg signin-input", @placeholder = "请输入你的密码" })
+                            <span class="fa fa-lock signin-form-icon"></span>
+                        </div>
+
+                        <div class="form-actions">
+                            @*<label class="checkbox-inline"><input type="checkbox" id="Remembered" class="px"><span class="lbl remembered">自动登录（7天）</span></label>*@
+                            <a href="#" class="forgot-password">忘记你的密码了?</a>
+                        </div>
+
+                        <div class="form-actions">
+                            <input type="button" value="登录系统" class="signin-btn bg-primary">
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+            @Scripts.Render("~/bundles/validates")
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $(".login-form").keydown(function (e) {
+                        var e = e || event,
+                        keycode = e.which || e.keyCode;
+                        if (keycode == 13) {
+                            $(".signin-btn").trigger("click");
+                        }
+                    });
+                    $(".signin-btn").click(function () {
+                        if ($("#Member_MemberName").val() == "" || $("#Member_MemberPass").val() == "") {
+                            $.whiskey.web.alert({
+                                type: "warning",
+                                content: "请输入你的帐号和密码！",
+                                callback: function () {
+                                }
+                            });
+                        } else {
+                            $.whiskey.web.ajaxRequest({
+                                method: "POST",
+                                actionUrl: "@Url.Action("Check")",
+                                //params: $(".login-form").serialize(),
+                                params: {
+                                    "Member.MemberName": $("#Member_MemberName").val(),
+                                    "Member.MemberPass": $.Aes.Encrypt("@ViewBag._tc_key", $("#Member_MemberPass").val())
+                                },
+                                lockButton: $(this),
+                                complete: function (data) {
+                                    if ((typeof data == 'object')) {
+                                        if (data.ResultType == 3) {
+                                            $(".signin-btn").attr("disabled", "disabled");
+                                            window.location = "@Url.Action("Index","Home", new { area="Authorities"})";
+                                        } else {
+                                            $(".signin-btn").removeAttr("disabled");
+                                            $.whiskey.web.alert({
+                                                type: "danger",
+                                                content: data.Message,
+                                                callback: function () {
+                                                }
+                                            });
+                                        }
+                                    }
+                                    else {
+                                        $.whiskey.web.alert({
+                                            type: "danger",
+                                            content: data,
+                                            callback: function () {
+                                            }
+                                        });
+                                    }
+
+                                }
+                            });
+                        }
+                    });
+
+                    $(".forgot-password").click(function () {
+                        var dialog = new $.whiskey.web.ajaxDialog({
+                            caption: "找回密码",
+                            actionUrl: "@Url.Action("FindPassword")",
+                            lockButton: $(this),
+                            formValidator: function () {
+                                var $form = $(".modal-form");
+                                if (!$form.valid()) {
+                                    return false;
+                                } else {
+                                    return true;
+                                }
+                            },
+                            postComplete: function (data) {
+                                $.whiskey.web.alert({
+                                    type: "info",
+                                    content: "新密码已经发送至你刚才输入的邮箱中。",
+                                    callback: function () {
+                                        window.location = "@Url.Action("Index")";
+                                    }
+                                });
+                                return true;
+                            },
+                        });
+                    });
+                });
+                window.ZeroStore.start(init);
+            </script>
+        </body>
+    </html>
+    }
+}

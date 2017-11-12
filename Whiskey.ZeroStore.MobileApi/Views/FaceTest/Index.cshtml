@@ -1,0 +1,142 @@
+﻿<html>
+
+<head>
+    <title>人脸识别-演示</title>
+    <script src="/Content/scripts/facetest/typed.min.js"></script>
+    <script src="//www.0-fashion.com/content/scripts/jquery/jquery-1.11.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="/Content/css/facetest/face.css" />
+    <link rel="stylesheet" type="text/css" href="/Content/css/facetest/bj-min.css" />
+</head>
+
+<body>
+    <!--弹出层-->
+    <div class="bg_dialog">
+        <div class="prompt_box_1">
+            <div class="inform_txt"></div>
+        </div>
+    </div>
+    <!-- End 模拟下拉框 -->
+    <div class="select">
+        <div class="input_in">
+            <input readonly type="text" value="请选择店铺" />
+        </div>
+        <div class="city hide ">
+            <ul class="select_ul scrollbar ">
+                <!--<li><span>直营店</span></li>-->
+                <!--<li>New York1</li>
+                <li>New York2</li>
+                <li>New York3</li>
+                <li>New York4</li>
+                <li>New York5</li>
+                <li>New York6</li>-->
+            </ul>
+        </div>
+    </div>
+    <!-- End 模拟下拉框 -->
+
+    <div id='load_animate' style="display: none;">
+        <div class="load_centent">
+            <span id="load_text" class="load_text">
+                <span id="load_text_container" class="load_text_container">
+                    <span class="img_tx_box">
+                        <img id="UserPhoto_2" class="load_margin img_tx UserPhoto_2" src="https://www.0-fashion.com/Content/Images/MemberPhoto/2017/6/30/17/20170630173240.jpg" alt="">
+                        <span class="load_margin load_row"><span id="MemberName_2" class="load_name  MemberName_2"></span></span>
+                        <span class="load_margin load_row"><span id="DateofBirth_2" class="DateofBirth_2 "></span></span>
+                    </span>
+                    <span class="load_span">性别</span>：<span class="load_span load_left Gender_2"></span><span class="load_span">卡号</span>：<span class="load_span load_left CardNumber_2"></span><br>
+                    <span class="load_span">会员类型</span>：<span class=" load_span load_left MemberType_2"></span>
+                    <span class="load_span">所属店铺</span>：<span class=" load_span load_left StoreName_2"></span><br>
+                    <p>	<span class="load_span">电话</span>：<span class="load_span MobilePhone_2"></span></p>
+                    <div class="style_detail">
+                        <p class="style_title">风格测试报告</p>
+                        <span class="load_span">上装</span>：<span class="load_span load_left topSize_2"></span><span class="load_span">下装</span>：<span class="load_span load_left bottomSize_2">,</span><br>
+                        <span class="load_span">半身</span>：<span class="load_span load_left Bust_2"></span><span class="load_span">体型</span>：<span class="load_span load_left FigureType_2"></span><br>
+                        <span class="load_span">身高</span>：<span class="load_span load_left Height_2"></span><span class="load_span">臀围</span>：<span class="load_span load_left Hips_2"></span><br>
+                        <span class="load_span">腰围</span>：<span class="load_span load_left Waistline_2"></span><span class="load_span">体重</span>：<span class="load_span load_left Weight_2"></span><br>
+                        <p><span class="load_span">偏好</span>：<span class="load_span load_width PreferenceColor_2 load_left"></span></p>
+                        <p><span class="load_top load_span">特征</span><i class="load_top">：</i><span class="load_span load_left load_width FigureDes_2"></span></p>
+                    </div>
+                </span>
+            </span>
+        </div>
+    </div>
+    <div class="returnIndex" alt=""></div>
+    <canvas id="background"></canvas>
+    <div class="canvas_box2" style="display: none;">
+        <div class="camera_box">
+            <div class="load_vodio">
+                <div class="camera_set rotate_scale " style="display: none;">
+                    <div class="camera_image form-con" id="snap2"></div>
+                </div>
+                <video width="350" height="400" id="video2"></video>
+            </div>
+            <div class="load_canvas_2">
+                <canvas class="canvas_2" width="350" height="400" id="canvas2"> </canvas>
+            </div>
+        </div>
+    </div>
+    <div class="loginbox">
+        <div class="logincontent">
+            <div class="loginboxheader">会员登录</div>
+            <input type="text" placeholder="手机号" id="username" maxlength="11" />
+            <input type="text" placeholder="密码" id="pwd" onfocus="this.type='password'" />
+            <button id="login"><span>登录</span></button>
+        </div>
+    </div>
+
+    <div class="resultbox">
+        <div class="loginResult"></div>
+        <div class="canvas_box">
+            <video width="300" height="230" id="video" style="margin-right:20px"></video>
+            <canvas width="300" height="230" id="canvas"></canvas>
+            <p class="btbox">
+                <button id="snap"><img src="/Content/Images/facetest/takePhoto.png" alt="" title="截取头像" /></button>
+                <button id="close"><img src="/Content/Images/facetest/closeCamera.png" alt="" title="关闭摄像头" /></button>
+                <button id="upload"><img src="/Content/Images/facetest/uploadPhoto.png" alt="" title="上传头像" /></button>
+            </p>
+            <!--<img id="uploaded" width="200" height="150" />-->
+        </div>
+    </div>
+    <div class="content_warpper">
+        <div class="icbox">
+            <div class="computer">
+                <img src="/Content/Images/facetest/PC-icon.png" alt="" id="entryAndLogin" />
+                <div class="computer_descript">
+                    <p class="titel">录入信息</p>
+                    <p class="titel2">LU RU XIN XI</p>
+                </div>
+                <div class="introduce">
+                    <p><strong style="font-size:25px">首次</strong>使用请先登录</p>
+                    <p>信息无误后记录下您的第一张面孔</p>
+                </div>
+            </div>
+            <div class="camera">
+                <img src="/Content/Images/facetest/camera.png" alt="" id="camera_img" />
+                <input type="text" name="" id="imgValue" value="" />
+                <div class="computer_descript">
+                    <p class="titel">拍照</p>
+                    <p class="titel2">PAI ZHAO</p>
+                </div>
+                <div class="introduce">
+                    <p><strong style="font-size:25px">选择</strong>或拍摄一张您的美照</p>
+                    <p>下次光临时自动匹配您的尊贵会员身份</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="camera_setting" style="display: none;">
+            <input class="form-con display" type="button" value="添加" id="addFace" />
+            <input class="form-con display" type="button" value="获取token" id="getface" />
+            <input class="form-con display " type="button" value="匹配会员" id="searchMember" />
+            <input class="display form-con" type="button" value="删除" id="remove" />
+            <input class="form-con display" type="button" value="删除所有" id="removeall" />
+            <input class="display" type="text" id="facetokenval" value="" />
+
+        </div>
+    </div>
+</body>
+<script src="/Content/scripts/facetest/bgeffect.js"></script>
+<script src="/Content/scripts/facetest/main.js"></script>
+<script src="/Content/scripts/facetest/camera.js"></script>
+</html>

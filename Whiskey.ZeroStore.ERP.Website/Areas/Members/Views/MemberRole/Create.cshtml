@@ -1,0 +1,129 @@
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model MemberRoleDto
+
+<style>
+    .groups_li li {
+        list-style-type: none;
+    }
+
+    .groups_li input {
+        width: 20px;
+        height: 25px;
+    }
+
+    .groups_li a {
+        font-size: 11px;
+        margin-left: 10px;
+    }
+
+    .group_li_info {
+        min-height: 200px;
+        height: auto;
+    }
+
+    .groups_li {
+        width: 40%;
+        float: left;
+        height: auto;
+        border-right: 1px solid #dddddd;
+    }
+
+    .group_info {
+        width: 50%;
+        height: auto;
+        float: left;
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 50px;
+    }
+
+        .group_info p {
+            text-indent: 2em;
+        }
+
+    #roleright_tab ul li {
+        float: left;
+    }
+</style>
+
+<div class="rolecrea_div">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#baseinfo_tab" data-toggle="tab">
+                基本信息
+            </a>
+        </li>
+        <li><a href="#roleright_tab" data-toggle="tab">角色权限</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="baseinfo_tab">
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.Name) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.Weight) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Weight, new { @class = "form-control", @readonly = "readonly", @Value = "0" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.Description) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", placeholder = "角色描述", @rows = "4" })
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="roleright_tab">
+            @{
+                Html.RenderAction("PermissCell", "MemberModule", new { @Area = "Authorities" });
+            }
+        </div>
+    </div>
+    @Html.Hidden("ModuleIds")
+</div>
+
+<script>
+    $(function () {
+        $("button[data-bb-handler='success']").attr("disabled", "disabled");
+        $(".rolecrea_div #Name").change(function () {
+            //判断是否重名
+            exisName();
+            return false;
+        });
+
+        $(document).delegate("#roleright_tab .tree :checkbox:not([class*='xianshi'])", "click", function () {
+            var weight = $(".tree .erji>span>:checkbox:checked").length;
+            $("#baseinfo_tab #Weight").val(weight);
+            var moduleids = $(".yiji :checkbox:checked").map(function (ind,item) { return item.value; }).get().join(",");
+            $(".rolecrea_div #ModuleIds").val(moduleids);
+        });
+
+        function exisName() {
+            var send = $(".rolecrea_div #Name");
+            var t = send.val().trim();
+            if (t != "") {
+                $.post("ExisRoleName", { name: t }, function (da) {
+                    if (da.ResultType == 3) {
+                        $(send).parents("div:first").addClass("has-error");
+                        $(send).attr("title", "角色名称已存在");
+                        $("[data-bb-handler='success']").attr("disabled", "disabled");
+                    } else {
+                        $(send).parents("div:first").removeClass("has-error");
+                        $(send).attr("title", "");
+                        $("[data-bb-handler='success']").removeAttr("disabled");
+                    }
+                })
+            }
+        }
+    });
+</script>

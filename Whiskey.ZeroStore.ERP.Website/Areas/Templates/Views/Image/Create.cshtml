@@ -1,0 +1,121 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model HtmlItemDto
+@using Whiskey.Utility.Data
+<div class="form-group">
+    <label class="control-label col-md-2">
+        简介 :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", @placeholder = "字数长度在150字以内" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        上传图片 :
+    </label>    
+    <div class="col-md-10">
+        <div class="dropzone-box">
+            <div class="dz-default dz-message">
+                <i class="fa fa-cloud-upload"></i>
+                点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+            </div>
+            <div class="fallback">
+                <input name="file" type="file" id="file" multiple="multiple" />
+            </div>
+        </div>
+    </div> 
+</div>
+
+<script type="text/javascript">    
+    $(function () {      
+        //初始化上传控件
+        var myDropzone = new Dropzone(".dropzone-box", {
+            url: "@Url.Action("Create")",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            parallelUploads:100,
+            autoProcessQueue: false, //关闭自动上传
+            init: function () {            
+                this.on("sending", function (file, xhr, formData) {
+                    var summary = $("#Notes").val();                     
+                    formData.append("Notes", summary);
+                });
+                $(".modal-footer .btn-primary").attr("disabled", "disabled");
+                this.on("addedfile", function () {
+                    $(".modal-footer .btn-primary").removeAttr("disabled");
+                });
+                var submitButton = document.querySelector(".modal-footer .btn-primary")
+                myDropzone = this; // closure                
+                //为上传按钮添加点击事件
+                submitButton.addEventListener("click", function () {
+                    var summary = $("#Notes").val();
+                    if (summary.length > 150) {
+                        $('.bootbox .btn-primary').popover({
+                            trigger: "focus",
+                            title: "警告！！！",
+                            content: "简介字符超过了150个！",
+                            placement: "top",
+                            template: '<div class="popover" role="tooltip"><div class="arrow"></div><h2 class="popover-title"  style="background-color:#E66454;color:white"></h2><div class="popover-content"></div></div>',
+                        });
+                        $(".modal-footer .btn-primary").popover('show');
+                        $(".bootbox #Notes").addClass("input-validation-error tooltip-danger");
+                        return false;
+                    }
+                    //手动上传所有图片
+                    myDropzone.processQueue();                    
+                });
+
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data.length == i) {
+                            $.whiskey.datatable.reset(false);
+                        }
+                        var message;
+                        if (data[i].ResultType == "@((int)OperationResultType.Success)") {
+                            if (file.name == data[i].Data) {
+                                message = data[i].Message;
+                            }
+                            else {
+                                message = data[i].Data;
+                            }
+                        }
+                        else {
+                            var message = message = "服务器忙，请稍后重试";
+                            var node, _i, _len, _ref, _results;
+                            file.previewElement.classList.remove("dz-success");
+                            file.previewElement.classList.add("dz-error");
+                            if (typeof message !== "String" && message.error) {
+                                message = message.error;
+                            }
+                            _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                            _results = [];
+                            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                                node = _ref[_i];
+                                _results.push(node.textContent = message);
+                            }
+                            return _results;
+                        }
+                        
+                    }
+                });
+                //记录次数
+                var count = 0;
+                this.on("complete", function (data) {
+                    if (count == 0) {
+                        $.whiskey.datatable.reset(false);
+                    }
+                    ++count;
+                });
+            }
+        });
+
+        //移除警告
+        $(".bootbox #Notes").focus(function () {
+            $(".modal-footer .btn-primary").popover('destroy');
+            $(".bootbox #Notes").removeClass("input-validation-error tooltip-danger");
+        });
+     
+    })
+
+</script>

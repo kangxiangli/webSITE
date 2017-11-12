@@ -1,0 +1,62 @@
+﻿/**
+ * Created by xiuxia on 2016/9/28.
+ */
+.jifen {
+    padding-top:1rem;
+}
+.allIntegral {
+    width:60%;
+    height:2rem;
+    line-height:2rem;
+    background-color:rgba(255,255,255,0.3);
+    border-radius:0 2rem 2rem 0;
+    /*margin-top:1rem;*/
+    position:relative;
+}
+.jifenImg {
+    margin:0 1rem;
+    width:1.5rem;
+    vertical-align:middle;
+    margin-top:-0.2rem;
+}
+.integral {
+    position:absolute;
+    font-size:1.1rem;
+    color:#fff;
+}
+#jifenMokuai {
+    overflow:hidden;
+}
+.jifenBox {
+    padding-bottom:3rem;
+}
+.lineBox {
+    width:50%;
+    height:4rem;
+    position:absolute;
+    background:url('../jifenimg/k@2x.png') no-repeat;
+    background-size:100% 100%;
+    position:relative;
+}
+.lineBox b, .lineBox i, .lineBox span {  
+    display:inline-block;
+    position:absolute;  
+}
+.lineBox i, .lineBox span { 
+    left:3.5rem;
+    width:50%;
+}    
+.lineBox b {   
+    width:1.7rem; 
+    bottom:-0.1rem;
+    font-size:0.55rem;   
+    text-align:center;
+} 
+.lineBox i{    
+    bottom:0.2rem;
+    font-size:1rem;
+}    
+.lineBox span{
+    bottom:-0.7rem;
+    font-size:0.55rem;
+}  

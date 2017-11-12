@@ -1,0 +1,78 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model AdjustDepositDto
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.MemberName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.MemberName, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+    @Html.HiddenFor(x => x.MemberId)
+    @Html.HiddenFor(x => x.VerifyType)
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Reason) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Reason, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-md-3">
+        <select class="form-control label  " name="IsBalancePlus" id="IsBalancePlus">
+            <option value="false">减少储值</option>
+            <option value="true">增加储值</option>
+        </select>
+    </div>
+    <div class="col-md-9">
+        @Html.TextBoxFor(m => m.Balance, new { @class = "form-control", @check_number = "", @check_float = "2", @min_value = "0", @dis_drop = "", @dis_paste = "" })
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-md-3">
+        <select class="form-control label  " name="IsScorePlus" id="IsScorePlus">
+            <option value="false">减少积分</option>
+            <option value="true">增加积分</option>
+        </select>
+    </div>
+    <div class="col-md-9">
+        @Html.TextBoxFor(m => m.Score, new { @class = "form-control", @check_number = "", @check_int = "", @min_value = "0", @dis_drop = "", @dis_paste = "" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<input type="hidden" id="disBlance" value="@ViewBag.Balance" />
+<input type="hidden" id="disScore" value="@ViewBag.Score" />
+<script>
+    $(function () {
+        $("#Score").blur(function () {
+            //CheckInput(this);
+        });
+        $("#Balance").blur(function () {
+            //CheckInput(this);
+        });
+
+        $("#IsBalancePlus,#IsScorePlus").unbind("change").bind("change", function () {
+            $this = $(this);
+         
+            if ($this.val() == "true") {
+                $this.removeClass("label-danger").addClass("label label-success");
+            } else {
+                $this.removeClass("label-success").addClass("label label-danger");
+            }
+        });
+    });
+    // selectpicker_cur 初始化
+    $(function () {
+//      $('#IsBalancePlus').selectpicker();
+//      $('#IsScorePlus').selectpicker('refresh');
+    })
+</script>

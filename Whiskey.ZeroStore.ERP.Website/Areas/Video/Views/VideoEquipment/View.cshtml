@@ -1,0 +1,173 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model VideoEquipment
+<style>
+    .modal-dialog {
+        width: 80%;
+        max-width: 80%;
+    }
+    .ruleCreat{
+            background: rgba(0,0,0,.2);
+    padding: 2rem;
+
+    }
+</style>
+<link href="~/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+
+<ul class="nav nav-tabs" role="tablist" id="navTab">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">基本信息</a></li>
+    @*<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">使用者</a></li>*@
+</ul>
+
+<div class="ruleCreat" id="base">
+
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-1">@Html.DisplayNameFor(m => m.VideoName):</label>
+        <div class="col-md-6">
+            @Model.VideoName
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-1">@Html.DisplayNameFor(m => m.snNumber):</label>
+        <div class="col-md-6">
+            @Model.snNumber
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label id="" class="control-label col-md-1">@Html.DisplayNameFor(m => m.StoreId):</label>
+        <div class="col-md-6">
+            @Model.Store.StoreName
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-1">描述:</label>
+        <div class="col-md-6">
+            @Model.Descript
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-1">
+            @Html.DisplayNameFor(m => m.CreatedTime) :
+        </label>
+        <div class="col-md-7">
+            @Model.CreatedTime
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-1">
+            操作人员 :
+        </label>
+        <div class="col-md-7">
+            @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+        </div>
+    </div>
+</div>
+
+<div id="userdiv" style="display:none">
+
+    <div class="panel panel-list">
+
+        <table id="viewtable" class="table table-list table-hover valign-middle" width="100%"></table>
+    </div>
+</div>
+<script>
+
+    //$("#navTab li").click(function () {
+    //    if (!$(this).hasClass("active")) {
+    //        if ($(this).find("a").attr("aria-controls") == "home") { $("#base").css("display", ""); $("#userdiv").css("display", "none"); }
+    //        else { $("#userdiv").css("display", ""); $("#base").css("display", "none"); }
+    //    }
+    //});
+    $(function () {
+        //*************加载数据列表******
+        var tableInfo = $("#viewtable").dataTable({
+            "bScrollCollapse": false,
+            "bStateSave": true,
+            "sDom": '<"H clearfix datatable-header text-center"r>t<"F clearfix datatable-footer"<"col-md-5"<"col-md-4 info  text-left"i><"pcou col-md-7 text-left info">><"col-md-7 text-right"p>>',
+            "sAjaxSource": "@Url.Action("GetUseList")",
+            "aLengthMenu": [10],
+            "fnServerParams": function (aoData) {
+                aoData.push({ name: "Id", value: "@ViewBag.EquipmentId" });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                $("td:eq(0)", nRow).text(iDisplayIndex + 1);
+                $("td:eq(1)", nRow).css({ "width": "13%", "padding-left": "0" });
+                $("td:last", nRow).addClass("text-middle").css({ "width": "15%" });
+                return nRow;
+            },
+            "fnFooterCallback": function () {
+
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+        {
+            "sTitle": "编号",
+            "bSortable": false,
+            "sName": "RowNumber",
+            "mData": function (data) {
+                var index = data.iDisplayIndex + 1;
+                return '' + index + '';
+            }
+        },
+
+        {
+            "sTitle": "会员名称",
+            "bSortable": false,
+            "sName": "MemberName",
+            "mData": function (data) {
+                return data.MemberName;
+            },
+        },
+         {
+             "sTitle": "会员手机号",
+             "bSortable": false,
+             "sName": "MobilePhone",
+             "mData": function (data) {
+                 return data.MobilePhone;
+             },
+         },
+        {
+            "sTitle": "归属店铺",
+            "bSortable": false,
+            "sName": "storeName",
+            "mData": function (data) {
+                return data.storeName;
+            },
+        },
+        {
+            "sTitle": "创建时间",
+            "bSortable": false,
+            "sName": "CreatedTime",
+            "mData": function (data) {
+                return $.whiskey.tools.dateFormat(data.CreatedTime);
+            },
+        },
+        {
+            "sTitle": "操作人",
+            "bSortable": false,
+            "sName": "UserCount",
+            "mData": function (data) {
+                return data.OperatorName;
+            },
+        }
+            ]
+
+        });
+        //*******************************
+    });
+
+
+
+
+
+
+</script>
+

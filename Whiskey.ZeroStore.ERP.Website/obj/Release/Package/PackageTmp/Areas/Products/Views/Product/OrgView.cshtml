@@ -1,0 +1,80 @@
+﻿
+
+<div class="tab-content" style="min-height:400px;">
+    <div class="tab-pane fade active in " id="base">
+
+
+        <div class="form-group">
+
+            <label class="control-label col-md-4">原始货号：</label>
+            <div class="col-md-4 ">
+                <span>@ViewBag.OrigNumb</span>
+
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="control-label col-md-4">商品品牌：</label>
+            <div class="col-md-4">
+                @ViewBag.BrandNam
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">商品款式：</label>
+            <div class="col-md-4">
+                @ViewBag.CategoNam
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">吊牌价格：</label>
+            <div class="col-md-4">
+                <div>
+                   @ViewBag.Tagprice
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">季节：</label>
+            <div class="col-md-4">
+                <div>
+                    @ViewBag.Season
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">操作人：</label>
+            <div class="col-md-4">
+                <div>
+                    @ViewBag.Admin
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">添加时间：</label>
+            <div class="col-md-4">
+                @ViewBag.CreateTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">备注：</label>
+            <div class="col-md-4">
+                <div>
+                    @ViewBag.Notes
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">缩略图：</label>
+            <div class="col-md-4">
+                <div>
+                    <img style="border: 1px solid #eaeaea" src="@ViewBag.ThumPath" />
+                </div>
+            </div>
+        </div>
+       
+    </div>
+</div>

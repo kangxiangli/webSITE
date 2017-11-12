@@ -1,0 +1,223 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+
+@model PunishScoreRecord
+
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">类型:</label>
+                        <div class="col-md-8">
+                            @Html.EnumDropDownListFor(m => m.PunishType, "请选择类型", new { @class = "form-control selectpicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">创建日期</label>
+                        <div class="col-md-8">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("CreatedTime", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("CreatedTime", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                @*<div class="button-normal">
+                        <button id="Create" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增数据</span></button>
+                        <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                        <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                        <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                    </div>
+                    <div class="button-recycle">
+
+                    </div>*@
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="panel panel-list" id="storediv">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span></span></h5>
+            </div>
+            @*<div class="col-md-8 text-right">
+                    <span><input class="enabler" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                    <span style="margin-left:20px;"><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                </div>*@
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        var displayColumns = [
+            {
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+            {
+                "sTitle": "部门",
+                "bSortable": false,
+                "sName": "DepartmentName",
+                "mData": function (data) {
+                    return data.DepartmentName;
+                },
+            },
+            {
+                "sTitle": "姓名",
+                "bSortable": false,
+                "sName": "MemberName",
+                "mData": function (data) {
+                    return data.MemberName;
+                },
+            },
+
+
+            {
+                "sTitle": "类型",
+                "bSortable": false,
+                "sName": "CreatedTime",
+                "mData": function (data) {
+                    return data.PunishType;
+                },
+            },
+            {
+                "sTitle": "扣除积分",
+                "bSortable": false,
+                "sName": "PunishScore",
+                "mData": function (data) {
+                    return '<span class="label label-danger">' + data.PunishScore + '</span>';
+                },
+            },
+            {
+                "sTitle": "备注",
+                "bSortable": false,
+                "sName": "Remarks",
+                "mData": function (data) {
+                    return data.Remarks;
+                },
+            },
+            {
+                "sTitle": "创建时间",
+                "bSortable": false,
+                "sName": "CreatedTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.CreatedTime);
+                },
+            },
+            {
+                "sTitle": "操作人员",
+                "bSortable": false,
+                "sName": "AdminName",
+                "mData": function (data) {
+                    return data.MemberName;
+                },
+            }
+
+        ];
+        var storeActivity;
+        var RuleType = 0;
+        $(document).ready(function () {
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "bScrollCollapse": false,
+                "bStateSave": true,
+                "sDom": '<"H clearfix datatable-header text-center"r>t<"F clearfix datatable-footer"<"col-md-5"<"col-md-4 info  text-left"i><"pcou col-md-7 text-left info">><"col-md-7 text-right"p>>',
+                "sAjaxSource": "@Url.Action("List")",
+                "aLengthMenu": [10],
+                "fnServerParams": function (aoData) {
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    var punishType = $("#PunishType").val();
+                    if (startDate && startDate.length > 0) {
+                        aoData.push({ name: 'startDate', value: startDate });
+                    }
+                    if (endDate && endDate.length > 0) {
+                        aoData.push({ name: 'endDate', value: endDate });
+                    }
+                    if (punishType && punishType) {
+                        aoData.push({ name: 'punishType', value: punishType });
+                    }
+
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $("td:eq(0)", nRow).addClass("text-right");
+                    $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+                    //$("td:eq(2)", nRow).css({ "width": "13%", "padding-left": "0" });
+                    //$("td:last", nRow).addClass("text-middle").css({ "width": "15%" });
+                    return nRow;
+                },
+
+                "fnDrawCallback": function (da, json) {
+                    $.whiskey.tools.json("");
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table-list tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+                    });
+                },
+
+                "aoColumns": displayColumns
+
+            });
+
+        });
+    </script>
+    <script>
+        $("#Search").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+    </script>
+}

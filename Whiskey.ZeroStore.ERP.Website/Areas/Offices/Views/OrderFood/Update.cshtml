@@ -1,0 +1,43 @@
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Extensions
+@model OrderFoodDto
+
+<style>
+
+</style>
+
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.AdminIds) :
+    </label>
+    <div class="col-md-6">
+        @Html.DropDownListFor(f => f.AdminIds, ViewBag.Admins as List<SelectListItem>, new { @class = "form-control selectpicker", @multiple = "" })
+    </div>
+    <button title="选择员工" type="button" class="btn btn-success btn-padding-right" onclick="chooseMember(this)"><i class=""></i> <span>选择</span></button>
+    <button title="清除全部" type="button" class="btn btn-danger" onclick="clearMemberInfo();"><i class=""></i> <span>清除</span></button>
+</div>
+
+@Html.HiddenFor(f => f.Id)
+@Html.HiddenFor(f => f.smsIsSend)
+
+<script>
+    $(function () {
+        $(".selectpicker").selectpicker('selectAll');
+    });
+
+    function chooseMember(sender) {
+        $.whiskey.web.ajaxView({
+            caption: "选择员工",
+            actionUrl: "VAdmin",
+            lockButton: sender,
+            className: "VAdmin",
+        });
+    }
+
+    function clearMemberInfo() {
+        $('.orderfood #AdminIds').empty().selectpicker('refresh');
+    }
+</script>
+

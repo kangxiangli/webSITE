@@ -1,0 +1,277 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.Utility.Data
+@model Entry
+
+<style>
+    .modal-dialog {
+        min-width: 100%;
+        width: 100%;
+    }
+
+        .modal-dialog .modal-content {
+            width: 60%;
+            margin: 30px auto;
+        }
+
+    #base {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    #userdiv {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+        #userdiv .form-group {
+            width: 62%;
+            display: inline-block;
+        }
+
+    #base {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    #personnelDiv {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .imgClass {
+        width: 100%;
+        margin-left: 2%;
+        margin-top: 6%;
+    }
+
+    #technologyDiv {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+</style>
+<div class="personnel">
+    <ul class="nav nav-tabs" role="tablist" id="navTab">
+        <li role="presentation" class="active"><a href="#base" aria-controls="home" role="tab" data-toggle="tab">基本信息</a></li>
+        <li role="presentation"><a href="#userdiv" aria-controls="profile" role="tab" data-toggle="tab">相关证件</a></li>
+        <li role="presentation"><a href="#registForm" aria-controls="registForm" role="tab" data-toggle="tab">登记表</a></li>
+        <li role="presentation"><a href="#personnelDiv" aria-controls="personnel" role="tab" data-toggle="tab">人事</a></li>
+        <li role="presentation"><a href="#technologyDiv" aria-controls="technology" role="tab" data-toggle="tab">技术</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div id="base" class="tab-pane fade in active">
+            @Html.HiddenFor(x => x.Id, new { @class = "form-control" })
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    入职人 :
+                </label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        @Html.TextBox("RealName", "", new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    手机 :
+                </label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        @Html.TextBox("MobilePhone", "", new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    性别 :
+                </label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" id="sexSpan" class="form-control" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    Mac地址 :
+                </label>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" id="MacAddress" readonly class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    面试评价 :
+                </label>
+                <div class="col-md-8">
+                    @Html.TextAreaFor(x => x.InterviewEvaluation, new { @style = "width:90%;height:60px;" })
+                </div>
+            </div>
+            <input type="hidden" id="MemberId" />
+            @Html.HiddenFor(x => x.MemberId, new { @class = "form-control" })
+        </div>
+        <div id="userdiv" class="tab-pane fade" >
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    银行卡:
+                </label>
+                <div class="col-md-8">
+                    <div class="dropzone-box detailImgs" id="BankcardDiv">
+                        <img src="@Model.BankcardImgPath" id="BankcardImgPath" class="imgClass" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    身份证:
+                </label>
+                <div class="col-md-8">
+                    <div class="dropzone-box detailImgs" id="IdCardDiv">
+                        <img src="@Model.IdCardImgPath" id="IdCardImgPath" class="imgClass" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    健康证:
+                </label>
+                <div class="col-md-8">
+                    <div class="dropzone-box detailImgs" id="HealthCertificateDiv">
+                        <img src="@Model.HealthCertificateImgPath" id="HealthCertificateImgPath" class="imgClass" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    照片:
+                </label>
+                <div class="col-md-8">
+                    <div class="dropzone-box detailImgs" id="PhotoDiv">
+                        <img src="@Model.PhotoImgPath" id="PhotoImgPath" class="imgClass" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="registForm" class="tab-pane fade">
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    登记表:
+                </label>
+                <div class="col-md-8">
+                    <div class="dropzone-box detailImgs" id="RegistFormPathDiv">
+                        <img src="@Model.RegistFormPath" id="RegistFormPath" class="imgClass" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div id="personnelDiv" class="tab-pane fade">
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    部门 :
+                </label>
+                <div class="col-md-7">
+                    @Html.TextBox("DepartmentName", "", new { @class = "start-date input-sm form-control", @readonly = "readonly" })
+                    <input type="hidden" id="DepartmentId" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    职位 :
+                </label>
+                <div class="col-md-7">
+                    @Html.TextBox("JobPositionName", "", new { @class = "start-date input-sm form-control" })
+                    <input type="hidden" id="JobPositionId" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    入职时间 :
+                </label>
+                <div class="col-md-7">
+                    @Html.TextBox("EntryTime", "", new { @class = "start-date input-sm form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    劳动合同:
+                </label>
+                <div class="col-md-8">
+                    <div class="dropzone-box detailImgs" id="LaborContractDiv">
+                        <img src="@Model.LaborContractImgPath" id="LaborContractImgPath" style="float:right;width:50%;margin-right: 10%;margin-top: 4%;" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    简历:
+                </label>
+                <div class="col-md-8">
+                    <a href="@Model.ResumeImgPath" onclick="downloadFile(this)" id="ResumeImgPath" style="float:right;width:50%;margin-right: 10%;margin-top: 10%;">简历</a>
+                </div>
+            </div>
+        </div>
+        <div id="technologyDiv" class="tab-pane fade">
+
+            @if (((Dictionary<int, string>)ViewBag.roles) == null || ((Dictionary<int, string>)ViewBag.roles).Count() == 0)
+        {
+        <span style="text-align:center">无数据……</span>
+        }
+        else
+        {
+            foreach (var item in (Dictionary<int, string>)ViewBag.roles)
+            {
+        <label style="margin-left:20px">
+            <input type="checkbox" name="role" disabled value="@item.Key" />@item.Value
+        </label>
+            }
+        }
+        </div>
+     </div>
+    </div>
+<link href="~/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="~/Content/Scripts/Layout/DataHelper.js"></script>
+<script type="text/javascript">
+    $(function () {
+        
+        var DepartmentId = "@Model.DepartmentId" || "";
+        var JobPositionId = "@Model.JobPositionId" || "";
+
+        var EntryTime = "@Model.EntryTime" || "";
+        $("#EntryTime").val(EntryTime);
+        $(".personnel #RealName").val("@Model.Member.RealName");
+        $(".personnel #MobilePhone").val("@Model.Member.MobilePhone");
+        var gender = "@Model.Member.Gender" == "0" ? "女" : "男";
+        $(".personnel #sexSpan").val(gender);
+        $(".personnel #MacAddress").val(("@Model.MacAddress").toUpperCase());
+
+        @{
+
+            if (Model.Department != null)
+            {
+                @:        $(".personnel #DepartmentName").val("@Model.Department.DepartmentName");
+                                                         @:  $(".personnel #DepartmentId").val("@Model.DepartmentId");
+                                        @:   $(".personnel #JobPositionName").val("@Model.JobPosition.JobPositionName");
+                                @:   $(".personnel #JobPositionId").val("@Model.JobPositionId");
+                            }
+            else {
+@: $("#EntryTime").val("");
+                            }
+        }
+        $(".personnel #technologyDiv input[type='checkbox']").each(function () {
+            var obj = $(this);
+            var val = $(this).val();
+            var RoleJurisdiction = "@Model.RoleJurisdiction";
+            $(RoleJurisdiction.split(",")).each(function () {
+                if (this != "" && val == this) {
+                    obj.attr("checked", "checked");
+                }
+            });
+        });
+    });
+
+</script>

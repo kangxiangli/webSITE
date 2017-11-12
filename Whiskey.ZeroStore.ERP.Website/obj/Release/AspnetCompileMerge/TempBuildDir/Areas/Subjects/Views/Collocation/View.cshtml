@@ -1,0 +1,70 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Member
+@model Collocation
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Numb) :
+    </label>
+    <div class="col-md-9">
+        @Model.Numb
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.CollocationName) :
+    </label>
+    <div class="col-md-9">
+        @Model.CollocationName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Admini.Department.DepartmentName) :
+    </label>
+    <div class="col-md-9">
+        @Model.Admini.Department.DepartmentName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.State) :
+    </label>
+    <div class="col-md-9">
+        <span style="color: #5ebd5e">
+            @Html.Raw(Model.State == 0 ? "未预约" : "已预约")
+        </span>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Admini.Member.MemberName) :
+    </label>
+    <div class="col-md-9">
+        @Model.Admini.Member.MemberName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Admini.Member.RealName) :
+    </label>
+    <div class="col-md-9">
+        @Model.Admini.Member.RealName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Admini.Member.Gender) :
+    </label>
+    <div class="col-md-9">
+        @Html.Raw(Model.Admini.Member.Gender == (int)GenderFlag.Male ? "男" : "女")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-9">
+        @Model.Notes
+    </div>
+</div>

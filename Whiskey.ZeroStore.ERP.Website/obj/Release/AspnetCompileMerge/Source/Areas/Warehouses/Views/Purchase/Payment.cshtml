@@ -1,0 +1,193 @@
+﻿@using Whiskey.ZeroStore.ERP.Models.Enums
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        采购店铺 :
+    </label>
+    <div class="col-md-6">
+        <select class="form-control" id="ReceiptStoreId" name="ReceiptStoreId"></select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        采购仓库 :
+    </label>
+    <div class="col-md-6">
+        <select class="form-control selectpicker_s" name="ReceiptStorageId" id="ReceiptStorageId"></select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        店铺类型 :
+    </label>
+    <div class="col-md-6">
+        @Html.DropDownList("StoreType", (List<SelectListItem>)ViewBag.StoreTypes, new { @class = "form-control selectpicker_s", @disabled = "disabled" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        计算方案 :
+    </label>
+    <div class="col-md-6">
+        <select class="form-control selectpicker_cur" id="discountType" name="discountType">
+            <option value="@((int)PaymentPurchaseType.吊牌价)" data-prices="@ViewBag.TagPrices">吊牌价</option>
+            <option value="@((int)PaymentPurchaseType.采购价)" data-prices="@ViewBag.PurchasePrices">采购价</option>
+            @*<option value="@((int)PaymentPurchaseType.进货价)" data-prices="@ViewBag.WholesalePrices">进货价</option>*@
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        折扣 :
+    </label>
+    <div class="col-md-6">
+        <input type="text" id="discountNumber" name="discountNumber" value="1" check-number check-float="2" min-value="0" max-value="1" placeholder="0-1之间的两位小数" class="form-control" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        总价格 :
+    </label>
+    <label class="control-label col-md-2"><span id="all_balance">@ViewBag.TagPrices</span> 元</label>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        成交价格 :
+    </label>
+    <label class="control-label col-md-2"><span id="final_balance">0</span> 元</label>
+    <label class="control-label col-md-2">
+        <label style="color:#00ff21;display:none;" id="lbl_jisuan">（无需结算）</label>
+        <input type="hidden" value="false" id="WithoutMoney" name="WithoutMoney" />
+    </label>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        店铺余额 :
+    </label>
+    <label class="control-label col-md-2"><span id="store_balance">0</span> 元</label>
+</div>
+<input type="hidden" name="PurchaseNumber" value="@ViewBag.PurchaseNumber" />
+<input type="hidden" name="PurchaserId" value="@ViewBag.PurchaserId" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#ReceiptStoreId").queryManageStore({
+            selected: "@ViewBag.ReceiptStoreId", callback: function () {
+                $("#ReceiptStoreId").change();
+            }
+        });
+        btnDisabled();
+        //当选择采购店铺时
+        $("#ReceiptStoreId").on("change", function () {
+            var storeId = $(this).val();
+            if (storeId == "" || storeId == null || storeId == undefined) {
+
+            } else {
+                getStorageId(storeId);
+            }
+            btnDisabled();
+        });
+
+        $("#discountType").change(function () {
+            var prices = $(this).find("option:selected").attr("data-prices");
+            $("#all_balance").text(prices);
+            var discount = $("#discountNumber").val();
+            discount = discount > 1 ? 1 : discount;
+            var pricesed = (prices * discount).toFixed(2);
+            $("#final_balance").text(pricesed);
+
+            if ($("#WithoutMoney").val() == "true") {
+                $("#final_balance").html("0");
+                $("#lbl_jisuan").show();
+            } else {
+                $("#lbl_jisuan").hide();
+            }
+        });
+
+        $("#discountNumber").keyup(function () {
+            $("#discountType").change();
+        });
+
+        //当选择采购仓库
+        $("#ReceiptStorageId").on("change", function () {
+            btnDisabled();
+        })
+    })
+    //无需结算
+    function jiesuan_change() {
+        var withoutmoney = $("#WithoutMoney").val();
+        $("#discountType").change();
+        var $final_balance = $("#final_balance");
+        if (withoutmoney == "true") {
+            $final_balance.html("0");
+            $("#lbl_jisuan").show();
+        } else {
+            $("#lbl_jisuan").hide();
+        }
+        btnDisabled();
+    }
+
+    //获取仓库
+    function getStorageId(storeId) {
+        $("#ReceiptStorageId").empty();
+        var htmlPart = "<option value>请选择</option>";
+        $.ajax({
+            url: "/Stores/Online/GetStorages",
+            type: "POST",
+            data: { StoreId: storeId },
+            success: function (da) {
+                if (da) {
+                    var strHtml = "";
+                    $.each(da.list, function (ind, item) {
+                        var str = "@ViewBag.ReceiptStorageId" == item.Id ? "selected" : "";
+                        strHtml += "<option value='" + item.Id + "' " + str + ">" + item.StorageName + "</option>";
+                         
+                    });
+						
+                    $("#ReceiptStorageId").append(strHtml);
+                   		
+                    $("#StoreType").val(da.StoreType);
+
+                    $("#WithoutMoney").val(da.IsPay == false);
+                    jiesuan_change();
+
+                    $("#store_balance").html(da.Balance);
+                     $('.selectpicker_s').selectpicker();
+                         $('.selectpicker_s').selectpicker('refresh');
+                }
+            }
+        })
+    }
+
+    //禁用提交
+    function btnDisabled() {
+        var storeId = $("#ReceiptStoreId").val();
+        var storageId = $("#ReceiptStorageId").val();
+        var index = 0;
+        if (storeId == "" || storeId == null || storeId == undefined) {
+            index++;
+        }
+        if (storageId == "" || storageId == null || storageId == undefined) {
+            index++;
+        }
+
+        var final_balance = $("#final_balance").html();
+        var store_balance = $("#store_balance").html();
+        var subPrice = parseFloat(store_balance) - parseFloat(final_balance);
+        if (index == 0) {
+            $(".bootbox .btn-primary").removeAttr("disabled");
+            var withoutMoney = $("#WithoutMoney").val();
+            if ((subPrice < 0 || isNaN(subPrice)) && withoutMoney != "true") {
+                $(".bootbox .btn-primary").attr("disabled", true);
+            }
+        } else {
+            $(".bootbox .btn-primary").attr("disabled", true);
+        }
+    }
+</script>
+<script>
+    // selectpicker_cur 初始化
+    $(function () {
+        $('.selectpicker_cur').selectpicker();
+    })
+</script>

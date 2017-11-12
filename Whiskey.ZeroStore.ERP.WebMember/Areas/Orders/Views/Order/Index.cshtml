@@ -1,0 +1,1778 @@
+﻿@Html.CssBlock("/Content/Styles/Layout/payment.css")
+@Html.CssBlock("/Content/Styles/Layout/imgup.css")
+<script type="text/javascript" src="/Content/Scripts/Layout/utils.min.js"></script>
+<div class="rt_content_box ">
+	<div class="pay_bg">
+		<div class="payment_content">
+			<h3 class="all_order_txt">全部订单</h3>
+
+			<div class="all_order_right">
+
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle recently" type="button" id="Distributionway" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					            最近三个月的订单
+					    <span class="caret"></span>
+					  <tton>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+						<li>
+							<a href="javascript:void(0)">在线支付</a>
+						<>
+						<li>
+							<a href="javascript:void(0)">货到付款</a>
+						<>
+					</ul>
+				</div>
+			
+				<div class="order_search_box"><input class="order_number" type="search" name="订单编号" placeholder="订单编号" /><span class="order_search"></span></div>
+
+				</div>
+			
+			<div class="tabBox">
+				<ul class="order_content_box" allOrderFlag="firUl">
+					<li class="bg">待付款<span>3</span></li>
+					<li>待收货 <span>1</span></li>
+					<li>待评价 <span>2</span></li>
+					<li>已完成<span>2</span></li>
+
+				</ul>
+				
+				<div class="bg order_content_1">
+					<p id="menu_detail" class="menu_detail">
+					<span class="order_detail">订单详情</span><span class="menu_pay">金额</span><span class="menu_stuta">订单状态</span><span class=menu_people>收货人</span> <span class="menu_play">操作</span>
+					</p>
+					<div id="menu_content" class="menu_content">
+					<div id="menu_list" class="menu_list">
+							<span><input class="order_fk" type="checkbox"/></span>
+							<span id="menu_time" class="menu_time"></span>
+							<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+							<span class="menu_money">￥888.00</span> 
+							<span class="menu_wate">等待付款</span>
+							<span class="menu_name">安迪</span>
+							<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu" style="display: block;">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				  <p class="order_time_box">  <img class="order_online_time" src="../../../../Content/Images/time.png" alt="" /><span id="time">
+		        				    12:00:00	
+		        				    </span>
+		        				  </p>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				  <span class="order_reader_box"> 
+		        				  	<p><a class="order_reader_txt" href="">付款</a></p>
+		        				  	<p><a href="">取消订单</a></p>
+			        				 <p><a href="">修改订单</a></p>
+		        				  </span>
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+					<div id="menu_list" class="menu_list">
+							<span><input class="order_fk" type="checkbox"/></span>
+							<span id="menu_time" class="menu_time"></span>
+							<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+							<span class="menu_money">￥888.00</span> 
+							<span class="menu_wate">等待付款</span>
+							<span class="menu_name">安迪</span>
+							<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				  <p class="order_time_box">  <img class="order_online_time" src="../../../../Content/Images/time.png" alt="" /><span id="time">
+		        				    12:00:00	
+		        				    </span>
+		        				  </p>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				  <span class="order_reader_box"> 
+		        				  	<p><a class="order_reader_txt" href="">付款</a></p>
+		        				  	<p><a href="">取消订单</a></p>
+			        				 <p><a href="">修改订单</a></p>
+		        				  </span>
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+						<div id="menu_list" class="menu_list">
+							<span><input class="order_fk" type="checkbox"/></span>
+							<span id="menu_time" class="menu_time"></span>
+							<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+							<span class="menu_money">￥888.00</span> 
+							<span class="menu_wate">等待付款</span>
+							<span class="menu_name">安迪</span>
+							<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				  <p class="order_time_box">  <img class="order_online_time" src="../../../../Content/Images/time.png" alt="" /><span id="time">
+		        				    12:00:00	
+		        				    </span>
+		        				  </p>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				  <span class="order_reader_box"> 
+		        				  	<p><a class="order_reader_txt" href="">付款</a></p>
+		        				  	<p><a href="">取消订单</a></p>
+			        				 <p><a href="">修改订单</a></p>
+		        				  </span>
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+					
+					<div id="menu_list" class="menu_list">
+							<span><input class="order_fk" type="checkbox"/></span>
+							<span id="menu_time" class="menu_time"></span>
+							<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+							<span class="menu_money">￥888.00</span> 
+							<span class="menu_wate">等待付款</span>
+							<span class="menu_name">安迪</span>
+							<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				  <p class="order_time_box">  <img class="order_online_time" src="../../../../Content/Images/time.png" alt="" /><span id="time">
+		        				    12:00:00	
+		        				    </span>
+		        				  </p>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				  <span class="order_reader_box"> 
+		        				  	<p><a class="order_reader_txt" href="">付款</a></p>
+		        				  	<p><a href="">取消订单</a></p>
+			        				 <p><a href="">修改订单</a></p>
+		        				  </span>
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+					
+					<div id="menu_list" class="menu_list">
+							<span><input class="order_fk" type="checkbox"/></span>
+							<span id="menu_time" class="menu_time"></span>
+							<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+							<span class="menu_money">￥888.00</span> 
+							<span class="menu_wate">等待付款</span>
+							<span class="menu_name">安迪</span>
+							<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				  <p class="order_time_box">  <img class="order_online_time" src="../../../../Content/Images/time.png" alt="" /><span id="time">
+		        				    12:00:00	
+		        				    </span>
+		        				  </p>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				  <span class="order_reader_box"> 
+		        				  	<p><a class="order_reader_txt" href="">付款</a></p>
+		        				  	<p><a href="">取消订单</a></p>
+			        				 <p><a href="">修改订单</a></p>
+		        				  </span>
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+					
+				
+				
+					</div>
+					<div class="order_footer">
+						 <div class="order_footer_left">总计<span class="order_footer_num">&nbsp;&nbsp;50</span>&nbsp;&nbsp;条</div>
+						<div class="order_footer_right"><img src="../../../../Content/Images/delect.png" alt="" />撤销</div>
+					</div>
+				</div>
+				<div  class="order_content_2">
+						<p id="menu_detail" class="menu_detail">
+					<span class="order_detail">订单详情</span><span class="menu_pay">金额</span><span class="menu_stuta">订单状态</span><span class=menu_people>收货人</span> <span class="menu_play">操作</span>
+					</p>
+					<div id="menu_content" class="menu_content">
+					<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu" style="display: block;">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				 <span class="order_online_money">储值支付</span> 
+		        				  <span class="content_2_box"> 
+		        				  	<p><a class="content_2_box_txt" href="">确认收货</a></p>
+		        				  	<p><a href="">再次购买</a></p>
+		        				  </span>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				 
+		        				  
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  
+		        				 
+		    				</li>
+						</ul>
+						
+					<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				  <p class="order_time_box">  <img class="order_online_time" src="../../../../Content/Images/time.png" alt="" /><span id="time">
+		        				    12:00:00	
+		        				    </span>
+		        				  </p>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				  <span class="order_reader_box"> 
+		        				  	<p><a class="order_reader_txt" href="">付款</a></p>
+		        				  	<p><a href="">取消订单</a></p>
+			        				 <p><a href="">修改订单</a></p>
+		        				  </span>
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				 
+		    				</li>
+						</ul>
+						
+					<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				  <p class="order_time_box">  <img class="order_online_time" src="../../../../Content/Images/time.png" alt="" /><span id="time">
+		        				    12:00:00	
+		        				    </span>
+		        				  </p>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				  <span class="order_reader_box"> 
+		        				  	<p><a class="order_reader_txt" href="">付款</a></p>
+		        				  	<p><a href="">取消订单</a></p>
+			        				 <p><a href="">修改订单</a></p>
+		        				  </span>
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				 
+		    				</li>
+						</ul>
+						
+					<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				  <p class="order_time_box">  <img class="order_online_time" src="../../../../Content/Images/time.png" alt="" /><span id="time">
+		        				    12:00:00	
+		        				    </span>
+		        				  </p>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				  <span class="order_reader_box"> 
+		        				  	<p><a class="order_reader_txt" href="">付款</a></p>
+		        				  	<p><a href="">取消订单</a></p>
+			        				 <p><a href="">修改订单</a></p>
+		        				  </span>
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				 
+		    				</li>
+						</ul>
+						
+					<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				  <p class="order_time_box">  <img class="order_online_time" src="../../../../Content/Images/time.png" alt="" /><span id="time">
+		        				    12:00:00	
+		        				    </span>
+		        				  </p>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				  <span class="order_reader_box"> 
+		        				  	<p><a class="order_reader_txt" href="">付款</a></p>
+		        				  	<p><a href="">取消订单</a></p>
+			        				 <p><a href="">修改订单</a></p>
+		        				  </span>
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">在线支付</span> 
+		        				 
+		    				</li>
+						</ul>
+				
+					</div>
+					<div class="order_footer">
+						 <div class="order_footer_left">总计<span class="order_footer_num">&nbsp;&nbsp;50</span>&nbsp;&nbsp;条</div>
+						<div class="order_footer_right"><img src="../../../../Content/Images/delect.png" alt="" />撤销</div>
+					</div>
+				</div>
+				<div class="order_content_3">
+					<p id="menu_detail" class="menu_detail">
+					<span class="order_detail">订单详情</span><span class="menu_pay">金额</span><span class="menu_stuta">订单状态</span><span class=menu_people>收货人</span> <span class="menu_play">操作</span>
+					</p>
+					<div id="menu_content" class="menu_content">
+					<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu" style="display: block;">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				   <span class="content_3_box"> 
+		        				  	<p><a class="content_3_txt" id="commentlayer" href="javascript:void(0)">点击评价</a></p>
+		        				  	
+		        				  </span>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+					<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				   <span class="content_3_box"> 
+		        				  	<p><a class="content_3_txt"  id="commentlayer" href="javascript:void(0)">点击评价</a></p>
+		        				  	
+		        				  </span>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+						<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				   <span class="content_3_box"> 
+		        				  	<p><a class="content_3_txt"  id="commentlayer" href="javascript:void(0)">点击评价</a></p>
+		        				  	
+		        				  </span>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+						<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				   <span class="content_3_box"> 
+		        				  	<p><a class="content_3_txt" id="commentlayer"  href="javascript:void(0)">点击评价</a></p>
+		        				  	
+		        				  </span>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+						<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				   <span class="content_3_box"> 
+		        				  	<p><a class="content_3_txt" id="commentlayer" href="javascript:void(0)">点击评价</a></p>
+		        				  	
+		        				  </span>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+					
+					</div>
+					<div class="order_footer">
+						 <div class="order_footer_left">总计<span class="order_footer_num">&nbsp;&nbsp;50</span>&nbsp;&nbsp;条</div>
+						<div class="order_footer_right"><img src="../../../../Content/Images/delect.png" alt="" />撤销</div>
+					</div>
+				</div>
+				<div  class="order_content_4">
+						<p id="menu_detail" class="menu_detail">
+					<span class="order_detail">订单详情</span><span class="menu_pay">金额</span><span class="menu_stuta">订单状态</span><span class=menu_people>收货人</span> <span class="menu_play">操作</span>
+					</p>
+					<div id="menu_content" class="menu_content">
+					<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu" style="display: block;">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				   <span class="content_3_box"> 
+		        				  	<p><a class="content_3_txt" href="">再次购买</a></p>
+		        				  	
+		        				  </span>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+					<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				   <span class="content_3_box"> 
+		        				  	<p><a class="content_3_txt" href="">再次购买</a></p>
+		        				  	
+		        				  </span>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+					<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				   <span class="content_3_box"> 
+		        				  	<p><a class="content_3_txt" href="">再次购买</a></p>
+		        				  	
+		        				  </span>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+								<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				   <span class="content_3_box"> 
+		        				  	<p><a class="content_3_txt" href="">再次购买</a></p>
+		        				  	
+		        				  </span>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+								<div id="menu_list" class="menu_list">
+					<span><input class="order_fk" name="" type="checkbox" value="" /></span>
+					<span id="menu_time" class="menu_time"></span>
+					<span class="menu_stuta_num">订单编号： <span class="menu_number">88888888888</span></span>
+					<span class="menu_money">￥888.00</span> 
+					<span class="menu_wate">等待付款</span>
+					<span class="menu_name">安迪</span>
+					<span><img id="" class="menu_eye" src="../../../../Content/Images/eye.png" alt="" /></span>
+					</div>	
+					<ul id="menu" class="menu">
+		   				 	<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				  <span class="order_online_money">储值支付</span> 
+		        				   <span class="content_3_box"> 
+		        				  	<p><a class="content_3_txt" href="">再次购买</a></p>
+		        				  	
+		        				  </span>
+		    				</li>
+		    					<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        				
+		        				
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+		    				<li>
+		   				 		<span class="thumbnail_current_img" >
+								<img class="popimg" src='http://www.0-fashion.com/Content/UploadFiles/Products/20170321/p_s_1600056043.jpg' >
+								 </span>
+								    <p class="menu_costume">藏蓝高腰裤</p>
+		       			 			<div class="menu_property">
+			          		  			 <p class="menu_size_txt"> 尺寸：<span  class="menu_size">M</span></p>
+			          		  			<p class="menu_colour_txt">颜色：<span class="menu_colour">黑色</span></p>
+		        					</div>
+		        				 <p class="order_num_box">×&nbsp;&nbsp;<span class="order_num">1</span></p>
+			        				 <span class="order_num_money">￥888.00</span> 
+			        			
+		        				 
+		    				</li>
+						</ul>
+					
+					</div>
+					<div class="order_footer">
+						 <div class="order_footer_left">总计<span class="order_footer_num">&nbsp;&nbsp;50</span>&nbsp;&nbsp;条</div>
+						<div class="order_footer_right"><img src="../../../../Content/Images/delect.png" alt="" />撤销</div>
+					</div>
+				</div>
+			
+			
+			</div>
+
+		</div>
+
+	</div>
+</div>
+<!--rt_content END-->
+<script>
+	show()
+function show(){
+var date = new Date(); //日期对象
+var now = "";
+now = date.getFullYear()+"-"; //读英文就行了
+now = now + (date.getMonth()+1)+"-";//取月的时候取的是当前月-1如果想取当前月+1就可以了
+now = now + date.getDate()+" ";
+now = now + date.getHours()+":";
+now = now + date.getMinutes()+":";
+now = now + date.getSeconds()+"";
+
+renderLink();
+function renderLink(){
+        var alist = document.getElementsByClassName("menu_time");
+        if(alist){
+            for(var idx = 0; idx < alist.length; idx ++){
+                var mya = alist[idx];
+                mya.innerHTML = now;
+               
+            }
+        }
+    }
+//setTimeout("show()",1000); //设置过1000毫秒就是1秒，调用show方法
+}
+</script>
+<script type="text/javascript">
+	$(function() {
+		//点击眼睛展开当前菜单 其兄弟元素关闭展开菜单
+		$("div[class*='order_content']>#menu_content").on("click", " .menu_eye", function() {
+			$(this).parents(".menu_list").next(".menu").toggle().siblings(".menu").hide();
+		})
+	//事件委托
+	var allTabBox = utils.getElementsByClass("tabBox");
+	for(var i = 0; i < allTabBox.length; i++) {
+		allTabBox[i].onclick = function(e) {
+			e = e || window.event;
+			var curTar = e.target || e.srcElement;
+
+			//->点击的页卡区域的LI
+			if(curTar.tagName.toUpperCase() === "LI" && curTar.parentNode.getAttribute("allOrderFlag") === "firUl") {
+
+				//->让当前点击有选中的样式,其兄弟元素都移除选中样式
+				utils.addClass(curTar, "bg");
+				var curLiSibling = utils.siblings(curTar);
+				for(var k = 0; k < curLiSibling.length; k++) {
+					utils.removeClass(curLiSibling[k], "bg");
+				}
+
+				//->点击LI索引对应DIV有选中的样式,其余的DIV移除选中样式
+				var curTarIndex = utils.index(curTar);
+				var divList = utils.nextAll(curTar.parentNode);
+				for(k = 0; k < divList.length; k++) {
+					k === curTarIndex ? utils.addClass(divList[k], "bg") : utils.removeClass(divList[k], "bg");
+				}
+			}
+		}
+	}
+	
+	/*commentlayer点击打开评价layer*/
+	$("#commentlayer").click(function(){
+			//页面层
+			layer.open({
+			  type: 1,
+		      title:" ",
+			  area: ['55%', '70%'], //宽高
+			  content: '<div class="comments"><p>您的评价对其他买家很有帮助哦!</p>'
+			 				+'<div class="commentsBox"><div class="comments_titel"><p>评价商品</p></div><textarea id="commentText"></textarea></div>'
+			 				+'<div class="commentsBox service"><div class="comments_titel"><p>评价服务</p></div><textarea id="commentServiceText"></textarea></div>'
+			 				+'<div class="commentsBox commentPic"><div class="comments_titel"><p>晒图</p></div><div id="conmmentPic">'
+								+'<div class="img-box full">'
+									+'<section class=" img-section">'
+										+'<div class="z_photo upimg-div clear" >'
+								               	+' <section class="z_file fl">'
+								               	 	+'<img src="/Content/images/Theme/a11.png" class="add-img">'
+								               	 	+'<input type="file" name="file" id="file" class="file" value="" accept="image/jpg,image/jpeg,image/png,image/bmp" multiple />'
+								               	 +'</section>'
+								        +' </div>'
+									 +'</section>'
+								+'</div>'
+			 				  +'</div>'
+			 				+'</div>'
+			 				+'<div class="anonymous"><input type="checkbox">匿名评价</div>'
+			 				+'<div class="comment_star">'
+			 				+'<div class="comment_starBox"><span>描述相符</span><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"></div>'
+			 				+'<div class="comment_starBox"><span>卖家服务</span><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"></div>'
+			 				+'<div class="comment_starBox"><span>物流服务</span><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"><img src="/Content/Images/Theme/empty_start.png"></div>'
+			 			+'</div>'
+			 			+'<img id="commit_comment_btn" src="/Content/Images/Theme/conmit_comment.png">'
+			  			+'</div>'
+			});
+			
+			/*星级评价*/
+			
+			$(".comment_starBox img").bind("click",function(){
+				var $this=$(this);
+				$this.parent().find("img").attr("src","/Content/Images/Theme/empty_start.png");
+				var selectPreAll=$this.prevAll("img");
+				$this.attr("src","/Content/Images/Theme/full_start.png");
+				$.each(selectPreAll,function(i,item){
+					$(item).attr("src","/Content/Images/Theme/full_start.png");
+				})
+			})
+			
+	var delParent;
+	var defaults = {
+		fileType         : ["jpg","png","bmp","jpeg"],   // 上传文件的类型
+		fileSize         : 1024 * 1024 * 2                 // 上传文件的大小 2M
+	};
+		/*点击图片的文本框*/
+	$(".file").change(function(){
+		var idFile = $(this).attr("id");
+		var file = document.getElementById(idFile);
+		var imgContainer = $(this).parents(".z_photo"); //存放图片的父亲元素
+		var fileList = file.files; //获取的图片文件
+		console.log(fileList+"======filelist=====");
+		var input = $(this).parent();//文本框的父亲元素
+		var imgArr = [];
+		//遍历得到的图片文件
+		var numUp = imgContainer.find(".up-section").length;
+		var totalNum = numUp + fileList.length;  //总的数量
+		if(fileList.length > 5 || totalNum > 5 ){
+			alert("上传图片数目不可以超过5个，请重新选择");  //一次选择上传超过5个 或者是已经上传和这次上传的到的总数也不可以超过5个
+		}
+		else if(numUp < 5){
+			fileList = validateUp(fileList);
+			if(fileList.length==0){
+				$(this).val("");
+				return;
+			}
+//			 var imgUrl = window.URL.createObjectURL(fileList[i]);
+			   var ele = document.getElementById(idFile).files[0];
+                var fr = new FileReader();
+                var imgUrl = new Image();
+                fr.onload=function(ele){
+                	imgUrl.src=ele.target.result;
+                	imgArr.push(imgUrl.src);
+			 var $section = $("<section class='up-section fl loading'>");
+			     imgContainer.prepend($section);
+			 var $span = $("<span class='up-span'>");
+			     $span.appendTo($section);
+			
+		     var $img0 = $("<img class='close-upimg'>").on("click",function(event){
+				    event.preventDefault();
+					event.stopPropagation();
+					layer.confirm('确定删除这张照片吗？', {
+					  btn: ['确认','取消'] //按钮
+					}, function(index){
+						var numUp = delParent.siblings().length;
+						if(numUp < 6){
+							delParent.parent().find(".z_file").show();
+						}
+						 delParent.remove();
+						 layer.close(index);
+					}, function(index){
+					    layer.close(index);
+					});
+			     	  delParent = $(this).parent();
+				});   
+				$img0.attr("src","/Content/Images/Theme/a7.png").appendTo($section);
+		         imgUrl.className="up-img up-opcity";
+		         $section.append(imgUrl);
+		     var $input = $("<input id='taglocation' name='taglocation' value='' type='hidden'>");
+		         $input.appendTo($section);
+		     var $input2 = $("<input id='tags' name='tags' value='' type='hidden'/>");
+		         $input2.appendTo($section);
+		         setTimeout(function(){
+			             $(".up-section").removeClass("loading");
+					 	 $(".up-img").removeClass("up-opcity");
+					 },450);
+					 numUp = imgContainer.find(".up-section").length;
+					if(numUp >= 5){
+						$(this).parent().hide();
+					}
+                }
+			       fr.readAsDataURL(ele);
+			     
+		      
+	
+		}
+		
+		
+		//input内容清空
+		$(this).val("");
+	});
+	
+	
+   /*打开删除询问框*/
+    $(".z_photo").delegate(".close-upimg","click",function(){
+     	layer.confirm('确定删除这张照片吗？', {
+		  btn: ['确认','取消'] //按钮
+		}, function(index){
+			var numUp = delParent.siblings().length;
+			if(numUp < 6){
+				delParent.parent().find(".z_file").show();
+			}
+			 delParent.remove();
+			 layer.close(index);
+		}, function(index){
+		layer.close(index);
+		});
+     	  delParent = $(this).parent();
+	});
+		
+		
+		function validateUp(files){
+			var arrFiles = [];//替换的文件数组
+			for(var i = 0, file; file = files[i]; i++){
+				//获取文件上传的后缀名
+				var newStr = file.name.split("").reverse().join("");
+				if(newStr.split(".")[0] != null){
+						var type = newStr.split(".")[0].split("").reverse().join("");
+						//console.log(type+"===type===");
+						if(jQuery.inArray(type, defaults.fileType) > -1){
+							// 类型符合，可以上传
+							if (file.size >= defaults.fileSize) {
+								layer.msg('您这个"'+ file.name +'"文件大小过大');	
+							} else {
+								// 在这里需要判断当前所有文件中
+								arrFiles.push(file);	
+							}
+						}else{
+							layer.msg('您这个"'+ file.name +'"上传类型不符合');	
+						}
+					}else{
+						layer.msg('您这个"'+ file.name +'"没有类型, 无法识别');	
+					}
+			}
+			return arrFiles;
+		}
+			$("#distpicker4").distpicker({
+			  placeholder: false
+			});
+		})
+	
+	
+	});
+	
+</script>

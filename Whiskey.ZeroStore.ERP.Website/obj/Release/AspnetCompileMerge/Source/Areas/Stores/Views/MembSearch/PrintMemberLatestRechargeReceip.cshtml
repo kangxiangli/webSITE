@@ -1,0 +1,207 @@
+﻿@using NPOI.SS.Formula.Functions
+@using Whiskey.ZeroStore.ERP.Models
+
+@model MemberDeposit
+
+<title>- 打印</title>
+
+<style type="text/css">
+    body, td, th {
+        font-family: Arial, "宋体";
+        font-size: 11px;
+        color: #000;
+    }
+
+
+    .print_box {
+        width: 980px;
+        margin-right: auto;
+        margin-left: auto;
+        border: 2px dotted #000;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    .mainprint{
+    	position: relative;
+    }
+    /*a#print {
+    position: absolute;
+    bottom: -2%;
+    right: 15%;
+}*/
+    
+ .print_receipt{
+    position: absolute;
+    bottom: -12.5%;
+    padding: 5px;
+    background: #4c94c8;
+    right: 7%;
+}
+ .print_receipt:hover{
+    position: absolute;
+    bottom: -12.5%;
+    padding: 5px;
+    background: #000;
+    right: 7%;
+}
+.print_book {
+	    width: 19px;
+    height: 19px;
+    line-height: 19px;
+}   
+
+</style>
+
+<script>
+    $(function () {
+        $("#isprintname").click(function () {
+            if (!$(this).is(":checked")) {
+                $(".usname").hide();
+            } else {
+                $(".usname").show();
+            }
+        });
+        $("#print").click(function () {
+            // preview(1);
+            preview();
+        });
+    });
+
+    function preview(oper) {
+        var frm = window.frames[0].window;
+        var cont = $(".mainprint").html().replace($("#print_tip").html(), "").replace($("#print").parents("tr:eq(0)",""));
+        frm.document.body.innerHTML = cont;
+        frm.print();
+    }
+
+</script>
+<link rel="stylesheet" href="~/Content/Styles/Layout/receipt.css">
+<div class="mainprint">
+
+    <table width="76%" border="0" cellpadding="0" cellspacing="2" align="center">
+        <tr>
+            <td height="21" align="center">
+                <a class="print_receipt" href="javascript:void(0)" title="打印凭证" id="print"><span class="fa fa-print print_book"></span> 打印</a>
+                @*<img src="~/Areas/Stores/Content/Retail/img/printer.png" align="absmiddle" style="cursor: hand;" onclick="preview();window.close()">*@
+            </td>
+        </tr>
+    </table>
+
+    <!--startprint" + 1 + "-->
+    <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0" style="font-size: 22px;">
+        <tr>
+            <td height="25" align="center">
+                <h1 style="font-size: 25px; font-family: '微软雅黑';">
+                    <img src="~/Areas/Stores/Content/Retail/img/0FAshion.png" width="250" />
+                </h1>
+            </td>
+        </tr>
+    </table>
+    <table width="95%" border="0" cellspacing="0" cellpadding="0" align="center" bordercolor="#000000">
+        <tr>
+            <td width="50%" height="10" align="center">&nbsp;</td>
+            <td width="50%" height="10" align="center">&nbsp;</td>
+        </tr>
+
+        <tr id="huiyuan_name">
+            <td height="25" width="50%" align="center">会员名称：</td>
+            <td height="25" width="50%" align="center">
+                @if (Model.Member != null)
+                {
+                    <span class="usname">@Model.Member.RealName</span>
+                }
+                @*<span id="print_tip"><label><input name="isprintname" type="checkbox" checked="checked" id="isprintname" value="1">打印姓名</label></span>*@
+            </td>
+        </tr>
+        <tr>
+            <td height="25" width="50%" align="center">会员卡号：</td>
+            <td height="25" width="50%" align="center">
+                @if (Model.Member.CardNumber != null)
+                {
+                    <span>@Model.Member.CardNumber</span>
+                }
+            </td>
+        </tr>
+       
+        <tr>
+            <td height="25" width="50%" align="center">充值时间：</td>
+            <td height="25" width="50%" align="center">@Model.CreatedTime.ToString("yyy-MM-dd HH:mm:ss")</td>
+        </tr>
+    </table>
+
+
+
+
+    <table width="95%" border="0" cellpadding="0" cellspacing="2" align="center">
+        <tr>
+            <td height="29" align="center">---------------------</td>
+        </tr>
+    </table>
+
+    <table width="95%" border="0" cellspacing="0" cellpadding="0" align="center" bordercolor="#000000">
+
+        <tr>
+            <td width="50%" height="25" align="center"><span class="storedValue">储值金额(￥)</span></td>
+            <td width="50%" height="25" align="center">@Model.Price</td>
+        </tr>
+        <tr>
+            <td width="50%" height="25" align="center"><span class="OfferGift">优惠赠送(￥)</span></td>
+            <td width="50%" height="25" align="center">@Model.Coupon</td>
+        </tr>
+        <tr>
+            <td width="50%" height="25" align="center"><span class="petCard">现金储值(￥)</span></td>
+            <td width="50%" height="25" align="center">@Model.Cash</td>
+        </tr>
+        <tr>
+            <td width="50%" height="25" align="center"><span class="StoredCard">刷卡储值(￥)</span></td>
+            <td width="50%" height="25" align="center">@Model.Card</td>
+        </tr>
+       
+        <tr>
+            <td width="50%" height="25" align="center"><span class="balance" style="font-family: '宋体';">余额(￥)</span></td>
+            <td width="50%" height="25" align="center">@Model.AfterBalance</td>
+        </tr>
+        <tr>
+            <td width="50%" height="25" align="center"><span class="remark" style="font-family: '宋体';">备注信息</span></td>
+            <td width="50%" height="25" align="center">@Model.Notes</td>
+        </tr>
+    </table>
+
+    <table width="95%" border="0" cellpadding="0" cellspacing="2" align="center">
+        <tr>
+            <td height="25" colspan="2" align="center">---------------------</td>
+        </tr>
+    </table>
+   
+    <table width="95%" border="0" cellpadding="0" cellspacing="2" align="center">
+        <tr>
+            <td height="25" align="center">
+                <p>* * * * * * * * * * *</p>
+            </td>
+        </tr>
+    </table>
+    <table width="95%" border="0" cellpadding="0" cellspacing="2" align="center">
+        <tr>
+            <td height="62" colspan="2" align="center">
+                <p>请妥善保管好充值凭证</p>
+                <p>多谢惠顾！</p>
+            </td>
+        </tr>
+    </table>
+    <table width="95%" border="0" cellpadding="0" cellspacing="2" align="center">
+        <tr>
+            <td height="25" align="center">- www.0Fashion.com -</td>
+        </tr>
+    </table>
+    <table width="95%" border="0" cellpadding="0" cellspacing="2" align="center">
+        <tr>
+            <td height="25" colspan="2" align="center">---------------------</td>
+        </tr>
+    </table>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <!--endprint"+1+"-->
+    <iframe id="contfram" style="display:none"></iframe>
+</div>
+
+

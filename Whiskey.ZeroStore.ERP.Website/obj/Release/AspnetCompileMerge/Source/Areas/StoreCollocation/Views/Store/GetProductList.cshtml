@@ -1,0 +1,261 @@
+﻿<style>
+    .modal-dialog {
+        width: 80%;
+        max-width: 80%;
+    }
+  .table_row{
+ 	    display: flex;
+    margin-top: 1.5%;
+    width: 275px;
+ }
+ .table_row>.dataTables_info{
+ 	flex: 1;
+ }
+ .modal-content {
+    width: 931px !important;
+    margin: 0 auto;
+}
+.dataTables_info{
+	     position: absolute;
+    bottom: 5%;
+    left: 190px;
+    width: 150px;
+}
+</style>
+
+<script>
+	$("#nwe_table_1").on("mouseover", ".popimg", function () {
+		var imgsrc= $(this).attr("src");
+		console.log("i"+imgsrc);
+                if(imgsrc=="/Content/Images/noimage.png"||imgsrc==""){
+                	return;
+                }
+                if (this.tagName == "IMG") {
+                    var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                     console.log(strImg);
+                    toolTip(strImg);
+                
+                } else {
+                    $(this).find("img").each(function () {
+                        var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                        toolTip(strImg);
+                    });
+                }
+            }).on("mouseout", function () {
+                $("body").find("#toolTipLayer").hide();
+            });
+
+</script>
+<div>
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-4">商品货号：</label>
+                    <div class="col-md-5">
+                        @Html.TextBox("ProductNumber", "", new { @class = "form-control", placeholder = "输入货号", id = "ProductNumber" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-4">商品品牌：</label>
+                    <div class="col-md-5">
+                        @Html.DropDownList("_BrandId", (List<SelectListItem>)ViewBag.Brand, new { @class = "form-control selectpicker", id = "_BrandId" })
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button id="Search_par" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear_par" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <table id="nwe_table_1" class="table table-list table-hover valign-middle" width="100%">
+        <thead>
+        </thead>
+    </table>
+</div>
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+
+<script src="~/Content/Scripts/Common/comm.js"></script>
+<script>
+    var datatable_install;
+    $(document).ready(function () {
+
+        var dts = $("#nwe_table_1").dataTable({
+            "bScrollCollapse": true,
+            "bSort": false,
+            "bScrollInfinite": false,
+            "sPaginationType": "full_numbers",
+            "sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-5 info"il><"col-md-7 text-right"p>>',
+            "sAjaxSource": "/StoreCollocation/Store/ProductList",
+            "fnServerParams": function (aoData) {
+
+                var attrName = $("#ProductNumber").val();
+                if (attrName && attrName.length > 0) {
+                    aoData.push({ name: "productNumber", value: attrName });
+                }
+                var brand = $("#_BrandId option:selected").val();
+                if (brand && !isNaN(parseInt(brand))) {
+                    aoData.push({ name: "brandId", value: brand });
+
+                }
+
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                if (nRow != undefined && nRow != null) {
+                    var isEnabled = aData.IsEnabled;
+                    if (isEnabled == false) {
+                        $(nRow).css({ "color": " #5ebd5e" });
+                    }
+
+                    //$("td:eq(2)", nRow).addClass("text-left");
+                    $("td:last", nRow).addClass("text-left").css({ "width": "10%" });
+                    $(nRow).addClass("treegrid-" + aData.ProductNumber + (aData.ParentId != "" ? " treegrid-parent-" + aData.ParentId : ""));
+                    return nRow;
+                }
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $("#nwe_table_1 tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+
+                $(".pdl_all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".pdl").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $("#nwe_table_1").treegrid({
+                    saveState: true,
+                    treeColumn: 1,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+            },
+            "aoColumns": [{
+
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox('pdl_all'),
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id, "pdl");
+                }
+            },
+            {
+                "sTitle": "货号",
+                "bSortable": false,
+                "mData": function (data) {
+                        return data.ProductNumber;
+                }
+            },
+            {
+                "sTitle": "品牌名",
+                "bSortable": false,
+                "mData": function (data) {
+                    if (data.ParentId != "") return "";
+                    return data.BrandName;
+                },
+            },
+           {
+               "sTitle": "尺码",
+               "bStoreable": false,
+               "mData": function (data) {
+                   if (data.ParentId != "") return "";
+                   return data.SizeName;
+               }
+
+           }
+           , {
+               "sTitle": "季节",
+               "bStoreable": false,
+               "mData": function (data) {
+                   if (data.ParentId != "") return "";
+                   return data.SeasonName;
+               }
+           }
+           , {
+               "sTitle": "颜色",
+               "bStoreable": false,
+               "mData": function (data) {
+                   if (data.ParentId != "") return "";
+                   return data.ColorName;
+               }
+           },
+           {
+               "sTitle": "图片",
+               "bStoreable": false,
+
+               "mData": function (data) {
+                   var ThumbnailPath = data.ThumbnailPath || "";
+                   if (ThumbnailPath == "")  return '<div class="thumbnail-img_five_box"><div class="thumbnail-img_five"><div class="thumbnail-img_f"><img class="" src="/Content/Images/noimage.png"></div></div> </div>';
+                        return " <div class='thumbnail-img_five_box'><div class='thumbnail-img_five'><div class='thumbnail-img_f'><img  class='popimg' src=" + ThumbnailPath + " onerror='imgloaderror(this);'> </div></div> </div>";
+                   
+                   //return "<img style='max-height:120px;' class='' src=" + ThumbnailPath + " onerror='imgloaderror(this);'>";
+
+
+               }
+           }]
+
+        });
+        $(dts).addClass("table table-striped");
+        //$.whiskey.datatable.instances[0]=dts;
+        $.whiskey.datatable.instances[0] = dts;
+        //datatable_install = $.whiskey.datatable.instance;
+        //alert("hi");
+
+        $("#Search_par").click(function () {
+            $.whiskey.datatable.reset(false, dts);
+
+        });
+        $("#AttributeNameOrNum").keyup(function (event) {
+            if (event.keyCode == 13) {
+                // alert("hi");
+                $.whiskey.datatable.reset(false, dts);
+                event.stopPropagation();
+            }
+        });
+        $("#Clear_par").click(function () {
+            $("#AttributeNameOrNum").val("");
+            //$("#DepartmentId option").eq(0).attr("selected", true);
+        });
+        /**
+         * checkbox全选,反选
+         */
+       
+        // $(".bootbox-close-button:last").hide();
+
+        $(".bootbox-close-button:last").click(function () {
+            $("form[0fashion='fashion-team']").parents(".modal-content").show();
+        });
+    });
+    $("#Search_par").click(function () {
+        $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+
+    });
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+$('.selectpicker').selectpicker('refresh');
+    })
+    
+</script>

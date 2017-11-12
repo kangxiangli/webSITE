@@ -1,0 +1,331 @@
+﻿@using Whiskey.ZeroStore.ERP.Models.Enums
+ <style>
+ 	.thumbnail-img_five_box{
+				 position: relative;
+				 width: 60px;
+				 height: 60px;
+				margin: 0 auto;
+				 border: 1px solid #eaeaea;
+			 }
+			.thumbnail-img_five {
+				left: 0;
+				padding: 2px;
+				height: 96%;
+				overflow: hidden;
+			}
+			.thumbnail-img_f{
+				max-width: 60px;
+				margin: 0 auto 0 auto;
+				position: relative;
+				padding-bottom: 60px;
+				height: 0;
+				overflow: hidden;
+			}
+			.thumbnail-img_five img {
+				width: 100%;
+			}
+ </style>
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">手机号</label>
+                        <div class="col-md-9">
+                            @Html.TextBox("Phone", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">来源</label>
+                        <div class="col-md-9">
+                            @Html.DropDownList("OriginFlag", EnumHelper.GetSelectList(typeof(StoreCardOriginFlag)),"请选择",new { @class = "form-control _number_input selectpicker" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5>
+                    <i class="fa fa-list"></i> <span>数据列表</span>                    
+                </h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <span><input class="enabler" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                <span style="margin-left:20px;"><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "sAjaxSource": "@Url.Action("CartList")",
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    if ($(".trusher").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                        if ($(".enabler").is(":checked")) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                        } else {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                        }
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                    }
+                    $(".form-search select").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                        }
+                    });
+                    $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, $(this).hasClass("_number_input") ? "equal" : "contains"));
+                        }
+                    });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "序号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        return data.Id;
+                    },
+                },
+                {
+                    "sTitle": "手机号",
+                    "bSortable": false,
+                    "sName": "Phone",
+                    "mData": function (data) {
+                        return data.Phone;
+                    },
+                },
+                {
+                    "sTitle": "姓名",
+                    "bSortable": false,
+                    "sName": "Name",
+                    "mData": function (data) {
+                        return data.Name;
+                    },
+                },
+                {
+                    "sTitle": "负责人",
+                    "bSortable": false,
+                    "sName": "Captain",
+                    "mData": function (data) {
+                        return data.Captain;
+                    },
+                },
+                {
+                    "sTitle": "件数",
+                    "bSortable": false,
+                    "sName": "Count",
+                    "mData": function (data) {
+                        return data.Count;
+                    },
+                },
+                {
+                    "sTitle": "吊牌总价",
+                    "bSortable": false,
+                    "sName": "TagPrices",
+                    "mData": function (data) {
+                        return data.TagPrices;
+                    },
+                },
+                {
+                    "sTitle": "来源",
+                    "bSortable": false,
+                    "sName": "OriginFlag",
+                    "mData": function (data) {
+                        return data.OriginFlag;
+                    },
+                },
+                {
+                    "sTitle": "创建时间",
+                    "bSortable": false,
+                    "sName": "CreatedTime",
+                    "mData": function (data) {
+                        return $.whiskey.tools.dateFormat(data.CreatedTime);
+                    },
+                },
+                {
+                    "sTitle": "控制操作",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        var controller = "";
+                        if (typeof (data) == "function") {
+                            controller = data();
+                        } else if (typeof (data) == "object") {
+                            var isDeleted = data.IsDeleted;
+                            var isEnabled = data.IsEnabled;
+                            if (isDeleted == false) {
+                                controller += $.whiskey.datatable.tplView(data.StoreCartNum);
+                                if (!isEnabled) {
+                                    controller += $.whiskey.datatable.tplEnable(data.Id);
+                                } else {
+                                    var str = "<button id=\"Order\" title=\"一键下单\" type=\"button\"  onclick=\"Order(this,'" + data.Id + "','" + data.TagPrices + "');\" class=\"btn btn-xs  tn-xs_color btn-padding-right\"><i class=\"fa  icon-suitcase\"></i> </button>";
+                                    controller += str;
+                                    controller += $.whiskey.datatable.tplDisable(data.Id);
+                                }
+                                controller += $.whiskey.datatable.tplRemove(data.Id);
+                            } else {
+                                controller += $.whiskey.datatable.tplView(data.StoreCartNum);
+                                controller += $.whiskey.datatable.tplRecovery(data.Id);
+                                controller += $.whiskey.datatable.tplDelete(data.Id);
+                            }
+                        }
+                        return controller;
+                    }
+                }
+                ]
+            });
+
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+
+        });
+
+        function View(sender, StoreCartNum) {
+            var url = "@Url.Action("OrderCartIndex")" + "?CartNum=" + StoreCartNum;
+            $("#content-wrapper").load(url, { CartNum: StoreCartNum }, function (da) {
+                history.pushState(history.state, "", url);
+            });
+        }
+
+        function Order(sender, Id, TagPrice) {
+            $.whiskey.web.confirm({
+                question: "确定要下单嘛？",
+                notes: "吊牌总价：" + TagPrice,
+                ok: function () {
+                    var dialog = new $.whiskey.web.ajaxRequest({
+                        method: "post",
+                        caption: "一键下单",
+                        actionUrl: "@Url.Action("AddPurchaseDirect")",
+                        lockButton: $(this),
+                        params: { CartId: Id },
+                        complete: function (da) {
+                            $.whiskey.web.alert({
+                                type: da.ResultType == 3 ? "success" : "danger",
+                                content: da.Message,
+                            });
+                            $.whiskey.datatable.reset(true);
+                        }
+                    });
+                }
+            });
+        }
+
+        function Remove(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要将这条数据移至回收站吗？",
+                notes: "提示：数据移动到回收站后可从随时将其恢复",
+                actionUrl: "@Url.Action("RemoveCart")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Recovery(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要恢复这条数据吗？",
+                notes: "提示：将数据从回收站移动至正常数据列表里",
+                actionUrl: "@Url.Action("RecoveryCart")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Enable(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要启用这条数据吗？",
+                notes: "提示：启用才可以在任何地方使用",
+                actionUrl: "@Url.Action("EnableCart")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Disable(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要禁用这条数据吗？",
+                notes: "提示：禁用后数据将不在其他任何地方使用",
+                actionUrl: "@Url.Action("DisableCart")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+    </script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>
+}
+

@@ -1,0 +1,187 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Store
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.StoreName) :
+    </label>
+    <div class="col-md-8">
+        @Model.StoreName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.IsAttached) :
+    </label>
+    <div class="col-md-8">
+        @Html.Raw(Model.IsAttached ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.StoreTypeId) :
+    </label>
+    <div class="col-md-8">
+        @Model.StoreType.TypeName
+    </div>
+</div>
+@*<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.StoreMallType) :
+    </label>
+    <div class="col-md-8">
+        @Html.DisplayFor(m=>m.StoreMallType)
+    </div>
+</div>*@
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.IsMainStore) :
+    </label>
+    <div class="col-md-8">
+        @Html.Raw(Model.IsMainStore?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-8">
+        @Model.Description
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.StoreCredit) :
+    </label>
+    <div class="col-md-8">
+        @Model.StoreCredit
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.Balance) :
+    </label>
+    <div class="col-md-8">
+        @Model.Balance
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.StoreDiscount) :
+    </label>
+    <div class="col-md-8">
+        @Model.StoreDiscount 折
+    </div>
+</div>
+@*<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.ContactPerson) :
+    </label>
+    <div class="col-md-8">
+        @Model.ContactPerson
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.MobilePhone) :
+    </label>
+    <div class="col-md-8">
+        @Model.MobilePhone
+    </div>
+</div>*@
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Telephone) :
+    </label>
+    <div class="col-md-8">
+        @Model.Telephone
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Province) :
+    </label>
+    <div class="col-md-8">
+        @Model.Province
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.City) :
+    </label>
+    <div class="col-md-8">
+        @Model.City
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.ZipCode) :
+    </label>
+    <div class="col-md-8">
+        @Model.ZipCode
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.Address) :
+    </label>
+    <div class="col-md-8">
+        @Model.Address
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.IMEI) :
+    </label>
+    <div class="col-md-8">
+        @Model.IMEI
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Notes) :
+    </label>
+    <div class="col-md-8">
+        @Model.Notes
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.UpdatedTime) :
+    </label>
+    <div class="col-md-8">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.CreatedTime) :
+    </label>
+    <div class="col-md-8">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-8">
+        @Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-8">
+        @Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        操作人员 :
+    </label>
+    <div class="col-md-8">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

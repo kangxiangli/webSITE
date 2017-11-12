@@ -1,0 +1,169 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Warehouse
+<style>
+    .adminlist .modal-content {
+        width: 700px;
+    }
+</style>
+@*<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-7">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">员工姓名</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("RealName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<div class="row">
+    <div class="panel panel-list">
+        
+        <div class="panel-heading clearfix">
+            <div class="col-md-10 panel-title">
+                <h5>
+                    <i class="fa fa-list"></i> 
+                    <span>数据列表</span>
+                    <span style="margin-left:50px">
+                        <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right" data-checkeritemtype="@ViewBag.CheckerItemType">
+                            <i class="fa fa-save"></i> <span>导出文件</span>
+                        </button>
+                    </span>
+                </h5>
+                 
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="checkerList">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $("#checkerList").dataTable({
+            "sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-3 info"l><"col-md-3 info"i><"col-md-6 text-right"p>>',
+            //"bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("CheckerDetailList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("CheckerItemType", "@ViewBag.CheckerItemType", "equal"));
+                var checkerId=$("#checkerId").val();
+                conditions.Rules.push(new $.whiskey.filter.rule("CheckerId", checkerId, "equal"));
+                $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                $("td:eq(2)", nRow).css({ "float": "left", "width": "100%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                     
+                    return "";
+                }
+            },
+
+            {
+                "sTitle": "编码",
+                "bSortable": false,
+                "sName": "ProductBarcode",
+                "mData": function (data) {
+                    return data.ProductBarcode;
+                },
+            },
+            {
+                "sTitle": "状态",
+                "bSortable": false,
+                "sName": "CheckerItemType",
+                "mData": function (data) {
+                    var word = "";
+                    if (data.CheckerItemType == "@((int)CheckerItemFlag.Invalid)") {
+                        word = "无效";
+                    } else if (data.CheckerItemType == "@((int)CheckerItemFlag.Lack)") {
+                        word = "缺货";
+                    } else if (data.CheckerItemType == "@((int)CheckerItemFlag.Surplus)") {
+                        word = "余货";
+                    } else if (data.CheckerItemType == "@((int)CheckerItemFlag.Valid)") {
+                        word = "有效";
+                    }
+                    return word;
+                },
+            },
+            ]
+        });
+
+        $("#Search").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+
+        $("#Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+
+        $("#Export").on("click", function () {
+            var checkerId = $("#checkerId").val();
+            
+            var checkerItemType = $(this).attr("data-checkerItemType");
+            $.whiskey.web.load({url:"@Url.Action("Export")" + "?CheckerId=" + checkerId + "&CheckerItemType=" + checkerItemType})
+          //  location.href = "@Url.Action("Export")" + "?CheckerId=" + checkerId + "&CheckerItemType=" + checkerItemType;
+        })
+
+    });
+
+    //选择店铺
+    function choose(my) {
+        var name = $(my).attr("data-name");
+        var id = $(my).attr("data-id");
+        $("#RealName").attr("value", name);
+        $("#AdminId").attr("value", id);
+        $(".adminlist").modal("hide");
+    }
+</script>

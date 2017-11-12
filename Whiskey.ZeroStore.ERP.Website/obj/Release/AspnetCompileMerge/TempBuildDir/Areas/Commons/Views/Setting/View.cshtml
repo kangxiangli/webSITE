@@ -1,0 +1,240 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model Setting
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SystemMemberConsumeGetScore) :
+    </label>
+    <div class="col-md-6">
+		@Model.SystemMemberConsumeGetScore
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SystemRecommandUserGetScore) :
+    </label>
+    <div class="col-md-6">
+		@Model.SystemRecommandUserGetScore
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SystemIsBalanceConsumeGetScore) :
+    </label>
+    <div class="col-md-6">
+		@Model.SystemIsBalanceConsumeGetScore
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SystemIsPrintWhenSaleProduct) :
+    </label>
+    <div class="col-md-6">
+		@Model.SystemIsPrintWhenSaleProduct
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SystemIsPrintWhenMemberDeposit) :
+    </label>
+    <div class="col-md-6">
+		@Model.SystemIsPrintWhenMemberDeposit
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SystemIsInventoryWarning) :
+    </label>
+    <div class="col-md-6">
+		@Model.SystemIsInventoryWarning
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SystemInventoryWarningNumber) :
+    </label>
+    <div class="col-md-6">
+		@Model.SystemInventoryWarningNumber
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DeliveryPartner) :
+    </label>
+    <div class="col-md-6">
+		@Model.DeliveryPartner
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DeliveryKey) :
+    </label>
+    <div class="col-md-6">
+		@Model.DeliveryKey
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DeliveryAPIUrl) :
+    </label>
+    <div class="col-md-6">
+		@Model.DeliveryAPIUrl
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DeliveryAPICompany) :
+    </label>
+    <div class="col-md-6">
+		@Model.DeliveryAPICompany
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DeliveryAPIOrderNumber) :
+    </label>
+    <div class="col-md-6">
+		@Model.DeliveryAPIOrderNumber
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.DeliveryAPIOtherParams) :
+    </label>
+    <div class="col-md-6">
+		@Model.DeliveryAPIOtherParams
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SMSPartner) :
+    </label>
+    <div class="col-md-6">
+		@Model.SMSPartner
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SMSPartnerAccount) :
+    </label>
+    <div class="col-md-6">
+		@Model.SMSPartnerAccount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SMSKey) :
+    </label>
+    <div class="col-md-6">
+		@Model.SMSKey
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SMSAPIUrl) :
+    </label>
+    <div class="col-md-6">
+		@Model.SMSAPIUrl
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SMSAPIMobilePhone) :
+    </label>
+    <div class="col-md-6">
+		@Model.SMSAPIMobilePhone
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SMSAPIMessageContent) :
+    </label>
+    <div class="col-md-6">
+		@Model.SMSAPIMessageContent
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.SMSNumberOfWordLimit) :
+    </label>
+    <div class="col-md-6">
+		@Model.SMSNumberOfWordLimit
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.MemberIsBirthdayWarning) :
+    </label>
+    <div class="col-md-6">
+		@Model.MemberIsBirthdayWarning
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.MemberBirthdayWarningAdvancedDays) :
+    </label>
+    <div class="col-md-6">
+		@Model.MemberBirthdayWarningAdvancedDays
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.MemberIsSendSMSOnBirthday) :
+    </label>
+    <div class="col-md-6">
+		@Model.MemberIsSendSMSOnBirthday
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.MemberSendSMSContent) :
+    </label>
+    <div class="col-md-6">
+		@Model.MemberSendSMSContent
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.UpdatedTime) :
+    </label>
+    <div class="col-md-6">
+		@Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.CreatedTime) :
+    </label>
+    <div class="col-md-6">
+		@Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-6">
+		@Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-6">
+		@Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		操作人员 :
+    </label>
+    <div class="col-md-6">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

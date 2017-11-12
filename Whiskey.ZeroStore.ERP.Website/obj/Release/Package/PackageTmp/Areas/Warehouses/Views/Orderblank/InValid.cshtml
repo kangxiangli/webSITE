@@ -1,0 +1,126 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+
+<style>
+    .diacl .modal-dialog {
+        min-width:999px;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle detailList" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $(".detailList").dataTable({
+            //"sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-5 info"i><"col-md-7 text-right"p>>',
+            "sAjaxSource": "@Url.Action("InValidList")",
+            //"iDisplayLength": 10000,
+            "aLengthMenu": ["10", "20", "50"],
+            "fnServerParams": function (aoData) {
+                aoData.push({ name: "uuid", value: '@ViewBag.uuid' });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                if (aData.ParentId == null) {
+                    $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                }
+
+                $("td:eq(2)", nRow).css({ "float": "left", "width": "100%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".table-list").treegrid({
+                    //saveState: true,
+                    initialState: 'collapsed',
+                    treeColumn: 1,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    return "";
+
+                }
+            },
+            {
+                "sTitle": "商品编码",
+                "bSortable": false,
+                "sName": "ProductBarcode",
+                "mData": function (data) {
+                    debugger
+                    var barcode = data.ProductBarcode;
+                    var index = barcode.indexOf(",");
+                    var last = barcode.lastIndexOf(",");
+                    if (index == 0) {
+                        barcode = barcode.substring(1);
+                    }
+                    var length = barcode.length;
+                    if (last == length) {
+                        barcode = barcode.substring(0, length - 1);
+                    }
+                    return barcode;
+                }
+            },
+
+            {
+                "sTitle": "状态",
+                "bSortable": false,
+                "sName": "Notes",
+                "mData": function (data) {
+                    return data.Notes;
+                }
+            },
+
+            ]
+
+        });
+
+        $(".bootbox #Search").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+
+        $(".bootbox #Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+    });
+</script>

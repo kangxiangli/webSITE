@@ -1,0 +1,261 @@
+﻿
+@section Styles{
+    <link rel="stylesheet" href="~/content/styles/layout/shopList.css" />
+    <link rel="stylesheet" href="~/content/styles/layout/loading/css/loaders.css" />
+}
+
+@section Scripts{
+    <script src="~/Content/Scripts/vue.min.js"></script>
+    <script>
+        var categoryId = 1;
+        var index = 1;
+        var maxIndex = 9999999;
+        var postcomplete = false;
+        var menu = new Vue({
+            el: '#left-sideBar',
+            data: {
+                menulist: []
+            }
+        })
+
+        init();
+        //---------------------------------------------------------------------------------------------- 菜单滚动
+        var downIndex = 0;
+        $('#left-sideBar').on("mousewheel DOMMouseScroll", function (e) {
+            e.preventDefault(); //阻止body默认滚动
+            if (postcomplete) {
+                var top = $('#left-sideBar ul').position().top;
+                var delta = (e.originalEvent.wheelDelta && (e.originalEvent.wheelDelta > 0 ? 1 : -1)) || // chrome & ie
+                    (e.originalEvent.detail && (e.originalEvent.detail > 0 ? -1 : 1)); // firefox
+                var disY = $('#left-sideBar ul').height() - Math.abs($('#left-sideBar ul').position().top) - $('#left-sideBar').height();
+                if (delta > 0) {
+                    // 向上滚
+                    if (top > 0) return;
+                    downIndex += 20;
+                    $('#left-sideBar ul').css('transform', 'translateY(' + downIndex + 'px)');
+                } else if (delta < 0) {
+                    // 向下滚
+                    if (disY < 0) return;
+                    downIndex -= 20;
+                    $('#left-sideBar ul').css('transform', 'translateY(' + downIndex + 'px)');
+                }
+            }
+        });
+        //---------------------------------------------------------------------------------------------- 左侧菜单点击
+        $('#left-sideBar').on('click', '.firstMenu', function () {
+            index = 1;
+            maxIndex = 999999;
+            categoryId = $(this).attr('data-CategoryId');
+            $('.shopList ul').empty();
+            getProductList();
+            $('.activeMenuTitle').removeClass('activeMenuTitle')
+            $(this).addClass('activeMenuTitle');
+        });
+            //---------------------------------------------------------------------------------------------- 产品遮罩详情显示
+            var enterBtn = true,
+                outBtn = true;
+            $('.shopList').on('mouseenter', 'li', function (e) {
+                $(this).find('.product-introduce').stop().slideDown();
+            })
+            $('.shopList').on('mouseleave', 'li', function (e) {
+                $(this).find('.product-introduce').stop().slideUp();
+            })
+            //---------------------------------------------------------------------------------------------- 商品详情
+            $('.shopList ul li').click(function () {
+                window.open('shopItem.html')
+            })
+        
+            //---------------------------------------------------------------------------------------------- 初始化
+            function init() {
+                getMenu();
+                getProductList();
+            }
+
+            //---------------------------------------------------------------------------------------------- 滚动加载更多
+            $(window).scroll(function (e) {
+                var dis = $('.container').height() - window.pageYOffset - $(window).height()
+                if (dis <= 10 && postcomplete) {
+                    getProductList();
+                }
+            })
+            //---------------------------------------------------------------------------------------------- 渲染商品数据
+            var Colors = ['#b1c5a3', '#af9ab2', '#bdaba9', '#8fb2bf', '#c8bc98']
+            function getProductList() {
+
+                if (maxIndex <= index) {
+                    return;
+                }
+                $('.nodata').remove();
+                $('.webviwWrapper').show();
+                $.ajax({
+                    type: "post",
+                    url: "/Products/Product/GetStoreProducts",
+                    dataType: 'json',
+                    data: {
+                        PageIndex: index,
+                        PageSize: 12,
+                        CategoryId: categoryId,
+                    },
+                    async: true,
+                    beforeSend: function () {
+                        postcomplete = false;
+                    },
+                    complete: function () {
+                        postcomplete = true;
+                    },
+                    success: function (data) {
+                        $('.webviwWrapper').hide();
+                        if (data.ResultType == 3) {
+                            var Cloths = data.Data;
+                            if (Cloths.length == 0) {
+                                maxIndex = index;
+                                $('.nodata').remove();
+                                $('.shopList').append('<div class="nodata">没有更多商品了~</div>');
+                            } else {
+                                index++;
+                                $(Cloths).each(function (i, item) {
+
+                                    var math = parseInt(Math.random() * 5);
+
+                                    var html = '';
+                                    html += '<li onclick=jumpDetail(this) data-ProductDetail=' + item.HtmlPath + '>' +
+                                    '<div class="productBox" style="background:' + Colors[math] + '"><img class="clothImage" onerror=imgError(this) onload=loadimg(this) src=' + item.ImageOrgPath + '>' +
+                                        '<div class="product-introduce"><div class="zz"></div>' +
+                                        '<div class="introduce">' +
+                                        '<p style="color: #e5c593;">' + item.CategoryName + '</p>' +
+                                        '<p>尺寸：' + item.SizeName + '</p>' +
+                                        '<p>季节：' + item.SeasonName + '</p>' +
+                                        '<p>颜色：' + item.ColorName + '</p>' +
+                                        '</div>' +
+                                        '<div class="product-introduce-jt">' +
+                                        '<img src="/content/images/shoping/jt.png" />' +
+                                        '</div>' +
+                                        '<div class="price">￥' + item.Price + '</div>' +
+                                        '</div></div></li>'
+                                    $('.shopList ul').append(html)
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+			function loadimg(_this){
+				$(_this).animate({'opacity':1},500)
+			}
+			function imgError(image) {
+                $(image).attr('src', '/content/images/shoping/errorImage.png');
+            }
+            //---------------------------------------------------------------------------------------------- 跳转商品详情
+            function jumpDetail(_this) {
+                var ProductDetailId = $(_this).attr('data-ProductDetail');
+                window.open(ProductDetailId);
+            }
+            //---------------------------------------------------------------------------------------------- 获取菜单
+            function getMenu() {
+                $.ajax({
+                    url: '/properties/category/getlist',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {},
+                    success: function (data) {
+                        menu.menulist = data.Data;
+                    }
+                })
+            }
+            //---------------------------------------------------------------------------------------------- 获取商品详情
+
+            function getproductdetail(productId, fn) {
+                $.ajax({
+                    url: '/Products/Product/getproductdetail',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        ProductId: productId
+                    },
+                    success: function (data) {
+                        if (fn) {
+                            fn(data)
+                        }
+                    }
+                })
+            }
+
+            
+    </script>
+}
+
+<div class="container">
+    <div class="shop">
+        <div class="header">
+            <img class="top-logo" src="/content/images/shoping/0fashion.png" />
+            <span>商城</span>
+        </div>
+        <div class="shopList">
+            <ul class="clearfix">
+                <!--<li>
+                    <img src="home/img/shoping/MR5A9140.jpg" />
+                    <div class="product-introduce">
+                        <div class="zz"></div>
+                        <div class="introduce">
+                            <p>尺寸：M</p>
+                            <p>面料：100%纯棉</p>
+                            <p>体型：A/I/O/X</p>
+                            <p>场合：居家运动/日常办公</p>
+                            <p>风格：酷感/时尚</p>
+                        </div>
+                        <div class="product-introduce-jt">
+                            <img src="home/img/shoping/jt.png" />
+                        </div>
+                        <div class="price">￥1547</div>
+                    </div>
+                </li>-->
+            </ul>
+            <!--loading-->
+            <div class="webviwWrapper wrapper nano">
+                <div class="nano-content">
+                    <main>
+                        <div class="nano-items items-list">
+                            <div class="nano-item">
+                                <div class="item-inner">
+                                    <div class="item-loader-container">
+                                        <div class="la-ball-atom la-2x">
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="left-sideBar" id="left-sideBar">
+        <ul>
+            <li>
+                <a href="javascript:void(0);" onclick="$.fashion.web.load({url:'/',_p_flag:'-1'})"><img class="menuLogo" src="/content/images/shoping/menu_logo.png" />返回首页</a>
+            </li>
+            <!--<li><h1 class="firstMenu activeMenuTitle">新品推荐</h1><span class="new">new</span></li>-->
+            <li v-cloak v-for="(menu,index) in menulist">
+                <h1 class="firstMenu" :class="{'activeMenuTitle':index == 0}" data-index=index v-if="!menu.ParentId" v-bind:data-CategoryId=menu.CategoryId>{{ menu.CategoryName}}</h1>
+                <!--<ol class="secondMenuList">
+                    <li>
+                        <h2 class="secondMenu">裤子</h2></li>
+                    <li>
+                        <h2 class="secondMenu">半裙</h2>
+                        <ol class="thirdMenuList">
+                            <li>筒裙</li>
+                            <li>伞裙</li>
+                            <li>A裙</li>
+                            <li>长裙</li>
+                            <li>中裙</li>
+                        </ol>
+                    </li>
+                </ol>-->
+            </li>
+        </ul>
+    </div>
+</div>

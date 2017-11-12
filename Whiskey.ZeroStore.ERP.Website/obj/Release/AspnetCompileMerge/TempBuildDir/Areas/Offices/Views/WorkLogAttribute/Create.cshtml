@@ -1,0 +1,32 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model WorkLogAttributeDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ParentId) :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.ParentId, (List<SelectListItem>)ViewBag.Parents, new { @class = "form-control selectpicker" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.WorkLogAttributeName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.WorkLogAttributeName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

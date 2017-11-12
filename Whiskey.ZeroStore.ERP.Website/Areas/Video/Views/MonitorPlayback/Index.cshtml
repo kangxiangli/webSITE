@@ -1,0 +1,94 @@
+﻿<style>
+    #show_video div {
+        float: left;
+        width: 400px;
+        margin: 10px 30px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .video_online {
+        width: 8px;
+        height: 8px;
+        background: #00ff21;
+        border-radius: 50%;
+        margin: 0 3px 1px 10px;
+        display: inline-block;
+        padding-top: 1px;
+    }
+
+    .video_unonline {
+        width: 8px;
+        height: 8px;
+        background: #808080;
+        border-radius: 50%;
+        margin: 0 3px 1px 10px;
+        display: inline-block;
+        padding-top: 1px;
+    }
+
+    .video_error {
+        width: 8px;
+        height: 8px;
+        background:  #5ebd5e;
+        border-radius: 50%;
+        margin: 0 3px 1px 10px;
+        display: inline-block;
+        padding-top: 1px;
+    }
+</style>
+<div>
+    <div class="row" id="ViewDiv">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div id="show_video"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="~/Content/Scripts/Common/comm.js"></script>
+    <script src="~/Content/Scripts/Layer/layer.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                type: "post",
+                url: "/Video/MonitorPlayback/List",
+                async: false,
+                success: function (msg) {
+                    var data = eval(msg);
+                    var htmlStr = "";
+                    $(data).each(function () {
+                        htmlStr += "<div onclick='showVideo(\"" + this.snNumber + "\");'>";
+                        htmlStr += "<img src='" + this.channelPicUrl + "'style='width:100%;' />";
+                        var className = "video_error";
+                        switch (this.isOnline) {
+                            case "在线":
+                                className = "video_online";
+                                break;
+                            case "离线":
+                                className = "video_unonline";
+                                break;
+                            case "未知":
+                                className = "video_online";
+                                break;
+                        }
+                        htmlStr += "<span>店铺 ：" + this.StoreName + "  状态:" + "<i class='" + className + "'></i>" + this.isOnline + "</span>";
+                        htmlStr += "</div>";
+                    });
+                    $("#show_video").html(htmlStr);
+                }
+            });
+        });
+
+
+        function showVideo(sn_Number) {
+            $("#ViewDiv").load("/Video/VideoEquipment/ViewMonitor?sn_Number=" + sn_Number+"&loadtype=2");
+        }
+    </script>
+}
+
+
+
+

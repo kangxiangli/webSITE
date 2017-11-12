@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title> 
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+ 
+    <script src="js/global.js"></script>   
+    </head>
+    <body class="um-vp " ontouchstart>
+   <img id="hc" src="/sign/img/hollow.png" width="1" height="1" onerror="no();" onload="yes();">
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+    </body>
+      <script type="text/javascript">
+    //随机解除缓存
+    var a = $("#hc").attr("src");
+    window.localStorage.a = a;
+        var string = "";
+        for (var i = 0; i < 5; i++) {
+            string += Math.floor(Math.random() * 10);
+        }
+        cle();
+        $("#hc").attr("src",localStorage.a + '?=' + string);
+        console.log($("#hc").attr("src"));
+    function cle() {
+        $("#hc").attr("src", '');
+    }
+</script>
+    </script>
+    
+    <script type="text/javascript">
+
+    function yes() {
+    window.location.href="/sign/index.html";  
+    };
+    function no() {
+    window.location.href="error.html";  
+    };
+
+
+    if (ol==0){
+        
+        alert("断网了");
+        window.location.href="error.html";  
+    }
+    else
+    {
+        alert("链接中");
+        window.location.href="/sign/index.html"; 
+    }
+
+   
+    </script>
+</html>

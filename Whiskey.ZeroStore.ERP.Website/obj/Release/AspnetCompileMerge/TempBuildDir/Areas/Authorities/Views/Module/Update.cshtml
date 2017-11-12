@@ -1,0 +1,157 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model ModuleDto
+<div class="form-group">
+    @if (Model.ParentId != null)
+    {
+        <label class="control-label col-md-4">
+            @Html.DisplayNameFor(m => m.ParentId) :
+        </label>
+        <div class="col-md-4">
+            @Html.DropDownList("ParentId", (List<SelectListItem>) ViewBag.parentModu, new {@class = "form-control selectpicker"})
+       
+        </div>
+        <div class="control-detail col-md-4">
+            @Html.ValidationMessageFor(m => m.ParentId)
+        </div>
+    }
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.ModuleName) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.ModuleName, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.ModuleName)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Icon) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.Icon, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.Icon)
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.Description, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.Description)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.PageUrl) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.PageUrl, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.PageUrl)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.OverrideUrl) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.OverrideUrl, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.OverrideUrl)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.PageArea) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.PageArea, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.PageArea)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.PageController) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.PageController, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.PageController)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.PageAction) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.PageAction, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.PageAction)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.ColorValue) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.ColorValue, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.ColorValue)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.BadgeTag) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.BadgeTag, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.BadgeTag)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.BadgeUrl) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.BadgeUrl, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.BadgeUrl)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.onClickScripts) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.onClickScripts, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.onClickScripts)
+    </div>
+</div>
+@Html.HiddenFor(m => m.Id)
+@Html.HiddenFor(m => m.Sequence)

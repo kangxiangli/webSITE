@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+    <script src="js/global.js"></script>   
+    </head>
+    <body class="um-vp " ontouchstart>
+
+   <script type="text/javascript">
+   </script>
+   <img id="hc" src="img/ol.png" width="1" height="1" onerror="no();" onload="yes();">
+   <script src="js/appcan.js"></script>
+   <script src="js/appcan.control.js"></script>
+    </body>
+      <script type="text/javascript">
+    //随机解除缓存
+    var a = $("#hc").attr("src");
+    window.localStorage.a = a;
+        var string = "";
+        for (var i = 0; i < 5; i++) {
+            string += Math.floor(Math.random() * 10);
+        }
+        cle();
+        $("#hc").attr("src",localStorage.a + '?=' + string);
+        console.log($("#hc").attr("src"));
+    function cle() {
+        $("#hc").attr("src", '');
+    }
+  
+</script>
+    
+    <script type="text/javascript">
+    //联网状态
+    function yes() {           
+     window.location.href="update.html"
+    };
+    function no() {
+    window.location.href="error.html";  
+    };
+
+
+
+    </script>
+</html>

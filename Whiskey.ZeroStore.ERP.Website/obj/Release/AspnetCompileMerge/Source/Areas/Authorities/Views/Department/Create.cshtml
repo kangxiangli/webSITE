@@ -1,0 +1,102 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model DepartmentDto
+<div class="view par_view">
+    <ul id="_tab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#baseinfo-tab" data-toggle="tab">
+                基本信息
+            </a>
+        </li>
+        @*<li><a href="#defaright_tab" data-toggle="tab">默认权限</a></li>*@
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="baseinfo-tab">
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    部门名称 :
+                </label>
+                <div class="col-md-7">
+                    @Html.TextBoxFor(x=>x.DepartmentName, new { @class = "form-control", placeholder = "请输入中文、字母或数字" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    @Html.DisplayNameFor(m => m.DepartmentType) :
+                </label>
+                <div class="col-md-7">
+                    @Html.EnumDropDownListFor(f => f.DepartmentType, new { @class = "form-control selectpicker" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    Mac地址 :
+                </label>
+                <div class="col-md-7">
+                    @Html.TextBoxFor(x => x.MacAddress, new Dictionary<string, object> { { "class", "form-control" }, { "data-role", "tagsinput" } })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    部门描述 :
+                </label>
+                <div class="col-md-7">                    
+                    @Html.TextAreaFor(x => x.Description, new { @class = "form-control", placeholder = "请输入必要的描述信息" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-3">
+                    是否启用 :
+                </label>
+                <div class="col-md-7" style="margin-top:5px">
+                    <label><input type="radio" value="1" name="IsEnabled" checked="checked" />是</label>
+                    <label><input style="margin-left:5px" name="IsEnabled" value="0" type="radio" />否</label>
+                </div>
+            </div>
+
+        </div>
+        @*<div class="tab-pane fade" id="defaright_tab">
+            @{
+                Html.RenderAction("PermissCell", "Permission");
+            }
+        </div>*@
+    </div>
+</div>
+<style>
+    ul li {
+    float:left;
+    }
+    .modal-dialog {
+     width:700px;
+    }
+</style>
+@Scripts.Render("~/bundles/tags")
+
+<script>
+    //debugger
+    $(function () {
+        $("[data-bb-handler='success']").attr("disabled", "disabled");
+        
+        $(".par_view #DepartmentName").keyup(function () {
+            var t = $(this).val().trim().replace(/[^\u4e00-\u9fa5\da-z]/gi, "");
+                                     
+            $(this).val(t);
+            if (t != "") {
+                $("[data-bb-handler='success']").removeAttr("disabled");
+                $(this).parents("div:first").removeClass("has-error");
+            }
+            else {
+                $(this).parents("div:first").addClass("has-error");
+                $(this).attr("title", "部门名称不为空");
+                $("[data-bb-handler='success']").attr("disabled", "disabled");
+            }
+        });
+        
+    })
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

@@ -1,0 +1,556 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model MemberDto
+@using Whiskey.Utility.Data
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+<link rel="stylesheet" href="/content/editor/themes/default/default.css" />
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<style>
+    .li_empt {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+</style>
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #e5603b"></span>
+</div>
+<div class="row">
+</div>
+
+
+<div class="row">
+    <ul class="nav nav-tabs">
+        <li class="tab-pane active" id="lableMember">
+            <a href="#base" data-toggle="tab">添加会员</a>
+        </li>
+        <li class="tab-pane">
+            <a href="#collo" data-toggle="tab">搭配信息</a>
+        </li>
+    </ul>
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-arrow-circle-left"></i> <a href="javascript:void(0);" onclick="$.whiskey.web.load({url:'@Url.Action("Index")'})"><i class="fa fa-backward"></i> <span>返回会员列表</span></a></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <h5><i class="fa fa-credit-card"></i> <span>基本信息</span></h5>
+            </div>
+        </div>
+
+        <br />
+        <br />
+
+        @using (Ajax.BeginForm("Create", new { }, new AjaxOptions() { HttpMethod = "post", OnBegin = "beforeSend()", OnSuccess = "afterFun(data)" }, new { id = "form1" }))
+        {
+            @Html.HiddenFor(x => x.ResetPass, new { @value="000000"})
+            @Html.HiddenFor(x => x.SecondReset, new { @value = "000000" })
+            <div class="tab-content">
+                <div class="tab-pane fade active in " id="base">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.StoreId) :
+                        </label>
+                        <div class="col-md-5 ">
+                            <input type="text" readonly="readonly" id="StoreName" class="form-control" value="@Model.StoreName" />
+                            <input type="hidden" id="StoreId" name="StoreId" value="@Model.StoreId" />
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-success" id="getStore">
+                                选择店铺
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" value="/Content/Images/logo-_03.png" name="UserPhoto" />
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            搭配师 :
+                        </label>
+                        <div class="col-md-5">
+                            <input type="text" readonly="readonly" id="collocationName" class="form-control" />
+                            <input type="hidden" id="CollocationId" name="CollocationId" />
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-success" id="getCollocation">
+                                选择搭配师
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.MemberName) :
+                        </label>
+                        <div class="col-md-7 divName">
+                            @Html.TextBoxFor(m => m.MemberName, new { @class = "form-control",@readonly= "readonly" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.MemberPass) :
+                        </label>
+                        <div class="col-md-7 divMemberPass">
+                            @Html.PasswordFor(m => m.MemberPass, new { @class = "form-control",  @oncopy = "document.selection.empty()", @onpaste = "return false" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.SecondPass) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.PasswordFor(m => m.SecondPass, new { @class = "form-control", @oncopy = "document.selection.empty()", @onpaste = "return false" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.MemberTypeId) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.DropDownListFor(m => m.MemberTypeId, (List<SelectListItem>)ViewBag.MemberType, new { @class = "form-control selectpicker"  })
+                        </div>
+                    </div>
+                    <div class="form-group member-level-container" style="display:none;">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.LevelId) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.HiddenFor(m => m.LevelId)
+                            @Html.DropDownList("member-level-enterprise", (List<SelectListItem>)ViewBag.MemberLevels, "请选择企业会员类型", new { @class = "form-control selectpicker" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.Gender) :
+                        </label>
+                        <div class="col-md-7">
+                            <select class="form-control selectpicker" id="Gender" name="Gender">
+                                <option value="0">女</option>
+                                <option value="1">男</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.Email) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.MobilePhone) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.MobilePhone, new { @class = "form-control"})
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.RealName) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.RealName, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="form-group ">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.IDCard) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.IDCard, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.DateofBirth) :
+                        </label>
+                        <div class="col-md-2">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("DateofBirth", "", new { @class = "start-date input-sm form-control", @placeholder = "点击选择" })
+                            </div>
+                        </div>
+                        <label class="control-label col-md-1">
+                            @Html.DisplayNameFor(m => m.CreateTime) :
+                        </label>
+                        <div class="col-md-3">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("CreateTime", "", new { @class = "start-date input-sm form-control", @placeholder = "点击选择" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            @Html.DisplayNameFor(m => m.Notes) :
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.Notes, new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+
+                <div id="collo" class="tab-pane fade clearfix">
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            上装尺码 :
+                        </label>
+                        <div class="col-md-5 ">
+                            <select name="ShangZhuang" id="shangzhuangSize" class="form-control selectpicker">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            下装尺码 :
+                        </label>
+                        <div class="col-md-5 ">
+                            <select name="XiaZhuang" id="xiazhuangSize" class="form-control selectpicker multiselect ">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group divColor">
+                        <label class="control-label col-md-3">
+                            偏好颜色 :
+                        </label>
+                        <div class="col-md-5 ">
+                            <select name="PreferenceColor" id="color" class="multiselect " multiple="multiple">
+                                @{
+                                    Dictionary<string, string> color = ViewBag.Color;
+                                    foreach (var item in color)
+                                    {
+                                        <option value="@item.Key">@item.Key</option>
+                                    }
+                                }
+                            </select>
+
+                        </div>
+                        <div>
+                            <label style="color: #e5603b;display:none" class="notice">*<span>最多可选三种颜色</span></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            身材类型 :
+                        </label>
+                        <div class="col-md-5 ">
+                            <select name="FigureType" id="figure" class="form-control selectpicker">
+                                <option value="">请选择</option>
+                                <option value="X" data-value="细腰，腰臀曲线明显，不管胖瘦，时尚任性">X</option>
+                                <option value="I" data-value="骨感，天生丽质难自弃，全身骨感，衣裳架子">I</option>
+                                <option value="A" data-value="显瘦，上衣比裤子小一码，占尽便宜，藏肉显瘦">A</option>
+                                <option value="V" data-value="腿长，上衣比裤子大一码，让人羡慕的大长腿">V</option>
+                                <option value="H" data-value="匀称，腰线不太明显，优雅干练，成熟稳重">H</option>
+                                <option value="O" data-value="圆润，苦苦寻找大码装，气场女王，微胖富态">O</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            身材描述 :
+                        </label>
+                        <div class="col-md-5">
+                            <select name="FigureDes" id="figureDes" class="multiselect" multiple="multiple"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            身高（cm） :
+                        </label>
+                        <div class="col-md-5 ">
+                            <select name="Height" id="height" class="form-control selectpicker">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            体重（kg） :
+                        </label>
+                        <div class="col-md-5 ">
+                            <select name="Weight" id="weight" class="form-control selectpicker">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            肩宽（cm） :
+                        </label>
+                        <div class="col-md-5 ">
+                            <select name="Shoulder" id="shoulder" class="form-control selectpicker">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            胸围（cm） :
+                        </label>
+                        <div class="col-md-5 ">
+                            <select name="Bust" id="bust" class="form-control selectpicker">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            腰围（cm） :
+                        </label>
+                        <div class="col-md-5">
+                            <select name="Waistline" id="waistline" class="form-control selectpicker">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">
+                            臀围（cm） :
+                        </label>
+                        <div class="col-md-5">
+                            <select name="Hips" id="hips" class="form-control selectpicker">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-4 text-right">
+                    <button type="submit" id="btnAdd" class="btn btn-success">
+                        添加
+                    </button>
+                </div>
+                <div class="col-md-3 text-right">
+                    <button type="button" class="btn btn-primary" onclick="getBack()">
+                        返回
+                    </button>
+                </div>
+            </div>
+
+                                    }
+
+    </div>
+
+</div>
+
+
+
+
+
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/bootstrap-multiselect.js"></script>
+<script type="text/javascript">
+    $(function () {
+
+        //初始化身高列表
+        for (var i = 140; i <= 190; i++) {
+            $("#height").append("<option value=" + i + ">" + i + "</option>");
+        }
+        //初始化体重列表
+        for (var i = 35; i <= 120; i++) {
+            $("#weight").append("<option value=" + i + ">" + i + "</option>");
+        }
+        //初始化上装尺码  xs s m l xl 2xl 3xl 4xl
+        var size = new Array("XS", "S", "M", "L", "2XL", "3XL", "4XL");
+        for (var i = 0; i < size.length; i++) {
+            $("#shangzhuangSize").append("<option value=" + size[i] + ">" + size[i] + "</option>");
+            $("#xiazhuangSize").append("<option value=" + size[i] + ">" + size[i] + "</option>");
+        }
+        //初始化肩宽
+        for (var i = 21; i <= 45; i++) {
+            $("#shoulder").append("<option value=" + i + ">" + i + "</option>");
+        }
+        //初始化胸围、腰围、臀围
+        for (var i = 55; i <= 120; i++) {
+            //初始化腰围
+            $("#waistline").append("<option value=" + i + ">" + i + "</option>");
+            //初始化胸围
+            if (i >= 70) {
+                $("#bust").append("<option value=" + i + ">" + i + "</option>");
+            }
+            //初始化臀围
+            if (i >= 75) {
+                $("#hips").append("<option value=" + i + ">" + i + "</option>");
+            }
+        }
+        //初始化身材描述
+        var figureDes = new Array("脖子短", "胸大", "腰粗", "宽臀", "窄臀", "平臀", "肩宽", "上臂粗", "腹部突出", "大腿粗", "小腿粗", "腿不直");
+        for (var i = 0; i < figureDes.length; i++) {
+            $("#figureDes").append("<option value=" + figureDes[i] + ">" + figureDes[i] + "</option>");
+        }
+
+        //初始化身材描述多选控件
+        $('#figureDes').multiselect({
+            enableFiltering: true,
+            includeSelectAllOption: true,
+            allSelectedText: "全选",
+            nonSelectedText: "请选择",
+            filterPlaceholder: "查询",
+            nSelectedText: "个被选中",
+            maxHeight: 150,//最大长度
+            selectAllText: "全选",
+
+        });
+        //初始化偏好颜色多选控件
+        $('#color').multiselect({
+            enableFiltering: true,
+            allSelectedText: "全选",
+            nonSelectedText: "请选择",
+            filterPlaceholder: "查询",
+            nSelectedText: "个被选中",
+            maxHeight: 150,//最大长度PX
+            selectAllText: "全选",
+        });
+        //检验颜色选项，最多只能选三种颜色
+        $("#color").on("change", function () {
+            var value = $("#color").val();
+            if (value.length == 3) {
+                //显示提示信息
+                $(".notice").css("display", "block");
+                var para1 = value[0];
+                var para2 = value[1];
+                var para3 = value[2];
+                var input = $(".divColor .btn-group input[value!=" + para1 + "][value!=" + para2 + "][value!=" + para3 + "]");
+                var option = $("#color option[value!=" + para1 + "][value!=" + para2 + "][value!=" + para3 + "]");
+                input.prop('disabled', true);
+                option.prop('disabled', true);
+                input.parent('label').parent('a').parent('li').addClass('disabled');
+            } else {
+                //隐藏提示信息
+                $(".notice").css("display", "none");
+                var para1 = value[0];
+                var para2 = value[1];
+                var input = $(".divColor .btn-group input[value!=" + para1 + "][value!=" + para2 + "][value!=" + para3 + "]");
+                var option = $("#color option[value!=" + para1 + "][value!=" + para2 + "][value!=" + para3 + "]");
+                input.prop('disabled', false);
+                option.prop('disabled', false);
+                input.parent('label').parent('a').parent('li').removeClass('disabled');
+            }
+
+        });
+        //获取选择店铺列表
+        $("#getStore").on("click", function () {
+            $.whiskey.ajaxLoading({
+                url: "@Url.Action("StoreList")",
+                type: 'get',
+                success: function (data) {
+                    bootbox.dialog({
+                        message: data,
+                        // message:formBody,
+                        title: "店铺列表",
+                        buttons: {
+                            cancel: {
+                                label: "关闭",
+                                icon: "fa-close",
+                                className: "btn-default",
+                                callback: function () {
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        //获取选择搭配师列表
+        $("#getCollocation").on("click", function () {
+            $.whiskey.ajaxLoading({
+                url: "@Url.Action("CollocationList")",
+                type: 'get',
+                success: function (data) {
+                    bootbox.dialog({
+                        message: data,
+                        title: "搭配师列表",
+                        buttons: {
+                            cancel: {
+                                label: "关闭",
+                                icon: "fa-close",
+                                className: "btn-default",
+                                callback: function () {
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+
+        });
+
+
+    });
+
+    function showUpload() {
+        var view = new $.whiskey.web.ajaxView({
+            caption: "详细信息",
+            actionUrl: "@Url.Action("UploadMemberPhoto")",
+
+        });
+    }
+    //返回结果
+    function afterFun(data) {
+        if (data.ResultType == "@((int)OperationResultType.Success)") {
+            $.whiskey.web.load({ url: "@Url.Action("Index")" });
+        } else {
+            $("#btnAdd").removeClass("disabled", "disabled")
+            $.whiskey.web.alert({
+                type: "danger",
+                content: data.Message,
+                callback: function () {
+                }
+            });
+        }
+    }
+    //返回折扣列表
+    function getBack() {
+        $.whiskey.web.load({ url: "@Url.Action("Index")" });
+    }
+    function beforeSend() {
+        $("#btnAdd").addClass("disabled", "disabled")
+    }
+
+
+     $(function () {
+         // 会员等级类型初始化
+        const levelId = Number( @Model.LevelId);
+        if(levelId && levelId > 0) {
+            $("#member-level-enterprise").selectpicker('val', levelId)
+        }
+        $("#MemberTypeId").change(function () {
+            var val = parseInt($(this).val());
+            if (isNaN(val) || val <= 0) {
+                $("#LevelId").val(levelId);
+                $(".member-level-container").hide();
+                return;
+            }
+
+
+            if (val === parseInt( '@ViewBag.EnterpriseMemberTypeId')) {
+                $(".member-level-container").show();
+                $("#member-level-enterprise").trigger('change');
+            }
+            else{
+                $("#LevelId").val(levelId);
+                $(".member-level-container").hide();
+            }
+
+        });
+
+        $("#member-level-enterprise").change(function () {
+            var val = parseInt($(this).val());
+            if (!isNaN(val) && val > 0) {
+                $("#LevelId").val(val);
+            }
+            else {
+                $("#LevelId").val(levelId);
+            }
+        })
+
+        $("#MemberTypeId").trigger('change');
+    })
+</script>
+
+

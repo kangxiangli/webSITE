@@ -1,0 +1,261 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@model Orderblank
+<style>
+    .modal-content {
+        width: 1400px;
+    }
+</style>
+<style>
+    .start-date, .end-date {
+        max-width: 150px;
+    }
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active"><a href="#detail_tab" data-toggle="tab">详细列表</a></li>
+
+</ul>
+<input type="hidden" id="hid_ordid" value="@Model.OrderBlankNumber" />
+<div id="mytabcontent" class="tab-content">
+
+    <div class="tab-pane active" id="detail_tab">
+        <div class="row">
+            <div class="panel panel-search">
+
+                <div class="panel-body">
+                    <div class="col-md-11">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">商品条码：</label>
+                            <div class="col-md-4">
+
+                                @Html.TextBox("ProductBarcode", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">商品品牌：</label>
+                            <div class="col-md-4">
+                                @Html.DropDownList("BrandId", ViewBag.Brands as List<SelectListItem>, new { @class = "form-control" })
+                            </div>
+                            <div>
+                                <a href="javascript:;" id="btnSearchFromOrderblank" class="btn btn-primary">搜索</a>
+                                @*<a href="javascript:;" id="btnExportSelected" class="btn btn-warning btn-padding-right">导出选中</a>
+                                    <a href="javascript:;" id="btnExportAll" class="btn btn-warning btn-padding-right">导出全部</a>*@
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div>
+            <table id="table-orderblankitem" class="table table-orde table-list table-hover valign-middle" width="100%">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script>
+    var uuid = $.whiskey.tools.UUID();
+    $(function () {
+
+
+        var ordid = $("#hid_ordid").val();
+        $("#btnSearchFromOrderblank").click(function () {
+            $tableInstance.api().draw(false);
+        });
+        var $tableInstance = $(".table-orde").dataTable({
+            "aaSorting": [[0, 'desc']],
+            "sAjaxSource": "/Notices/StoreStatistics/OrderblankViewList",
+            "sDom": 't<"F clearfix datatable-footer"<"col-md-2"l>r<"col-md-3"><"col-md-7 text-right"p>>',
+            "fnServerParams": function (aoData) {
+
+                //brand
+                var brandId = parseInt($("#BrandId").val());
+                if (!isNaN(brandId) && brandId > 0) {
+                    aoData.push({ name: "brandId", value: brandId });
+                }
+
+                var barcode = $("#ProductBarcode").val();
+                if (barcode && barcode.length > 0) {
+                    aoData.push({ name: "barcode", value: barcode });
+                }
+                aoData.push({name:'startDate',value:'@ViewBag.StartDate'})
+                aoData.push({name:'endDate',value:'@ViewBag.EndDate'})
+                aoData.push({name:'storeId',value:'@ViewBag.StoreId'})
+                aoData.push({name:'type',value:'@ViewBag.Type'})
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+                $(".table-list").treegrid({
+                    saveState: true,
+                    treeColumn: 2, //在第三列上显示伸缩节点
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                return nRow;
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "UpdateTime",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            }
+                , {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (da) {
+                    return "";
+                }
+
+            }
+                , {
+                "sTitle": "商品货号",
+                "bSortable": false,
+                "sName": "ProductNumber",
+                "mData": function (da) {
+                    if (da.ParentId == "")
+                        return da.Number;
+                    return "";
+                }
+
+            },
+            {
+                "sTitle": "发货仓库",
+                "bSortable": false,
+                "sName": "Storage",
+                "mData": function (da) {
+                    if (da.ParentId != "" && da.SendStorageName != undefined) {
+                        return da.SendStorageName;
+                    }
+                        
+                    return "";
+                }
+            },
+            {
+                "sTitle": "收货仓库",
+                "bSortable": false,
+                "sName": "Storage",
+                "mData": function (da) {
+                    if (da.ParentId != "" && da.ReceiveStorageName != undefined) {
+
+                        return da.ReceiveStorageName;
+                    }
+                    return "";
+                }
+            },
+
+            {
+                "sTitle": "条码",
+                "bSortable": false,
+                "sName": "ProductName",
+                "mData": function (da) {
+                    if (da.ParentId != "")
+                        return da.Number;
+                    return "";
+                }
+            },
+            {
+                "sTitle": "品牌",
+                "bSortable": false,
+                "sName": "Brand",
+                "mData": function (da) {
+                    if (da.Brand == undefined) return "";
+                    return da.Brand;
+                }
+            },
+            {
+                "sTitle": "尺码",
+                "bSortable": false,
+                "sName": "Size",
+                "mData": "Size",
+                "mData": function (da) {
+                    if (da.Size == undefined) return "";
+                    return da.Size;
+                }
+            },
+            {
+                "sTitle": "季节",
+                "bSortable": false,
+                "sName": "Season",
+                "mData": function (da) {
+                    if (da.Season == undefined) return "";
+                    return da.Season;
+                }
+
+            },
+            {
+                "sTitle": "颜色",
+                "bSortable": false,
+                "sName": "Color",
+                "mData": function (da) {
+                    if (da.Color == undefined) return "";
+                    return da.Color;
+                }
+            },
+
+            {
+                "sTitle": "图片",
+                "sName": "Thumbnail",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (da) {
+                    if (da.ParentId != "") return "";
+                    return "<img style='float:center' class='img-thumbnail img-responsive col-md-6' src=" + da.Thumbnail + " onerror='imgloaderror(this);'>";
+                }
+            },
+            {
+                "sName": "WholesalePrice",
+                "sTitle": "进货价",
+                "mData": function (data) {
+                    if (data.ParentId == "")
+                        return '<div>￥' + data.WholesalePrice.toFixed(2) + '<div>（' + $.whiskey.tools.numberToChinese(Math.round(data.WholesalePrice / data.TagPrice * 100)) + '）';
+                    return "";
+                },
+                "bSortable": false,
+                "bSearchable": false,
+            },
+            {
+                "sTitle": "配货数量",
+                "sName": "Amount",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (da) {
+                    if (da.ParentId == "")
+                        return da.Quantity;
+                    return "";
+                }
+            }
+            ]
+
+        });
+
+    })
+
+</script>

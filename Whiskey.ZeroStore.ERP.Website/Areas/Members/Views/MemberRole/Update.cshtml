@@ -1,0 +1,79 @@
+
+@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.Utility.Extensions
+@model MemberRole
+
+<style>
+    #roleright_tab ul li {
+        float: left;
+        margin-left: 5px !important;
+    }
+
+    #roleright_tab li a {
+        padding: 7px 3px;
+    }
+
+    .permis-contain li {
+        border-left: 1px solid gray;
+    }
+</style>
+
+<div class="rolecrea_div">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#baseinfo_tab" data-toggle="tab">
+                基本信息
+            </a>
+        </li>
+        <li><a href="#roleright_tab" data-toggle="tab">角色权限</a></li>
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="baseinfo_tab">
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.Name) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.Weight) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.Weight, new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.Description) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", placeholder = "角色描述", @rows = "4" })
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="roleright_tab">
+            @{
+                Html.RenderAction("PermissCell", "MemberModule", new { @Area = "Authorities" });
+            }
+        </div>
+    </div>
+    @Html.Hidden("ModuleIds", String.Join(",", Model.MemberModules.Select(s => s.Id).ToList()))
+</div>
+
+@Html.HiddenFor(f => f.Id)
+
+<script>
+    $(function () {
+        $(document).delegate("#roleright_tab .tree :checkbox:not([class*='xianshi'])", "click", function () {
+            var weight = $(".tree .erji>span>:checkbox:checked").length;
+            $("#baseinfo_tab #Weight").val(weight);
+            var moduleids = $(".yiji :checkbox:checked").map(function (ind, item) { return item.value; }).get().join(",");
+            $(".rolecrea_div #ModuleIds").val(moduleids);
+        });
+
+    });
+</script>
+

@@ -1,0 +1,220 @@
+﻿
+<style>
+    .AppointmentAutoGen .modal-content {
+        max-width: 1000px;
+        width: 800px;
+    }
+</style>
+<p>
+    <button id="browse" class="form-control" style="display:inline;width:30%;margin-right:10px">选择文件</button><label id="filename">未选择文件……</label><label id="up_state"></label>
+    <button id="start_upload" class="form-control btn btn-success" style="margin-top:10px;">开始上传</button>
+</p>
+<div id="div_import">
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>姓名</th>
+                        <th>手机号</th>
+                        <th>货号</th>
+                        <th>预约时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{ (pageInfo.pageIndex-1) * pageInfo.pageSize +  index+1}}</td>
+                        <td>{{item.RealName}}</td>
+                        <td>{{item.MobilePhone}}</td>
+                        <td>{{item.ProductNumber}}</td>
+                        <td>{{item.AppointmentTime}}</td>
+
+                        <td>
+                            <button type="button" class="btn btn-danger" v-on:click="removeFromList(index)">移除</button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/plupload-2.1.8/js/plupload.full.min.js"></script>
+<script src="~/Content/plupload-2.1.8/js/jquery.plupload.queue/jquery.plupload.queue.min.js"></script>
+<script>
+
+    $(function () {
+
+
+        var uploader = new plupload.Uploader(
+        {
+            runtimes: 'silverlight,html4,html5,flash',
+            browse_button: 'browse',
+            url: '@Url.Action("ExcelFileUpload")',
+            flash_swf_url: '~/Content/plupload-2.1.8/js/Moxie.swf">~/Content/plupload-2.1.8/js/Moxie.swf',
+            filters: {
+                mime_types: [
+                    { title: "txt", extensions: "txt" },
+                    { title: "excel", extensions: "xls,xlsx" }
+                ],
+                max_file_size: '400kb',
+                prevent_duplicates: true
+            }
+
+        });
+
+        uploader.init();
+        uploader.bind('FilesAdded', function (uploader, files) {
+            $("#filename").html(files[0].name);
+            $("#up_state").html("");
+        });
+        uploader.bind('BeforeUpload', function (uploader, file) {
+            $("#up_state").html("正在上传……")
+        });
+        uploader.bind('FileUploaded', function (uploader, file, obj) {
+            $("#up_state").html("上传成功");
+            var res = JSON.parse($(obj.response).text());
+            if (res.ResultType === 3 && res.Data.length > 0) {
+                res.Data.forEach(x => importMemberVM.addData(x));
+                importMemberVM.search();
+            }
+
+        });
+        $('#start_upload').click(function () {
+            uploader.start();
+        });
+    });
+</script>
+
+
+@{
+    Html.RenderPartial("Page", null);
+}
+<script>
+    var importMemberVM = new Vue({
+        el: "#div_import",
+        data: {
+            members: [],
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            },
+            pageDatas: [],
+        },
+        methods: {
+
+            addData(item) {
+                if (this.members.findIndex(x => x.MobilePhone === item.MobilePhone && x.ProductNumber === item.ProductNumber) !== -1) {
+                    return;
+                }
+                this.members.push(item);
+            },
+            search: function (filter) {
+                var _self = this;
+                var searchData = {
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+                }
+
+
+                var pageInfo = {
+                    totalCount: this.members.length,
+                    pageCount: Math.ceil(this.members.length / searchData.pageSize),
+                    pageSize: searchData.pageSize
+                };
+
+                //　数据为空的情况
+                if (pageInfo.pageCount == 0) {
+                    searchData.pageIndex = 1;
+                    pageInfo.pageIndex = 1;
+                    _self.pageDatas = [];
+                    _self.pageInfo = pageInfo;
+                    return;
+                }
+
+                if (searchData.pageIndex > pageInfo.pageCount) {
+                    searchData.pageIndex = pageInfo.pageCount;
+
+                }
+                pageInfo.pageIndex = searchData.pageIndex;
+                var startIndex = 0;
+                if (searchData.pageIndex > 1) {
+                    startIndex = (searchData.pageIndex - 1) * searchData.pageSize;
+                }
+
+
+                var pageData = this.members.slice(startIndex, startIndex + searchData.pageSize);
+
+                _self.pageDatas = pageData;
+                _self.pageInfo = pageInfo;
+
+            },
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            },
+
+            removeFromList: function (index) {
+                this.members.splice(index, 1);
+                this.search();
+            },
+            saveMember: function () {
+                if (this.members.length <= 0) {
+                    return false;
+                }
+
+                let memberData = this.members.map(m => {
+                    return {
+                        MobilePhone: m.MobilePhone.trim(),
+                        ProductNumber: m.ProductNumber.trim(),
+                        AppointmentTime: m.AppointmentTime.trim(),
+                    }
+                });
+                var postData = {
+                    dtos: memberData,
+                };
+
+                $.whiskey.web.ajaxRequest({
+                    method: "post",
+                    actionUrl: "@Url.Action("BatchImport")",
+                    params: postData,
+                    hideLoading: true,
+                    showPrompt: true,
+                    beforeSend: function () {
+                        $("button[data-bb-handler=cancel]").trigger('click');
+                    },
+                    complete: function () {
+                        $.whiskey.datatable.reset(false);
+                    }
+                });
+                return true;
+            }
+        }
+
+    })
+</script>
+

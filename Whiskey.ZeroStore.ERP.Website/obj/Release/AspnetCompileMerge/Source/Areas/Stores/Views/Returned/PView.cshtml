@@ -1,0 +1,300 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Whiskey.ZeroStore.ERP.Models.Returned
+<style>
+    .tit {
+        font-size: 12px;
+    }
+
+    .diacl .modal-dialog {
+        width: 60%;
+    }
+    .thumbnail-img_five_box{
+				position: relative;
+				width: 60px;
+				height: 60px;
+				margin: 0 auto;
+				border: 1px solid #eaeaea;
+			}
+			.thumbnail-img_five {
+				left: 0;
+				padding: 2px;
+
+				position: absolute;
+				height: 96%;
+				overflow: hidden;
+			}
+			.thumbnail-img_f{
+				max-width: 60px;
+				margin: 0 auto 0 auto;
+				position: relative;
+				padding-bottom: 60px;
+				height: 0;
+				overflow: hidden;
+			}
+			.thumbnail-img_five img {
+				width: 100%;
+			}
+			.detail-table-width > tbody >tr>td:nth-child(2) {
+    width: 3% !important;
+}
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+    <li><a href="#retailDetail" data-toggle="tab">退货明细</a></li>
+
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                零售单号 :
+            </label>
+            <div class="col-md-7">
+                @Model.RetailNumber
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                退货订单号 :
+            </label>
+            <div class="col-md-7">
+                @Model.ReturnedNumber
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                退货数量 :
+            </label>
+            <div class="col-md-7">
+                @Model.ReturnedItems.Count
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                会员编号 :
+            </label>
+            <div class="col-md-7">
+                @if (!Model.MemberId.HasValue)
+                {
+                    <span style="color: #5ebd5e">非会员</span>
+                }
+                else
+                {
+                    <span>@Model.Member.UniquelyIdentifies</span>
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                会员名 :
+            </label>
+            <div class="col-md-7">
+                @if (!Model.MemberId.HasValue)
+                {
+                    <span style="color: #5ebd5e">非会员</span>
+                }
+                else
+                {
+                    <span>@Model.Member.MemberName</span>
+                }
+            </div>
+        </div>
+
+
+       
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                储值退还 :
+            </label>
+            <div class="col-md-7">
+                @Model.Balance
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                积分退还 :
+            </label>
+            <div class="col-md-7">
+                @Model.ConsumeScore
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                获得积分扣除 :
+            </label>
+            <div class="col-md-7">
+                @Model.AchieveScore
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                现金退还 :
+            </label>
+            <div class="col-md-7">
+                @Model.Cash
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                刷卡退还 :
+            </label>
+            <div class="col-md-7">
+                @Model.SwipCard
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                抹去扣除 :
+            </label>
+            <div class="col-md-7">
+                @Model.EraseMoney
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                优惠券扣除 :
+            </label>
+            <div class="col-md-7">
+                @Model.Coupon
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                店铺活动扣除 :
+            </label>
+            <div class="col-md-7">
+                @Model.StoreActivityDiscount
+            </div>
+        </div>
+        
+
+     
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                创建时间 :
+            </label>
+            <div class="col-md-7">
+                @Model.CreatedTime
+            </div>
+        </div>
+       
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                经办人 :
+            </label>
+            <div class="col-md-7">
+                @Model.Operator.Member.MemberName
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="retailDetail">
+        <table class="table detail-table-list table-hover detail-table-width valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<script>
+	$("#retailDetail").on("mouseover", ".popimg", function () {
+		
+                if (this.tagName == "IMG") {
+                    var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                    
+                    toolTip(strImg);
+                } else {
+                    $(this).find("img").each(function () {
+                        var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                        toolTip(strImg);
+                    });
+                }
+            }).on("mouseout", function () {
+                $("body").find("#toolTipLayer").hide();
+            });
+
+</script>
+<script>
+    $(function () {
+        var showDetail = '@ViewBag.ShowDetail';
+        if (showDetail == 1) {
+            $("a[href=#retailDetail]").tab('show');
+        }
+        $(document).ready(function () {
+            $.whiskey.datatable.instance = $(".detail-table-list").dataTable({
+                "sDom": "",
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("GetItemsByReturnedNumber")",
+                "fnServerParams": function (aoData) {
+                    var returnedNumber = '@Model.ReturnedNumber';
+                    aoData.push({ name: "returnedNumber", value: returnedNumber });
+
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $("td:eq(0)", nRow).html(iDisplayIndex + 1);
+                    $("th").css({ "text-align": "center" });
+
+                },
+
+                "aoColumns": [
+                    {
+                        "bVisible": false,
+                        "bSearchable": false,
+                        "sName": "Id",
+                        "mData": "Id"
+                    },
+
+                    {
+                        "sTitle": "<span class='tit'>编号</span>",
+                        "bSortable": false,
+                        "sName": "RowNumber",
+                        "mData": function (data) {
+                            var index = data.iDisplayIndex + 1;
+                            return '' + index + '';
+                        }
+                    },
+                    {
+                        "sTitle": "<span class='tit'>流水号</span>",
+                        "bSortable": false,
+                        "sName": "RetailNumber",
+                        "mData": function (data) {
+                            return data.ProductBarcode;
+                        },
+                    },
+                    {
+                        "sTitle": "<span class='tit'>图片</span>",
+                        "bSortable": false,
+                        "sName": "ProductNumber",
+                        "mData": function (data) {
+                            return "<div class='thumbnail-img_five_box'><div class='thumbnail-img_five'><div class='thumbnail-img_f'><img class='popimg' src='" + data.ThumbnailPath + "'></div></div></div>";
+                        },
+                    },
+                    {
+                        "sTitle": "<span class='tit'>零售价(￥)</span>",
+                        "bSortable": false,
+                        "sName": "Count",
+                        "mData": function (data) {
+                            return data.RetailPrice;
+                        },
+                    },
+                    {
+                        "sTitle": "<span class='tit'>数量</span>",
+                        "bSortable": false,
+                        "sName": "Count",
+                        "mData": function (data) {
+                            return data.Quantity;
+                        },
+                    }
+                ]
+
+            });
+
+        });
+    });
+</script>

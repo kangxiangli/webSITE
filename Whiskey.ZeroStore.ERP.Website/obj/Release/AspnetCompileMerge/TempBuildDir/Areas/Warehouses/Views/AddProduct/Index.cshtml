@@ -1,0 +1,1298 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using System.Collections
+<style>
+    .dataTables_filter {
+        display: none !important;
+    }
+
+    .disable_all_conte {
+        position: relative;
+        z-index: 1025;
+        opacity: 0.3 !important;
+        background-color: black !important;
+        cursor: not-allowed;
+    }
+
+    .disable_all_aOrlab {
+        cursor: not-allowed;
+    }
+
+    #DataTables_Table_0_info {
+        padding: 10px 0 6px 21px;
+    }
+
+    .bg_gray {
+        background-color: #dddddd !important;
+    }
+
+    #modal_di > .loading_new {
+        margin-top: 23%;
+        width: 700px;
+        margin-left: 25%;
+    }
+</style>
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="col-md-7">
+        <div id="left_content" title="请选择右侧的下拉菜单以激活当前区域">
+            <div class="panel panel-danger panel-dark widget-profile">
+                <div class="panel-heading">
+                    <div class="widget-profile-bg-icon"></div>
+                    <div class="widget-profile-header text-center">
+                        <h3>请使用扫码枪将商品货号扫入下边文本框</h3>
+                    </div>
+                </div>
+                <div class="list-group-item no-border-hr clearfix valign-middle">
+                    <div>
+                        <div class=""></div>
+                        <div class="" style="padding-left:0;margin-bottom:10px">
+                            @Html.TextBox("ScanNumber", "", new { @placeholder = "", @class = "scan-number  text-center input-lg form-control", @style = "ime-mode: disabled;margin-top: 20px;display:inline;width:75%;height: 45px;", @onkeyup = "this.value=this.value.toUpperCase().replace(/[\u4e00-\u9fa5]/g,'')" })
+                            <input id="sear-ok" class="input-lg form-control" style="display:inline;width:16%;margin-left:auto" type="button" value="&raquo;" />
+                        </div>
+                        <div class="valign-middle"></div>
+                        <div>
+                            @*<input class="form-control" id="selec_prod_list" type="button" value="选择商品……" style="font-weight: bold;" />*@
+                            <input class="form-control" id="selec_prodBatch_list" type="button" value="批量导入……" style="font-weight: bold;height: 40px;margin: 17px 0;" />
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget-profile-counters clearfix">
+                    <div class="col-xs-4"><label class="label label-info scan-queue-count">0</label><br />队列数量</div>
+                    <div class="col-xs-4"><a href="" class="scan-valid valid"><label class="label label-success scan-valid-count">@ViewBag.ScanValidCount</label><br />有效数量</a></div>
+                    <div class="col-xs-4"><a href="javascript:" class="scan-invalid invalid"><label class="label label-danger scan-invalid-count">@ViewBag.ScanInvalidCount</label><br />无效数量</a> </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="stat-panel">
+            <div class="stat-row">
+                <div class="stat-cell padding-sm-hr bordered valign-top">
+                    <ul class="list-group no-margin">
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                            <label class="control-label col-md-4" style="text-align: center; line-height: 27px;">选择店铺：</label>
+                            <div class="col-md-8">
+                                @*<select class="form-control receive-store vali_vad" id="StoreID" name="StoreID"></select>*@
+                                @Html.DropDownList("StoreID", (List<SelectListItem>)ViewBag.Stores, new { @class = "form-control receive-store vali_vad cur_selectpicker" })
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4" style="text-align: center; line-height: 27px;">选择仓库：</label>
+                            <div class="col-md-8">
+                                @Html.DropDownList("StorageID", (List<SelectListItem>)ViewBag.Storages, new { @class = "form-control receive-store vali_vad cur_selectpicker", title = "仓库不为空" })
+                            </div>
+                        </li>
+                        @*<li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                                <label class="control-label col-md-4"  style="text-align: center; line-height: 27px;">入库数量：</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("Quantity", "", new { @class = "form-control vali_vad cur_selectpicker", placeholder = "请填入数字", title = "只能输入数字" })
+                                </div>
+                            </li>*@
+
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4" style="text-align: center; line-height: 27px;">备注信息：</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("Notes", string.Empty, new { @class = "form-control" })
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix created-time">
+                            <label class="control-label col-md-4" style="text-align: center; line-height: 27px;">入库时间：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control form-datetime" name="CreatedTime" id="CreatedTime" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm")" />
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4" style="text-align: center; line-height: 27px;">入库单号：</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("RecordOrderNumber", string.Empty, new { @class = "form-control" })
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-b padding-xs-vr no-bg no-border-radius clearfix">
+                            <div>
+                                <button id="Create" type="button" class="btn btn-success  btn-padding-right"><i class="fa fa-arrow-right"></i> 全部入库</button>
+                                <button id="RemoveAll" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-trash"></i> 移除所选商品</button>
+                                <button id="Reset" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-refresh"></i> 重置</button>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-12">
+        <div class="panel  panel-list">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <h5><i class="fa fa-list"></i> 已选择的商品</h5>
+                </div>
+                <span class="text-right list-info"></span>
+            </div>
+            <div>
+                <table class="table-list addprod_li table table-bordered" width="100%">
+                    <thead>
+
+                    </thead>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<div class="modal fade" id="modal_di" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <!--<img style="position:fixed;top:40%;left:45%" class="modal-body" src="/content/images/ajax-loader.gif">-->
+    <div class="progress progress-striped active loading_new">
+        <div class="progress-bar progress-bar-success" data-dz-uploadprogress="" now-value='0' style="">
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+    <script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script>
+        var progressTimer
+        //显示日期控件
+        function showDate(option) {
+            $(option).datetimepicker('show');
+        };
+
+
+        function daojishi(jiange) {
+            $("#modal_di").modal();
+            progressTimer = setInterval(function () {
+                $progress = $("#modal_di .progress-bar");
+                var pnow = $progress.attr("now-value");
+                if (++pnow <= 100 - 1) {
+                    $progress.css("width", pnow + "%");
+                    $progress.attr("now-value", pnow);
+                } else {
+                    clearTimeout(progressTimer);
+                }
+            }, jiange || 50);
+
+        };
+    </script>
+    <script type="text/javascript">
+        var hashlist = new $.whiskey.hashtable();
+        $(document).ready(function () {
+            @if (ViewBag.IsDesigner!=true) {
+                 <Text> {
+                $("#StoreID").queryManageStore({ context: 'addinventory', isDesigner: true });
+                //禁用扫描框
+                allDisabled();
+            }
+            </Text>
+            }else
+            {
+                <Text>
+                $("#StorageID,#StoreID").prop("disabled", true);
+            </Text>
+            }
+            //初始化日StoreID期控件
+            $(".form-datetime").datetimepicker({
+                //startDate: $.whiskey.tools.dateFormat(new Date(), "yyyy-MM-dd HH:mm"),
+                format: 'yyyy-mm-dd hh:ii',
+                autoclose: true,
+                minView: 'hour',
+                todayBtn: true
+            });
+            //$.whiskey.tools.status("0"); //标记当前为入库
+
+            //启用扫描框
+            $(".col-md-8").click(function () {
+                var store = $("#StoreID option:selected").val();
+                var storage = $("#StorageID option:selected").val();
+                if (store != undefined && storage != undefined && store != null && storage != null && store != "" && storage != "") {
+                    $("#left_content").css("z-index", 0);
+                    //校验该店铺,仓库是否在盘点中
+                    var isChecker = checker(store, storage);
+                    if (isChecker == false) {
+                        return false;
+                    }
+                    allEnabled();
+                } else {
+                    allDisabled();
+                }
+
+            });
+
+            $("#RemoveAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要移除这些商品吗？",
+                        notes: "提示：此操作会将商品从服务器缓存中移除",
+                        // actionUrl: "@Url.Action("Remove")",
+                        success_event: function () {
+                            var chelist = $(".table-list .te_1_che:checked");
+                            var rows = [];
+                            chelist.each(function () {
+                                var row = $(this).parents("tr");
+                                rows.push(row);
+                                //123
+                            });
+                            RemoveRows(rows);
+                        },
+                        params: list,
+                        complete: function () {
+                            //$.whiskey.datatable.reset(true);
+
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+            $("#Reset").on("click", function () {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要重置吗？",
+                    notes: "提示：此操作会将当前页面的数据以及缓存中的商品记录移除",
+                    lockButton: $("#Reset"),
+                    success_event: function () {
+                        $.post("/Warehouses/AddProduct/UnloadPg");
+                        refrshValidDat();
+                        $.whiskey.datatable.reset(false);
+                    }
+                });
+            });
+
+            $("#CreateTime").datepicker();
+
+            $.whiskey.datatable.instance = $(".table-list").dataTable(
+            {
+                "sDom": 'it<"F clearfix datatable-footer"<"col-md-2 text-left"l><"col-md-4 text-left"i><"col-md-6 text-right"p>>',
+                "sAjaxSource": "/Warehouses/Transfer/GetInputStorageCheckData",
+                "fnDrawCallback": function () {
+                    $('.edit-text').editable({
+                        type: "text",
+                        pk: "",
+                        tpl: "<input type='text' class='text-center' style='width: 80px'>",
+                        ajaxOptions: {
+                            //dataType: 'json'
+
+                        },
+                        //url: "@Url.Action("SetAmount")",
+                        validate: function (value) {
+                            if ($.trim(value) == '') return '提示：商品数量不能为空！';
+                        },
+                        title: "请输入新的商品数量",
+                        success: function (data, newValue) {
+                            if (data.ResultType == 3) {
+                                $(".scan-valid-count").text(data.Data.validCount);
+                                //$.whiskey.datatable.reset(true);
+                            }
+                        },
+                        error: function (errors) {
+                        }
+                    });
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+
+                    });
+                    $(".table tr td input[type=checkbox]").checked = true;
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+
+                    $("td:last", nRow).css({ "width": "5%" });
+                },
+                "aoColumns": [
+                    {
+                        "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "sName": "Id",
+                        "mData": function (da) {
+                            return $.whiskey.datatable.tplListCheckbox(da.Id);
+                        }
+                    },
+                    {
+                        "sTitle": "序号",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": "Pind",
+
+                    },
+                    {
+                        "sTitle": "商品货号",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": "ProductNumber",
+
+                    },
+                    {
+                        "sTitle": "条码",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (da) {
+                            return "<span class='rowBarcode'>" + da.Barcode + "</span>";
+                        }
+                    },
+                    {
+                        "sTitle": "品牌",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": "BrandName",
+
+                    },
+                    {
+                        "sTitle": "产品分类",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": "CategoryName",
+                    },
+                    {
+                        "sTitle": "尺寸",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": "SizeName",
+
+                    },
+                    {
+                        "sTitle": "图片",
+                        "sName": "Thumbnail",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (da) {
+                            if (da.ThumbnailPath != null)
+                                return '<div class="thumbnail-img_five_box"><div class="thumbnail-img_five"><div class="thumbnail-img_f" onclick="showPath(this)"><img src="' + da.ThumbnailPath + '" class="popimg"  /></div></div></div>';
+                            //return "<img style='width:35px' src='" + da.ThumbnailPath + "'/>";
+                            return "";
+                        }
+                    }, {
+                        "sTitle": "操作",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            var t = deleDat();
+                            return t;
+                        }
+                    }
+                ]
+
+            });
+
+            $(".scan-number").blur(function () {
+                $(this).addClass("input-validation-error");
+            }).focus(function () {
+                $(this).removeClass("input-validation-error");
+            });
+
+            $(".scan-number").keyup(function (event) {
+                if (event.keyCode == 13) {
+                    if (!intervalState()) return false;
+                    var scanNumber = $(".scan-number").val();
+                    EnterQue(scanNumber);
+                }
+            });
+
+            $("#sear-ok").click(function () {
+                if (!intervalState()) return false;
+                var scanNumber = $(".scan-number").val();
+                EnterQue(scanNumber);
+            });
+
+            setIntervalSend();
+
+            $(window).on('beforeunload', function (e) {
+                if (hashlist.size() > 0) {
+                    var message = "系统检测到队列中有（" + hashlist.size() + "条数据）还未提交到服务器，刷新或关闭浏览器会导致这些数据丢失！！";
+                    e.returnValue = message;
+                    return message;
+                }
+                //如果表中的数据还未入库，给出提示：
+                var lico = $.whiskey.tools.arraylist.leng();
+                if (lico > 0) {
+                    var mes = "下表中还有" + lico + "条数据未入库，关闭浏览器会导致数据丢失！"
+                    e.returnValue = mes;
+                    return mes;
+                }
+            }).on("unload", function () {
+                $.post("/Warehouses/AddProduct/UnloadPg", {}, function () { })
+            });
+        });
+        var invel;
+
+        function setIntervalSend() {
+            invel = setInterval(function () {
+                sendToQueue();
+            }, 1000);
+
+        }
+
+        function clearIntervalSend() {
+            clearInterval(invel);
+            invel = undefined;
+        }
+
+        function intervalState() {
+            if (!invel) {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "没有权限！请确认登录或重新刷新页面",
+                    callback: function () {
+                    }
+                });
+                return false;
+            }
+            return true;
+        }
+
+        //禁用扫描框以及子元素
+        function allDisabled() {
+            $("#left_content").addClass("disable_all_conte");
+            $("#left_content div").attr("disabled", "disabled");
+            $("#left_content input").attr("disabled", "disabled").addClass("disable_all_aOrlab");
+            $("#left_content label").attr("disabled", "disabled").addClass("disable_all_aOrlab");
+            $("#left_content a").attr("disabled", "disabled").removeAttr("href").addClass("disable_all_aOrlab");
+            $(".valid").removeClass("scan-valid");
+            $(".invalid").removeClass("scan-invalid");
+            $("#left_content i").attr("disabled", "disabled");
+
+
+        }
+
+        //启用扫描框以及子元素
+        function allEnabled() {
+            $("#left_content").attr("title", "");
+            $("#left_content").removeClass("disable_all_conte");
+            $("#left_content div").removeAttr("disabled");
+            $("#left_content label").removeAttr("disabled").removeClass("disable_all_aOrlab");
+            $("#left_content i").removeAttr("disabled");
+            $("#left_content a").removeAttr("disabled").attr("href", "#").removeClass("disable_all_aOrlab");
+            $("#left_content input").removeAttr("disabled").removeClass("disable_all_aOrlab");
+            $(".valid").addClass("scan-valid");
+            $(".invalid").addClass("scan-invalid");
+
+
+        }
+
+        //将数据压入队列
+        function EnterQue(scanNumber) {
+
+            if (scanNumber.length > 0) {
+                var barcodeArr = scanNumber.split(',');
+                if (barcodeArr.length <= 0) {
+                    return;
+                }
+                barcodeArr.forEach(function (value, index, arr) {
+                    var uuid = $.whiskey.tools.UUID(32, 16);
+                    hashlist.put(uuid, value);
+                    $(".scan-queue-count").text(hashlist.size());
+                    $(".scan-number").val("");
+                    $(".scan-number").focus();
+                });
+
+            }
+        }
+
+        //将队列中的数据发往服务端验证
+        function sendToQueue() {
+            if (hashlist.size() > 0) {
+                //禁用 确认、删除按钮
+                $("#Create").attr("disabled", "disabled");
+                $("#RemoveAll").attr("disabled", "disabled");
+                var globalUUID = hashlist.getFirst(0);
+                var scanNumber = hashlist.getFirst(1);
+
+                $.ajax({
+                    type: "POST",
+                    data: { uuid: globalUUID, number: scanNumber },
+                    async: false,
+                    //url: "/Warehouses/Transfer/AddToScan",
+                    url: "/Warehouses/Transfer/InputStorageCheck",
+                    success: function (data) {
+                        hashlist.remove(data.Other.uuid);
+                        refrshValidDat(data);
+
+                        if (data.Other.validCoun > 0) {
+                            $.whiskey.datatable.reset(false);
+                        }
+
+                    }
+                });
+
+            } else {
+                $("#Create").removeAttr("disabled");
+                $("#RemoveAll").removeAttr("disabled");
+            }
+        }
+
+        //删除
+        @*function Delete(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要移除这件商品吗？",
+                notes: "提示：此操作会将缓存中的指定货号的商品移除",
+                actionUrl: "@Url.Action("Remove")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function (data) {
+                    $(".scan-valid-count").text(data.Data.validCount);
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }*@
+        function refrshValidDat(data) {
+            var validcou = 0;
+            var invalidcou = 0;
+            if (data != undefined) {
+                validcou = data.Other.validCoun;
+                invalidcou = data.Other.inValidCoun;
+            }
+
+            $(".scan-queue-count").animate({
+                opacity: "0.3",
+            }, 'slow', function () {
+                $(".scan-queue-count").animate({
+                    opacity: "1.0",
+                }, 'fast', function () {
+                    $(".scan-queue-count").text(hashlist.size());
+                });
+            });
+
+            if ($(".scan-valid-count").text() != validcou) {
+                $(".scan-valid-count").animate({
+                    opacity: "0.3",
+                }, 'slow', function () {
+                    $(".scan-valid-count").animate({
+                        opacity: "1.0",
+                    }, 'fast', function () {
+                        $(".scan-valid-count").text(validcou);
+                    });
+                });
+            }
+
+            if ($(".scan-invalid-count").text() != invalidcou) {
+                $(".scan-invalid-count").animate({
+                    opacity: "0.3",
+                }, 'slow', function () {
+                    $(".scan-invalid-count").animate({
+                        opacity: "1.0",
+                    }, 'fast', function () {
+                        $(".scan-invalid-count").text(invalidcou);
+                    });
+                });
+            }
+        }
+
+
+        //校验当前的店铺和仓库是否在盘点中
+        function checker(store, storage) {
+            $.ajax({
+                url: "@Url.Action("IsChecker")",
+                type: "POST",
+                data: { StoreId: store, StorageId: storage },
+                success: function (data) {
+                    //如果正在盘点返回值大于0，没有盘点返回值等于0
+                    var count = data;
+                    if (count > 0) {
+                        //弹出提示信息
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: "该店铺，仓库正在盘点中无法入库",
+                            callback: function () {
+                            }
+                        });
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                },
+            });
+        };
+    </script>
+
+    <!--yxk -->
+    <script src="~/Content/Scripts/Common/comm.js"></script>
+
+    <script>
+        $(function () {
+
+            @if (ViewBag.IsDesigner!=true) {
+                <Text> {
+                registChange();
+                    }
+           </Text>
+            }
+
+            $("body").delegate(".scan-invalid", "click", function () {
+                if ($(".scan-invalid-count").html() == "0") {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "无效数量为0！",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+                $.whiskey.tools.other("0");
+                showValid(1);
+                return false;
+            })
+            //查看无效列表
+            $(".scan-invalid").on("click", function () {
+                if ($(".scan-invalid-count").html() == "0") {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "无效数量为0！",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+                $.whiskey.tools.other("0");
+                showValid(1);
+                return false;
+            });
+
+            //查看有效列表
+            $("body").delegate(".scan-valid", "click", function () {
+                if ($(".scan-valid-count").html() == "0") {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "有效数量为0！",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+                $.whiskey.tools.other("1");
+                showValid(0);
+                return false;
+            });
+            $(".scan-valid").click(function () {
+                if ($(".scan-valid-count").html() == "0") {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "有效数量为0！",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+                $.whiskey.tools.other("1");
+                showValid(0);
+                return false;
+            });
+
+
+            $("#Quantity").blur(function () {
+                var regex = /^\d+$/;
+                var count = $("#Quantity").val();
+                if (!regex.test(count)) {
+                    $(this).parent("div").addClass("has-error");
+                } else {
+                    $(this).parent("div").removeClass("has-error");
+                }
+            });
+            //全部入库操作
+            $("#Create").click(function () {
+                addInventory();
+            });
+            $(".vali_vad").blur(function () {
+                if ($(this).val() == null || $(this).val() == "") {
+                    $(this).parent().addClass("has-error");
+                } else {
+                    $(this).parent().removeClass("has-error");
+                }
+            });
+            //在弹出层中选择商品
+            $("#selec_prod_list").click(function () {
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "选择商品",
+                    successTit: "确定",
+                    noneheader: true,
+                    actionUrl: "/Products/Product/GetProductList",
+                    successEvent: function () {
+                        getAllCheck();
+                    },
+                    lockButton: $(this),
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            $(".modal-dialog").parent("div").animate({ scrollTop: 20 }, 500);
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+
+            });
+
+            //批量导入，
+            $("#selec_prodBatch_list").click(function () {
+
+
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "批量导入",
+                    successTit: "确定",
+                    successEvent: select_check_Access,
+                    actionUrl: "/Products/Product/BatchImport",
+                    noneheader: true,
+                    lockButton: $(this),
+                    methType: "post",
+                    //uploadUrl: "/Warehouses/AddProduct/ExcelFileUpload",
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            $(".modal-dialog").parent("div").animate({ scrollTop: 20 }, 500);
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        // $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+
+            });
+
+        });
+        $("#RecordOrderNumber").keyup(function () {
+            $("#RecordOrderNumber").val($("#RecordOrderNumber").val().replace(/[\u4E00-\u9FA5]/ig, ''));
+        });
+        function addInventory(pcodes) {
+
+            //  $(".loading_new").show();
+            var isall = false;
+            var notes = $("#Notes").val();
+            var createdTime = $("#CreatedTime").val();
+
+            if (!createdTime || createdTime.length <= 0) {
+                createdTime = null;
+            }
+            var recordOrderNumber = $("#RecordOrderNumber").val();
+            if (/[\u4E00-\u9FA5]/i.test(recordOrderNumber)) {
+                $.whiskey.web.alert({ type: "info", content: "入库单号中不能包含中文" });
+                return;
+            }
+            if (pcodes == undefined) {
+                isall = true;
+                pcodes = [];
+            }
+            var storageid = $("#StorageID option:selected").val();
+            if (storageid == "") {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请选择仓库",
+                    callback: function () {
+
+                    }
+                });
+            } else {
+
+                //入库确认
+                var confirm = new $.whiskey.web.confirm({
+                    question: "确认要全部入库吗？",
+                    notes: "提示：入库后，可在入库记录中查看",
+                    ok: function () {
+                        daojishi((pcodes / 10) * 1000);
+                        $.post("/Warehouses/Inventory/AddInventory", { prCodes: pcodes, storageId: storageid, notes: notes, recordOrderNumber: recordOrderNumber, createdTime: createdTime }, function (da) {
+
+                            //$(".loading_new").hide();
+                            if (da.ResultType == 3) {
+                                clearTimeout(invel);
+                                clearTimeout(progressTimer);
+                                $("#Create").prop("disabled", true);
+                                $("#modal_di .progress-bar").css("width", "100%");
+                                setTimeout(function () {
+                                    $("#modal_di").modal('hide');
+                                }, 1000)
+
+                                $.whiskey.web.alert({
+                                    type: "success",
+                                    content: "操作成功",
+                                    callback: function () {
+                                        location.href = "/Warehouses/InventoryRecord/Index"; //跳转地址
+                                    }
+                                });
+                            } else {
+                                $.whiskey.web.alert({
+                                    type: "info",
+                                    content: da.Message,
+                                    callback: function () {
+
+                                    }
+                                });
+                            }
+                        });
+                    },
+                    cancel: function () {
+                        $("#modal_di").modal('hide');
+                    }
+                });
+            }
+
+        }
+
+        //将批量导入中选中的元素压入队列
+        function select_check_Access() {
+            $.post("/Warehouses/Transfer/ExcelBatchStrageCheck", {}, function (da) {
+                refrshValidDat(da);
+                $.whiskey.datatable.reset(false);
+            });
+            //if (!intervalState()) return false;
+            //$(".td_lef:checked").each(function () {
+
+            //    EnterQue($(this).val());
+            //});
+        }
+
+        //显示有效和无效列表
+        function showValid(_ind) {
+            if (_ind == undefined || _ind == "")
+                _ind = 0;
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "录入列表",
+                successTit: "确定",
+                actionUrl: "/Products/Product/GetValidList?actid=" + _ind,
+                successEvent: function () { },
+                lockButton: $(this),
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        $(".modal-dialog").parent("div").animate({ scrollTop: 20 }, 500);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    //$.whiskey.datatable.reset(false);
+                    //return true;
+                },
+            });
+        }
+
+        //在弹出层中当勾选了复选框，单击“确定”时触发
+        function getAllCheck() {
+            if (!intervalState()) return false;
+            var checks = $(".pdl:checked");
+            var nums = [];
+            for (var i = 0; i < checks.length; i++) {
+                // var _id = $(checks[i]).val();
+                var num = $(checks[i]).parents("td").nextAll("td").eq(1).html();
+                nums.push(num);
+            }
+            //如果已经存在就直接累加
+            var ts = $(".addprod_li tbody .proCou");
+            if (ts.length > 0) {
+                ts.each(function () {
+                    var _num = $(this).parents("tr").find("td:eq(2)").text().trim();
+                    var inde = nums.indexOf(_num);
+                    if (inde > -1) {
+                        nums.splice(inde, 1);
+                        $(this).val(parseInt($(this).val()) + 1);
+                    }
+
+                });
+            };
+            for (var i = 0; i < nums.length; i++) {
+                EnterQue(nums[i]);
+            }
+        };
+
+        /*
+          //如果已经存在，直接数量累加
+                var ts = $(".addprod_li tbody .proCou");
+                if (ts.length > 0) {
+                    ts.each(function() {
+                        if (num == $(this).val()) {
+                            $(this).val($(this).val() + 1);
+                        } else {
+
+                            EnterQue(num);
+                        }
+                    });
+                }
+        */
+
+        //在页面加载时注册必要的事件
+        function registChange() {
+            $("#StoreID").change(function () {
+                var sto_id = $("#StoreID option:selected").val();
+                changeStore(sto_id, $("#StorageID"));
+
+
+            });
+            var sto_id = $("#StoreID option:selected").val();
+            changeStore(sto_id, $("#StorageID"));
+
+
+        }
+
+        //当店铺下拉菜单发生改变时触发
+        function store_sel_change(sender) {
+            sender = "#" + sender;
+            var sto_id = $(sender).children("option:selected").val();
+
+            var flag = $(sender).attr("flagattr");
+            var condi = ".storage_sel_str[flagattr='" + flag + "']";
+            changeStore(sto_id, condi);
+
+        }
+
+        //动态添加一行
+        function addRow_cur(da) {
+            var coun_ind = $.whiskey.tools.arraylist.leng();
+            var jsonda = $.parseJSON(da);
+            var res = "";
+            if (jsonda != undefined && jsonda != null) {
+                // 是否已经存在
+                var nums = $($.whiskey.datatable.instance[0]).children("tbody").find("." + jsonda.ProductNumber + "");
+                if (nums.length > 0) {
+                    var couem = $(nums).parents("tr").find(".proCou");
+                    var cou = $(couem).val();
+                    $(couem).val(parseInt(cou) + 1);
+                } else {
+
+
+                    res += "<tr aid=" + coun_ind + "><td>" + $.whiskey.datatable.tplListCheckbox(jsonda.Id) + "</td><td class='" + jsonda.ProductNumber + "'>" + jsonda.ProductNumber + "</td><td>" + jsonda.Brand + "</td><td>" + jsonda.Category + "</td>";
+                    //<td>" + jsonda.ProductName + "</td>
+                    res += "<td>" + jsonda.Size + "</td>";
+                    //res += "</td>" + jsonda.Season + "</td>"+"<td>" + jsonda.Color + "</td>"
+                    res += "<td><img class='img-thumbnail img-responsive' src='" + jsonda.Thumbnail + "'/></td>";
+
+                    var onlyflag = guid();
+                    res += "<td><select id='" + onlyflag + "' class='store_sel_str form-control' onchange=store_sel_change('" + onlyflag + "') flagattr='" + onlyflag + "'>" + $("#StoreID").html() + "</select></td>";
+                    res += "<td><select class='storage_sel_str form-control' flagattr='" + onlyflag + "'>" + $("#StorageID").html() + "</select></td>";
+                    var num = $("#Quantity").val();
+                    if (num == null || num == undefined || num == "") num = 1;
+                    res += "<td style='width:10%'><input style='width:100%' disabled='disabled' class='proCou form-control' flagattr='" + onlyflag + "' type='text'  Value='" + num + "' title='入库数量大于0'/></td>";
+                    var st = '<button display="inline" style="color:green; margin-right:3px" title="入库明细" type="button" class="btn fa fa-reorder"></button>';
+                    res += "<td style='width:15%'>" + deleDat() + verifyDat() + review() + st + "</td>"
+                    res += "</tr>";
+                    appendToContent(res);
+                }
+
+            }
+            if (res != "")
+                $.whiskey.tools.arraylist.add(res);
+
+        }
+
+        //强数据动态的添加到table中，如果超过了指定的条数，就不再添加，只保留到arrlist中
+        function appendToContent(res) {
+            var showleng = $(".sel_num option:selected").val(); //每页显示的数据条数
+            var rowleng = $($.whiskey.datatable.instance[0]).children("tbody").children("tr").length; //当前已经显示数据行数
+
+            if (rowleng < showleng) {
+                $($.whiskey.datatable.instance[0]).children("tbody").append(res);
+
+            }
+            var store = $("#StoreID option:selected").val();
+            $($.whiskey.datatable.instance[0]).children("tbody").find(".store_sel_str option").each(function () {
+                if ($(this).val() == store) {
+                    $(this).attr("selected", "selected");
+                }
+            });
+
+            var storage = $("#StorageID option:selected").val();
+            $($.whiskey.datatable.instance[0]).children("tbody").find(".storage_sel_str option").each(function () {
+                if ($(this).val() == storage) {
+                    $(this).attr("selected", "selected");
+                }
+            });
+
+
+            //刷新分页
+            var cur = $(".pagination .active a").attr("p");
+            if (cur == undefined || cur == null)
+                cur = 1;
+            var t = parseInt(cur);
+            refreshPageing(t);
+
+        }
+
+        //刷新分页
+        function refreshPageing(cur) {
+            cur = parseInt(cur);
+            var rowcount = $.whiskey.tools.arraylist.leng();
+            var showleng = $(".sel_num option:selected").val(); //每页显示的条数
+            if (rowcount > 0 && showleng > 0) {
+                var pagecoun = Math.ceil(rowcount / showleng);
+                var pagestr = "<ul class='pagination'><li><a p='1' class='star' href='#'>首页</a></li><li><a p=" + (cur + 1) + " href='#'>下一页</a></li>";
+                if (cur + 1 > pagecoun) {
+                    pagestr = "<ul class='pagination'><li><a p='1' class='star' href='#'>首页</a></li><li class='disabled'><a p=" + (cur + 1) + " href='#'>下一页</a></li>";
+                }
+                if (pagecoun <= 10) {
+                    for (var i = 1; i <= pagecoun; i++) {
+                        if (cur == i)
+                            pagestr += "<li class='active'><a p=" + i + " href='#'>" + i + "</a></li>";
+                        else
+                            pagestr += "<li><a p=" + i + " href='#'>" + i + "</a></li>";
+                    }
+                } else {
+                    var start = (cur - 5) < 1 ? 1 : (cur - 5);
+                    var end = (cur + 5) > pagecoun ? pagecoun : (cur + 5);
+                    if (start > 1) {
+                        pagestr += "……";
+                    }
+                    for (var i = start; i < end; i++) {
+                        pagestr += "<li><a p=" + i + " href='#'>" + i + "</a></li>";
+                    }
+                    if (end < pagecoun) {
+                        pagestr += "……";
+                    }
+                }
+
+                if (cur - 1 < 1) {
+                    pagestr += "<li class='disabled'><a p=" + (cur - 1) + " href='#'>上一页</a></li><li><a p=" + pagecoun + " class='end' href='#'>末页</a></li></ul>";
+                } else {
+                    pagestr += "<li><a p=" + (cur - 1) + " href='#'>上一页</a></li><li><a p=" + pagecoun + " class='end' href='#'>末页</a></li></ul>";
+                }
+                $("#DataTables_Table_0_wrapper .dataTables_paginate").html("").html(pagestr);
+            }
+        }
+
+        //刷新表中的数据 cur:当前显示的页码，rowcount:每页显示的行数
+        function refreshTableData(cur, rowcount) {
+            cur = parseInt(cur);
+            rowcount = parseInt(rowcount);
+            if (cur == undefined || cur == null || cur == "") {
+                cur = 1;
+            }
+            if (rowcount == undefined || cur == null || cur == "") {
+                rowcount = 10;
+            }
+            var cou = $.whiskey.tools.arraylist.leng();
+            var strInd = (cur - 1) * rowcount;
+            var endInd = strInd + rowcount;
+            var rows = $.whiskey.tools.arraylist.getRang(strInd, endInd);
+            $($.whiskey.datatable.instance[0]).children("tbody").html("").html(rows.join());
+        }
+
+        //function getStoreInf() {
+        //    $.ajax({
+        //        url: "/Storage/GetStoreWithStorage/?_r=" + Math.random(),
+        //        type: "post",
+        //        async: false,
+        //        success: function(da) {
+        //            $.whiskey.tools.json(da);
+        //        }
+        //    });
+
+        //}
+
+        function getStorage() {
+            var storeid = $("#StoreID option:selected").val();
+            if (storeid == null || storeid == "")
+                return;
+            $.post("/Storage/GetStorage", { storeId: storeid, title: "请下拉选择" }, function (da) {
+                $("#StorageID").html("");
+                $("#StorageID").append(getOptions(da, "该店铺下没有关联的仓库"));
+                $('.cur_selectpicker').selectpicker();
+                $('.cur_selectpicker').selectpicker('refresh');
+            })
+
+        }
+
+        //function loadStoreData() {
+        //    var da = $.whiskey.tools.json();
+        //    if (da == null || da == "" || da.length == 0) return false;
+        //    var opts = "";
+        //    for (var i = 0; i < da.length; i++) {
+        //        opts += "<option value='" + da[i].Id + "'>" + da[i].Name + "</option>";
+        //    }
+        //    $("#StoreID").html("").html(opts);
+        //    if (da.ResultType != undefined && da.ResultType == 4) {
+        //        $.whiskey.web.alert({
+        //            type: "warning",
+        //            content: da.Message,
+        //            callback: function() {
+        //                location.href = "/Authorities/Login/Index";
+        //            }
+        //        });
+        //        return;
+        //    }
+        //    var storageDefau = da[0].Children;
+        //    var storagLis = "";
+        //    for (var i = 0; i < storageDefau.length; i++) {
+        //        if (storageDefau[i].Other == "1")
+        //            storagLis += "<option selected='selected' value='" + storageDefau[i].Id + "'>" + storageDefau[i].Name + "</option>";
+        //        else
+        //            storagLis += "<option value='" + storageDefau[i].Id + "'>" + storageDefau[i].Name + "</option>";
+        //    }
+        //    $("#StorageID").html("").html(storagLis);
+        //}
+
+        function changeStore(_id, storageTarget) {
+            var storags = "";
+            if (_id == undefined || _id == "" || _id == "-1") {
+                $(storageTarget).html("").html(storags);
+            } else {
+
+                //var da = $.whiskey.tools.json();
+                $.post("/Warehouses/AddProduct/GetEnableAddProductStorageById/", { id: _id }, function (da) {
+                    if (da.length > 0) {
+
+                        for (var j = 0; j < da.length; j++) {
+                            if (da[j].Other == "1") {
+                                storags += "<option selected='selected' value='" + da[j].Value + "'>" + da[j].Text + "</option>";
+                            } else
+                                storags += "<option value='" + da[j].Value + "'>" + da[j].Text + "</option>";
+                        }
+                        $(storageTarget).html("").html(storags);
+                        $('.cur_selectpicker').selectpicker();
+                        $('.cur_selectpicker').selectpicker('refresh');
+                    }
+                });
+            }
+        }
+
+        //获取当前选中行在arrlist中的索引
+        function getrowIndex(sender) {
+            var rows = $("tbody tr[class!='bg_gray']");
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i] == sender) {
+                    var showleng = parseInt($(".sel_num option:selected").val()); //每页条数
+                    var pagein = parseInt($("li[class='active'] a").attr("p")); //当前为第几页
+                    return (pagein - 1) * showleng + i;
+                }
+            }
+        }
+
+        //批量入库 dat:[ProduId=22&StorCou=120&StoreId=12&StorageId=2&Fid=1,
+        //             ProduId=22&StorCou=120&StoreId=12&StorageId=2&Fid=2
+        //            ] ,
+
+
+        //删除指定行
+        function RemoveRows(rows) {
+            //var rid = getrowIndex(row);
+            //$.whiskey.tools.arraylist.dele(rid);
+            var codes = [];
+            for (var i = 0; i < rows.length; i++) {
+                var code = $(rows[i]).find(".rowBarcode").text();
+                codes.push(code);
+            }
+
+            $.post("/Warehouses/Transfer/RemoveInstoraggeByCach", { barcodes: codes }, function (da) {
+                for (var i = 0; i < rows.length; i++) {
+                    $(rows[i]).remove();
+                    refrshValidDat(da);
+                    $.whiskey.datatable.reset(false);
+                }
+            });
+        }
+
+        //返回键值对数据   a
+        function addInventoryAcc(checkSend) {
+            var detr = $(checkSend).parents("tr:eq(0)");
+
+            var proId = $(checkSend).val(); //商品id
+
+            var store = detr.find(".store_sel_str option:selected").val(); //商店id
+            var storage = detr.find(".storage_sel_str option:selected").val(); //仓库id
+            var num = detr.find(".proCou").val(); // $(det[8]).children().val(); //入库数量
+            var num_n = parseInt(num);
+            var descript = $("#Notes").val();
+            if (num_n == null || num_n == 0 || num_n == "") {
+                $.whiskey.web.alert({
+                    type: "warning",
+                    content: "入库数量不能为空！",
+                    callback: function () {
+                    }
+                });
+                var top = $(det[8]).offset().top;
+                $(detr[8]).addClass("has-error");
+                $("body").animate({ scrollTop: top / 2 }, 500);
+                return null;
+            } else {
+                $(detr[8]).removeClass("has-error");
+                return { ProduId: proId, StorCou: num, StoreId: store, StorageId: storage, Descriptions: descript };
+                // {ProduId:22,StorCou:120,StoreId:12,StorageId:2}
+
+            }
+        }
+
+        $(function () {
+
+            $("body").delegate(":button[title='删除']", "click", function () {
+                var rows = [];
+                rows.push($(this).parents("tr")[0]);
+                RemoveRows(rows);
+
+            }).delegate(":button[title='确定入库']", "click", function () {
+                //当点击每一行后面的“入库”按钮时触发
+                $.whiskey.tools.arraylist.other($(this).parents("tr"));
+                var che = $(this).parents("tr").children("td:first").children().children().first();
+                var da = addInventoryAcc(che);
+                if (da != null) {
+                    var dat = [];
+                    dat.push($.param(da, true));
+                    addInventory(dat);
+                } else
+                    return false;
+
+            }).delegate(".checked-all", "click", function () {
+                if ($(this).is(":checked")) {
+
+                    $(".te_1_che").prop("checked", "checked");
+                } else
+                    $(".te_1_che").prop("checked", false);
+
+            }).delegate("input[type='number']", "blur", function () {
+                var num = $(this).val();
+                if (num == 0 || num == "") {
+                    var top = $(this).offset().top;
+                    var winheig = $(window).height();
+                    var offsethei = top - winheig;
+                    $(this).parent().addClass("has-error");
+                    $("body").animate({ scrollTop: top + offsethei }, 500);
+                } else {
+                    $(this).parent().removeClass("has-error")
+                }
+
+            }).delegate(":button[title='预览']", "click", function () {
+                var id = $(this).parents("td").prevAll("td:last").children().children(":checkbox").val();
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "详细信息",
+                    actionUrl: "/Products/Product/View",
+                    params: { Id: id },
+                    lockButton: $(this),
+                });
+
+            })
+            $("body").delegate("#DataTables_Table_0_wrapper .dataTables_paginate a", "click", function () {
+                var cur = $(this).attr("p");
+                var showleng = $(".sel_num option:selected").val(); //每页显示的数据条数
+                refreshPageing(cur); //刷新分页按钮
+                refreshTableData(cur, showleng); //刷新表中的数据
+            });
+            $(".sel_num").change(function () {
+                debugger
+                var leng = $(".sel_num option:selected").val();
+                refreshTableData(1, parseInt(leng));
+                refreshPageing(1);
+            });
+
+        })
+
+    </script>
+}

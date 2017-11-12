@@ -1,0 +1,222 @@
+﻿
+@Styles.Render("~/bundles/global_styles")
+<style type="text/css">
+	 .dataTable th {
+        text-align:center;
+    }
+    .viewnotipeo .modal-dialog {
+        width: 55%;
+    }
+	  .dataTables_length>label{
+    display: flex;
+    width: 200px
+    }
+ .modal-content {
+    width: 883px !important;
+}
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <span><input class="enabler" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                <span style="margin-left:20px;"><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+            </div>
+        </div>
+        <table id="nwe_table_1" class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+
+<script type="text/javascript">
+    var datatable_install;
+    $(function () {
+        var dts = $("#nwe_table_1").dataTable({
+            "sAjaxSource": "@Url.Action("GetQuestionList")",
+            "aLengthMenu": ["5", "10", "15", "20"],
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("NotificationId", "@ViewBag.NotificationId", "equal"));
+                if ($(".trusher").is(":checked")) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                    if ($(".enabler").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                    }
+                } else {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                }
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                if (aData.ParentId == null) {
+                    $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                    $("td", nRow).css({ "color": "blue" });
+                } else {
+                    $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                }
+                var isEnabled = aData.IsEnabled;
+                if (isEnabled == false) {
+                    $(nRow).css({ "color": " #5ebd5e" });
+                }
+
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".table-list").treegrid({
+                    initialState: 'collapsed',
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        return ' ';
+                    }
+                },
+                {
+                    "sTitle": "内容",
+                    "bSortable": false,
+                    "sName": "Content",
+                    "mData": function (data) {
+                        var content = "";
+                        if (data.Category == 1) {
+                            content = data.Sort + ".";
+                        }
+                        content += " " + data.Content;
+                        return content;
+                    },
+                },
+                {
+                    "sTitle": "问题类型",
+                    "bSortable": false,
+                    "sName": "QuestionType",
+                    "mData": function (data) {
+                        return data.QuestionType;
+                    },
+                },
+                {
+                    "sTitle": "是否正确答案",
+                    "bSortable": false,
+                    "sName": "IsRight",
+                    "mData": function (data) {
+                        var value = "";
+                        if (data.IsRight && data.Category == 1) {
+                            value = "是";
+                        } else if (!data.IsRight && data.Category == 1) {
+                            value = "否";
+                        }
+                        return value;
+                    },
+                },
+                {
+                    "sTitle": "回答者数量",
+                    "bSortable": false,
+                    "sName": "AnswerersCount",
+                    "mData": function (data) {
+                        var labelColor = "label-success";
+                        if (data.AnswerersCount === 0) {
+                            labelColor = "label-info";
+                        }
+                        return "<div class='tb-booth tb-pic tb-s310' style='cursor:pointer' data-Id='" + data.Id + "' onclick='ShowStore(this,\"" + data.Id + "\")'> <labl class='label " + labelColor + " view-memeb' style='cursor:pointer'>" + data.AnswerersCount + "</labl></div>";
+                    },
+                },
+                {
+                    "sTitle": "更新时间",
+                    "bSortable": false,
+                    "sName": "UpdateTime",
+                    "mData": function (data) {
+                        return $.whiskey.tools.dateFormat(data.UpdateTime);
+                    }
+                },
+                {
+                    "sTitle": "更新人员",
+                    "bSortable": false,
+                    "sName": "OperationName",
+                    "mData": function (data) {
+                        return data.OperationName;
+                    }
+                },
+                {
+                    "sTitle": "控制操作",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        var controller;
+                        if (data.IsDeleted) {
+                            controller = $.whiskey.datatable.tplRecovery(data.Id);
+                        } else {
+                            controller = $.whiskey.datatable.tplRemove(data.Id);
+                        }
+                        return controller;
+                    }
+                }
+            ]
+        });
+        $.whiskey.datatable.instances[0] = dts;
+    });
+
+    function Remove(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要将这条数据移至回收站吗？",
+            notes: "提示：数据移动到回收站后可从随时将其恢复",
+            actionUrl: "@Url.Action("RemoveQuestions")",
+            getParams: { Id: Id, notificationId: "@ViewBag.NotificationId" },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(false, dts);
+            }
+        });
+    }
+
+    function Recovery(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要恢复这条数据吗？",
+            notes: "提示：将数据从回收站移动至正常数据列表里",
+            actionUrl: "@Url.Action("RecoveryQuestions")",
+            getParams: { Id: Id, notificationId: "@ViewBag.NotificationId" },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(false, dts);
+            }
+        });
+    }
+</script>

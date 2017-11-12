@@ -1,0 +1,215 @@
+﻿
+<style>
+    .pcou {
+        width: 120px;
+        padding-left: 0;
+    }
+
+    .total {
+        width: 100px;
+        padding-left: 0;
+    }
+</style>
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+
+<div class="row bigcatedicou">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search text-left">
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">商品品牌</label>
+                        <div class="col-md-9 colld">
+                            <input type="hidden" id="BrandId" name="Brands" value="" class="Coll" />
+                            @Html.DropDownList("Brands", (System.Web.Mvc.SelectList)ViewBag.Brand, new { @class = "form-control ser_sel  multiselect", multiple = "multiple" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">商品类别</label>
+                        <div class="col-md-9 colld">
+                            <input type="hidden" id="CategoryId" name="Categories" value="" class="Coll" />
+                            @Html.DropDownList("Categories", (System.Web.Mvc.SelectList)ViewBag.Category, new { @class = "form-control ser_sel multiselect", multiple = "multiple" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">商品颜色</label>
+                        <div class="col-md-9 colld">
+                            <input type="hidden" id="ColorId" name="Colors" value="" class="Coll" />
+                            @Html.DropDownList("Colors", (List<SelectListItem>)ViewBag.Color, new { @class = "form-control ser_sel multiselect", multiple = "multiple" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">商品尺码</label>
+                        <div class="col-md-9 colld">
+                            <input type="hidden" id="SizeId" name="Sizes" value="" class="Coll" />
+                            @Html.DropDownList("Sizes", new List<SelectListItem>(), new { @class = "form-control ser_sel multiselect", multiple = "multiple" })
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">商品季节</label>
+                        <div class="col-md-9 colld">
+                            <input type="hidden" id="SeasonId" name="Seasons" value="" class="Coll" />
+                            @Html.DropDownList("Seasons", (List<SelectListItem>)ViewBag.Season, new { @class = "form-control ser_sel multiselect", multiple = "multiple" })
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">其他信息</label>
+                        <div class="col-md-9">
+                            @Html.TextBox("Keywords", "", new { @class = "keywords form-control", @placeholder = "名称/款号/原始货号/商品编号/备注" })
+                        </div>
+                    </div>
+                </div>*@
+                <div class="col-md-6">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">有效时间</label>
+                        <div class="col-md-9">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-pencil"></i> <span>设置折扣</span></h5>
+            </div>
+
+        </div>
+        <div class="panel-footer text-right clearfix ">
+            <div class="pull-left">
+                <div class="col-md-4 ">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4" style="margin-top:5px">零售折扣</label>
+                        <div class="col-md-8">
+                            <input type="text" id="RetailDisco" placeholder="零售折扣" class="form-control dis" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label col-md-4" style="margin-top:5px">批发折扣</label>
+                    <div class="col-md-8">
+                        <input type="text" id="WholesaleDisco" placeholder="批发折扣" class="form-control dis" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label col-md-4" style="margin-top:5px">采购折扣</label>
+                    <div class="col-md-8">
+                        <input type="text" id="PurchaseDisco" placeholder="采购折扣" class="form-control dis" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="panel-footer text-right clearfix ">
+            <div class="pull-left panel-search">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right panel-control">
+                <button id="Create" title="保存折扣设置方案" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-save"></i> <span>保存</span></button>
+
+                <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            
+        </div>
+        <div hidden="hidden" class="loading_hid_img" style="position:fixed;left:45%;top:40%"><img src="~/Content/Images/ajax_loader.gif" /></div>
+        <table class="table table-list-bigca table-hover valign-middle" width="100%" style="width:100%">
+            <thead>
+            </thead>
+        </table>
+
+        <div class="modal fade" id="productNum" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-hidden="true">
+                            ×
+                        </button>
+                        <h4 class="modal-title" id="">
+                            <span style="font-size:15px">输入折扣方案名称</span>
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div style="margin-left:10px">
+                            <label id="orgi_puid" isorg="1" style="font-weight:bold" for="product_org_id">折扣方案名：</label>
+                            <input id="discou_name" class="form-control" style="display:inline;width:70%" title="折扣名不为空！" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="moda_but_succ" class="btn btn-primary">
+                            确定
+                        </button>
+                        <button type="button" class="btn btn-default"
+                                data-dismiss="modal">
+                            关闭
+                        </button>
+
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <input type="hidden" id="hid_chiCou" value="@ViewBag.prodCou" />
+
+
+    </div>
+</div>
+<div class="modal fade" id="modal_di"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <img style="position:fixed;top:40%;left:45%" class="modal-body" src="/content/images/ajax_loader.gif">
+</div>
+
+
+
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+<script src="~/Content/Scripts/Common/comm.js"></script>
+<script src="~/Content/Scripts/Bootstrap/bootstrap-multiselect.js"></script>
+
+<script>
+    $(function() {
+        initDropdown();
+        initEvetn();
+    })
+</script>
+
+
+

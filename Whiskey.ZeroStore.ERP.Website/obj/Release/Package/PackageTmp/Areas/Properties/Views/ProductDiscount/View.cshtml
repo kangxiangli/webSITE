@@ -1,0 +1,270 @@
+﻿@using NPOI.SS.Formula.Functions
+@using Whiskey.ZeroStore.ERP.Models
+@model ProductDiscount
+
+
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base_tab" data-toggle="tab">
+            基础信息
+        </a>
+    </li>
+    <li class="">
+        <a href="#other_tab" data-toggle="tab">
+            其他信息
+        </a>
+    </li>
+    <li><a href="#produtinfo_tab" data-toggle="tab">款号或货号信息</a></li>
+
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="base_tab">
+        <div class="form-group">
+            <label class="control-label col-md-2">折扣名称：</label>
+            <div class="btn-group">
+                @Model.DiscountName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">折扣编号：</label>
+            <div class="btn-group">
+                @Model.DiscountCode
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">零售折扣：</label>
+            <div class="col-md-4">
+                @Model.RetailDiscount<span>折</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">批发折扣：</label>
+            <div class="col-md-4">
+                @Model.WholesaleDiscount<span>折</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">采购折扣：</label>
+            <div class="col-md-4">
+                @Model.PurchaseDiscount<span>折</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.UpdatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.UpdatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CreatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.CreatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsEnabled) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsDeleted) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">描述信息：</label>
+            <div class="btn-group">
+                @Model.Description
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                操作人员 :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+            </div>
+        </div>
+    <input type="hidden" value="@Model.Id" id="hid_id"/>
+    </div>
+    <div class="tab-pane fade" id="other_tab">
+        <div class="form-group" id="divBrand">
+            <label class="control-label col-md-2">关联品牌：</label>
+            <div class="col-md-4">
+                @string.Join(", ", Model.Brands.Select(c => c.BrandName))
+            </div>
+        </div>
+        <div class="form-group" id="divBrand">
+            <label class="control-label col-md-2">关联款式：</label>
+            <div class="col-md-4">
+                @string.Join(", ", Model.Categories.Select(c => c.CategoryName))
+            </div>
+        </div>
+        <div class="form-group" id="divSeason">
+            <label class="control-label col-md-2">关联季节：</label>
+            <div class="col-md-4">
+                @string.Join(", ", Model.Seasons.Select(c => c.SeasonName))
+            </div>
+        </div>
+        <div class="form-group" id="divStore">
+            <label class="control-label col-md-2">关联颜色：</label>
+            <div class="col-md-4">
+                @string.Join(", ", Model.Colors.Select(c => c.ColorName))
+            </div>
+        </div>
+        <div class="form-group" id="divStore">
+            <label class="control-label col-md-2">关联尺码：</label>
+            <div class="col-md-4">
+                @{
+                    var li = new Dictionary<string,List<string>>();
+                    var te = Model.Sizes.Select(c => new {c.Category.CategoryName, c.SizeName}).ToList();
+                    foreach (var _item in te)
+                    {
+                        if (li.Keys.Contains(_item.CategoryName))
+                        {
+                            li[_item.CategoryName].Add(_item.SizeName);
+                        }
+                        else
+                        {
+                            var tem = new List<string>() {_item.SizeName};
+                            li.Add(_item.CategoryName, tem);
+                        }
+                    }
+                    var res = "";
+                    foreach (var t in li)
+                    {
+                        res +="<span style='font-weight:bold'>"+ t.Key + "</span>:";
+                        foreach(var ite in t.Value)
+                        {
+                            res += ite+", ";
+                        }
+                        res += "</br>";
+                    }
+                    <span>@Html.Raw(res)</span>
+                }
+               
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade in" id="produtinfo_tab">
+        <input type="button" id="search_but" value="查看款号或货号信息"/>
+        <table class="table table-list-view table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+    <input id="hid_discou_type" type="hidden" value="@Model.DiscountType"/>
+</div>
+<script>
+    var _table;
+    $(function() {
+        var distyp = $("#hid_discou_type").val().trim();
+        if (distyp != "3") { //复杂折扣方案
+            $("a[href$='other_tab']").parents("li:first").hide();
+        } else {
+            $("a[href$='produtinfo_tab']").parents("li:first").hide();
+        }
+
+        $("#produtinfo_tab #search_but").click(function() {
+            //var _id = $("#myTabContent #hid_id").val();
+            //var setting=_table.fnSettings();
+            //setting.sAjaxSource = "/Properties/ProductDiscount/GetProductsByDiscountId";
+            //_table.fnSettings(setting);
+            //_table.fnDraw(false);
+            $(this).remove();
+            InitTable();
+        });
+        
+    })
+    function InitTable() {
+        _table = $(".table-list-view").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "/Properties/ProductDiscount/GetProductsByDiscountId",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var _id = $("#myTabContent #hid_id").val();
+                conditions.Rules.push(new $.whiskey.filter.rule("Id", _id, "equal"));
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                }, {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        var index = data.iDisplayIndex + 1;
+                        return '' + index + '';
+                    }
+                },
+                {
+                    "sTitle": "<span style='color: #5ebd5e'>货号</span>/款号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        if (data.OrigNumber != undefined) {
+                            return "<span style='color: #5ebd5e'>" + data.OrigNumber + "</span>";
+                        } else {
+                            return data.ProductNumber;
+                        }
+                   
+                    }
+                },
+                {
+                    "sTitle": "吊牌价(￥)",
+                    "sName": "TagPrice",
+                    "mData": function (data) {
+                        return data.TagPrice;
+                    },
+                },
+                 {
+                     "sTitle": "创建时间",
+                     "sName": "UpdatedTime",
+                     "mData": function (data) {
+                         return $.whiskey.tools.dateFormat(data.CreatedTime);
+                     },
+                 },
+
+                {
+                    "sTitle": "更新时间",
+                    "sName": "UpdatedTime",
+                    "mData": function (data) {
+                        return $.whiskey.tools.dateFormat(data.UpdatedTime);
+                    },
+                },
+              
+            ]
+
+        });
+    }
+</script>
+
+
+
+
+
+
+

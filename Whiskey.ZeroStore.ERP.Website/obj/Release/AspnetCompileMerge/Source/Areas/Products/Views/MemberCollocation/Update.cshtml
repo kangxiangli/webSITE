@@ -1,0 +1,112 @@
+﻿<link href="~/Content/Styles/dapei/css/dapei.css" rel="stylesheet" />
+<input type="hidden" class="memberId" value="@ViewBag.MemberId" />
+    <div class="dialogShowMsg"></div>
+    
+<div class="outBox">
+    <div class="shangpin">
+        <div id="wrapper" class="wrapper cloBagd hideShop">
+            <div id="scroller" class="appendBox">
+                <div class="clo1"></div>
+                <div class="clo2"></div>
+                <div class="clo3"></div>
+                <div style="clear: both;"></div>
+            </div>
+        </div>
+        @*<div id="footer"></div>*@
+        <div class="showHid" id="buyerBox">
+            <div class="hand_mall">
+                <!--logo 标题-->
+                <div class="logo_buyahand">
+                    <img src="~/Content/Styles/dapei/img/logo2x.png" alt="" />商城
+                </div>
+                <!--买手区域-->
+                <div class="buyers">
+                    <!--左边 衣服-->
+                    <div class="cloDec clothes">
+                        <div data-type="1">
+                            <img class="top_cloth" src="~/Content/Styles/dapei/img/jacket2x.png" alt="" />
+                            <span>上装</span>
+                        </div>
+                        <div data-type="2">
+                            <img class="top_cloth" src="~/Content/Styles/dapei/img/dress2x.png" />
+                            <span>下装</span>
+                        </div>
+                        <div class="bottom_cloth" data-type="3">
+                            <img src="~/Content/Styles/dapei/img/dress42x.png" />
+                            <span>连体</span>
+                        </div>
+                    </div>
+                    <!--右边鞋子 装饰品-->
+                    <div class="cloDec decoration">
+                        <div data-type="4">
+                            <img src="~/Content/Styles/dapei/img/scarf2x.png" />
+                            <span>围巾</span>
+                        </div>
+                        <div data-type="5">
+                            <img src="~/Content/Styles/dapei/img/bag2x.png" />
+                            <span>包</span>
+                        </div>
+                        <div data-type="6">
+                            <img src="~/Content/Styles/dapei/img/diamond2x.png" />
+                            <span>饰品</span>
+                        </div>
+                        <div data-type="7">
+                            <img src="~/Content/Styles/dapei/img/feminine2x.png" />
+                            <span>鞋</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="monogamy">
+        <div class="canvasBox contain">
+            <canvas id="palette" class="palette" data-viewId="@ViewBag.Id"></canvas>
+        </div>
+        <!--素材-->
+        <div class="img_box">
+        </div>
+        <!--背景-->
+        <div class="backImg">
+        </div>
+        <div id="preview" style="width: 30px;height: 30px;position: absolute;">
+        </div>
+        <ul class="footer_menu">
+            <li class="sucai swiper-slide">
+                <img src="~/Content/Styles/dapei/img/tab_6sc_pre_2x.png" />
+                <p>素材</p>
+            </li>
+            <li class="addBackground swiper-slide">
+                <img src="~/Content/Styles/dapei/img/tab_7bj_pre_2x.png" />
+                <p>背景</p>
+            </li>
+            <li class="addPhoto swiper-slide">
+                <img src="~/Content/Styles/dapei/img/tab_7bj_pre_2x.png" />
+                <p class="photo">相册</p>
+                <input class="inptFile" onchange="previewImage(this)" type="file" value="上传图片" />
+            </li>
+            <li class="swiper-slide shangyi" id="shangyi">
+                <img src="~/Content/Styles/dapei/img/tab_8sy_pre_2x.png" />
+                <p>上移</p>
+            </li>
+            <li class="swiper-slide xiayi" id="xiayi">
+                <img src="~/Content/Styles/dapei/img/tab_9xy_pre_2x.png" />
+                <p>下移</p>
+            </li>
+            <li class="remove swiper-slide">
+                <img src="~/Content/Styles/dapei/img/tab_2sc_pre_2x.png" />
+                <p>删除</p>
+            </li>
+            <li class="addSave swiper-slide">
+                <img src="~/Content/Styles/dapei/img/tab_2sc_pre_2x.png" />
+                <p>保存</p>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@*<script src="~/Content/Styles/dapei/js/fabric_with_gestures.js"></script>*@
+<script src="~/Content/Styles/dapei/js/iscroll.js"></script>
+<script src="~/Content/Styles/dapei/js/dapei.js"></script>

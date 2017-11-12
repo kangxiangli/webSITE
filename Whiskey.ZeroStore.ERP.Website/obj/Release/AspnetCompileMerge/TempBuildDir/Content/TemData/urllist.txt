@@ -1,0 +1,15 @@
+/Warehouses/AddProduct/Index
+/Products/Product/GetProductArr
+/Products/Product/GetProductList
+/Products/Product/BatchImport
+
+/Warehouses/Storage/Index
+/Warehouses/Storage/Create
+
+/Department/GetUserList
+/Department/GetDepartMember
+
+/Warehouses/Inventory/Index
+/Storage/GetStoreWithStorage/
+
+

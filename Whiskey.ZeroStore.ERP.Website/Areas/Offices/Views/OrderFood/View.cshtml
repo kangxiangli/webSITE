@@ -1,0 +1,121 @@
+
+@using Whiskey.ZeroStore.ERP.Models
+@model OrderFood
+@{
+    var listAdmins = Model.Admins.Where(w => w.IsEnabled && !w.IsDeleted);
+}
+<style>
+
+</style>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        网络部 :
+    </label>
+    <div class="col-md-10">
+        @listAdmins.Count(c => c.DepartmentId == 7)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        仓储部 :
+    </label>
+    <div class="col-md-10">
+        @listAdmins.Count(c => c.DepartmentId == 8)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        运营部 :
+    </label>
+    <div class="col-md-10">
+        @listAdmins.Count(c => c.DepartmentId == 9)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        合规部 :
+    </label>
+    <div class="col-md-10">
+        @listAdmins.Count(c => c.DepartmentId == 10)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        人事部 :
+    </label>
+    <div class="col-md-10">
+        @listAdmins.Count(c => c.DepartmentId == 11)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        财务部 :
+    </label>
+    <div class="col-md-10">
+        @listAdmins.Count(c => c.DepartmentId == 12)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        编辑部 :
+    </label>
+    <div class="col-md-10">
+        @listAdmins.Count(c => c.DepartmentId == 13)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.smsIsSend) :
+    </label>
+    <div class="col-md-10">
+        @UiHelper.showTrueFalse(Model.smsIsSend)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+        @UiHelper.showEnabled(Model.IsEnabled)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+        @UiHelper.showDeleted(Model.IsDeleted)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.OperatorId) :
+    </label>
+    <div class="col-md-10">
+        @UiHelper.showOperator(Model.Operator)
+    </div>
+</div>
+
+<script>
+    $(function () {
+        
+
+    });
+</script>
+

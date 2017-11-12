@@ -1,0 +1,150 @@
+
+[2017-06-16 17:07:30.821] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{}
+
+[2017-06-16 17:47:10.411] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 32 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog, Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:10.876] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 32 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:12.187] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 31 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:13.609] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 32 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:14.540] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:15.504] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 32 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:16.309] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 27 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:17.479] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 31 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:18.384] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 29 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:19.136] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:19.790] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 32 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:20.636] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 31 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:21.548] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 27 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:22.382] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 31 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:23.398] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 32 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:24.249] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 32 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:25.161] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 31 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:26.047] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 22 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:27.079] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 22 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:28.006] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 22 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:29.054] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 27 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:29.712] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:30.748] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:31.566] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 31 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:32.451] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 29 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:33.509] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:34.420] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 17 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:35.221] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 17 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:36.070] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 18 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:37.093] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:38.031] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:38.947] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:39.942] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 27 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:41.073] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 22 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:42.114] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 31 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:43.204] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 22 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:44.210] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:45.154] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:46.052] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 25 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:47.073] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 27 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:48.016] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 29 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:49.022] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 19 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:47:49.886] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 19 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:48:53.235] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 31 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:51:28.647] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 12 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:52:03.086] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 19 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:52:03.148] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 19 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:52:03.192] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 19 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-06-16 17:52:03.243] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 19 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}

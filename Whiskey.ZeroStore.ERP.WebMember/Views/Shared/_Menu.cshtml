@@ -1,0 +1,70 @@
+﻿@using Whiskey.ZeroStore.ERP.Models;
+@{
+    string themePath = ViewBag.themePath ?? string.Empty;
+}
+@{
+
+    if (!(ViewBag.themeExist ?? false))
+    {
+        <!--<link href="~/Content/Styles/Cropper/main.css" rel="stylesheet" />-->
+		<!--<link href="~/Content/Styles/Layout/memberInfo.css" rel="stylesheet" />-->
+        @Html.CssBlock("/Content/Styles/Layout/memberInfo.css") 
+		<!--<link href="~/Content/Styles/Layout/memberInfo.css" rel="stylesheet" />-->
+        <!--<script src="~/Scripts/sitelogo.js" type="text/javascript" charset="utf-8"></script>-->
+        <!--暂时放在这里，后续放到全局 -->
+    }
+    <div id="menu-wrapper">
+        @if (ViewBag.themeExist ?? false)
+        {
+            Html.RenderPartial(Path.Combine(themePath, "_Menu.cshtml"), ViewBag as object);
+        }
+        else
+        {
+            <div class="userInfos">
+                <div class="menuLogo">0-FASHION</div>
+                <span class="closeMenu"><img src="/Content/Images/information/menuLeft.png" /></span>
+                <!--<img src="@ViewBag.MemberPhoto" alt="" class="userPhotoBg">
+                <img src="@ViewBag.MemberPhoto" alt="" class="userPhoto" />-->
+                <!--<img class="replaceUserPhoto" data-toggle="modal" data-target="#avatar-modal" src="~/Content/Images/relacePhoto.png" alt="" />-->
+                <ul class="menu_main">
+                    <li><a class="menu userInfoMenu" href="/members/member/index">个人信息</a></li>
+                    <li><a class="menu notopen" href="/home/notopen">购物车</a></li>
+                    <li><a class="menu" href="/orders/order/index">订单</a></li>
+                    <li><a class="menu" href="/appointments/appointment/index">预约</a></li>
+                    <li><a class="menu notopen" href="/home/notopen">优惠</a></li>
+                    <li><a class="menu" href="/members/member/mytrack">足迹</a></li>
+                    <li><a class="menu" href="/offices/partnermanage/index">加盟我们</a></li>
+                    <li><a class="menu notopen" href="/home/notopen">供应商</a></li>
+                </ul>
+            </div>
+            <div class="closeUserInfos">
+                <img class="closeLogo" src="../../Content/Images/information/0-fashion_03.png" />
+                <span class="openMenu"><img src="../../Content/Images/information/menuRight.png" /></span>
+            </div>
+           
+        }
+    </div>
+}
+<script>
+    (function ($) {
+        $.fashion.buildLoad();
+
+        $('.closeMenu').click(function () {
+            $('.userInfos').animate({ 'left': -155 }, 500);
+            $('.closeUserInfos').animate({ 'left': 0 }, 500)
+        })
+        $('.closeUserInfos').click(function () {
+            $('.userInfos').animate({ 'left': 0 }, 500);
+            $('.closeUserInfos').animate({ 'left': -55 }, 500)
+        })
+        $('.menu_main li a.menu').click(function(){
+        	$('.activeMenu').removeClass('activeMenu');
+        	$(this).addClass('activeMenu');
+        })
+        //渲染页面判断选中菜单
+        var urlHref = window.location.href.toLocaleLowerCase();
+        $('.menu_main li a.menu[fashion-href="' + urlHref + '"]:not(.notopen)').addClass('activeMenu');
+        
+        
+    })(jQuery);
+</script>

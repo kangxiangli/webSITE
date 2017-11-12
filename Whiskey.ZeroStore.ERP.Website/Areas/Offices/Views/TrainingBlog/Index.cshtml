@@ -1,0 +1,512 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+
+<div id="app">
+
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">标题</label>
+                            <div class="col-md-8">
+                                <input v-on:keyup.enter="search(null)" class="form-control" type="text" name="Title" id="Title" placeholder="请输入标题" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-5">创建日期：</label>
+                            <div class="col-md-7">
+                                <div class="input-daterange input-group">
+                                    @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                    <span class="input-group-addon">至</span>
+                                    @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button v-on:click="search(null)" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button v-on:click="document.querySelector('.form-search').reset()" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+
+                <div class="pull-right">
+                    <div class="button-normal">
+                        <button id="Create" v-on:click="add" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增数据</span></button>
+
+                        <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                        <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                        <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                    </div>
+                    <div class="button-recycle">
+                        @*<button v-on:click="import" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>导入数据</span></button>*@
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                    <span><input v-on:change="toggleEnable" class="enabler" type="checkbox" data-class="switcher-default" v-bind:checked="isEnabled"></span>
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th><label>全选 <input type="checkbox" style="display:none;" v-model="checkAll" /> </label></th>
+                        <th>编号</th>
+                        <th>标题</th>
+                        <th>创建人</th>
+                        <th>培训</th>
+                        <th>绑定试卷</th>
+                        <th>发布时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td><input type="checkbox" class="" v-bind:value="item.Id" v-model="item.IsChecked" /></td>
+                        <td>{{index+1}}</td>
+                        <td>{{item.Title}}</td>
+                        <td>{{item.MemberName}}</td>
+                        <td>{{item.IsTrain}}</td>
+                        <td>
+                            <label v-if="item.ExamId && item.ExamId>0" class="text-success">已绑定</label>
+                            <label v-else class="text-danger">未绑定</label>
+                        </td>
+                        <td>{{item.CreatedTime|datetime}}</td>
+                        <td>
+                            <button  title="查看" v-on:click="view(item.Id)" class="btn-opt-box"><i class="btn-view-icon"></i></button>
+                            <button  title="禁用数据" v-if="item.IsEnabled" v-on:click="disable(item.Id)" class="btn-opt-box"><i class="btn-disable-icon"></i></button>
+                            <button  title="启用数据" v-if="!item.IsEnabled" v-on:click="enable(item.Id)" class="btn-opt-box"><i class="btn-enable-icon"></i></button>
+                            <button  title="修改数据" v-if="item.IsEnabled" v-on:click="edit(item.Id)" class="btn-opt-box"><i class="btn-setting-icon"></i></button>
+                            <button title="绑定试卷" type="button" v-on:click="bindExam(item.Id,item.ExamId)" class="btn-opt-box"><i class="btn-bind-icon"></i></button>
+                            <button title="推送" type="button" v-bind:disabled="!item.ExamId" v-on:click="pushBlog(item.Id,item.ExamId)" class="btn-opt-box"><i class="btn-push-icon"></i></button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Modal -->
+        <div class="modal fade" id="model-examlist" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document" style="width:1000px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">绑定试卷</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <exam-list ref="child" v-on:change-exam="changeExam" v-bind:exam-id="examId" v-bind:current-id="currentId"></exam-list>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" v-on:click="saveBind">保存</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+<!--试卷列表模版-->
+<template id="tmp-exam-list">
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>试卷名称</th>
+                        <th>总分</th>
+                        <th>题目数量</th>
+                        <th>及格线</th>
+                        <th>创建时间</th>
+                        <th>创建人</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item,index) in pageDatas">
+                        <td>{{index+1}}</td>
+                        <td>{{item.Name}}</td>
+                        <td>{{item.TotalScore}}</td>
+                        <td>{{item.QuestionCount}}</td>
+                        <td>{{item.PassLine}}</td>
+                        <td>{{item.CreatedTime|datetime}}</td>
+                        <td>{{item.MemberName}}</td>
+
+                        <td>
+                            <button type="button" v-if="item.Id === examId" disabled v-on:click="$emit('change-exam',item.Id)" class="btn btn-danger">已绑定</button>
+                            <button type="button" v-else v-on:click="$emit('change-exam',item.Id)" class="btn btn-success">绑定</button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <my-page v-bind:current="pageInfo.pageIndex"
+                     v-bind:total="pageInfo.totalCount"
+                     v-bind:page-size="pageInfo.pageSize"
+                     v-bind:page-size-opts="[5,10,20]"
+                     @@on-change="changePage"
+                     @@on-page-size-change="changePageSize">
+            </my-page>
+        </div>
+
+    </div>
+</template>
+
+<script>
+    $(function () {
+        var baseUrl = '/offices/trainingblog';
+        var examBaseUrl = '/offices/exam';
+
+        Vue.component('exam-list', {
+            template: '#tmp-exam-list',
+            data: function () {
+                return {
+                    isEnabled: true,
+                    pageDatas: [], //分页数据
+                    pageInfo: {
+                        pageIndex: 1,
+                        pageSize: 5,
+                        pageCount: 0,
+                        totalCount: 0
+                    },
+                    childExamId: 0
+                }
+            },
+            mounted: function () {
+
+            },
+            methods: {
+
+                search: function (filter) {
+                    var _self = this;
+
+                    var searchData = {
+                        pageIndex: this.pageInfo.pageIndex,
+                        pageSize: this.pageInfo.pageSize,
+                    }
+
+                    if (filter) {
+
+                        searchData = _.extend(searchData, filter)
+                    }
+
+                    $.getJSON(examBaseUrl + '/list', searchData).done(function (res) {
+                        if (res.ResultType !== 3) {
+                            //console
+                            return;
+                        }
+                        var pageInfo = res.Data.pageInfo;
+                        var pageData = res.Data.pageData;
+                        _self.pageDatas = pageData;
+                        _self.pageInfo = pageInfo;
+                    })
+                },
+                changePage: function (page) {
+                    this.pageInfo.pageIndex = page;
+                    this.search();
+                },
+                changePageSize: function (newSize) {
+                    this.pageInfo.pageSize = newSize;
+                    this.pageInfo.pageIndex = 1;
+                    this.search();
+                }
+
+            },
+            props: {
+                //绑定试卷时的blogId
+                currentId: {
+                    type: Number,
+                    default: 0
+                },
+
+
+                // 选择的试卷id
+                examId: {
+                    type: Number,
+                    default: 0
+                }
+            },
+            computed: {
+
+            },
+            watch: {
+                currentId: function () {
+
+                    this.search();
+                }
+            }
+
+        })
+
+        var vm = new Vue({
+        el: "#app",
+        data: {
+            isEnabled: true,
+            pageDatas: [], //分页数据
+            currentId: 0, //绑定试卷时的blogId
+            examId:0,// blog选择的id
+            pageInfo: {
+                pageIndex: 1,
+                pageSize: 10,
+                pageCount: 0,
+                totalCount: 0
+            }
+        },
+        mounted: function () {
+            this.search();
+
+        },
+        methods: {
+            changeExam: function (examId) {
+
+                this.examId = examId;
+            },
+            add: function () {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "添加数据",
+                    actionUrl: "@Url.Action("Create")",
+                    lockButton: $(this),
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        _self.search();
+                        return true;
+                    },
+                });
+            },
+            edit: function (id) {
+                 var _self = this;
+                   var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "编辑数据",
+                    actionUrl: "@Url.Action("Update")",
+                    lockButton: $(this),
+                    getParams: { Id:id},
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    postComplete: function () {
+                        _self.search();
+                        return true;
+                    },
+                });
+            },
+            view: function (id) {
+                var _self = this;
+                var dialog = new $.whiskey.web.ajaxView({
+                    caption: "查看数据",
+                    actionUrl: "@Url.Action("View")",
+                    lockButton: $(this),
+                    params: { Id:id}
+
+                });
+            },
+            disable: function (id) {
+                var _self = this;
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要禁用这条数据吗？",
+                    notes: "提示：禁用后数据将不在其他任何地方使用",
+                    actionUrl: "@Url.Action("Disable")",
+                    params: { Id: id },
+                    lockButton:null,
+                    complete: function () {
+                        _self.search();
+                    }
+                });
+            },
+            enable: function (id) {
+                 var _self = this;
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要启用这条数据吗？",
+                    notes: "",
+                    actionUrl: "@Url.Action("Enable")",
+                    params: { Id: id },
+                    lockButton:null,
+                    complete: function () {
+                        _self.search();
+                    }
+                });
+            },
+            toggleEnable: function () {
+                this.isEnabled = !this.isEnabled;
+                this.search({ isEnabled: this.isEnabled })
+            },
+            search: function (filter) {
+                var _self = this;
+
+                var searchData = {
+
+                    pageIndex: this.pageInfo.pageIndex,
+                    pageSize: this.pageInfo.pageSize,
+
+
+                }
+                var startDate = $("#StartDate").val();
+                var endDate = $("#EndDate").val();
+                var title = $("#Title").val();
+                if (startDate) {
+                    searchData.startDate = startDate;
+                }
+                if (endDate) {
+                    searchData.endDate = endDate;
+                }
+                if (title && title.length > 0) {
+                    searchData.title = title;
+
+                }
+                if (filter) {
+
+                    searchData = _.extend(searchData, filter)
+                }
+
+                $.getJSON(baseUrl + '/List', searchData).done(function (res) {
+                    if (res.ResultType !== 3) {
+                        //console
+                        return;
+                    }
+                    var pageInfo = res.Data.pageInfo;
+                    var pageData = res.Data.pageData;
+                    //判断是否已在列表中
+
+                    _self.pageDatas = pageData;
+                    _self.pageInfo = pageInfo;
+                })
+            },
+
+
+            changePage: function (page) {
+                this.pageInfo.pageIndex = page;
+                this.search();
+            },
+            changePageSize: function (newSize) {
+                this.pageInfo.pageSize = newSize;
+                this.pageInfo.pageIndex = 1;
+                this.search();
+            },
+
+            bindExam: function (blogId,examId) {
+                // 绑定试卷
+                this.currentId = blogId
+                this.examId = examId
+                $("#model-examlist").modal('show');
+            },
+            pushBlog: function (blogId,examId) {
+                // 推送
+                var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "创建数据",
+                actionUrl: "@Url.Action("Create","Notification",new { area = "Notices"})",
+                lockButton: null,
+                getParams: { examId: examId ,blogId:blogId},
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(true, $.whiskey.datatable.instance);
+                    return true;
+                },
+            });
+
+            },
+            saveBind: function () {
+                var _self = this;
+                var blogId = this.currentId;
+                var examId = this.examId;
+                $.post(baseUrl + "/saveBind", { blogId: blogId, examId: examId }, function (res) {
+                    if (res.ResultType === 3) {
+                        _self.search();
+                        $("button[data-dismiss=modal]").trigger('click');
+                    }
+                    else {
+                        alert(res.Message);
+                    }
+                })
+
+            }
+        },
+        computed: {
+
+            checkAll: {
+                get: function () {
+                    if (_.some(this.pageDatas, { 'IsChecked': false })) {
+                        return false;
+                    }
+                    return true;
+                },
+
+                set: function (value) {
+                    _.forEach(this.pageDatas, function (n) { n.IsChecked = value })
+
+                }
+            }
+        }
+    })
+    });//end ready
+
+
+</script>

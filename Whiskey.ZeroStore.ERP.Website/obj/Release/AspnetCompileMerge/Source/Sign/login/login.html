@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta id="viewport" name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <title>扫码登陆</title>
+
+    <link rel="stylesheet" href="../css/media.css-750.css"/>
+    <link rel="stylesheet" href="login.css"/>
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="person_infi">
+    <p class="back_tx back_ig closeSm">关闭</p>
+</div>
+<div class="mainLogin">
+    <img class="comPuter" src="dm.png" alt="png"/>
+    <p class="txtLogin oneP">小蝶办公手机登陆确认</p>
+
+    <input id="sureLogin"  type="button"  value="登 录"/>
+</div>
+<div class="txtMsg">
+    <p class="warn_p">温馨提示</p>
+    <p class="txtP">温馨提示</p>
+    <input class="prompt" type="button" name="name" value="确 定" />
+</div>
+
+<script src="../js/global.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+    $(function () {
+        if (window.localStorage) {
+            var adminId = localStorage.AdminId;
+            //var adminId = 9;
+            var uuId = localStorage.uuid;
+        } else {
+            showMsg("未获取到uuid");
+        }
+        $("#sureLogin").click(function () {
+           $.xiaodie.ajax({
+               url: '/Authorities/Login/ConfirmQrLogin',
+               type: 'post',
+               data: { adminId: adminId, uuid: uuId },
+               success: function (data) {
+                   // showMsg(JSON.stringify(data));return;
+                   if (data.ResultType == '3') {
+                       showMsg("登陆成功");
+                       window.location.href = '../dk.html';
+                   }
+                   else {
+                       showMsg(data.Message);
+                   }
+               }
+           });
+        });
+        function showMsg(inf) {
+            $(".txtMsg").show();
+            $(".txtP").html(inf);
+        }
+        $(".prompt").click(function () {
+            $(".txtMsg").hide();
+            window.location.href = '../dk.html';
+        });
+        $(".person_infi .closeSm").click(function () {
+            window.location.href = '../dk.html';
+        });
+    })
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,85 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model MessagerDto
+<link href="/Content/Editor/themes/default/default.css" rel="stylesheet" />
+<div class="form-group hidden">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ReceiverId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.ReceiverId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group hidden">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.MessageType) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.MessageType, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.MessageTitle) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.MessageTitle, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Description) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Description, new { @class = "article-editor" })
+    </div>
+</div>
+<div class="form-group hidden">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Status) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Status, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m => m.Id)
+@Html.HiddenFor(m => m.SenderId)
+
+<script type="text/javascript" src="/content/editor/kindeditor-min.js"></script>
+<script type="text/javascript" src="/content/editor/lang/zh_CN.js"></script>
+<script>
+    $(document).ready(function () {
+        //初始化页眉编辑器
+        var editor = KindEditor.create(".article-editor", {
+            width: "100%",
+            height: "400px",
+            resizeType: 1,
+            uploadJson: "/content/editor/uploadArticle_json.ashx",
+            fileManagerJson: "/content/editor/file_managerArticle_json.ashx",
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            contentEditable: true,
+            filterMode: true,
+            items: [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink'
+            ],
+            afterCreate: function (id) {
+                this.focus(id);
+            },
+            afterChange: function (id) {
+                this.sync(id);
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+
+    });
+</script>

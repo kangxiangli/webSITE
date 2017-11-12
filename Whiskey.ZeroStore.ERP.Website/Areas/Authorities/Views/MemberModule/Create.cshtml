@@ -1,0 +1,124 @@
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model MemberModuleDto
+
+<style>
+
+</style>
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.ParentId) :
+    </label>
+    <div class="col-md-4">
+        @Html.DropDownListFor(f=>f.ParentId, (List<SelectListItem>)ViewBag.ListModule, new { @class = "form-control selectpicker", @onchange = "" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.ParentId)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.ModuleName) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.ModuleName, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.ModuleName)
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.Icon) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.Icon, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.Icon)
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.Description) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.Description)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.PageUrl) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.PageUrl, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.PageUrl)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.OverrideUrl) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.OverrideUrl, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.OverrideUrl)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.PageArea) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.PageArea, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.PageArea)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.PageController) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.PageController, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.PageController)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.PageAction) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.PageAction, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.PageAction)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.IsShow) :
+    </label>
+    <div class="col-md-1">
+        @Html.CheckBoxFor(f => f.IsShow, new { @class = "form-control", @checked = "checked" })
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.selectpicker').selectpicker();
+    });
+</script>
+

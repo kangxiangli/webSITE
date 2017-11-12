@@ -1,0 +1,444 @@
+﻿
+<style>
+	#store-memu{width: 280px !important;margin-left: 0;}
+	#store-memu li{float: left;}
+	.child_memu{width: 163px !important;padding: 7px 0;margin-top: 6px;min-width:86px}
+	.child_memu li a{text-align: center;max-width: 163px;}
+	.memu{width: 307px !important;min-width: 86px !important;padding: 7px 0;margin-top: 6px;}
+	.joinmenu{
+    transition: all .5s ease .2s;
+    margin-top: 11px;
+    color: rgba(255,255,255,.8);
+    min-width: 90px;
+    width: 20px;
+    text-align: center;
+    font-size: 15px;
+    letter-spacing: 2px;
+	}
+	.joinmenu li{
+		cursor: pointer;
+	}
+	.joinmenu li:hover{
+		color:#fff;
+		background: rgba(0,0,0,.9);
+	}
+	.dropdown_sale{margin-right:10px}
+	.dropdown_sale>a{background: rgba(0,0,0,.2);}
+	.dropdown_sale>a:focus{background: rgba(0,0,0,.2);}
+	.dropdown_sale>a:active{color: #fff !important;}
+	.memu li:hover{background: rgba(0,0,0,.4);}
+	.memu li a:hover{background: none;}
+	.memu li{float: left;max-width: 101px;cursor: pointer;}
+	.child_memu li{cursor: pointer;}
+	.sale_content>.timedata button ,.pageSize button{background: rgba(0,0,0,.2); padding: 20px 23px;line-height: 0px;}
+	.sale_content>.timedata button:active,
+	.sale_content>.timedata button:focus,.pageSize button:active,.pageSize button:focus{background: rgba(0,0,0,.2);}
+	 .saledetails{top:0%;right:25%;width: 300px;background: rgba(0,0,0,.2);border-radius: 4px;display: none;min-width: 325px;}
+     .SaleData li{color:#fff;font-size: 14px;text-decoration: none;list-style-type: none;float: left;margin:5px;padding:5px}
+     .SaleData li:hover{cursor: pointer;background: rgba(0,0,0,.2);}
+     .datepicker-dropdown{background: rgba(0,0,0,1) !important;}
+    #Search{float: left;margin-left:8px;height: 39px;}
+     .nodataDiv{position: absolute;top: 43%;left: 22%;width: 59px;height: 20px;border: 1px solid #ccc;color: #ccc;border-radius: 4px;line-height: 17px;display: none;}
+.sale_content{width: 100%;height: 40px;position: absolute;top: 6%;left: 2%;}
+.sale_content>div{float: left;margin:0;}
+
+.option{position: absolute;width: 200px;top: 100%;left: -74%;font-size: 15px;padding:4px;display:none;z-index: 99;}
+.option_content{width: 100%;height: 100%;display: block;margin-bottom: 4px;position: relative;}
+.option input{width: 50px;display: inline-block;line-height: 20px;text-align: center;}
+.addContent{position: absolute;top: 6px;left: 0;width: 20px;height: 20px;z-index: 3;}
+.delContent{position: absolute;top: 0px;right: 0;width: 20px;height: 20px;z-index: 3;display:none;}
+.nodata{position:absolute;top:50%;left:50%;transform: translate(-50%,-50%);display: none;}
+</style>
+<div id="saleStatistics" style="width: 100%;height:800px;position:relative;">
+	<!-- Single button -->
+<div class="nodata">暂无数据</div>
+</div>
+ <div class="nodataDiv">暂无销售</div>
+  <div class="sale_content">
+  	<div class="dropdown dropdown_sale" style="z-index: 999;">
+		            <a class="btn dropdown-toggle switch_store" data-toggle="dropdown" href="#">
+		                <i class="icon-font"></i>&nbsp;
+		                <span id="big-logo" class="current-font">2017年</span>&nbsp;
+		                <b class="caret"></b>
+		            </a>
+		            <ul class="dropdown-menu joinmenu" id="year-memu">
+		            
+		            </ul>
+    </div>
+    <div class="dropdown dropdown_sale" style="z-index: 999;">
+		            <a class="btn dropdown-toggle switch_store" data-toggle="dropdown" href="#">
+		                <i class="icon-font"></i>&nbsp;
+		                <span id="big-logo2" class="current-font">月份</span>&nbsp;
+		                <b class="caret"></b>
+		            </a>
+		            <ul class="dropdown-menu joinmenu" id="month-memu" >
+		            	<li>全部</li>
+		            	<li>1月</li>
+		            	<li>2月</li>
+		            	<li>3月</li>
+		            	<li>4月</li>
+		            	<li>5月</li>
+		            	<li>6月</li>
+		            	<li>7月</li>
+		            	<li>8月</li>
+		            	<li>9月</li>
+		            	<li>10月</li>
+		            	<li>11月</li>
+		            	<li>12月</li>
+		            </ul>
+    </div>
+	<div class="btn-group pageSize" role="group" aria-label="..." style="margin-left:25px;z-index: 999;">
+	  <button type="button" class="btn btn-default" page-data="-1" style="background: rgba(0,0,0,.9);">全部</button>
+	  <button type="button" class="btn btn-default" page-data="0">店铺</button>
+	  <button type="button" class="btn btn-default" page-data="1">订货</button>
+	  <button type="button" class="btn btn-default" page-data="2">销售</button>
+	  <button type="button" class="btn btn-default" page-data="3">会员</button>
+	</div>
+	<div class="btn-group pageSize" role="group" aria-label="..." style="margin-left:25px;z-index: 999;">
+	  <button type="button" class="btn btn-default" page-data="4" style="background: rgba(0,0,0,.9);">累计</button>
+	  <button type="button" class="btn btn-default" page-data="5">不累计</button>
+	</div>
+	<div class="btn-group pageSize" role="group" aria-label="..." style="margin-left:25px;z-index: 999;">
+	  <button type="button" class="btn btn-default" page-data="6" style="background: rgba(0,0,0,.9);">显示数值</button>
+	  <button type="button" class="btn btn-default" page-data="7">不显示</button>
+	</div>
+	<button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+</div>
+<script type="text/javascript" src="/Content/scripts/echart/echarts.js"></script>
+<script type="text/javascript">
+	var json={};
+    json.IsAccumulate=true;
+    json.year=2017;
+    json.dataType=-1;//默认全部数据
+    var SaleNumber,CountNumber,Xname=[];
+    var allData={};
+    var labelisshow=true;
+    var activepage;
+    allData.PartnerCount=[];
+    allData.OrderCount=[];
+    allData.OrderMoney=[];
+    allData.SaleCount=[];
+    allData.SaleMoney=[];
+    allData.MemberCount=[];
+    allData.Xname=[];
+      	$(function(){
+      		require.config({
+            paths: {
+                echarts: '/content/scripts/echart/'
+            }
+        });
+      		plotWithOptions();
+      		var myDate = new Date();
+            var currentYear=myDate.getFullYear(); //获取当前年份(2位)
+            for(var i=0;i<=5;i++){
+            	$("#year-memu").append("<li>"+(currentYear-i)+'年'+"</li>");
+            }
+      		
+      		$("#year-memu li").bind('click',function(){
+      			var year=$(this).text();
+      			$("#big-logo").html(year);
+      			$('#big-logo2').parent("a").attr("disabled", false);
+      			$('#big-logo2').html("全部");
+      			year=year.substring(0,year.length-1);
+      			json.year=parseInt(year);
+      		});
+      		$("#month-memu li").bind('click',function(){
+      			var month=$(this).text();
+      			$("#big-logo2").html(month);
+      			if(month=='全部'){
+      				$('#big-logo2').parent("a").attr("disabled", true);
+      				  delete json['month'];
+      			}else{
+      				month=month.substring(0,month.length-1);
+      				json.month=parseInt(month);
+      			}
+      		});
+      	})
+      	
+      	function plotWithOptions(){
+             /*切换类型*/      
+              $(".pageSize button").bind("click",function(){
+              		       activepage=$(this).attr('page-data');	//MemberStatType
+              		      $(this).css("background","rgba(0,0,0,.9)").siblings().css("background","rgba(0,0,0,.2)");
+              		      if(activepage==-1)json.dataType=-1;
+              		      if(activepage==0)json.dataType=0;
+              		      if(activepage==1)json.dataType=1;
+                          if(activepage==2)json.dataType=2;
+                          if(activepage==3)json.dataType=3;
+                          if(activepage==4)json.IsAccumulate=true;
+                          if(activepage==5)json.IsAccumulate=false;
+                     })
+                         
+                         
+                         
+                         
+                            $('#Search').click(function(){
+                            	//console.log("请求参数"+JSON.stringify(json));
+                            	var yearOrmonth=$("#big-logo2").text();
+                            if(yearOrmonth=="全部"||yearOrmonth=="月份"){
+                            		getData("/DataStat/Partner/QueryByYear",{'year':json.year,'IsAccumulate':json.IsAccumulate},true);
+                            	}else{
+                            		getData("/DataStat/Partner/QueryByMonth",{'year':json.year,'month':json.month,'IsAccumulate':json.IsAccumulate},false);
+                            	}
+						     
+                            });
+                            function clearArr(){
+                            	allData.PartnerCount=[];
+							    allData.OrderCount=[];
+							    allData.OrderMoney=[];
+							    allData.SaleCount=[];
+							    allData.SaleMoney=[];
+							    allData.MemberCount=[];
+							    allData.Xname=[];
+                            }
+                            function getData(url,obj,flag){
+                            	$.get(url,obj,
+                            	function(da){
+                             //    console.log(JSON.stringify(da));
+                            	 if(da.ResultType==3){
+                            	 	$(".nodata").hide();
+                            	     var data=da.Data;
+                            	     if(json.dataType==-1){//全部
+                            				clearArr();
+                            				$.each(data,function(i,item){
+                            					allData.PartnerCount.push(item.PartnerCount);
+                            					allData.OrderCount.push(item.OrderCount);
+                            					allData.OrderMoney.push(item.OrderMoney);
+                            					allData.SaleCount.push(item.SaleCount);
+                            					allData.SaleMoney.push(item.SaleMoney);
+                            					allData.MemberCount.push(item.MemberCount);
+                            					if(flag){
+                            						allData.Xname.push(item.Month);
+                            					}else{
+                            					    allData.Xname.push(item.Day);
+                            					}
+                            				})
+                            			}else if(json.dataType==0){//店铺
+                            				clearArr();
+                            				$.each(data,function(i,item){
+                            					allData.PartnerCount.push(item.PartnerCount);
+                            					if(flag){
+                            						allData.Xname.push(item.Month);
+                            					}else{
+                            					    allData.Xname.push(item.Day);
+                            					}
+                            				})
+                            			}else if(json.dataType==1){//订货数和订货金额
+                            				clearArr();
+                            			    allData.Xname.splice(0,Xname.length);
+                            				$.each(data,function(i,item){
+                            					allData.OrderCount.push(item.OrderCount);
+                            					allData.OrderMoney.push(item.OrderMoney);
+                            					if(flag){
+                            						allData.Xname.push(item.Month);
+                            					}else{
+                            					    allData.Xname.push(item.Day);
+                            					}
+                            				})
+                            			}else if(json.dataType==2){//销售数和销售金额
+                            				clearArr();
+                            				$.each(data,function(i,item){
+                            					allData.SaleCount.push(item.SaleCount);
+                            					allData.SaleMoney.push(item.SaleMoney);
+                            					if(flag){
+                            						allData.Xname.push(item.Month);
+                            					}else{
+                            					    allData.Xname.push(item.Day);
+                            					}
+                            				})
+                            			}else if(json.dataType==3){//会员数
+                            				clearArr();
+                            				$.each(data,function(i,item){
+                            					allData.MemberCount.push(item.MemberCount);
+                            					if(flag){
+                            						allData.Xname.push(item.Month);
+                            					}else{
+                            					    allData.Xname.push(item.Day);
+                            					}
+                            				})
+                            			}
+                            				if(activepage==7){
+                            					labelisshow=false;
+                            				}else{
+                            					labelisshow=true;
+                            				}
+                            				reloadJoinChart(labelisshow);
+                            			}
+                            	}).error(function(){
+                            			 $.whiskey.web.alert({
+								                type: "info",
+								                content: "该时间段暂无数据",
+								                callback: function () {
+								                }
+								            });
+                            	})
+                            }
+                            
+                            
+              }        
+        function reloadJoinChart(labelisshow){
+        require(
+            [
+            'echarts',
+            'echarts/chart/line',
+            'echarts/chart/bar',
+            ],
+            function (ec) {
+         var joinChart = ec.init(document.getElementById('saleStatistics'));
+             joinChart.showLoading({
+                    effect:'spin',
+                    effectOption: {backgroundColor: 'rgba(0, 0, 0, 0)'}
+                 });
+         var itemStyles={
+                       normal: {
+                       	   label : {
+	                        show: labelisshow,
+	                        textStyle : {
+	                            fontSize : '17',
+	                            fontFamily : '微软雅黑',
+	                            fontWeight : 'bold'
+	                        }
+                          }
+                        }
+				      }
+         var joinChartOption = {
+				    tooltip : {
+				       trigger: 'axis',
+				        axisPointer: {
+				        type: 'none'
+				        }
+				    },
+				    legend: {
+				        data:[
+				        {name:'店铺数量',icon : 'image:../../../../Theme/default/img/icon-1.png',textStyle:{ color:'auto',fontSize:18}},
+				        {name:'订货数量',icon : 'image:../../../../Theme/default/img/icon-2.png',textStyle:{ color:'auto',fontSize:18}},
+				        {name:'订货总额',icon : 'image:../../../../Theme/default/img/icon-3.png',textStyle:{ color:'auto',fontSize:18}},
+				        {name:'销售件数',icon : 'image:../../../../Theme/default/img/icon-4.png',textStyle:{ color:'auto',fontSize:18}},
+				        {name:'销售总额',icon : 'image:../../../../Theme/default/img/icon-5.png',textStyle:{ color:'auto',fontSize:18}},
+				        {name:'会员数',icon : 'image:../../../../Theme/default/img/icon-6.png',textStyle:{ color:'auto',fontSize:18}}
+				        ],
+				        y:'80px',
+				    },
+				     grid:{
+				    	borderWidth:0,
+				    	x2:'4%',
+				    	x:'7%',
+				    	y:'16%',
+				    },
+				    calculable : false,
+				    xAxis : [
+				    
+				        {
+				            type : 'category',
+				            boundaryGap : false,
+				            data : allData.Xname,
+				            axisLine : {    
+			                show: true,
+			                lineStyle: {
+			                    color: 'rgba(255,255,255,.5)',
+			                    type: 'solid',
+			                    width: 1
+			                         }
+				            },
+				            splitLine:{
+				            	show:true,
+				            	lineStyle:{
+				            		color: ['rgba(255,255,255,.1)'],
+								    width: 1,
+								    type: 'solid'
+				            	    }
+				            },
+				            axisLabel: {
+			                            show: true,
+			                            textStyle: {
+			                                color: '#fff'
+			                            }
+			                         }
+				        },
+				        
+			            
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value',
+				            axisLine:{
+			            	show:true,
+			            	lineStyle:{
+									    color: '#48b',
+									    width: 2,
+									    type: 'solid'
+						        }    
+					        },
+					      splitLine:{
+					            	show:true,
+					            	lineStyle:{
+					                color: ['rgba(255,255,255,.1)'],
+					                width: 1,
+					                type: 'solid'
+					            	}
+					       },
+					      axisTick:true,
+					      axisLabel: {
+                            show: true,
+                            textStyle: {
+                                color: '#fff'
+                                   }
+                          }
+				        }
+				         
+				    ],
+				    series : [
+				        {
+				            name:'店铺数量',
+				            type:'line',
+				            stack: '总量1',
+				            data:allData.PartnerCount||[],
+				            itemStyle:itemStyles
+				        },
+				        {
+				            name:'订货数量',
+				            type:'line',
+				            stack: '总量2',
+				            data:allData.OrderCount||[],
+				             itemStyle :itemStyles
+				        },
+				        {
+				            name:'订货总额',
+				            type:'line',
+				            stack: '总量3',
+				            data:allData.OrderMoney||[],
+				             itemStyle :itemStyles
+				        },
+				        {
+				            name:'销售件数',
+				            type:'line',
+				            stack: '总量4',
+				            data: allData.SaleCount||[],
+				             itemStyle :itemStyles
+				        },
+				        {
+				            name:'销售总额',
+				            type:'line',
+				            stack: '总量5',
+				            data:allData.SaleMoney||[],
+				             itemStyle : itemStyles
+				        },
+				         {
+				            name:'会员数',
+				            type:'line',
+				            stack: '总量6',
+				            data:allData.MemberCount||[],
+				            itemStyle :itemStyles
+				        }
+				    ]
+				};
+                    
+         
+                      joinChart.setOption(joinChartOption); 
+                      joinChart.hideLoading();
+            
+            }
+            );
+             
+         }      	
+    </script>

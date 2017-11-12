@@ -1,0 +1,80 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model DiscountDto
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DiscountName) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DiscountName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DiscountMethod) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DiscountMethod, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.Description, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DiscountByPrice) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DiscountByPrice, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DiscountPrice) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DiscountPrice, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DiscountByAmount) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DiscountByAmount, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DiscountAmount) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DiscountAmount, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DiscountType) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DiscountType, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.DiscountRate) :
+    </label>
+    <div class="col-md-6">
+        @Html.TextBoxFor(m=> m.DiscountRate, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m=> m.Id)

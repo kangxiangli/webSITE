@@ -1,0 +1,994 @@
+﻿ <!DOCTYPE html>
+<html lang="zh-cn" dir="ltr" class="client-nojs">
+<head>
+    <title>API - API</title>
+    <meta charset="UTF-8" />
+    <meta name="generator" content="MediaWiki 1.18.2" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="search" type="application/opensearchdescription+xml" href="/wiki/opensearch_desc.php" title="API (zh-cn)" />
+    <link rel="alternate" type="application/atom+xml" title="微博API的Atom" href="/wiki/index.php?title=%E7%89%B9%E6%AE%8A:%E6%9C%80%E8%BF%91%E6%9B%B4%E6%94%B9&amp;feed=atom" />
+    <link rel="stylesheet" href="/wiki/load.php?debug=false&amp;lang=zh-cn&amp;modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.monobook&amp;only=styles&amp;skin=monobook&amp;*" />
+    <link rel="stylesheet" href="https://img.t.sinajs.cn/t4/appstyle/open/css/pages/wiki/wiki_main_lumpsugar.css?version=1.1.2.366" media="screen" />
+    
+ 
+</head>
+<body class="mediawiki ltr sitedir-ltr B_wiki_main  skin-monobook">
+
+    <!--主内容开始-->
+    <div class="wiki_wrap">
+        <div class="wiki_con">
+            <div class="con_box">
+                <div style="padding: 50px 0 20px; display: block; overflow: hidden; color: white; font-size: 28px">
+                    开发文档
+                </div>
+                <div class="wiki_body">
+                    <div class="wiki_inner">
+                        <div class="main_content clearfix">
+                            <div class="wiki_side noprint">
+                                <!--左侧导航-->
+                                <div id="pl_web_wikiNav" class="wiki_nav">
+                                    <ul class="nav_list">
+
+                                        <li class="n_top cat_cur">
+                                            <h3 action-type="folder">
+                                                <a href="#" onclick="return false;">
+                                                    <em class="wiki_icon icon_wkDoc"></em><span class="txt">API</span><em class="nav_arr"></em>
+                                                </a>
+                                            </h3>
+                                            <ul class="child_list" style="">
+                                                <li class="n_sub"><a href="/api02/api02_update.html" class="api02_ip" target="_blank">API更新日志</a></li>
+                                                <li class="n_sub"><a href="/api02/api02_test.html" class="api02_ip" target="_blank">API测试工具</a></li>
+                                            </ul>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <!--/左侧导航结束-->
+                            </div>
+                            <div class="wiki_bodyContent" id="bodyContent">
+                                <h1 id="firstHeading" class="firstHeading">API</h1>
+                                <div lang="zh-cn" dir="ltr" class="mw-content-ltr">
+                                    <h2 class="wiki_title"><span class="mw-headline">API</span></h2>
+                                    <div class="wiki_kit">
+                                        <div class="wiki_taglist">
+                                            <ul class="clearfix">
+                                                <li><a href="#member_index">会员</a></li>
+                                                <li><a href="#store_index">商城</a></li>
+                                                <li><a href="#Cart_index">购物车</a></li>
+                                                <li><a href="#Collocation_index">搭配师</a></li>
+                                                <li><a href="#user_position">单品接口</a></li>
+                                                <li><a href="#member_Collocation">我的搭配接口</a></li>
+                                                <li><a href="#member_Collocation_Calendar">我的搭配日历接口</a></li>
+                                                <li><a href="#propertie_index">基础属性</a></li>
+                                                <li><a href="#message_index">消息</a></li>
+                                                <li><a href="#approval_index">赞和评论</a></li>
+                                                <li><a href="#article_index">首页</a></li>
+                                                <li><a href="#helper_index">使用手册文件</a></li>
+                                                <li><a href="#apparticle_index">文章</a></li>
+                                                <li><a href="#circle_index">圈子</a></li>
+                                            </ul>
+                                        </div>
+                                        <p>
+                                            <br />
+                                        </p>
+                                        <!-- ————————————————————会员 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="9" scope="col">
+                                                    <span id="member_index">首页</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="4" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Members/Member_Login.html" class="api02_ip" target="_blank" title="会员登录">会员登录</a>
+                                                </td>
+                                                <td>
+                                                    会员登录
+                                                </td>
+                                            </tr>
+                                            <tr>                                                 
+                                                <td>
+                                                    <a href="page/Members/MyWallet_Get.html" class="api02_ip" target="_blank" title="我的钱包">我的钱包</a>
+                                                </td>
+                                                <td>
+                                                    我的钱包
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Members/MemberSign_Get.html" class="api02_ip" target="_blank" title="获取我的签到列表">获取我的签到列表</a>
+                                                </td>
+                                                <td>
+                                                    获取我的签到列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Members/MemberSign_GetDetail.html" class="api02_ip" target="_blank" title="获取我的签到详情">获取我的签到详情</a>
+                                                </td>
+                                                <td>
+                                                    获取我的签到详情
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="5" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="./page/Members/Member_Register.html" class="api02_ip" target="_blank" title="会员注册">会员注册</a>
+                                                </td>
+                                                <td>
+                                                    会员注册
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Members/Member_UpdatePassWord.html" class="api02_ip" target="_blank" title="修改密码">修改密码</a>
+                                                </td>
+                                                <td>
+                                                    修改密码
+                                                </td>
+                                            </tr>
+                                            <tr>                                                 
+                                                <td>
+                                                    <a href="page/Members/Member_AddAttr.html" class="api02_ip" target="_blank" title="添加风格测试">添加风格测试</a>
+                                                </td>
+                                                <td>
+                                                    添加会员风格测试
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Members/MemberSign_Sign.html" class="api02_ip" target="_blank" title="签到">签到</a>
+                                                </td>
+                                                <td>
+                                                    签到
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <!-- ————————————————————会员 结束——————————————————————————-->
+
+                                        <!-- ————————————————————商城 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="4" scope="col">
+                                                    <span id="Store_index">商城</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="4" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Products/Product_GetList.html" class="api02_ip" target="_blank" title="获取商城商品列表">获取商城商品列表</a>
+                                                </td>
+                                                <td>
+                                                    获取首页栏目信息
+                                                </td>
+                                            </tr>
+                                            <tr>                                                 
+                                                <td>
+                                                    <a href="page/Products/Product_GetDetail.html" class="api02_ip" target="_blank" title="获取商城商品详情">获取商城商品详情</a>
+                                                </td>
+                                                <td>
+                                                    获取商城商品详情
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Products/Product_GetContent.html" class="api02_ip" target="_blank" title="获取商城商品描述">获取商城商品描述</a>
+                                                </td>
+                                                <td>
+                                                    获取商城商品描述
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Products/Product_GetGetProductByBrandAndCategory.html" class="api02_ip" target="_blank" title="获取商品同品牌同款式下的尺码数量和颜色">获取要加入购物车的商品信息</a>
+                                                </td>
+                                                <td>
+                                                    获取商品同品牌同款式下的尺码数量和颜色
+                                                </td>
+                                            </tr>
+                                            <!--<tr>
+                                                <td rowspan="1" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="./page/Members/Member_AddAttr.html" class="api02_ip" target="_blank" title="添加风格测试">添加风格测试</a>
+                                                </td>
+                                                <td>
+                                                    添加会员风格测试
+                                                </td>
+                                            </tr>-->
+
+                                        </table>
+                                        <!-- ————————————————————商城 结束——————————————————————————-->
+
+                                        <!-- ————————————————————购物车 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="8" scope="col">
+                                                    <span id="Cart_index">购物车</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="1" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Carts//Cart_GetList.html" class="api02_ip" target="_blank" title="获取购物车">获取购物车列表</a>
+                                                </td>
+                                                <td>
+                                                    获取会员购物车列表
+                                                </td>
+                                            </tr>
+                                             
+                                            <tr>
+                                                <td rowspan="2" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Carts/Cart_Add.html" class="api02_ip" target="_blank" title="添加商品到购物车">添加商品到购物车</a>
+                                                </td>
+                                                <td>
+                                                    添加商品到购物车
+                                                </td>
+                                            </tr>
+                                            <tr>                                                 
+                                                <td>
+                                                    <a href="page/Carts/Cart_SaveEdit.html" class="api02_ip" target="_blank" title="保存编辑购物车">保存编辑购物车</a>
+                                                </td>
+                                                <td>
+                                                    保存编辑购物车
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <!-- ————————————————————购物车 结束——————————————————————————-->
+
+
+                                        <!-- ————————————————————搭配师 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="3" scope="col">
+                                                    <span id="store_index">搭配师</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="3" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Products/Collocation_GetRecommendList.html" class="api02_ip" target="_blank" title="获取搭配文章和搭配列表">获取搭配文章和搭配列表</a>
+                                                </td>
+                                                <td>
+                                                    获取首页栏目信息
+                                                </td>
+                                            </tr>
+                                            <tr>                                                 
+                                                <td>
+                                                    <a href="page/Products/Collocation_GetRecommendCollo.html" class="api02_ip" target="_blank" title="获取推荐搭配列表">获取推荐搭配列表</a>
+                                                </td>
+                                                <td>
+                                                    获取推荐搭配列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Products/Collocation_GetRecommendArticle.html" class="api02_ip" target="_blank" title="获取推荐文章列表">获取推荐文章列表</a>
+                                                </td>
+                                                <td>
+                                                    获取推荐文章列表
+                                                </td>
+                                            </tr>
+                                            <!--<tr>
+                                                <td rowspan="1" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="./page/Members/Member_AddAttr.html" class="api02_ip" target="_blank" title="添加风格测试">添加风格测试</a>
+                                                </td>
+                                                <td>
+                                                    添加会员风格测试
+                                                </td>
+                                            </tr>-->
+
+                                        </table>
+                                        <!-- ————————————————————搭配师 结束——————————————————————————-->
+
+
+                                        <!-- ————————————————————单品模块 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="5" scope="col">
+                                                    <span id="user_position">单品</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="5" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_GetList.html" class="api02_ip" target="_blank" title="获取我的单品信息">获取我的单品信息</a>
+                                                </td>
+                                                <td>
+                                                    获取我的单品信息
+                                                </td>
+                                            </tr>
+                                            <tr>                                              
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_GetAllList.html" class="api02_ip" target="_blank" title="获取单品">获取单品</a>
+                                                </td>
+                                                <td>
+                                                    获取单品和购买过的单品信息
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_GetDetail.html" class="api02_ip" target="_blank" title="获取单品">获取单详情</a>
+                                                </td>
+                                                <td>
+                                                    获取单品和购买过的单品相信信息
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_GetComment.html" class="api02_ip" target="_blank" title="获取评论">获取单品评论</a>
+                                                </td>
+                                                <td>
+                                                    获取评论列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_GetApproval.html" class="api02_ip" target="_blank" title="获取单品赞">获取单品赞</a>
+                                                </td>
+                                                <td>
+                                                    获取单品赞列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="6" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_Add.html" class="api02_ip" target="_blank" title="添加单品">添加单品</a>
+                                                </td>
+                                                <td>
+                                                    添加单品
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_GetEdit.html" class="api02_ip" target="_blank" title="获取编辑的单品">获取编辑的单品</a>
+                                                </td>
+                                                <td>
+                                                    获取编辑的单品信息
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_SaveEdit.html" class="api02_ip" target="_blank" title="保存编辑的单品">保存编辑的单品</a>
+                                                </td>
+                                                <td>
+                                                    保存编辑的单品信息
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_Delete.html" class="api02_ip" target="_blank" title="删除单品">删除单品</a>
+                                                </td>
+                                                <td>
+                                                    删除单品
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_Multiple.html" class="api02_ip" target="_blank" title="批量添加单品">批量添加单品</a>
+                                                </td>
+                                                <td>
+                                                    批量添加单品
+                                                </td>
+                                            </tr>
+                                            <!--<tr>
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_AddApproval.html" class="api02_ip" target="_blank" title="添加赞">添加赞</a>
+                                                </td>
+                                                <td>
+                                                    添加赞
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="./page/Products/MemberSingleProduct_CancelApproval.html" class="api02_ip" target="_blank" title="取消赞">取消赞</a>
+                                                </td>
+                                                <td>
+                                                    取消赞
+                                                </td>
+                                            </tr>-->
+                                        </table>
+                                        <!-- ————————————————————单品模块 结束——————————————————————————-->
+                                        <!-- ————————————————————我的搭配模块 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="3" scope="col">
+                                                    <span id="member_Collocation">我的搭配</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="2" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="/Document/APIDocument/page/Products/MemberCollocation_GetList.html" class="api02_ip" target="_blank" title="获取搭配列表">获取搭配列表</a>
+                                                </td>
+                                                <td>
+                                                    获取会员搭配列表
+                                                </td>
+                                            </tr>
+                                            <tr>                                                 
+                                                <td>
+                                                    <a href="/Document/APIDocument/page/Products/MemberCollocation_GetDetail.html" class="api02_ip" target="_blank" title="获取搭配详情">获取搭配详情</a>
+                                                </td>
+                                                <td>
+                                                    获取会员搭配详情
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="4" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="./page/Products/MemberCollocation_Add.html" class="api02_ip" target="_blank" title="添加我的搭配">添加我的搭配</a>
+                                                </td>
+                                                <td>
+                                                    添加我的搭配
+                                                </td>
+                                            </tr>
+                                            <tr>                                                 
+                                                <td>
+                                                    <a href="./page/Products/MemberCollocation_GetEdit.html" class="api02_ip" target="_blank" title="编辑我的搭配">获取编辑我的搭配</a>
+                                                </td>
+                                                <td>
+                                                    获取要编辑的我的搭配数据
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="./page/Products/MemberCollocation_SaveEdit.html" class="api02_ip" target="_blank" title="保存编辑我的搭配">保存编辑后的我的搭配</a>
+                                                </td>
+                                                <td>
+                                                    保存编辑后的我的搭配
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="./page/Products/MemberCollocation_Delete.html" class="api02_ip" target="_blank" title="删除搭配">删除搭配</a>
+                                                </td>
+                                                <td>
+                                                    删除搭配
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <!-- ————————————————————我的搭配 结束——————————————————————————-->
+                                        
+                                        <!-- ————————————————————我的搭配日历模块 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="3" scope="col">
+                                                    <span id="member_Collocation_Calendar">我的搭配日历</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="2" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Products/MemberCollocation_GetCollocation.html" class="api02_ip" target="_blank" title="暂无">获取搭配列表</a>
+                                                </td>
+                                                <td>
+                                                    根据当前月份获取会员搭配列表
+                                                </td>
+                                            </tr>
+                                            <tr>                                                 
+                                                <td>
+                                                    <a href="page/Products/MemberCollocation_GetCollocationByDate.html" class="api02_ip" target="_blank" title="暂无">获取搭配</a>
+                                                </td>
+                                                <td>
+                                                    根据日期获取搭配信息
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="1" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="./page/Products/ColloCalendar_Add.html" class="api02_ip" target="_blank" title="添加我的搭配日历">添加我的搭配日历</a>
+                                                </td>
+                                                <td>
+                                                    添加我的搭配日历
+                                                </td>
+                                            </tr>
+
+                                        </table>
+                                        <!-- ————————————————————我的搭配日历模块 结束——————————————————————————-->
+
+                                        <!-- ————————————————————基础属性模块 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="8" scope="col">
+                                                    <span id="propertie_index">基础属性</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="8" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Properties/Category_GetList.html" class="api02_ip" target="_blank" title="暂无">获取分类列表</a>
+                                                </td>
+                                                <td>
+                                                    获取分类列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Properties/Category_GetChildrenList.html" class="api02_ip" target="_blank" title="暂无">获取二级分类列表</a>
+                                                </td>
+                                                <td>
+                                                    获取二级分类列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Properties/Color_GetList.html" class="api02_ip" target="_blank" title="暂无">获取颜色列表</a>
+                                                </td>
+                                                <td>
+                                                    获取颜色列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Properties/ProductAttribute_GetList.html" class="api02_ip" target="_blank" title="暂无">获取风格列表</a>
+                                                </td>
+                                                <td>
+                                                    获取风格列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Properties/Season_GetList.html" class="api02_ip" target="_blank" title="暂无">获取季节列表</a>
+                                                </td>
+                                                <td>
+                                                    获取季节列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Properties/Situation_GetList.html" class="api02_ip" target="_blank" title="暂无">获取场合列表</a>
+                                                </td>
+                                                <td>
+                                                    获取场合列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Properties/Size_GetList.html" class="api02_ip" target="_blank" title="暂无">获取尺码列表</a>
+                                                </td>
+                                                <td>
+                                                    获取尺码列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Properties/Material_GetList.html" class="api02_ip" target="_blank" title="暂无">获取素材列表</a>
+                                                </td>
+                                                <td>
+                                                    获取素材列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="1" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <!--<a href="./page/Products/MemberCollocation_Add.html" class="api02_ip" target="_blank" title="添加我的搭配">添加我的搭配</a>-->
+                                                </td>
+                                                <td>
+                                                    无
+                                                </td>
+                                            </tr>
+
+                                        </table>
+                                        <!-- ————————————————————基础属性模块 结束——————————————————————————-->
+
+                                        
+                                        <!-- ————————————————————消息模块 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="3" scope="col">
+                                                    <span id="message_index">消息模块</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="1" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Messages/VerifyCode_Get.html" class="api02_ip" target="_blank" title="获取短信验证码">获取短信验证码</a>
+                                                </td>
+                                                <td>
+                                                    获取短信验证码
+                                                </td>
+                                            </tr>
+                                            <!--<tr>
+                                                <td rowspan="1" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="./page/Members/MemberCollocation_Add.html" class="api02_ip" target="_blank" title="添加我的搭配">添加我的搭配</a>
+                                                </td>
+                                                <td>
+                                                    添加我的搭配
+                                                </td>
+                                            </tr>-->
+
+                                        </table>
+                                        <!-- ————————————————————消息模块 结束——————————————————————————-->
+
+                                        <!-- ————————————————————赞和评论模块 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="3" scope="col">
+                                                    <span id="approval_index">赞和评论</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="3" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Approvals/Approvals_AddApproval.html" class="api02_ip" target="_blank" title="添加赞">添加赞</a>
+                                                </td>
+                                                <td>
+                                                    添加赞
+                                                </td>
+                                            </tr>
+                                            <tr>                                                 
+                                                <td>
+                                                    <a href="page/Comments/Comment_AddComment.html" class="api02_ip" target="_blank" title="添加评论">添加评论</a>
+                                                </td>
+                                                <td>
+                                                    添加评论
+                                                </td>
+                                            </tr>
+                                            <tr>                                                 
+                                                <td>
+                                                    <a href="page/Approvals/Approvals_CancelApproval.html" class="api02_ip" target="_blank" title="取消赞">取消赞</a>
+                                                </td>
+                                                <td>
+                                                    取消赞
+                                                </td>
+                                            </tr>
+                                            <!--<tr>
+                                                <td rowspan="1" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="./page/Members/MemberCollocation_Add.html" class="api02_ip" target="_blank" title="添加我的搭配">添加我的搭配</a>
+                                                </td>
+                                                <td>
+                                                    添加我的搭配
+                                                </td>
+                                            </tr>-->
+
+                                        </table>
+                                        <!-- ————————————————————赞和评论模块 结束——————————————————————————-->
+
+
+                                        <!-- ————————————————————首页 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="3" scope="col">
+                                                    <span id="article_index">首页</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="1" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Articles/Article_Add.html" class="api02_ip" target="_blank" title="获取首页栏目信息">获取首页栏目信息</a>
+                                                </td>
+                                                <td>
+                                                    获取首页栏目信息
+                                                </td>
+                                            </tr>
+                                            <!--<tr>
+                                                <td rowspan="1" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="./page/Members/MemberCollocation_Add.html" class="api02_ip" target="_blank" title="添加我的搭配">添加我的搭配</a>
+                                                </td>
+                                                <td>
+                                                    添加我的搭配
+                                                </td>
+                                            </tr>-->
+
+                                        </table>
+                                        <!-- ————————————————————首页 结束——————————————————————————-->
+
+                                        <!-- ————————————————————文章 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="8" scope="col">
+                                                    <span id="apparticle_index">文章</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="2" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Articles/Article_Get.html" class="api02_ip" target="_blank" title="获取我的文章信息">获取我的文章信息</a>
+                                                </td>
+                                                <td>
+                                                    获取我的文章信息
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                
+                                                <td>
+                                                    <a href="page/Articles/Article_GetEdit.html" class="api02_ip" target="_blank" title="获取编辑数据">获取编辑数据</a>
+                                                </td>
+                                                <td>
+                                                    获取编辑数据
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="3" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Articles/AppArticle_Add .html" class="api02_ip" target="_blank" title="添加文章">添加文章</a>
+                                                </td>
+                                                <td>
+                                                    添加文章
+                                                </td>
+                                            </tr>
+                                            <tr>
+
+                                                <td>
+                                                    <a href="page/Articles/AppArticle_SaveEdit.html" class="api02_ip" target="_blank" title="保存编辑数据">保存编辑数据</a>
+                                                </td>
+                                                <td>
+                                                    保存编辑数据
+                                                </td>
+                                            </tr>
+                                            <tr>
+
+                                                <td>
+                                                    <a href="page/Articles/AppArticle_Delete.html" class="api02_ip" target="_blank" title="删除数据">删除数据</a>
+                                                </td>
+                                                <td>
+                                                    删除数据
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <!-- ————————————————————文章 结束——————————————————————————-->
+
+                                        <!-- ————————————————————圈子 开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="10" scope="col">
+                                                    <span id="circle_index">圈子</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="3" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Circles/Circle_GetCircleList.html" class="api02_ip" target="_blank" title="获取圈子列表">获取圈子列表</a>
+                                                </td>
+                                                <td>
+                                                    获取圈子列表
+                                                </td>
+                                            </tr>
+                                            <tr>                                                
+                                                <td>
+                                                    <a href="page/Circles/Circle_GetTopicList.html" class="api02_ip" target="_blank" title="获取话题列表">获取话题列表</a>
+                                                </td>
+                                                <td>
+                                                    获取话题列表
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Circles/Circle_GetTopic.html" class="api02_ip" target="_blank" title="查看话题">查看话题</a>
+                                                </td>
+                                                <td>
+                                                    查看话题
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="4" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="page/Circles/Circle_AddCircle.html" class="api02_ip" target="_blank" title="加入圈子">加入圈子</a>
+                                                </td>
+                                                <td>
+                                                    加入圈子
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <a href="page/Circles/Circle_AddTopic.html" class="api02_ip" target="_blank" title="添加话题">添加话题</a>
+                                                </td>
+                                                <td>
+                                                    添加话题
+                                                </td>
+                                            </tr>
+                                            <tr>
+
+                                                <td>
+                                                    <a href="page/Circles/Circle_LeaveMsg.html" class="api02_ip" target="_blank" title="留言">留言</a>
+                                                </td>
+                                                <td>
+                                                    留言
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <!-- ————————————————————文章 结束——————————————————————————-->
+
+
+                                        <!-- ————————————————————首页 使用手册开始——————————————————————————-->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="wiki_table">
+                                            <colgroup>
+                                                <col class="tbF1" />
+                                                <col class="tbF2" />
+                                                <col />
+                                            </colgroup>
+                                            <tr>
+                                                <th colspan="3" scope="col">
+                                                    <span id="helper_index">使用手册</span>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="2" style="text-align: center;">
+                                                    读取接口
+                                                </td>
+                                                <td>
+                                                    <a href="/Content/html/SizeHelper.html" class="api02_ip" target="_blank" title="尺码帮助">尺码帮助</a>
+                                                </td>
+                                                <td>
+                                                    尺码帮助
+                                                </td>
+                                            </tr>
+                                            <tr>                                                
+                                                <td>
+                                                    <a href="/Content/html/Instructions.html" class="api02_ip" target="_blank" title="保养与维护">保养与维护</a>
+                                                </td>
+                                                <td>
+                                                    保养与维护
+                                                </td>
+                                            </tr>
+                                            <!--<tr>
+                                                <td rowspan="1" style="text-align: center;">
+                                                    写入接口
+                                                </td>
+                                                <td>
+                                                    <a href="./page/Members/MemberCollocation_Add.html" class="api02_ip" target="_blank" title="添加我的搭配">添加我的搭配</a>
+                                                </td>
+                                                <td>
+                                                    添加我的搭配
+                                                </td>
+                                            </tr>-->
+
+                                        </table>
+                                        <!-- ————————————————————首页 使用手册结束——————————————————————————-->
+
+                                        <div id='catlinks' class='catlinks catlinks-allhidden'></div>
+                                        <div class="wiki_plus_area">文档更新时间: 2015-11-09</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/主内容开始-->
+
+    <!--统一底导结构-->
+    <!--<div class="op_footer">
+        <div class="inner">
+            <p class="links">
+                <a href="/wiki/index.php/关于开放平台">关于微博开放平台</a><span class="W_vline">|</span>
+                <a href="/wiki/index.php/联系我们">联系我们</a><span class="W_vline">|</span>
+                <a href="/wiki/index.php/应用开发者协议">服务条款</a><span class="W_vline">|</span>
+                <a href="http://weibo.com/weibovc">开发者基金</a><span class="W_vline">|</span>
+                <a href="/game">微游戏</a><span class="W_vline">|</span>
+                <a href="/blog/">平台博客</a>
+            </p>
+            <p class="copyright W_textb">
+                <span>京网文 [2011] 0398-130号</span>
+                <span>京ICP证100780号</span>
+                <span>Copyright &copy; 1996-2014 SINA</span>
+            </p>
+        </div>
+    </div>-->
+    <!--/统一底导结构-->
+</body>
+</html>

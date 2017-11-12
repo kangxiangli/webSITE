@@ -1,0 +1,205 @@
+﻿@using NPOI.SS.Formula.Functions
+@using Whiskey.ZeroStore.ERP.Website.Areas.Notices.Controllers
+
+@model PrintDataModel
+
+<title>- 打印</title>
+<style type="text/css">
+    body, td, th {
+        font-family: Arial, "宋体";
+        font-size: 11px;
+        color: #000;
+    }
+
+    p {
+        padding: 0;
+        margin: 0;
+    }
+
+    .print_box {
+        width: 980px;
+        margin-right: auto;
+        margin-left: auto;
+        border: 2px dotted #000;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    ul, li {
+        list-style: none;
+    }
+
+    #print_tip {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+
+    .product_contain {
+        color: #000 !important;
+        padding-bottom: 5px;
+        margin-bottom: 5px;
+        width: 82%;
+    }
+
+    .product_details {
+        color: #000 !important;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .product_contain .product_details:last-child {
+        border: none !important;
+    }
+
+    .details_left {
+        color: #000 !important;
+        float: left;
+        width: 50%;
+        border-right: 1px solid #ccc;
+        padding: 2px 0 2px 0;
+        text-align: left;
+    }
+
+        .details_left table tr td, .details_right table tr td {
+            color: #000 !important;
+        }
+
+            .details_right table tr td span {
+                color: #000 !important;
+            }
+
+    .details_right {
+        color: #000 !important;
+        float: right;
+        width: 49%;
+        padding: 2px 0 2px 0;
+        text-align: right;
+        position: relative;
+    }
+
+        .details_right table {
+            position: absolute;
+            right: 0;
+        }
+
+    .account_detalis span {
+        color: #000 !important;
+    }
+
+    .account_detalis {
+        color: #000 !important;
+        width: 95%;
+        position: relative;
+        padding: 0 0 10px 0px;
+        margin-bottom: 10px;
+    }
+
+        .account_detalis span:first-child {
+            position: absolute;
+            left: 0;
+        }
+
+        .account_detalis span:last-child {
+            position: absolute;
+            right: 0;
+        }
+
+    .clearfix:after {
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+
+    .clearfix {
+        *+height:3%;
+    }
+</style>
+<script src="~/Content/Scripts/Jquery/jquery-barcode.js"></script>
+
+
+<div class="mainprint" style="width: 450px; margin:30px auto;background-color:white !important;" align="center">
+
+
+
+    <div width="95%" border="0" align="center" cellpadding="0" cellspacing="0" style="font-size: 22px;">
+        <div height="25" align="center">
+            <h1 style="font-size: 25px; font-family: '微软雅黑';">
+                <img src="~/wwwroot/logo.png" width="250" />
+            </h1>
+        </div>
+    </div>
+    <strong class="userId" style="display: inherit;padding:5px;color:#000;">@Model.StoreName</strong>
+    <div style="width: 85%;border-top:1px solid #000;border-bottom: 1px solid #ccc;padding:10px">
+
+        <div class="account_detalis"><span>统计日期</span><span>@ViewBag.StartDate ~ @ViewBag.EndDate</span></div>
+    </div>
+
+
+    <strong id="userId" class="userId" style="display: inherit;padding:5px;color:#000;">销售统计</strong>
+    <div style="width: 85%;border-top:1px solid #000;border-bottom: 1px solid #ccc;padding:10px">
+        <div class="account_detalis"><span>数量</span><span>@Model.RetailCount</span></div>
+        <div class="account_detalis"><span>金额</span><span>@Model.RealRetailAmount</span></div>
+        <div class="account_detalis"><span>现金</span><span>@Model.CashConsume</span></div>
+        <div class="account_detalis"><span>刷卡</span><span>@Model.SwiptCardConsume</span></div>
+        <div class="account_detalis"><span>积分消费</span><span>@Model.ScoreConsume</span></div>
+        <div class="account_detalis"><span>储值消费</span><span>@Model.BalanceConsume</span></div>
+        <div class="account_detalis"><span>抹去</span><span>@Model.EraseAmount</span></div>
+        <div class="account_detalis"><span>找零</span><span>@Model.ReturnSmallMoneyTotal</span></div>
+    </div>
+
+    <strong class="userId" style="display: inherit;padding:5px;color:#000;">退货统计</strong>
+    <div style="width: 85%;border-top:1px solid #000;border-bottom: 1px solid #ccc;padding:10px">
+        <div class="account_detalis"><span>退货数量</span><span>@Model.ReturnedCount</span></div>
+        <div class="account_detalis"><span>退货金额</span><span>@Model.RealReturnedAmount</span></div>
+    </div>
+
+    <strong class="userId" style="display: inherit;padding:5px;color:#000;">会员统计</strong>
+    <div style="width: 85%;border-top:1px solid #000;border-bottom: 1px solid #ccc;padding:10px">
+        <div class="account_detalis"><span>新增会员</span><span>@Model.AddMembCoun</span></div>
+        <div class="account_detalis"><span>充值</span><span>@Model.MemberRechargeBalanceAmount</span></div>
+        <div class="account_detalis"><span>现金储值</span><span>@Model.CashAmountFromRecharge</span></div>
+        <div class="account_detalis"><span>刷卡储值</span><span>@Model.CardAmountFromRecharge</span></div>
+        <div class="account_detalis"><span>赠送储值</span><span>@Model.CouponAmountFromRecharge</span></div>
+        <div class="account_detalis"><span>充积分</span><span>@Model.MemberRechargeScoreAmount</span></div>
+    </div>
+
+
+    <div style="width: 85%;color:#000;">温馨提示:请您妥善保管购物小票，凭票退换商品，最终解释权归领时尚所有，谢谢合作。想了解更多时尚资讯，服饰养护知识欢迎登录零时尚官方网站0-Fashion.com或下载零时尚APP</div>
+</div>
+<iframe id="contfram" src="about:blank" style="display:none"></iframe>
+<script>
+ var sibling_s=$("#userId").parents(".modal-body").next(".modal-footer")
+    sibling_s.prepend('<a class="btn btn-primary" href="javascript:void(0)" onclick="preview()" title="打印凭证" id="print"><span class="fa fa-print "></span>打印</a>');
+</script>
+<script>
+    $(function () {
+        var item = $('#orderID').text()
+        $("#barcode").barcode(item, "code128", { barWidth: 1, barHeight: 20, showHRI: true });
+
+    });
+
+    $(function () {
+        $("#isprintname").click(function () {
+            if (!$(this).is(":checked")) {
+                $(".usname").hide();
+            } else {
+                $(".usname").show();
+            }
+        });
+        $("#print").click(function () {
+            // preview(1);
+            preview();
+        });
+    });
+
+    function preview(oper) {
+        var frm = window.frames[0].window;
+        var cont = $(".mainprint").html().replace($("#print_tip").html(), "").replace($("#print").parents("tr:eq(0)", ""));
+        frm.document.body.innerHTML = cont;
+        frm.print();
+    }
+
+</script>

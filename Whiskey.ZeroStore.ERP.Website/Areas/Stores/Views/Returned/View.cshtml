@@ -1,0 +1,150 @@
+﻿
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model Returned
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.StoreId) :
+    </label>
+    <div class="col-md-10">
+        @Model.Store.StoreName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.MemberId) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Member != null ? Model.Member.MemberName : string.Empty)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ReturnedNumber) :
+    </label>
+    <div class="col-md-10">
+        @Model.ReturnedNumber
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.RetailNumber) :
+    </label>
+    <div class="col-md-10">
+        @Model.RetailNumber
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Status) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Status == 0 ? "整单退货" : "部分退货")
+
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Cash) :
+    </label>
+    <div class="col-md-10">
+        @Model.Cash
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SwipCard) :
+    </label>
+    <div class="col-md-10">
+        @Model.SwipCard
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ConsumeScore) :
+    </label>
+    <div class="col-md-10">
+        @Model.ConsumeScore
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.AchieveScore) :
+    </label>
+    <div class="col-md-10">
+        @Model.AchieveScore
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Balance) :
+    </label>
+    <div class="col-md-10">
+        @Model.Balance
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.EraseMoney) :
+    </label>
+    <div class="col-md-10">
+        @Model.EraseMoney
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Coupon) :
+    </label>
+    <div class="col-md-10">
+        @Model.Coupon
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.StoreActivityDiscount) :
+    </label>
+    <div class="col-md-10">
+        @Model.StoreActivityDiscount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        操作人员 :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

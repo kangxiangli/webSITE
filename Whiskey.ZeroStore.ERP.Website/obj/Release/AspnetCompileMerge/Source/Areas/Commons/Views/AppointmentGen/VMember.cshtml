@@ -1,0 +1,329 @@
+﻿<style>
+    .VMember .modal-dialog {
+        width: 60% !important;
+        max-width: 95% !important;
+    }
+
+    #hoverStyle_8 span:hover {
+        width: 62px;
+        border-radius: 0%;
+        background: black !important;
+    }
+
+    #hoverStyle_8 {
+        width: 62px;
+        border-radius: 0% !important;
+    }
+
+        #hoverStyle_8 > i {
+            display: block;
+            width: 0px;
+            height: 0px;
+        }
+
+        #hoverStyle_8 span {
+            width: 62px;
+            display: inline-block;
+            height: 28px;
+            line-height: 25px;
+        }
+
+        #hoverStyle_8.btn-default {
+            background: #666;
+        }
+
+        #hoverStyle_8.btn-success {
+            background: #5ebd5e;
+        }
+
+</style>
+<div id="v_member_div">
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search text-left">
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">昵称</label>
+                            <div class="col-md-9">
+                                @Html.TextBox("MemberName", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">姓名</label>
+                            <div class="col-md-9">
+                                @Html.TextBox("RealName", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">手机号码</label>
+                            <div class="col-md-9 ">
+                                @Html.TextBox("MobilePhone", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">创建日期</label>
+                            <div class="col-md-9">
+                                <div class="input-daterange input-group">
+                                    @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                    <span class="input-group-addon">至</span>
+                                    @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">购买日期</label>
+                            <div class="col-md-9">
+                                <div class="input-daterange input-group">
+                                    @Html.TextBox("StartTime", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                    <span class="input-group-addon">至</span>
+                                    @Html.TextBox("EndTime", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-3">储值</label>
+                            <div class="col-md-9 ">
+                                <select name="Balance" class="form-control selectpicker _select_input_greater">
+                                    <option value="">请选择</option>
+                                    <option value="1">有</option>
+                                    <option value="0">无</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="col-md-4">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-3">性别</label>
+                                <div class="col-md-9 ">
+                                    <select name="Gender" class="form-control selectpicker _select_input">
+                                        <option value="">请选择</option>
+                                        <option value="0">女</option>
+                                        <option value="1">男</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>*@
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+                <div class="pull-left">
+                    <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>清除</span></button>
+                </div>
+                <div class="pull-right">
+                    <button id="SelectAll" title="选择本页所有项" type="button" class="btn btn-success btn-padding-right"><i class=""></i> <span>选择本页</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%" id="dt_member">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#v_member_div .input-daterange").datepicker();
+
+        var _dt_member = $("#v_member_div #dt_member").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "MemberList",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                var startTime = $("#v_member_div #StartDate").val();
+                var endTime = $("#v_member_div #EndDate").val();
+                var startTime2 = $("#v_member_div #StartTime").val();
+                var endTime2 = $("#v_member_div #EndTime").val();
+                if (startTime.length > 0 && endTime.length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startTime, "greater"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", $.whiskey.tools.dateAddDay(endTime, 1), "less"));
+                }
+                if (startTime2.length > 0 && endTime2.length > 0) {
+                    aoData.push({ name: "RetailStart", value: startTime2 });
+                    aoData.push({ name: "RetailEnd", value: endTime2 });
+                }
+                $("#v_member_div .form-search input[name][name!='StartDate'][name!='EndDate'][name!='StartTime'][name!='EndTime'],.form-search select:not(._select_input_greater)").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0 && value != "-1") {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, $(this).hasClass("_select_input") ? "equal" : "contains"));
+                    }
+                });
+                var hasbalance = $("#v_member_div select._select_input_greater").val();
+                if (hasbalance != null && hasbalance.length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("Balance", 0,hasbalance==1? "greater":"equal"));
+                }
+
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+            //{
+            //    "sTitle": "头像",
+            //    "bSortable": false,
+            //    "sName": "UserPhoto",
+            //    "mData": function (data) {
+            //        return '<div><img src="' + data.UserPhoto + '" style="margin:2px;max-width:40px;" class="img-circle" /></div>'
+            //    },
+            //},
+            {
+                "sTitle": "昵称",
+                "bSortable": false,
+                "sName": "MemberName",
+                "mData": function (data) {
+                    return data.MemberName;
+                },
+            },
+            {
+                "sTitle": "姓名",
+                "bSortable": false,
+                "sName": "RealName",
+                "mData": function (data) {
+                    return data.RealName;
+                },
+            },
+            {
+                "sTitle": "手机号",
+                "bSortable": false,
+                "sName": "MobilePhone",
+                "mData": function (data) {
+                    return data.MobilePhone;
+                },
+            },
+            //{
+            //    "sTitle": "性别",
+            //    "bSortable": false,
+            //    "sName": "Gender",
+            //    "mData": function (data) {
+            //        return data.Gender;
+            //    },
+            //},
+            {
+                "sTitle": "类型",
+                "bSortable": false,
+                "sName": "MemberTypeName",
+                "mData": function (data) {
+                    return data.MemberTypeName;
+                },
+            },
+            {
+                "sTitle": "有消费",
+                "bSortable": false,
+                "sName": "hasRetail",
+                "mData": function (data) {
+                    return $.whiskey.datatable.lblColor(data.hasRetail ? "是" : "否", data.hasRetail ? "success" : "default");
+                },
+            },
+            {
+                "sTitle": "创建时间",
+                "bSortable": false,
+                "sName": "CreatedTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.CreatedTime);
+                },
+            },
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    var txt = "选择";
+                    var color = "default";
+                    if ($(".AppointmentAutoGen #MemberIds").find("option[value=" + data.Id + "]").length > 0) {
+                        color = "success ";
+                        txt = "已选择";
+                    }
+                    return '<button id="hoverStyle_8" type="button" onclick="choose(this,1)" class="btn btn-' + color + ' btn_select" data-name="' + data.MemberName + '"  data-Id="' + data.Id + '"><span>' + txt + '</span></button>';
+                },
+            },
+            ]
+        });
+
+        $("#v_member_div #Search").on("click", function () {
+            $.whiskey.datatable.reset(false, _dt_member);
+        });
+
+        $("#v_member_div #Clear").on("click", function () {
+            $.whiskey.web.clearForm("#v_member_div .form-search");
+        });
+
+        $("#v_member_div #SelectAll").on("click", function () {
+            $("#v_member_div #dt_member .btn_select:not(.btn-success)").click();
+        });
+
+    });
+
+    function choose(my,type) {
+        var $sel = $(".AppointmentAutoGen #MemberIds");
+        var name = $(my).attr("data-name");
+        var columnValue = $(my).attr("data-Id");
+        if ($sel.find("option[value='" + columnValue + "']").length > 0) {
+            $sel.find("option[value='" + columnValue + "']").remove();
+            $(my).text("选择").removeClass("btn-success").addClass("btn-default");
+        } else {
+            $(my).text("已选择").removeClass("btn-default").addClass("btn-success");
+            var option = '<option value="' + columnValue + '" selected="selected">' + name + '</option>';
+            $sel.append(option);
+        }
+        $sel.selectpicker('refresh');
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

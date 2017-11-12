@@ -1,0 +1,96 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model SaleDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.DeliverId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.DeliverId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ReceiverId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ReceiverId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.PurchaseNumber) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.PurchaseNumber, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Status) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Status, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.IsDelivered) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.IsDelivered, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.DeliverName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.DeliverName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.IsReceived) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.IsReceived, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ReceiverName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ReceiverName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.IsStoraged) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.IsStoraged, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.StoragerName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.StoragerName, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m=> m.Id)

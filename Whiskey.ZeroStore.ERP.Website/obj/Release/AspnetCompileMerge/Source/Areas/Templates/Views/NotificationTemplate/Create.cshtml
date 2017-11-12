@@ -1,0 +1,119 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.Utility.Data
+@model TemplateDto
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        模块分类：
+    </label>
+    <div class="col-md-8">
+        @Html.DropDownList("TemplateNotificationId", (List<SelectListItem>)ViewBag.noticate, new { @class = "form-control selectpicker", @onchange = "getNotes()" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.TemplateName)：
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.TemplateName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Notes)：
+    </label>
+    <div class="col-md-8">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.EnabledPerNotifi)：
+    </label>
+    <div class="col-md-8">
+        <span>
+            <input type="checkbox" class="EnabledPerNotifi" checked data-class="switcher-default" />
+            <input type="hidden" id="EnabledPerNotifi" name="EnabledPerNotifi" value="true" />
+        </span>
+    </div>
+</div>
+<div class="form-group div_DepartTypeFlags" style="display:none;">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.DepartTypeFlags)：
+    </label>
+    <div class="col-md-8">
+        @Html.DropDownList("_DepartTypeFlags", EnumHelper.GetSelectList(typeof(DepartmentTypeFlag)), new Dictionary<string, object> { { "class", "form-control selectpicker selectpickerDT" }, { "multiple", "multiple" }, { "data-live-search", "true" } })
+        @Html.HiddenFor(f => f.DepartTypeFlags)
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.TemplateHtml) :
+    </label>
+    <div id="div">
+        <a class="btn btn-label" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            模版文档
+        </a>
+        <div class="collapse" id="collapseExample">
+            <div class="well">
+                @*1、$sendName：发货店铺<br />
+                    2、$receiveName：收货店铺<br />
+                    3、$sendId：发货店铺Id<br />
+                    4、$receiveId：收货店铺Id<br />
+                    5、$sendAddress：发货店铺地址<br />
+                    6、$receiveAddress：收货店铺地址<br />
+                    7、$sendPhone：发货店铺电话（有电话取电话,否则请手机号）<br />
+                    8、$receivePhone：收货店铺电话（有电话取电话,否则请手机号）<br />
+                    9、$sendTime：发货时间<br />*@
+                @*1、$storeName：会员所属店铺<br />
+                    2、$storeId：所属店铺Id<br />
+                    3、$memberId：会员Id<br />
+                    4、$memberName：会员昵称<br />
+                    5、$memberPhone：会员电话<br />
+                    6、$balance：储值金额<br />
+                    7、$score：储值积分<br />
+                    8、$storePhone：所属店铺电话（有电话取电话,否则请手机号）<br />
+                    9、$sendTime：申请时间<br />*@
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade clearfix active in">
+        @Html.TextAreaFor(m => m.TemplateHtml, new { @class = "form-control", @rows = "20" })
+    </div>
+</div>
+<script>
+    $(function () {
+        getNotes();
+
+        $('.EnabledPerNotifi').switcher({
+            on_state_content: "启用",
+            off_state_content: "禁用"
+        }).on("click", function () {
+            var val = $(this).is(":checked");
+            $("#EnabledPerNotifi").val("" + val + "");
+            val ? $(".div_DepartTypeFlags").hide() : $(".div_DepartTypeFlags").show();
+        });
+
+    });
+    function getNotes() {
+        var nid = $("#TemplateNotificationId").val();
+        $.post("@Url.Action("GetNotes")", { Id: nid }, function (data) {
+            $("#collapseExample .well").html(data);
+        });
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+
+        $(".selectpicker").selectpicker({ noneSelectedText: "未选择" });
+
+        $('.selectpickerDT').on("changed.bs.select", function () {
+            var curval = $(this).val();
+            var strval = curval ? curval.toString() : curval;
+            $("#DepartTypeFlags").val(strval);
+        });
+    })
+</script>

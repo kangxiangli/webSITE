@@ -1,0 +1,301 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Notices
+@using Whiskey.ZeroStore.ERP.Models;
+@model NotificationDto
+<link href="/Content/Editor/themes/default/default.css" rel="stylesheet" />
+<style>
+    .modal-dialog {
+        width: 80%;
+        max-width: 80%;
+    }
+
+    .modal-content {
+        width: 900px;
+        margin: 0 auto;
+    }
+</style>
+@Html.HiddenFor(x => x.Id)
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#notificationinfo_tab" data-toggle="tab">
+            通知消息
+        </a>
+    </li>
+    <li><a href="#answerinfo_tab" data-toggle="tab">答题编辑</a></li>
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="notificationinfo_tab">
+        <div class="creat_div" style="margin-top:20px;margin-left:-50px">
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.Title) :
+                </label>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.NoticeTargetType) :
+                </label>
+                <div class="col-md-6">
+                    <select class="form-control selectpicker" id="NoticeTargetType" name="NoticeTargetType" disabled>
+                        <option value="@((int)NoticeTargetFlag.Admin)">所有员工</option>
+                        <option value="@((int)NoticeTargetFlag.Department)">所有部门</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="divseladmin">
+                <label class="control-label col-md-2">
+                    筛选：
+                </label>
+                <div class="col-md-6">
+                    @Html.DropDownListFor(x => x.AdministratorIds, (List<SelectListItem>)ViewBag.AdministratorIds, new Dictionary<string, object> { { "class", "form-control selectpicker selectpickerIds" }, { "multiple", "multiple" }, { "data-live-search", "true" } })
+                </div>
+                @*<button title="选择接受人" type="button" class="btn btn-success btn-padding-right" onclick="chooseAdmin()"><i class="fa fa-save"></i> <span>选择</span></button>*@
+                @*<button title="清除全部" type="button" class="btn btn-padding-right" onclick="$('#AdministratorIds').empty().selectpicker('refresh')"><i class=""></i> <span>清除全部</span></button>*@
+            </div>
+            <div class="form-group" id="divDepartment">
+                <label class="control-label col-md-2">
+                    筛选：
+                </label>
+                <div class="col-md-8">
+                    @Html.DropDownListFor(x => x.DepartmentIds, ViewData["departments"] as List<SelectListItem>, new Dictionary<string, object> { { "class", "form-control selectpicker" }, { "multiple", "multiple" } })
+                </div>
+                @*<button title="选择部门" type="button" class="btn btn-success btn-padding-right" onclick="notic_chooseDepart(this)"><i class=""></i> <span>选择</span></button>*@
+                @*<button title="清除全部" type="button" class="btn btn-padding-right" onclick="$('#DepartmentIds').empty().selectpicker('refresh')"><i class=""></i> <span>清除全部</span></button>*@
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.NoticeType) :
+                </label>
+                <div class="col-md-6" id="div">
+                    <select class="form-control selectpicker " id="NoticeType" name="NoticeType" disabled>
+                        <option value="@((int)NoticeFlag.Immediate)">即时推送</option>
+                        <option value="@((int)NoticeFlag.Timing)">定时推送</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" id="divSendTime">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.SendTime) :
+                </label>
+                <input type="hidden" id="SendTime" name="SendTime" />
+                <div class="col-md-6">
+                    <div class="input-daterange input-group">
+                        <select class="input-sm form-control hour" id="Hour" name="Hour" onchange="timechange()"></select>
+                        <span class="input-group-addon">:</span>
+                        <select class="input-sm form-control minute" id="Minute" name="Minute" onchange="timechange()"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.IsEnableApp) :
+                </label>
+                <div class="col-md-1">
+                    @Html.CheckBoxFor(m => m.IsEnableApp, new { @class = "form-control", @disabled = "disabled" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.Description) :
+                </label>
+                <div class="col-md-10">
+                    @Html.TextAreaFor(m => m.Description, new { @class = "article-editor" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="answerinfo_tab" style="height:auto">
+        @Html.Partial("UpdateQuestion", (List<NotificationQuestion>)ViewBag.QuestionList)
+    </div>
+</div>
+
+<link href="/Content/Styles/Bootstrap/BootstrapSelect/bootstrap-select.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/BootstrapSelect/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/content/editor/kindeditor-min.js"></script>
+<script type="text/javascript" src="/content/editor/lang/zh_CN.js"></script>
+<script type="text/javascript">
+    $('#divDepartment .selectpicker').selectpicker({
+        noneSelectedText: "请选择部门",
+        size: 10
+    });
+    $('#divseladmin .selectpicker').selectpicker({
+        noneSelectedText: "可不选",
+        size: 10
+    });
+    $(function () {
+        initHour();
+        initMimute();
+        initialdata();
+        initNoticeType();
+        initNoticeTargetType();
+        $("#div #NoticeType").change(function () {
+            initNoticeType();
+        });
+        $("select[name='NoticeTargetType']").change(function () {
+            initNoticeTargetType();
+        });
+    });
+    function initialdata() {
+        timechange();
+        $("select[name='NoticeTargetType']").val('@Model.NoticeTargetType');
+        $("#div #NoticeType").val('@Model.NoticeType');
+        var jselector;
+        if ("@Model.NoticeTargetType" == "@((int)NoticeTargetFlag.Department)") {
+            jselector = "#divDepartment .selectpicker";
+        } else {
+            jselector = "#divseladmin .selectpicker";
+        }
+        $(jselector).selectpicker("selectAll").selectpicker('refresh');
+        @{var hastime = Model.SendTime.HasValue; var hour = hastime ? Model.SendTime.Value.Hour : 0; var minute = hastime ? Model.SendTime.Value.Minute : 0;}
+        if ('@hastime' == 'True') {
+            var hour = '@hour'; hour = hour.length == 1 ? "0" + hour : hour;
+            var minute = '@minute'; minute = minute.length == 1 ? "0" + minute : minute;
+            $(".bootbox .hour").val(hour);
+            $(".bootbox .minute").val(minute);
+            timechange();
+        }
+    }
+    //初始化小时
+    function initHour() {
+        $("#Hour").empty();
+        for (var i = 0; i < 24; i++) {
+            var hour;
+            if (i < 10) {
+                hour = '<option value="0' + i + '">0' + i + '</option>';
+            } else {
+                hour = '<option value="' + i + '">' + i + '</option>';
+            }
+
+            $(".bootbox .hour").append(hour);
+        }
+    }
+
+    //初始化分钟
+    function initMimute() {
+        $("#Minute").empty();
+        for (var i = 0; i < 60; i++) {
+            var minute;
+            if (i < 10) {
+                minute = '<option value="0' + i + '">0' + i + '</option>';
+            } else {
+                minute = '<option value="' + i + '">' + i + '</option>';
+            }
+            $(".bootbox .minute").append(minute);
+        }
+    }
+
+    function initNoticeType() {
+        //debugger
+        var type = $(".bootbox #NoticeType").val();
+        if (type == "@((int)NoticeFlag.Immediate)") {
+            $("#divSendTime").css("display", "none");
+        } else {
+            $("#divSendTime").css("display", "block");
+        }
+    }
+
+    function initNoticeTargetType() {
+        var type = $("select[name='NoticeTargetType']").val();
+        if (type == "@((int)NoticeTargetFlag.Department)") {
+            $("#divDepartment").show();
+            $("#divseladmin").hide();
+        } else {
+            $("#divDepartment").hide();
+            $("#divseladmin").show();
+        }
+    }
+    function timechange() {
+        var hour = $(".bootbox .hour").val();
+        var minute = $(".bootbox .minute").val();
+        $("#divSendTime #SendTime").val(hour + ":" + minute);
+    }
+</script>
+
+<script>
+    function chooseAdmin() {
+        $.ajax({
+            url: "@Url.Action("Admin")",
+            data: {
+                type: "admin"
+            },
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "adminlist",
+                    title: "人员列表",
+                    buttons: {
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".memberlist").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function notic_chooseDepart(sender) {
+        $.whiskey.web.ajaxView({
+            type: "post",
+            caption: "选择部门",
+            actionUrl: "/Authorities/Department/Department",
+            lockButton: sender,
+            className: "departlist_Notic",
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        //初始化页眉编辑器
+        var editor = KindEditor.create(".article-editor", {
+            width: "100%",
+            height: "400px",
+            resizeType: 1,
+            uploadJson: "/content/editor/uploadArticle_json.ashx",
+            fileManagerJson: "/content/editor/file_managerArticle_json.ashx",
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            contentEditable: true,
+            filterMode: true,
+            items: [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink'
+            ],
+            afterCreate: function (id) {
+                this.focus(id);
+            },
+            afterChange: function (id) {
+                this.sync(id);
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+
+    });
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

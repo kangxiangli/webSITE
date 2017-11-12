@@ -1,0 +1,95 @@
+﻿<style type="text/css">
+	#crop-avatar{
+		background-color: rgba(0,0,0,0.2);
+		    padding-bottom: 10px;
+	}
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-10 panel-title">
+                <h5><i class="fa fa-camera"></i> <span>上传头像</span></h5>
+            </div>
+            <div class="col-md-2 panel-title">
+                <h5><a href="javascript:void(0);" onclick="$.whiskey.web.load({url:'@Url.Action("Index")'})" ><i class="fa fa-backward"></i> <span>返回会员列表</span></a></h5>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="crop-avatar">
+        <!-- Current avatar -->
+        <div style="text-align:center;margin:50px 0">仅支持JPG、GIF、PNG、JPEG、BMP格式，文件小于4M</div>
+        <div style="text-align:center;color: #e5603b;margin:50px 0">提示：点击头像上传</div>
+        <div class="avatar-view" title="上传头像">
+            <img src="http://www.0-fashion.com/Content/Images/logo-_03.png" id="UserPhoto" />
+        </div>
+        <!-- Cropping modal -->
+        <div class="modal fade" id="avatar-modal" aria-hidden="true" aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form class="avatar-form" action="/Members/Member/UploadMemberPhoto" enctype="multipart/form-data" method="post">
+                        <div class="modal-header">
+                            <button class="close" data-dismiss="modal" type="button">&times;</button>
+                            <h4 class="modal-title" id="avatar-modal-label">更换头像</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="avatar-body">
+                                <!-- Upload image and data -->
+                                <div class="avatar-upload">
+                                    <input class="avatar-src" name="avatar_src" type="hidden" />
+                                    <input class="avatar-data" name="avatar_data" type="hidden" />
+                                    <label for="avatarInput">头像上传</label>
+                                    <input class="avatar-input" id="avatarInput" name="avatar_file" type="file" accept="image/jpeg,image/gif,image/png,image/jpg" />
+                                </div>
+                                <!-- Crop and preview -->
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="avatar-wrapper"></div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="avatar-preview preview-lg"></div>
+                                        <div class="avatar-preview preview-md"></div>
+                                        <div class="avatar-preview preview-sm"></div>
+                                    </div>
+                                </div>
+                                <div class="row avatar-btns">
+                                    @*<div class="col-md-9">
+                                            <div class="btn-group">
+                                                <button class="btn btn-primary" data-method="rotate" data-option="-90" type="button" title="Rotate -90 degrees">Rotate Left</button>
+                                                <button class="btn btn-primary" data-method="rotate" data-option="-15" type="button">-15deg</button>
+                                                <button class="btn btn-primary" data-method="rotate" data-option="-30" type="button">-30deg</button>
+                                                <button class="btn btn-primary" data-method="rotate" data-option="-45" type="button">-45deg</button>
+                                            </div>
+                                            <div class="btn-group">
+                                                <button class="btn btn-primary" data-method="rotate" data-option="90" type="button" title="Rotate 90 degrees">Rotate Right</button>
+                                                <button class="btn btn-primary" data-method="rotate" data-option="15" type="button">15deg</button>
+                                                <button class="btn btn-primary" data-method="rotate" data-option="30" type="button">30deg</button>
+                                                <button class="btn btn-primary" data-method="rotate" data-option="45" type="button">45deg</button>
+                                            </div>
+                                        </div>*@
+                                    <div class="col-md-3">
+                                        <button class="btn btn-primary btn-block avatar-save" type="submit">剪切</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="modal-footer">
+                          <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+                        </div> -->
+                        <input type="hidden" name="MemberId" value="@ViewBag.MemberId" />
+                    </form>
+                </div>
+            </div>
+        </div><!-- /.modal -->
+        <!-- Loading state -->
+        <div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
+    </div>
+
+</div>
+
+
+@section Scripts{
+    <link href="/Content/Styles/Cropper/main.css" rel="stylesheet" />
+    <link href="/Content/Styles/Cropper/cropper.css" rel="stylesheet" />
+    <script src="/Content/Scripts/Cropper/cropper.js"></script>
+    <script src="/Content/Scripts/Cropper/main.js"></script>
+}

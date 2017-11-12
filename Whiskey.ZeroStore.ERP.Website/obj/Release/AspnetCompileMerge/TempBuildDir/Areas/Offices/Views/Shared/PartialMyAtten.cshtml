@@ -1,0 +1,61 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" id="atten"><a href="#myLogin" aria-controls="home" role="tab" data-toggle="tab" onclick="getAtten()">我的签到</a></li>
+    <li role="presentation" id="leave"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab" onclick="getLeave()">我的请假</a></li>
+    <li role="presentation" id="field"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab" onclick="getField()">我的外勤</a></li>
+    <li role="presentation" id="overTime"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab" onclick="getOvertime()">我的加班</a></li>
+    <li role="presentation" id="statAttendance"><a href="#" aria-controls="profile" role="tab" data-toggle="tab" onclick="getStatAttendance()">考勤统计</a></li>
+    @*<li role="presentation" id="departAtten" style="display:none"><a href="#" aria-controls="profile" role="tab" data-toggle="tab" onclick="getDepartAtten()">部门考勤</a></li>*@
+</ul>
+<script type="text/javascript">
+    $(function () {
+        initTab();
+    })
+
+        function initTab() {            
+            $('.nav-tabs li').removeClass("active");
+            var type = "@Model";
+            if (type=="@((int)AttendanceFlag.DayOfLeave)") {
+                $("#leave").addClass("active");
+            } else if (type == "@((int)AttendanceFlag.Normal)") {
+                $("#atten").addClass("active");
+            } else if (type == "@((int)AttendanceFlag.DayOfField)") {
+                $("#field").addClass("active");
+            } else if (type == "@((int)AttendanceFlag.DayOfOvertime)") {                
+                $("#overTime").addClass("active");
+            } else if (type==100) {
+                $("#statAttendance").addClass("active");
+            } else {
+                $("#departAtten").addClass("active");
+            }
+            
+        }
+
+        //跳转到签到界面
+        function getAtten() {        
+            location.href = "@Url.Action("index", "StaffAttendance")";
+        }
+        //跳转到我的加班
+        function getOvertime() {
+       
+            location.href = "@Url.Action("Index","MyOvertime")";
+        }
+        //跳转到我的外勤
+        function getField() {
+            location.href = "@Url.Action("Index", "MyField")";
+        }
+        //跳转到我的请假界面
+        function getLeave() {
+         
+            location.href = "@Url.Action("Index", "MyLeave")";
+        }
+        //跳转到我的统计界面
+        function getStatAttendance() {
+            location.href = "@Url.Action("Index", "AttendanceStat")";
+        }
+        
+        //跳转到部门统计
+        function getDepartAtten(){
+            location.href = "@Url.Action("Index", "DepartAtten")";
+        }
+</script>

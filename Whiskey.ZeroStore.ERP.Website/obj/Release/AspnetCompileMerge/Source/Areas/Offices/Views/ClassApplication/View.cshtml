@@ -1,0 +1,70 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@model ClassApplication
+<style>
+    .clwid .modal-dialog {
+        min-width: 50%;
+        width: 70%;
+    }
+</style>
+<div class="createDiv">
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            申请人：
+        </label>
+        <div class="col-md-8">
+            <input type="text" disabled value="@ViewBag.RealName" class="form-control" />
+            <input type="hidden" value="@ViewBag.adminId" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            调班日期:
+        </label>
+        <div class="col-md-8">
+            <input type="text" id="Day" disabled  class="form-control"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            补班日期 :
+        </label>
+        <div class="col-md-8">
+            <input type="text" id="OffDay" disabled class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            替班人部门:
+        </label>
+        <div class="col-md-8">
+            <input type="text" id="SuccessionDepId" class="form-control" disabled value="@ViewBag.DepartmentName" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            替班人:
+        </label>
+        <div class="col-md-8">
+            <input type="text" id="SuccessionId" class="form-control" disabled value="@ViewBag.SuccessionName" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-3">
+            备注:
+        </label>
+        <div class="col-md-8">
+            <textarea id="Desc" style="width:100%" disabled></textarea>
+        </div>
+    </div>
+    @Html.HiddenFor(x => x.Id, new { @class = "form-control" })
+</div>
+<script type="text/javascript">
+    (function () {
+        $(".createDiv #Day").val("@Model.Day"+"号");
+        $(".createDiv #OffDay").val("@Model.OffDay" + "号");
+        $(".createDiv #Desc").val("@Model.desc");
+    })();
+    
+  
+</script>

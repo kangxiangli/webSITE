@@ -1,0 +1,51 @@
+﻿<style>
+    .item_box {
+        cursor: pointer;
+    }
+
+    .isFolder_box {
+        padding-left: 1em;
+        line-height: 1.5em;
+    }
+</style>
+<template type="text/x-template" id="item-template">
+    <li>
+        <div>
+            <span v-if="isFolder" v-on:click="toggle">[{{open ? '-' : '+'}}]</span>
+            <label>
+                <input v-if="!isFolder" type="checkbox" v-model="model.IsChecked" v-bind:value="model.Id" />{{model.AttributeName}}
+            </label>
+
+        </div>
+
+        <ul class="isFolder_box" v-if="isFolder" v-show="open">
+            <collocation-tag v-for="model in model.Children" class="item item_box" :model="model"></collocation-tag>
+        </ul>
+    </li>
+</template>
+<script>
+    Vue.component('collocation-tag', {
+        template: '#item-template',
+        props: {
+            model: Object
+        },
+        data: function () {
+            return {
+                open: false
+            }
+        },
+        computed: {
+            isFolder: function () {
+                return this.model.Children && this.model.Children.length
+            }
+        },
+        methods: {
+            toggle: function () {
+                if (this.isFolder) {
+                    this.open = !this.open
+                }
+            }
+
+        }
+    })
+</script>

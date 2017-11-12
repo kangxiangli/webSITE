@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>模板模块</title>
+    <link rel="stylesheet" href="/Template/Css/style23.css"/>
+    <script>
+        (function (w) {
+            s();
+            var e = ("onorientationchange" in w) ? "orientationchange" : "resize";
+            w.addEventListener(e, function () {
+                setTimeout(function () {
+                    s()
+                }, 200)
+            }, false);
+            function s() {
+                var a = w.innerWidth;
+                var b = 20 * (a / 320);
+                if (b > 40) {
+                    b = 40;
+                }
+                document.querySelector("html").style.fontSize = b + "px";            }
+        })(window);
+    </script>
+</head>
+<body>
+<!--顶部导航,返回上一层-->
+<div class="head_back">
+    <!-- 返回上一层图片、文字-->
+    <div id="back_pre" onclick="javascript:history.go(-1)"><img src="/Content/Images/Template/Image/fh.png" class="back_img" alt="返回"/>返回</div>
+    <!-- 搜索框-->
+    <div id="search">
+        <input type="search" class="serch_inp" value="搜索"/>
+    </div>
+</div>
+<div class="module_box">
+    <div class="module">
+        <!--<p class="title">相同不是真闺蜜，都美才是硬道理</p>
+
+        <p class="time">05-25</p>
+        <a class="a_img" href="#"><img src="/Content/Images/Template/Image/qp_03.png" alt="图片"/></a>
+
+        <div class="brief">遇见一个人然后生命全改变，原来不是恋爱才有的情节.....</div>
+
+        <div class="full_text">
+            <a class="look" href="#">查看全文</a>
+
+            <p class="num">
+                <img class="eye" src="/Content/Images/Template/Image/ear_07.png" alt="浏览量"/><span>234</span>
+            </p>
+        </div>
+        <div class="fashion_box">
+            <img class="fashion_img" src="/Content/Images/Template/Image/heaf_14.png" alt="搭配师"/>
+
+            <div class="fashion_author">
+                <p class="author">红色的丸子</p>
+
+                <p class="grade">时尚编辑</p>
+            </div>
+        </div>-->
+    </div>
+</div>
+
+<script src="/Template/Script/jquery.js"></script>
+<script>
+    $(function () {
+        $.ajax({
+            url: "/apiarticle/GetList",
+            type: "post",
+            data:{Id:18},
+            success: function (data) {
+                if (data.ResultType == 3) {
+                    var contentHtml = '';
+                    var content = data.Data;
+                    if(content.length==0){
+                        return false;
+                    }
+                    var $module_box = $(".module_box");
+                    var moduleHead = '<div class="module">';
+                    var moduleFoot = '</div>';
+                    var fuHead = '<div class="full_text">';
+                    var fuFoot = '</div>';
+                    var fashionHead = ' <div class="fashion_box">';
+                    var fashionFoot = '</div>';
+                    $module_box.empty();
+                    for (var i = 0; i < content.length; i++) {
+                        var con = content[i];
+                        var til = '<p class="title">' + con.Title + '</p>';
+                        var times = '<p class="time">' + con.CreatedTime + '</p><a class="a_img" href="' + con.ArticlePath + '"><img src="' + con.CoverImagePath + '" alt="图片"/></a>';
+                        var brig = '<div class="brief">' + con.Summary+'</div>';
+                        var looksea = '<a class="look" href="' + con.ArticlePath + '">查看全文</a><p class="num"><img class="eye" src="/Content/Images/Template/Image/ear_07.png" alt="浏览量"/><span>' + con.Hits + '</span></p>';
+                        var tiltHead = '<img class="fashion_img" src="' + con.UserPhoto + '" alt="搭配师"/>';
+                        var authors = '<div class="fashion_author"><p class="author">' + con.AdminName + '</p><p class="grade">时尚编辑</p></div>';
+                        var htmls = moduleHead + til + times + brig + fuHead + looksea + fuFoot + fashionHead + tiltHead + authors + fashionFoot +moduleFoot;
+                        $module_box.append(htmls);
+                    }
+                }
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

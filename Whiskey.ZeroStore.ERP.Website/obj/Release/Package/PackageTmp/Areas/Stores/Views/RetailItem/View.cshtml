@@ -1,0 +1,270 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.Web.Helper;
+@using Newtonsoft.Json;
+@model Whiskey.ZeroStore.ERP.Transfers.Entities.Store.RetailDto
+<style>
+    #dresser ul li img {
+        width: 50px;
+        margin-left: 15px;
+    }
+
+    #dresser ul li {
+        list-style-type: none;
+        float: left;
+        margin-top: 10px;
+    }
+
+        #dresser ul li span {
+            display: block;
+            padding-left: 26px;
+        }
+</style>
+<script type="text/javascript" src="/Content/Scripts/Jquery/jquery.qrcode.min.js"></script>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#consumeinfo" data-toggle="tab">消费明细</a>
+    </li>
+    <li class="">
+        <a href="#retailinfo" data-toggle="tab">零售明细</a>
+    </li>
+   
+</ul>
+
+<div class="tab-content" style="min-height:400px;">
+    <div class="tab-pane fade active in " id="baseinfo">
+
+
+        <div class="form-group">
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.RetailNumber)：</label>
+            <div class="col-md-4 ">
+                <span>@Model.ProductName</span>
+            </div>
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOrigNumber)：</label>
+            <div class="col-md-4">
+                @Model.ProductOrigNumber
+            </div>
+
+        </div>
+        <div class="form-group">
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.CategoryId)：</label>
+            <div class="col-md-4 ">
+                <span>@Model.Category.CategoryName</span>
+
+            </div>
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductColor)：</label>
+            <div class="col-md-4">
+                @Model.ProductColor
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.BrandId)：</label>
+            <div class="col-md-4">
+                @Model.Brand.BrandName
+            </div>
+
+            <label class="control-label col-md-2">颜色色块：</label>
+            <div class="col-md-4">
+                <div title="@Model.ProductColor " style="background-color:@ViewBag.RGB ;width:28px;height:28px;margin:0;"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.SizeId)：</label>
+            <div class="col-md-4">
+                @Model.Size.SizeName
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.SeasonId)：</label>
+            <div class="col-md-4">
+                @Model.Season.SeasonName
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.TagPrice)：</label>
+            <div class="col-md-4 text-danger">
+                @Model.TagPrice 元
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.WholesalePrice)：</label>
+            <div class="col-md-4 text-danger">
+                @if (Model.WholesalePrice != 0 && Model.TagPrice != 0)
+                {
+                    @Model.WholesalePrice<span>元（</span>@(ConvertHelper.NumberToChinese((Math.Round(Model.WholesalePrice / Model.TagPrice * 100)).ToString(), true))<span>）</span>
+                }
+                else
+                {
+                    @Model.WholesalePrice<span>元</span>
+                }
+
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.RetailPrice)：</label>
+            <div class="col-md-4 text-danger">
+
+                @if (Model.RetailPrice != 0 && Model.TagPrice != 0)
+                {
+                    @Model.RetailPrice<span>元（</span>@(ConvertHelper.NumberToChinese((Math.Round(Model.RetailPrice / Model.TagPrice * 100)).ToString(), true))<span>）</span>
+                }
+                else
+                {
+                    @Model.RetailPrice<span>元</span>
+                }
+
+
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductNumber)：</label>
+            <div class="col-md-4">
+                @Model.ProductNumber
+            </div>
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.AssistantNumber)：</label>
+            <div class="col-md-4">
+                @Model.AssistantNumber
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label class="control-label col-md-2">库存数量：</label>
+            <div class="col-md-4">
+                @Model.Inventories.Count 件
+            </div>
+
+            <label class="control-label col-md-2">操作人员：</label>
+            <div class="col-md-4">
+                @Model.Operator.Member.MemberName
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.UpdatedTime)：</label>
+            <div class="col-md-4">
+                @Model.UpdatedTime
+            </div>
+
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.CreatedTime)：</label>
+            <div class="col-md-4">
+                @Model.CreatedTime
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.Notes)：</label>
+            <div class="col-md-10">
+                @Model.Notes
+            </div>
+        </div>
+
+    </div>
+
+    <div class="tab-pane fade clearfix" id="consumeinfo">
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductName)：</label>
+            <div class="col-md-10">
+                @Model.ProductName
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.Summary)：</label>
+            <div class="col-md-10">
+                @Model.Summary
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.OriginalPath)：</label>
+            <div class=" col-md-4">
+                @if (Model.ThumbnailPath != null && Model.ThumbnailPath.Length > 0)
+                {
+                    <div class="bordered text-center" style="width:128px;height:100px;overflow:hidden;">
+                        <img src="@Model.ThumbnailPath" style="max-width:120px;max-height:90px;margin:3px" alt="主图" />
+                    </div>
+                }
+            </div>
+            <label class="control-label col-md-2" style="padding:0;margin:0">@Html.DisplayNameFor(m => m.ProductCollocationImg)：</label>
+            <div class="col-md-4">
+                <img src="@Model.ProductCollocationImg" style="max-width:120px;max-height:90px;margin:3px;" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">细节组图：</label>
+            <div class="col-md-10">
+                <div class="clearfix">
+                    @foreach (var item in Model.ProductImages)
+                    {
+                        <div class="bordered text-center" style="display:block;width:128px;height:100px;overflow:hidden;float:left;margin:10px 20px 10px 0px;">
+                            <img src="@item.ThumbnailSmallPath" style="max-width:120px;max-height:90px;margin:3px;" alt="" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="tab-pane fade  in" id="retailinfo">
+        <input type="hidden" id="hid_attri" value="@ViewBag.Attribu" />
+        <ul class="atttir_img"></ul>
+
+    </div>
+
+   
+</div>
+<script type="text/javascript">
+    debugger
+    $(function () {
+        var attr = $("#hid_attri").val();
+        if (attr.length > 0) {  //
+            var res = JSON.parse(attr);
+            var resu = "";
+            for (att in res) {
+                resu += "<li><h3><span>" + res[att].name + "</span></h3>";
+                var chiul = "<ul>";
+                $.each(res[att].child, function (i, v) {
+                    chiul += "<li><img src="+v.img+"><span>"+v.name+"</span></li>";
+                });
+                chiul += "</ul>";
+                resu += chiul + "</li>";
+            }
+            $(".atttir_img").html("").html(resu);
+        }
+    })
+        @*$(document).ready(function () {
+            $(".qrcode").qrcode({
+                render: "canvas",
+                width: 256,
+                height: 256,
+                typeNumber: -1,
+                background: "#ffffff",
+                foreground: "#000000",
+                text: $.whiskey.tools.chineseToUTF8("http://127.0.0.1/" + "@Model.HtmlPath")
+            })
+        });*@
+</script>

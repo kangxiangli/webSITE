@@ -1,0 +1,447 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Models.Enums
+@model MemberDepositDto
+
+@Html.HiddenFor(x => x.MemberId)
+<div class="form-group">
+    <label class="control-label col-md-3">
+        充值方式 :
+    </label>
+    <div class="col-md-8">
+        <select class="form-control selectpicker" name="MemberDepositType" onchange="setOption()" id="MemberDepositType">
+            <option value="@((int)MemberDepositFlag.Manpower)">人工充值</option>
+            <option value="@((int)MemberDepositFlag.System)">系统充值</option>
+        </select>
+    </div>
+</div>
+<div class="form-group rechargeActivity">
+    <label class="control-label col-md-3">
+        充值选项 :
+    </label>
+    <div class="col-md-8">
+        <select class="form-control" id="rechargeActivity" name="MemberActivityId" onchange="setValue()"></select>
+    </div>
+</div>
+<div class="form-group operOption" style="display:none">
+    <label class="control-label col-md-3">
+        充值选项 :
+    </label>
+    <div class="col-md-8">
+        <select class="form-control selectpicker" id="operOption" name="MemberActivityType">
+            <option value="@((int)MemberActivityFlag.Recharge)">充值</option>
+            <option value="@((int)MemberActivityFlag.Score)">积分</option>
+        </select>
+    </div>
+</div>
+<div class="form-group priceRemainder">
+    <label class="control-label col-md-3">
+        历史储值 :
+    </label>
+    <div class="col-md-8">
+        <input type="text" readonly="readonly" class="form-control" value="@ViewBag.Price" />
+    </div>
+</div>
+<div class="form-group priceRemainder">
+    <label class="control-label col-md-3">
+        剩余储值 :
+    </label>
+    <div class="col-md-8">
+        <input type="text" readonly="readonly" class="form-control" value="@ViewBag.Balance" id="txtPrice" />
+    </div>
+</div>
+<div class="form-group priceRemainder">
+    <label class="control-label col-md-3">
+        充值后储值 :
+    </label>
+    <div class="col-md-8">
+        <input type="text" readonly="readonly" class="form-control" value="" id="addPrice" />
+    </div>
+</div>
+<div class="form-group scoreRemainder">
+    <label class="control-label col-md-3">
+        历史积分 :
+    </label>
+    <div class="col-md-8">
+        <input type="text" readonly="readonly" class="form-control" value="@ViewBag.Score" />
+    </div>
+</div>
+<div class="form-group scoreRemainder">
+    <label class="control-label col-md-3">
+        剩余积分 :
+    </label>
+    <div class="col-md-8">
+        <input type="text" readonly="readonly" class="form-control" value="@Model.Score" id="txtScore" />
+    </div>
+</div>
+<div class="form-group scoreRemainder">
+    <label class="control-label col-md-3">
+        充值积分 :
+    </label>
+    <div class="col-md-8">
+        <input type="text" readonly="readonly" class="form-control" value="" name="Score" id="Score" />
+    </div>
+</div>
+<div class="form-group scoreRemainder">
+    <label class="control-label col-md-3">
+        充值后积分 :
+    </label>
+    <div class="col-md-8">
+        <input type="text" readonly="readonly" class="form-control" value="" id="addScore" />
+    </div>
+</div>
+<div class="form-group priceRemainder">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Cash) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Cash, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+</div>
+<div class="form-group priceRemainder">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Card) :
+    </label>
+    <div class="col-md-8 div1">
+        @Html.TextBoxFor(x => x.Card, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group priceRemainder">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Coupon) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Coupon, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+</div>
+
+<div class="form-group priceRemainder">
+    <label class="control-label col-md-3">
+        总计 :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Price, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.DepositStoreId) :
+    </label>
+    <div class="col-md-8">
+        <select id="DepositStoreId" name="DepositStoreId" class="form-control"></select>
+    </div>
+</div>
+<input type="hidden" id="hidCard" />
+<script type="text/javascript">
+    $(function () {
+        var depositStoreId = parseInt('@ViewBag.StoreId');
+        if (!isNaN(depositStoreId) && depositStoreId>0) {
+
+            $("#DepositStoreId").queryManageStore({ selected: [depositStoreId]});
+        }
+        else {
+            $("#DepositStoreId").queryManageStore({ defaultSelect: true});
+
+        }
+        //从会员列表请求不显示返回上一级
+        var backId = "@ViewBag.Num";
+        if (backId == "1") {
+            $("#back").css("display", "none");
+        }
+        //获取充值活动
+        //getRechargeActivity();
+        setOption();
+        //人工充值-- 积分和储值
+        $("#operOption").change(function () {
+            var operType = $("#operOption").val();
+            //人工添加积分
+            if (operType == "@((int)MemberActivityFlag.Score)") {
+                $(".priceRemainder").css("display", "none");
+                $(".scoreRemainder").css("display", "block");
+                $(".bootbox #Cash").val("0");
+                $(".bootbox #Card").val("0");
+                $(".bootbox #Coupon").val("0");
+                $(".bootbox #Price").val("0");
+            } else if (operType == "@((int)MemberActivityFlag.Recharge)") {  //人工添加储值
+                $(".priceRemainder").css("display", "block");
+                $(".scoreRemainder").css("display", "none");
+                $(".bootbox #Score").val("0");
+            };
+        });
+
+        //刷卡充值时
+        $(".bootbox #Card").keyup(function (event) {
+            var option = $("#MemberDepositType").val(); //0系统 1人工
+            var reg = new RegExp('^(([1-9]+)|([0-9]+\.[0-9]{1,2}))$');
+            var keyCode = event.which;
+            if (option == 0) {
+                var card = $(".bootbox #Card").val();
+                var price = $("#rechargeActivity").find("option:selected").attr("data-price");
+                var floCard = parseFloat(card);
+                var floPrice = parseFloat(price);
+                if (reg.test(card)) {
+                    if (floCard > floPrice) {
+                        var hidCard = $("#hidCard").val();
+                        $(".bootbox #Card").val(price);
+                        $(".bootbox #Cash").val("0");
+                    } else {
+                        var temp = floPrice - floCard;
+                        $(".bootbox #Cash").val(temp);
+                        $("#hidCard").val(floCard);
+                    }
+                } else {
+                    if (card == "" || card == null) {
+                        $(".bootbox #Cash").val(price);
+                    } else if (card == 0) {
+                        $(".bootbox #Cash").val(price);
+                    } else {
+                        if (keyCode != 8 && keyCode != 46 && keyCode != 110 && keyCode != 190 && keyCode != 96 && keyCode != 48) {
+                            //alert(keyCode + "caca");
+                            var hidCard = $("#hidCard").val();
+                            $(".bootbox #Card").val(hidCard);
+                        } else {
+                            var temp = floPrice - floCard;
+                            $(".bootbox #Cash").val(temp);
+                        }
+                    }
+                }
+            }
+            else {
+                calueValue(event);
+            }
+        });
+        //现金充值
+        $(".bootbox #Cash").keyup(function (event) {
+            calueValue(event);
+        });
+        //赠送
+        $(".bootbox #Coupon").keyup(function (event) {
+            calueValue(event);
+        });
+
+
+        //积分
+        $(".bootbox #Score").keyup(function (event) {
+            var reg = new RegExp('^(([1-9]+)|([0-9]+\.[0-9]{1,2}))$');
+            var keyCode = event.which;
+            var score = $(".bootbox #Score").val();
+            var txtScore = $(".bootbox #txtScore").val();
+            var total = 0;
+            if (score.length > 0) {
+                var floScore = parseFloat(score);
+                total = total + floScore
+            }
+            if (txtScore.length > 0) {
+                var floTxtScore = parseFloat(txtScore);
+                total = total + floTxtScore;
+            }
+            if (keyCode == 8 || keyCode == 56) {
+                $(".bootbox #addScore").val(total);
+            }
+            if (reg.test(score)) {
+                $(".bootbox #addScore").val(total);
+            }
+            else {
+                if (keyCode != 8 && keyCode != 46 && keyCode != 110 && keyCode != 190 && keyCode != 96 && keyCode != 48) {
+                    alert("请输入数字！");
+                    $(".bootbox #score").val("0");
+                    $(".bootbox #addScore").val("0");
+                }
+            }
+        });
+    });
+
+    //人工充值储值时
+    function calueValue(event) {
+        debugger
+        var keyCode = event.which;
+        var cash = $(".bootbox #Cash").val();
+        var card = $(".bootbox #Card").val();
+        var coupon = $(".bootbox #Coupon").val();
+        if (cash == "" || card == "" || coupon == "") {
+            return false;
+        }
+        if (cash < 0 || card < 0 || coupon < 0) {
+            $(".btn-primary").attr("disabled", "disabled");
+            $.whiskey.web.alert({
+                type: "danger",
+                content: "禁止填写负数！",
+                callback: function () {
+                }
+            });
+            return false;
+        } else {
+            $(".btn-primary").removeAttr("disabled");
+        }
+        var total = 0;
+        if (card.length > 0) {
+            var floCard = parseFloat(card);
+            total = total + floCard
+        }
+        if (cash.length > 0) {
+            var floCash = parseFloat(cash);
+            total = total + floCash;
+        }
+        if (coupon.length > 0) {
+            var floCoupon = parseFloat(coupon);
+            total = total + floCoupon;
+        }
+        if (keyCode == 8 || keyCode == 56) {
+            $(".bootbox #Price").val(total);
+            var txtPrice = $("#txtPrice").val();
+            if (txtPrice.length > 0) {
+                var floPrice = parseFloat(txtPrice);
+                $("#addPrice").val(total + floPrice);
+            }
+        }
+        $(".bootbox #Price").val(total);
+        var txtPrice = $("#txtPrice").val();
+        if (txtPrice.length > 0) {
+            var floPrice = parseFloat(txtPrice);
+            $("#addPrice").val(total + floPrice);
+        }
+    }
+
+
+    //人工充值和手动充值的切换
+    function setOption() {
+        var option = $("#MemberDepositType").val();
+        //会员类型
+        var memberType = "@ViewBag.MemberType";
+        //系统充值
+
+        if (option == "@((int)MemberDepositFlag.System)") {
+
+            $(".rechargeActivity").css("display", "block");
+            $(".operOption").css("display", "none");
+            $("#addPrice").val("0");
+            $(".bootbox #Cash").val("0");
+            $(".bootbox #Card").val("0");
+            $(".bootbox #Coupon").val("0");
+            $(".bootbox #Price").val("0");
+            $(".bootbox #Cash").attr("readonly", "readonly");
+            $(".bootbox #Coupon").attr("readonly", "readonly");
+            $(".bootbox #Score").attr("readonly", "readonly");
+            getRechargeActivity();
+            //setValue();
+        } else if (option == "@((int)MemberDepositFlag.Manpower)") {         //人工充值
+            $(".rechargeActivity").css("display", "none");
+            $(".operOption").css("display", "block");
+            //$("#operOption").empty();
+            @*$("#operOption").append('<option value="@((int)MemberActivityFlag.Recharge)">充值</option>');
+            $("#operOption").append('<option value="@((int)MemberActivityFlag.Score)">积分</option>');*@
+            $("#addPrice").val("0");
+            $(".bootbox #Cash").val("");
+            $(".bootbox #Card").val("");
+            $(".bootbox #Coupon").val("");
+            $(".bootbox #Price").val("0");
+            $(".bootbox #Score").val("0");
+            $(".bootbox #Cash").removeAttr("readonly");
+            $(".bootbox #Coupon").removeAttr("readonly");
+            $(".bootbox #Score").removeAttr("readonly");
+            changeType();
+        }
+    }
+    //人工充值时
+    function changeType() {
+        var operVal = $("#operOption").val();
+        if (operVal == "@((int)MemberActivityFlag.Recharge)") {
+            $(".bootbox #Score").val("0");
+            $(".priceRemainder").css("display", "block");
+            $(".scoreRemainder").css("display", "none");
+        } else if (operVal == "@((int)MemberActivityFlag.Score)") {
+            $(".scoreRemainder").css("display", "block");
+            $(".priceRemainder").css("display", "none");
+        }
+    }
+    //获取充值活动
+    function getRechargeActivity() {
+        var memberTypeId = "@ViewBag.MemberTypeId";
+        $.ajax({
+            url: "@Url.Action("GetRechargeActivity", "MemberDeposit", new { area="Members"})",
+            type: "Post",
+            data: { MemberTypeId: memberTypeId },
+            success: function (data) {
+
+                if (data.length > 0) {
+                    $("#rechargeActivity").empty();
+                    var recharge = '<optgroup label="充值活动" class="memberRecharge"></optgroup>';
+                    var activity = '<optgroup label="送积分活动" class="memberScore"></optgroup>';
+                    $("#rechargeActivity").append(recharge);
+                    $("#rechargeActivity").append(activity);
+                    for (var i = 0; i < data.length; i++) {
+                        //var option = '<option value="' + data[i].Id + '" data-score="' + data[i].Score + '" data-price="' + data[i].Price + '" data-activityType="' + data[i].ActivityType + '">' + data[i].ActivityName + '</option';
+                        if (data[i].ActivityType == "@((int)MemberActivityFlag.Recharge)") {
+                            var option = '<option value="' + data[i].Id + '" data-score="' + data[i].RewardMoney + '" data-price="' + data[i].Price + '" data-activityType="' + data[i].ActivityType + '">' + data[i].ActivityName + '</option';
+                            $(".memberRecharge").append(option)
+                        }
+                        else {
+                            var option = '<option value="' + data[i].Id + '" data-score="' + data[i].Score + '" data-price="' + data[i].Price + '" data-activityType="' + data[i].ActivityType + '">' + data[i].ActivityName + '</option';
+                            $(".memberScore").append(option)
+                        }
+                    }
+                }
+                else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "该会员没有系统活动",
+                        callback: function () {
+                        }
+                    });
+                    return false;
+                }
+                //根据选取活动变动剩余金额和积分
+                setValue();
+            }
+        })
+    }
+
+
+    //根据选取活动金额或者积分
+    function setValue() {
+
+        //获取金额
+        var price = $("#rechargeActivity").find("option:selected").attr("data-price");
+        //获取积分
+        var score = $("#rechargeActivity").find("option:selected").attr("data-score");
+        //活动类型
+        var activityType = $("#rechargeActivity").find("option:selected").attr("data-activityType");
+        if (activityType == "@((int)MemberActivityFlag.Recharge)") {
+            $(".bootbox #Score").val("0");
+            $(".priceRemainder").css("display", "block");
+            $(".scoreRemainder").css("display", "none");
+            var txtPrice = $("#txtPrice").val();
+            var res = parseInt(txtPrice) + parseInt(price) + parseInt(score);
+            $("#addPrice").val(res);
+            $(".bootbox #Coupon").val(score);
+            $(".bootbox #Cash").val(price);
+            $(".bootbox #Price").val(parseInt(price) + parseInt(score));
+
+        } else if (activityType == "@((int)MemberActivityFlag.Score)") {
+            $(".bootbox #Cash").val("0");
+            $(".bootbox #Card").val("0");
+            $(".bootbox #Coupon").val("0");
+            $(".bootbox #Price").val("0");
+            $(".scoreRemainder").css("display", "block");
+            $(".priceRemainder").css("display", "none");
+            var txtScore = $("#txtScore").val();
+            var res = parseInt(txtScore) + parseInt(score);
+            $("#addScore").val(res);
+            $(".bootbox #Score").val(score);
+
+        }
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

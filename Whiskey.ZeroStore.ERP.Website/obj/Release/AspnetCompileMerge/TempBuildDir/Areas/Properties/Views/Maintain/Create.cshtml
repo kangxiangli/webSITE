@@ -1,0 +1,213 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model Whiskey.ZeroStore.ERP.Models.Entities.Properties.MaintainExtend
+
+<script type="text/javascript" src="/content/editor/kindeditor-min.js"></script>
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+<link rel="stylesheet" href="/content/editor/themes/default/default.css" />
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<style>
+
+</style>
+
+
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #5ebd5e"></span>
+</div>
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">基础信息</a>
+    </li>
+    <li class="">
+        <a href="#addImage" data-toggle="tab">图片</a>
+    </li>
+  
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                所属父级 :
+            </label>
+            <div class="col-md-10">
+                @Html.DropDownList("ParentId", (List<SelectListItem>)ViewBag.Parents, new { @class = "form-control selectpicker" })
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                名称 :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(c => c.ExtendName, new { @class = "form-control" })
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                内容 :
+            </label>
+            <div class="col-md-10">
+                <input type="hidden" id="hid_desc" name="Descript" />
+                <input type="text" id="Descript"  class="form-control article-editor" style="width:100%;height:150px" />
+              
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                默认可用 :
+            </label>
+            <div class="col-md-10">
+
+                <select name="IsEnabled" class="form-control selectpicker">
+                    <option value="true">可用</option>
+                    <option value="false">不可用</option>
+                </select>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div id="addImage" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                照片预览:
+            </label>
+            <div class="row">
+                <div class="col-xs-6 col-md-3">
+                    <a href="#" class="thumbnail">
+                        <img src="/Content/Images/logo-_03.png" alt="图片" id="Icon" />
+                    </a>
+                </div>
+                <input type="hidden" name="ImgPath" id="ImgPath" />
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    上传:
+                </label>
+                <div class="col-md-10">
+                    <div class="dropzone-box uploadImage">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" id="file" multiple="multiple" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <span style="color: #5ebd5e">*不选择父级时，添加的对象默认为父级</span>
+</div>
+
+<script type="text/javascript">
+    var editor1;
+    $(function () {
+      
+        var myDropzone = new Dropzone(".uploadImage", {
+            url: "@Url.Action("UploadImage")",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            maxFiles: 1,
+            paramName: "file",
+            maxFilesize: 0.5,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (data.ResultType == 3) {
+                        $(".bootbox #Icon").attr("src", data.Data)
+                        $(".bootbox #ImgPath").attr("value", data.Data);
+                    } else {
+                        var message = "上传失败";
+                        var node, _i, _len, _ref, _results;
+                        file.previewElement.classList.remove("dz-success");
+                        file.previewElement.classList.add("dz-error");
+                        if (typeof message !== "String" && message.error) {
+                            message = message.error;
+                        }
+                        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                        _results = [];
+                        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                            node = _ref[_i];
+                            _results.push(node.textContent = message);
+                        }
+                        return _results;
+                    }
+
+                });
+            }
+        });
+         editor1 = KindEditor.create(".article-editor", {
+            width: "100%",
+            height: "400px",
+            resizeType: 1,
+            uploadJson: "/content/editor/upload_json.ashx",
+            fileManagerJson: "/content/editor/file_manager_json.ashx",
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            contentEditable: true,
+            filterMode: false,
+            items: [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink'
+            ],
+            afterCreate: function (id) {
+                //this.focus(id);
+                var _id = $("#ParentId option:selected").val();
+                if (_id == "") {
+                    editor1.readonly();
+                } else {
+                    editor1.readonly(false);
+                }
+            },
+            afterChange: function (id) {
+                this.sync(id);
+                $("#hid_desc").val(editor1.html().replace(/</g,"%lt%").replace(/>/g,"%gt%"));
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+        
+        $("#ParentId").change(function () {
+            var _id = $("#ParentId option:selected").val();
+            if (_id == "") {
+                editor1.readonly();
+            } else {
+                editor1.readonly(false);
+            }
+        });
+
+        $(window).one("mouseenter",function() {
+                var _id = $("#ParentId option:selected").val();
+                if (_id == "") {
+                   editor1.readonly();
+                } else {
+                   editor1.readonly(false);
+                }
+        });
+      
+    });
+    
+
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

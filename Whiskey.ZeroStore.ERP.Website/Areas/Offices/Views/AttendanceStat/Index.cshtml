@@ -1,0 +1,353 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+
+<div class="row">
+    @Html.Partial("PartialMyAtten", "100")
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="AttendanceStat">
+            <div class="panel panel-search">
+                <div class="panel-heading clearfix">
+                    <div class="col-md-4 panel-title">
+                        <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                    </div>
+                    <div class="col-md-8 text-right">
+                        <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal form-search">
+                        <div class="col-md-4">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-2">创建日期：</label>
+                                <div class="col-md-6">
+                                    <div class="input-daterange input-group">
+                                        @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                        <span class="input-group-addon">至</span>
+                                        @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group no-margin-hr">
+                                <div class="col-md-6">
+                                    <div class="input-daterange input-group">
+                                        <button id="curent_month" title="本月" type="button" class="btn btn-default btn-padding-right"> <span>本月</span></button>
+
+                                        <button id="prve_month" title="上月" type="button" class="btn btn-default btn-padding-right"> <span>上月</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer text-right clearfix ">
+                    <div class="pull-left">
+                        <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                        <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                    </div>
+                    <div class="pull-right">
+                        <div class="button-normal">
+                            @*<button id="Create" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>请假</span></button>*@
+                            <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                            <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                            <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                        </div>
+                        <div class="button-recycle">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-list">
+                <div class="panel-heading clearfix">
+                    <div class="col-md-4 panel-title">
+                        <h5><i class="fa fa-info"></i> <span>休息信息</span></h5>
+                    </div>
+                    <div class="panel-footer text-right clearfix">
+                        <div class="col-md-2">
+                            <label class="control-label col-md-10">
+                                年假：@ViewBag.AnnualLeaveDays
+                            </label>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label col-md-10">
+                                带薪休假：@ViewBag.PaidLeaveDays
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-list">
+                    <div class="panel-heading clearfix">
+                        <div class="col-md-4 panel-title">
+                            <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                        </div>
+                        <div class="col-md-8 text-right">
+                            <span><input class="enabler" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                            <span style="margin-left:20px;"><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                        </div>
+                    </div>
+                    <table class="table table-list table-hover valign-middle" width="100%">
+                        <thead>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+    <script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+    @*<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>*@
+    @section Scripts{
+
+        <script type="text/javascript">
+            var startDate = "";
+            var endDate = "";
+            var type = 0;
+            var power = "@ViewBag.Power";
+            if (power == "True") {
+                $("#departAtten").css("display", "block");
+            }
+            $(document).ready(function () {
+                $.whiskey.datatable.instance = $(".table-list").dataTable({
+                    "bScrollCollapse": false,
+                    "sAjaxSource": "@Url.Action("List")",
+                    "fnServerParams": function (aoData) {
+                        var conditions = new $.whiskey.filter.group();
+                        startDate = $(".start-date").val();
+                        endDate = $(".end-date").val();
+                        if (startDate.length > 0 && endDate.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("AttendanceTime", startDate + " 00:00:00", "greater"));
+                            conditions.Rules.push(new $.whiskey.filter.rule("AttendanceTime", endDate + " 23:59:59", "less"));
+                        }
+                        if ($(".trusher").is(":checked")) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                            if ($(".enabler").is(":checked")) {
+                                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                            } else {
+                                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                            }
+                        } else {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                        }
+                        $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                            var field = $(this).attr("Id");
+                            var value = $(this).val();
+                            if (value != null && value.length > 0) {
+                                conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                            }
+                        });
+                        $(".form-search select").each(function () {
+                            var field = $(this).attr("Id");
+                            var value = $(this).find("option:selected").val().trim();
+                            if (value != null && value.length > 0) {
+                                conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                            }
+                        });
+                        aoData.push({ name: "satrtTime", value: startDate });
+                        aoData.push({ name: "endTime", value: endDate });
+                        aoData.push({ name: "type", value: type });
+                        aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                    },
+
+                    "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                        $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                        //$("td:eq(2)", nRow).css({ "float": "left", "width": "100%" });
+                        $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                        return nRow;
+                    },
+                    "fnDrawCallback": function () {
+                        $(".checked-all").click(function () {
+                            var checkedStatus = this.checked;
+                            $(".table-list tr td input[type=checkbox]").each(function () {
+                                this.checked = checkedStatus;
+                            });
+                        });
+
+                        $(".table-list").treegrid({
+                            saveState: true,
+                            treeColumn: 2,
+                            expanderExpandedClass: 'treegrid-expander-expanded',
+                            expanderCollapsedClass: 'treegrid-expander-collapsed'
+                        });
+
+                    },
+
+                    "aoColumns": [{
+                        "bVisible": false,
+                        "bSearchable": false,
+                        "sName": "Id",
+                        "mData": "Id"
+                    },
+                    {
+                        "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                        "sName": "Id",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            return $.whiskey.datatable.tplListCheckbox(data.Id);
+                        }
+                    },
+                    {
+                        "sTitle": "编号",
+                        "bSortable": false,
+                        "sName": "RowNumber",
+                        "mData": function (data) {
+                            return '';
+                        }
+                    },
+                    {
+                        "sTitle": "统计日期",
+                        "bSortable": false,
+                        "sName": "Date",
+                        "mData": function (data) {
+                            return data.Date;
+                        },
+                    },
+                    {
+                        "sTitle": "正常上班天数",
+                        "bSortable": false,
+                        "sName": "NormalDays",
+                        "mData": function (data) {
+                            return '<a style="cursor:pointer;color:green" onclick="getNormal(\'' + data.Date + '\')">' + data.NormalDays + '</a>' + "天";
+                        },
+                    },
+                     {
+                         "sTitle": "迟到次数",
+                         "bSortable": false,
+                         "sName": "LateCount",
+                         "mData": function (data) {
+                             return data.LateCount+"次";
+                         },
+                     },
+                         {
+                             "sTitle": "早退次数",
+                             "bSortable": false,
+                             "sName": "LeaveEarlyCount",
+                             "mData": function (data) {
+                                 return data.LeaveEarlyCount + "次";
+                             },
+                         },
+                         {
+                             "sTitle": "未签退次数",
+                             "bSortable": false,
+                             "sName": "NoSignOutCount",
+                             "mData": function (data) {
+                                 return data.NoSignOutCount + "次";
+                             },
+                         },
+                    {
+                        "sTitle": "加班时长",
+                        "bSortable": false,
+                        "sName": "OvertimeDays",
+                        "mData": function (data) {
+                            return '<a style="cursor:pointer;color: #e5603b" onclick="getOverTimeList(\'' + data.Date + '\')">' + data.OvertimeDays + '</a>' + "小时";
+                        },
+                    },
+                    {
+                        "sTitle": "外勤时长",
+                        "bSortable": false,
+                        "sName": "FieldDays",
+                        "mData": function (data) {
+                            return '<a style="cursor:pointer;color: #e5603b" onclick="getFieldList(\'' + data.Date + '\')">' + data.FieldDays + '</a>' + "小时";
+                        },
+                    },
+                    {
+                        "sTitle": "请假时长",
+                        "bSortable": false,
+                        "sName": "LeaveDays",
+                        "mData": function (data) {
+                            return '<a style="cursor:pointer;color: #e5603b" onclick="getLeaveList(\'' + data.Date + '\')">' + data.LeaveDays + '</a>' + "小时";
+                        },
+                    },
+                    ]
+
+                });
+                $("#curent_month").click(function () {
+                    type = 1;
+                    $.whiskey.datatable.reset(false);
+                });
+                $("#prve_month").click(function () {
+                    type = 2;
+                    $.whiskey.datatable.reset(false);
+                });
+                $("#Search").click(function () {
+                    type = 0;
+                    $.whiskey.datatable.reset(false);
+                });
+            });
+
+            //获取外勤数据列表
+            function getFieldList(date) {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "",
+                    className: "diaclg",
+                    actionUrl: "@Url.Action("Field")",
+                    params: { Date: date }
+                });
+            }
+            //获取上班分钟数据列表
+            function getMinutesList(date) {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "",
+                    actionUrl: "@Url.Action("Minutes")",
+                    params: { Date: date }
+                });
+            }
+            //获取正常打卡数据列表
+            function getNormal(date) {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "正常上班",
+                    className: "diaclg",
+                    actionUrl: "@Url.Action("Normal")",
+                    params: { Date: date }
+                });
+            }
+            //获取加班数据列表
+            function getOverTimeList(date) {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "加班",
+                    className: "diaclg",
+                    actionUrl: "@Url.Action("Overtime")",
+                    params: { Date: date }
+                });
+            }
+            //获取上班迟到数据
+            function getLateList(date) {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "上班迟到",
+                    actionUrl: "@Url.Action("Late")",
+                    params: { Date: date }
+                });
+            }
+            //获取上班早退数据
+            function getLeaveEarlyList(date) {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "上班早退",
+                    actionUrl: "@Url.Action("LeaveEarly")",
+                    params: { Date: date }
+                });
+            }
+            //获取请假数据
+            function getLeaveList(date) {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "请假",
+                    className: "diaclg",
+                    actionUrl: "@Url.Action("Leave")",
+                    params: { Date: date }
+                });
+            }
+            //获取缺勤数据
+            function getAbsenceList(date) {
+                var view = new $.whiskey.web.ajaxView({
+                    caption: "缺勤",
+                    actionUrl: "@Url.Action("Absence")",
+                    params: { Date: date }
+                });
+            }
+        </script>
+
+    }

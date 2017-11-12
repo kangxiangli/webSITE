@@ -1,0 +1,71 @@
+﻿<style>
+    .adminlist .modal-dialog {
+        width: 959px;
+    }
+
+    .modal-content {
+        width: 959px;
+        margin: 0 auto;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="AdminList">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var notification_admin_div_dt = $("#AdminList").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("GetSendStores")",
+            fnRowCallback: function (nRow, aData, iDisplayIndex) {
+                var oSettings = $(this).dataTable().fnSettings();
+                $("td:eq(0)", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
+                return nRow;
+            },
+            "fnServerParams": function (aoData) {
+                aoData.push({ name: "Id", value: '@Request["Id"]' });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+            {
+                "sTitle": "店铺名称",
+                "bSortable": false,
+                "sName": "StoreName",
+                "mData": function (data) {
+                    return data.StoreName;
+                },
+            },
+            {
+                "sTitle": "店铺类型",
+                "bSortable": false,
+                "sName": "StoreName",
+                "mData": function (data) {
+                    return data.TypeName;
+                },
+            },
+            ]
+        });
+    });
+</script>

@@ -1,0 +1,536 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Data
+@model TemplateDto
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.TemplateName)：
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.TemplateName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group warning alert-danger" id="warn" style="display:none">
+    <label class="control-label col-md-2">
+        警告 :
+    </label>
+    <div class="col-md-10">
+        <label class="control-label col-md-8">
+            <i class="fa fa-warning"></i><span>路径只能输入数字，英文字符和分隔符 /</span>
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.HtmlName)：
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.HtmlName, new { @class = "form-control"})
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Notes)：
+    </label>
+    <div class="col-md-8">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control"  })
+    </div>
+</div>
+ @*<div class="form-group">
+    <label class="control-label col-md-3">
+        Html：
+    </label>
+    <div class="col-md-6">
+        @Html.DropDownList("HtmlPart", (List<SelectListItem>)ViewBag.HtmlPart, new { @class = "form-control selectpicker", @onchange = "setHtmlPart(this)" })
+    </div>
+</div>
+<div class="form-group" id="divHtmlPart">
+    <label class="control-label col-md-3">
+        Html标签：
+    </label>
+    <div class="col-md-6" id="laHtmlPart">
+
+    </div>
+</div>*@
+<div class="form-group">
+    <label class="control-label col-md-3">
+        JS：
+    </label>
+    <div class="col-md-6">
+        <select style="" id="selectJS" onchange="GetJSPath(this)" class="form-control selectpicker"></select>
+    </div>
+    <div style="">
+        <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseJS" aria-expanded="false" aria-controls="collapseExample" onclick="setText(this)">
+            添加
+        </a>
+        <div class="collapse" id="collapseJS">
+            <div class="well">
+                <div class="dropzone-box uploadJS">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传JS<br><span class="dz-text-small">或直接拖放选择</span>
+                    </div>
+                    <div class="fallback">
+                        <input name="file" type="file" id="file" multiple="multiple" />
+                    </div>
+                </div>
+                <br />
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        JS路径：
+    </label>
+    <div class="col-md-8">
+        <input type="text" value="" id="JSPath" class="form-control" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        CSS：
+    </label>
+    <div class="col-md-6">
+        <select id="selectCSS" onchange="GetCSSPath(this)" class="form-control selectpicker"></select>
+    </div>
+    <div style="">
+        <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseCSS" aria-expanded="false" aria-controls="collapseExample" onclick="setText(this)">
+            添加
+        </a>
+        <div class="collapse" id="collapseCSS">
+            <div class="well">
+                <div class="dropzone-box uploadCSS">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传CSS<br><span class="dz-text-small">或直接拖放选择</span>
+                    </div>
+                    <div class="fallback">
+                        <input name="file" type="file" id="file" multiple="multiple" />
+                    </div>
+                </div>
+                <br />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        CSS路径：
+    </label>
+    <div class="col-md-8">
+        <input type="text" value="" id="CSSPath" class="form-control" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        引用图片：
+    </label>
+    <div class="col-md-6">
+        <select class="form-control selectpicker" id="selectImage" onchange="GetImagePath(this)"></select>
+    </div>
+    <div style="">
+        <a class="btn btn-success" role="button" data-toggle="collapse" href="#collapseImage" aria-expanded="false" aria-controls="collapseExample" onclick="setText(this)">
+            添加
+        </a>
+        <div class="collapse" id="collapseImage">
+            <div class="well">
+                <div class="dropzone-box uploadImage">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                    </div>
+                    <div class="fallback">
+                        <input name="file" type="file" id="file" multiple="multiple" />
+                    </div>
+                </div>
+                <br />
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        图片路径：
+    </label>
+    <div class="col-md-8">
+        <input type="text" value="" id="ImagePath" class="form-control" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        图片：
+    </label>
+    <div class="col-md-8">
+        <div class="col-md-1">
+            <div style="display:block;width:80px;height:80px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;">
+                <img style="margin:2px;max-width:74px;" class="img-responsive" id="image">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.TemplateHtml) :
+    </label>
+    <div id="div">
+        <a class="btn btn-label" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            模版文档
+        </a>
+        <div class="collapse" id="collapseExample">
+            <div class="well">
+                <label class="control-label col-md-3" text-align="left" style="width:19%">
+                    一级栏目：
+                </label>
+                <div class="col-md-6">
+                    @Html.DropDownList("ArticleItem", (List<SelectListItem>)ViewBag.ArticleItem, new { @class = "form-control selectpicker", @onchange = "GetArticleItemChild()" })
+                </div>
+                <br />
+                <div>
+                    <br />
+                    <label class="control-label col-md-3" text-align="left" style="width:19%">
+                        二级栏目：
+                    </label>
+                    <div class="col-md-6">
+                        <select class="form-control" id="ArticleItemChild" onchange="showDoc()"></select>
+                    </div>
+                </div>
+                <br />
+                <div>
+                    <span id="spanDoc" style="color: #5ebd5e"></span>
+                    <br />                     
+                    1、$section_parentId_childId_show_5_{}：显示文章，5：显示文章数量，例如$section_1_1_show_5，表示显示一级栏目Id为1下二级栏
+                    目Id为1下的文章，显示5篇；{} 内可以打填写任何内容，每个{}内只允许填写一套标签，
+                    后台会根据你填写的显示文章的数量自动循环添加；例如 $section_1_1_show_5_{&lt;li&gt;$section_title&lt;/li&gt;&lt;a href="$section_img"&gt;查看&lt;/a&gt;}
+                    <br />
+                    <span style="color: #5ebd5e">$section_1_1_show_5_{}为必填参数，中括号内参数为选填</span><br />
+                    <span style="color: #5ebd5e">{}内可以填写的标签，如下</span><br />
+                    &nbsp; &nbsp;1、$section_title：标题<br />
+                    &nbsp; &nbsp;2、$section_publisher：发布人<br />
+                    &nbsp; &nbsp;3、$section_time：发布时间<br />
+                    &nbsp; &nbsp;4、$section_hits：点击率<br />
+                    &nbsp; &nbsp;5、$section_img ：封面图片<br />
+                    &nbsp; &nbsp;6、$section_summary：简介<br />
+                    &nbsp; &nbsp;7、$section_content：文章内容<br />
+                    &nbsp; &nbsp;8、$section_path：文章路径<br />
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade clearfix active in">
+        @Html.TextAreaFor(m => m.TemplateHtml, new { @class = "form-control", @rows = "20" })
+    </div>
+</div>
+
+ 
+<script type="text/javascript">
+    //初始化
+    $(function () {
+        GetJSList();
+        GetCSSList();
+        GetImageList();
+        $("#HtmlName").keyup(function (event) {
+            setPath();
+        });
+        //初始化上传JS控件
+        var myDropzone = new Dropzone(".uploadJS", {
+            url: "@Url.Action("Create","Js")",
+            acceptedFiles: "text/javascript",
+            uploadMultiple: true,
+            parallelUploads: 100,
+            init: function () {
+                myDropzone = this; // closure
+                //当上传完成后的事件，接受的数据为JSON格式
+                //记录次数
+                var count = 0;
+                this.on("success", function (file, data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].ResultType == "@((int)OperationResultType.Success)") {
+                            var message;
+                            if (file.name == data[i].Data) {
+                                message = data[i].Message;
+                            }
+                            else {
+                                message = "服务器忙，请稍后重试";
+                            }
+                        }
+                        else {
+                            message = data[i].Message;
+                            var node, _i, _len, _ref, _results;
+                            file.previewElement.classList.remove("dz-success");
+                            file.previewElement.classList.add("dz-error");
+                            if (typeof message !== "String" && message.error) {
+                                message = message.error;
+                            }
+                            _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                            _results = [];
+                            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                                node = _ref[_i];
+                                _results.push(node.textContent = message);
+                            }
+                            return _results;
+                        }
+                    } 
+                });
+
+                this.on("complete", function (data) {
+                    if (count == 0) {
+                        GetJSList();
+                    }
+                    ++count;
+                })
+            }
+        });
+
+        //初始化上传CSS控件
+        var myDropzone = new Dropzone(".uploadCSS", {
+            url: "@Url.Action("Create","css")",
+            acceptedFiles: "text/css",
+            uploadMultiple: true,
+            parallelUploads: 100,
+            init: function () {
+                myDropzone = this; // closure
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].ResultType == "@((int)OperationResultType.Success)") {
+                            var message;
+                            if (file.name == data[i].Data) {
+                                message = data[i].Message;
+                            }
+                            else {
+                                message = "服务器忙，请稍后重试";
+                            }
+                        }
+                        else {
+                            message = data[i].Message;
+                            var node, _i, _len, _ref, _results;
+                            file.previewElement.classList.remove("dz-success");
+                            file.previewElement.classList.add("dz-error");
+                            if (typeof message !== "String" && message.error) {
+                                message = message.error;
+                            }
+                            _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                            _results = [];
+                            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                                node = _ref[_i];
+                                _results.push(node.textContent = message);
+                            }
+                            return _results;
+                        }
+                    } 
+                });
+                //记录次数
+                var count = 0;
+                this.on("complete", function (data) {
+                    if (count == 0) {
+                        GetCSSList();
+                    }
+                    ++count;
+                })
+            }
+        });
+
+        //初始化上传图片控件
+        var myDropzone = new Dropzone(".uploadImage", {
+            url: "@Url.Action("Create","Image")",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            uploadMultiple: true,
+            parallelUploads: 100,
+            init: function () {
+                myDropzone = this; // closure
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].ResultType == "@((int)OperationResultType.Success)") {
+                            var  message;
+                            if (file.name == data[i].Data) {
+                                message = data[i].Message;
+                            }
+                            else {
+                                message = "服务器忙，请稍后重试";                            
+                            }                        
+                        }
+                        else{
+                            message = data[i].Message;
+                            var node, _i, _len, _ref, _results;
+                            file.previewElement.classList.remove("dz-success");
+                            file.previewElement.classList.add("dz-error");
+                            if (typeof message !== "String" && message.error) {
+                                message = message.error;
+                            }
+                            _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                            _results = [];
+                            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                                node = _ref[_i];
+                                _results.push(node.textContent = message);
+                            }
+                            return _results;
+                        }
+                    }                 
+            });
+            //记录次数
+            var count = 0;
+            this.on("complete", function (data) {
+                if (count == 0) {
+                    GetImageList();
+                }
+                ++count;
+            })
+
+          }
+      });
+    });
+
+
+    //设置路径
+    function setPath() {        
+         
+        var path = $("#HtmlName").val();
+        //匹配汉字
+        var rege = new RegExp("[^0-9a-zA-Z]|\/");         
+        if (rege.test(path)) {
+            $("#warn").css("display", "block");
+            $(".bootbox .btn-primary").attr("disabled", "disabled");
+            return false;
+        }
+        else {
+            $("#warn").css("display", "none");
+            $(".bootbox .btn-primary").removeAttr("disabled", "disabled");
+        }
+         
+    }
+        //显示文档标签的Id
+        function showDoc() {
+            var parentId = $("#ArticleItem").val();
+            var childId = $("#ArticleItemChild").val();
+            if (parentId == null || childId == '-1') {
+                $("#spanDoc").empty();
+                $("#spanDoc").append("<br/>选择一级和二级栏目才可以看对应的$section_parentId-childId");
+            }
+            else {
+                $("#spanDoc").empty();
+                $("#spanDoc").append('<br/>$section_' + parentId + '_' + childId);
+            }
+        }
+        //获取文章二级栏目
+        function GetArticleItemChild() {
+            var parentId = $("#ArticleItem").val();
+            $.ajax({
+                url: '@Url.Action("GetChild", "ArticleItem", new { area = "Articles" })',
+                type: 'post',
+                data: { Id: parentId },
+                success: function (data) {
+                    $("#ArticleItemChild").empty();
+                    if (data == null || data.length == 0) {
+                        $("#ArticleItemChild").append("<option value='-1'>暂无数据</option>");
+                    } else {
+                        $("#ArticleItemChild").append("<option value='-1'>请选择</option>");
+                        for (var i = 0; i < data.length; i++) {
+                            $("#ArticleItemChild").append("<option value='" + data[i].Id + "'>" + data[i].Name + "</option>");
+                        }
+                         $('.selectpicker').selectpicker();
+                  $('.selectpicker').selectpicker('refresh');
+                    }
+                }
+            });
+        }
+        //获取JS路径
+        function GetJSPath(option) {
+            if (option.value == null) {
+                $("#JSPath").attr('value', '');
+            }
+            $("#JSPath").attr('value', option.value);
+        };
+        //获取JS集合
+        function GetJSList() {
+            $.ajax({
+                url: '@Url.Action("GetJSList","Js")',
+                type: 'post',
+                beforeSend: function () { $(".modal-footer .btn-primary").attr("disabled", "disabled"); },
+                complete: function (data) { $(".modal-footer .btn-primary").removeAttr("disabled"); },
+                success: function (data) {
+                    $("#selectJS").empty();
+                    $("#selectJS").append("<option value=''>请选择JS文件</option>");
+                    for (var i = 0; i < data.length; i++) {
+                        $("#selectJS").append("<option value='" + data[i].JSPath + "'>" + data[i].JSName + "</option>");
+                    }
+                     $('.selectpicker').selectpicker();
+                  $('.selectpicker').selectpicker('refresh');
+                }
+            });
+        };
+        //获取CSS路径
+        function GetCSSPath(option) {
+            if (option.value == null) {
+                $("#CSSPath").attr('value', '');
+            }
+            $("#CSSPath").attr('value', option.value);
+        };
+        //获取CSS集合
+        function GetCSSList() {
+            $.ajax({
+                url: '@Url.Action("GetCSSList","Css")',
+                type: 'post',
+                success: function (data) {
+                    $("#selectCSS").empty();
+                    $("#selectCSS").append("<option value=''>请选择CSS文件</option>");
+                    for (var i = 0; i < data.length; i++) {
+                        $("#selectCSS").append("<option value='" + data[i].CSSPath + "'>" + data[i].CSSName + "</option>");
+                    }
+                     $('.selectpicker').selectpicker();
+                  $('.selectpicker').selectpicker('refresh');
+                }
+            });
+        };
+        //获取图片路径
+        function GetImagePath(option) {
+            if (option.value == null) {
+                $("#ImagePath").attr('value', '');
+            } else {
+                $("#ImagePath").attr('value', option.value);
+                $("#image").attr('src', option.value);
+            }
+        };
+        //获取图片集合
+        function GetImageList() {
+            $.ajax({
+                url: '@Url.Action("GetImageList","Image")',
+                type: 'post',
+                success: function (data) {
+                    $("#selectImage").empty();
+                    $("#selectImage").append("<option value=''>请选择图片文件</option>");
+                    for (var i = 0; i < data.length; i++) {
+                        $("#selectImage").append("<option value='" + data[i].ImagePath + "'>" + data[i].ImageName + "</option>");
+                    }
+                     $('.selectpicker').selectpicker();
+                  $('.selectpicker').selectpicker('refresh');
+                }
+            });
+        };
+        //设置显示文本
+        function setText(my) {
+            var text = $(my).html();
+            var rex = new RegExp("添加");
+            $(my).popover('show');
+            if (rex.test(text)) {
+                $(my).text("收起");
+            }
+            else {
+                $(my).text("添加");
+            }
+        };
+        //获取替换标签
+        function setHtmlPart(option) {
+            var part = $(option).val();
+            if (part == null || part == "") {
+                $("#divHtmlPart").css("display", "none");
+            } else {
+                $("#divHtmlPart").css("display", "none");
+                $("#laHtmlPart").text("$part_" + part);
+            }
+        }
+ </script>

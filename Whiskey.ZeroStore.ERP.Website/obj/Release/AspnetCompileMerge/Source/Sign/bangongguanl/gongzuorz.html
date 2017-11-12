@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta id="viewport" name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+    <title>工作日志</title>
+    <script>
+        (function (w) {
+            s();
+            var e = ("onorientationchange" in w) ? "orientationchange" : "resize";
+            w.addEventListener(e, function () {
+                setTimeout(function () {
+                    s()
+                }, 200)
+            }, false);
+            function s() {
+                var a = w.innerWidth;
+                var b = 20 * (a / 320);
+                if (b > 40) {
+                    b = 40;
+                }
+                document.querySelector("html").style.fontSize = b + "px";
+            }
+        })(window);
+    </script>
+    <link rel="stylesheet" href="../css/public.css"/>
+    <link rel="stylesheet" href="css/bangongguanli.css"/>
+    <!--[if lt IE 9]>
+    <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div>
+    <!--头标题-->
+    <div class="til_bak">
+        <p class="back_befo send_back">
+            <img src="../img/nav_fh@2x.png" alt="png"/><span>返回</span>
+        </p>工作日志
+    </div>
+    <!--内容-->
+    <div id="notification">
+        <input class="inp_txt log_type" type="text" placeholder="日志类型"/>
+        <!-- 日志类型弹出层-->
+        <div class="select_type"></div>
+        <div class="typeDiv">
+            <ul class="type_id">
+                <li>js</li>
+                <li>html</li>
+                <li>.net</li>
+            </ul>
+        </div>
+        <input class="inp_txt log_til" type="text" placeholder="日志名称"/>
+        <textarea class="content_txt log_txt" name="" id="" cols="30" rows="10" placeholder="内容"></textarea>
+        <input class="inp_btn send_log" type="button" value="发  送"/>
+    </div>
+    <div class="showMgBg"></div>
+    <div class="showMg">
+        <p class="prom">温馨提示</p>
+        <p class="msg_info">信息有误</p>
+        <input class="sure_btn" type="button" value="确  定"/>
+    </div>
+
+</div>
+
+    <script src="../js/fastclick.js"></script>
+    <script src="../js/global.js"></script>
+    <script src="js/bangonggl.js"></script>
+    <script>
+        $(function () {
+            FastClick.attach(document.body);
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

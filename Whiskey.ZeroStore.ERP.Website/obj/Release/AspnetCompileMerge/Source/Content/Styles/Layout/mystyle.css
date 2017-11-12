@@ -1,0 +1,650 @@
+﻿.brick p,
+em {
+	text-align: left;
+	/*margin-left: 10px;*/
+	color: rgba(255, 255, 255, .5);
+	font-weight: bolder;
+}
+
+.brick {
+	position: relative;
+	width: 200px;
+	height: 350px;
+}
+
+    .brick > p:nth-child(3) {
+        position: absolute;
+        bottom: 23px;
+        text-align: center;
+        width: 100%;
+        vertical-align: middle;
+    }
+
+    .brick > p:nth-child(2) {
+        position: absolute;
+        bottom: 46px;
+        text-align: center;
+        width: 100%;
+        vertical-align: middle;
+    }
+    .brick > p:nth-child(4) {
+        position: absolute;
+        bottom: 2px;
+        text-align: center;
+        width: 100%;
+        vertical-align: middle;
+    }
+
+.brick:hover .dabao {
+	opacity: 1;
+	-webkit-transform: translate3d(0, 0, 0) scale(1);
+	cursor: pointer;
+}
+
+.waterfall-container {
+	display: block;
+}
+
+.polaroid {
+	float: left;
+	margin: 4px;
+}
+
+.clothes_color img {
+	width: 100%;
+}
+
+.active_color {
+	border: 1px solid rgba(255, 255, 255, .6);
+	border-radius: 50% !important;
+}
+
+.brick .dabao {
+	position: absolute;
+	top: 65%;
+	left: 50%;
+	background: rgba(0, 0, 0, .7) !important;
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	margin-left: -22.5px;
+	margin-top: -80px;
+	opacity: 0;
+	-webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+	transition: opacity 0.35s, transform 0.35s;
+	-webkit-transform: translate3d(0, -40px, 0) scale(1.1);
+	transform: translate3d(0, -40px, 0) scale(1.1);
+}
+
+.brick .dabao img {
+	width: 100%;
+	height: 100%;
+}
+
+.brick {
+	/*border: 1px solid #E3E3E3;*/
+	background: rgba(0, 0, 0, 0.2);
+	/*margin-top: 20px*/
+	;
+	/*box-shadow: 0px 2px 3px 1px #ccc;*/
+}
+
+.brick img {
+	width: 100%;
+	padding: 10px;
+}
+
+.clothes_selected {
+	opacity: 0;
+	-webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+	transition: opacity 0.35s, transform 0.35s;
+	-webkit-transform: translate3d(-40px, 0, 0) scale(1.1);
+	transform: translate3d(-40px, 0, 0) scale(1.1);
+	display: none;
+	position: absolute;
+	width: 318px;
+	height: 339px;
+	top: 141px;
+	left: 50%;
+	margin-left: -20%;
+	margin-top: -12%;
+	background: rgba(0, 0, 0, .5);
+	/*background-image: url('/Content/Images/img/boxbackground_@2x_03.png');*/
+	z-index: 999;
+}
+
+.clothes_selected>.clothes_close {
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	position: absolute;
+	top: 3.5%;
+	right: -51%;
+	background-image: url('/Content/Images/img/x.png');
+	background-size: 100% 100%;
+	z-index: 999;
+	cursor: pointer;
+}
+
+.clothes_selected>.clothes_close:hover {
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	position: absolute;
+	top: 3.5%;
+	right: -51%;
+	background-image: url('/Content/Images/img/x1.png');
+	background-size: 100% 100%;
+	z-index: 999;
+	cursor: pointer;
+}
+
+.change {
+	display: block;
+	transform: translate3d(0, 0, 0) scale(1);
+	z-index: 9999;
+}
+
+.clothes_selected>.clothes_decoration {
+	position: absolute;
+	width: 320px;
+	/*height: 100%;
+    bottom: -52px;*/
+	height: 88%;
+	bottom: 13px;
+}
+
+.clothes_selected>.clothes_color {
+	position: absolute;
+	width: 100%;
+	height: 9%;
+	left: 0;
+	padding-left: 9px;
+	border-bottom: 1px solid rgba(255, 255, 255, .3);
+	top: 1%;
+}
+
+.clothes_selected>.clothes_color div {
+	display: inline;
+	margin-left: 2px;
+	padding: 15px 0 0 5px;
+	color: rgba(255, 255, 255, .6);
+	line-height: 41px;
+	letter-spacing: 2px;
+}
+
+.clothes_selected>.clothes_size {
+	position: absolute;
+	width: 100%;
+	height: 15%;
+	bottom: 10%;
+	left: 0;
+}
+
+.clothes_selected>.clothes_size div {
+	float: left;
+	margin-left: 10px;
+	padding: 15px 0 0 5px;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.clothes_selected>.clothes_size div:not(:first-child) {
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.clothes_decoration>img {
+	width: 100%;
+	height: 100%;
+}
+
+.clothes_selected2 {
+	opacity: 0;
+	-webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
+	transition: opacity 0.35s, transform 0.35s;
+	-webkit-transform: translate3d(-40px, 0, 0) scale(1.1);
+	transform: translate3d(-40px, 0, 0) scale(1.1);
+	display: none;
+	position: absolute;
+	width: 320px;
+	height: 339px;
+	top: 141px;
+	left: 50%;
+	/* margin-left: -130% !important;*/
+	margin-top: -12%;
+	background: rgba(0, 0, 0, .5);
+	/*background-image: url('/Content/Images/img/boxbackground_@2x_03.png');*/
+	z-index: 999;
+}
+
+.clothes_selected2>.clothes_close {
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	position: absolute;
+	top: 3.5%;
+	right: -51%;
+	background-image: url('/Content/Images/img/x.png');
+	background-size: 100% 100%;
+	z-index: 999;
+	cursor: pointer;
+}
+
+.clothes_selected2>.clothes_close:hover {
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	position: absolute;
+	top: 3.5%;
+	right: -51%;
+	background-image: url('/Content/Images/img/x1.png');
+	background-size: 100% 100%;
+	z-index: 999;
+	cursor: pointer;
+}
+
+.change {
+	display: block;
+	transform: translate3d(0, 0, 0) scale(1);
+	z-index: 20;
+}
+
+.clothes_selected2>.clothes_decoration {
+	position: absolute;
+	width: 320px;
+	/*height: 100%;
+    bottom: -52px;*/
+	height: 88%;
+	bottom: 13px;
+}
+
+.clothes_selected2>.clothes_color {
+	position: absolute;
+	width: 100%;
+	height: 9%;
+	left: 0;
+	padding-left: 9px;
+	border-bottom: 1px solid rgba(255, 255, 255, .3);
+	top: 1%;
+}
+
+.clothes_selected2>.clothes_color div {
+	display: inline;
+	margin-left: 2px;
+	padding: 15px 0 0 5px;
+	color: rgba(255, 255, 255, 0.8);
+	line-height: 41px;
+	letter-spacing: 2px;
+}
+
+.clothes_selected2>.clothes_size {
+	position: absolute;
+	width: 100%;
+	height: 15%;
+	bottom: 10%;
+	left: 0;
+}
+
+.clothes_selected2>.clothes_size div {
+	float: left;
+	margin-left: 10px;
+	padding: 15px 0 0 5px;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.clothes_selected2>.clothes_size div:not(:first-child) {
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.clothes_decision {
+	position: absolute;
+	z-index: 99999;
+	width: 100%;
+	height: 8%;
+	bottom: 0;
+	left: 0;
+	padding: 5px 0 5px 0;
+}
+
+.clothes_decision>.ready_pagked {
+	width: 50%;
+	height: 100%;
+	float: left;
+	text-align: center;
+	border-right: 1px solid rgba(255, 255, 255, .4);
+}
+
+.clothes_decision>.go_car {
+	position: absolute;
+	right: -48%;
+	height: 127%;
+	border-radius: 50%;
+	width: 11%;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	top: -118%;
+}
+    .clothes_decision > .go_productdetail {
+        position: absolute;
+        right: -28%;
+        height: 127%;
+        border-radius: 50%;
+        width: 11%;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        top: -118%;
+    }
+
+.clothes_decision>.go_car:hover,
+.clothes_decision>.go_productdetail:hover {
+	cursor: pointer;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.clothes_decision img {
+	width: 100%;
+	/*height: 20px;
+	margin-left: 6px;
+	margin-top: 6px;*/
+}
+
+.clothes_decision b {
+	color: rgba(255, 255, 255, 0.8);
+	margin-left: 10px;
+	line-height: 30px;
+	letter-spacing: 2px;
+	font-weight: 500;
+}
+
+.clothes_decision b:first {
+	margin-left: 15px;
+}
+
+.ready_pagked,
+.go_car,
+.go_productdetail
+.clothes_close {
+	cursor: pointer;
+}
+
+.ready {
+	border: 2px solid #32cd32;
+}
+
+.xuhua {
+	-webkit-filter: blur(3px);
+	pointer-events:none;
+	/*	background: rgba(0,0,0,.5);
+        z-index: 9998;*/
+}
+
+.swiper-wrapper {
+	width: 100%;
+	height: 100%;
+}
+
+.swiper-slide {
+	/*background: #fff;*/
+}
+
+.swiper-slide img {
+	/* width: 100%;*/
+	display: block;
+	margin: 0 auto;
+	height: 90%;
+}
+
+.clothes_selected>.button-next {
+	width: 26px;
+	height: 26px;
+	right: 10px;
+	z-index: 999;
+	bottom: 45%;
+	position: absolute;
+	cursor: pointer;
+	background-image: url('/Content/Images/img/r.png');
+}
+
+.clothes_selected>.button-prev {
+	width: 26px;
+	height: 26px;
+	left: 10px;
+	/* top: 90px; */
+	bottom: 45%;
+	position: absolute;
+	cursor: pointer;
+	z-index: 999;
+	background-image: url('/Content/Images/img/l.png')
+}
+
+.clothes_selected2>.button-next {
+	width: 26px;
+	height: 26px;
+	right: 10px;
+	z-index: 999;
+	bottom: 45%;
+	position: absolute;
+	cursor: pointer;
+	background-image: url('/Content/Images/img/r.png');
+}
+
+.clothes_selected2>.button-prev {
+	width: 26px;
+	height: 26px;
+	left: 10px;
+	/* top: 90px; */
+	bottom: 45%;
+	position: absolute;
+	cursor: pointer;
+	z-index: 999;
+	background-image: url('/Content/Images/img/l.png')
+}
+
+.button-prev,
+.button-next {
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+.clothes_selected>.button-next:hover {
+	cursor: pointer;
+	background-image: url("/Content/Images/img/r1.png");
+}
+
+.clothes_selected>.button-prev:hover {
+	cursor: pointer;
+	background-image: url("/Content/Images/img/l1.png");
+}
+
+.clothes_selected2>.button-next:hover {
+	cursor: pointer;
+	background-image: url("/Content/Images/img/r1.png");
+}
+
+.clothes_selected2>.button-prev:hover {
+	cursor: pointer;
+	background-image: url("/Content/Images/img/l1.png");
+}
+
+.swiper-container-horizontal>.swiper-pagination-bullets {
+	bottom: -2px !important;
+}
+
+.polaroid_right {
+	position: absolute;
+	width: 175px;
+	height: 339px;
+	/*padding-left: 20px;*/
+	top: 0;
+	left: 120%;
+	margin-left: -20%;
+	margin-top: 0%;
+	background: rgba(0, 0, 0, .7);
+}
+
+.product-price-box {
+	margin-top: 55px;
+	/*text-align: center;*/
+}
+
+.product-price {
+	width: 60%;
+	text-align: left;
+}
+
+.productpricetxt {
+	/*width: 30%;*/
+	width: 69px;
+	box-sizing: border-box;
+	padding-left: 12px;
+}
+
+.product-price,
+.productpricetxt {
+	display: inline-block;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.clothes_color {
+	margin-top: 17px;
+	display: inline-block;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.clothes_color_txt {
+	width: 60px !important;
+	padding-left: 12px !important;
+	box-sizing: border-box;
+	display: inline-block;
+}
+
+.clothes_color div {
+	width: 18%;
+	padding: 2px;
+	display: inline-block;
+}
+
+.colorid_sizes>div:nth-child(1)>div,
+.colorid_sizes>div:nth-child(2)>div,
+.colorid_sizes>div:nth-child(3)>div,
+.colorid_sizes>div:nth-child(4)>div,
+.colorid_sizes>div:nth-child(5)>div {
+	width: 36px;
+	line-height: 24px;
+	text-align: center;
+	height: 25px;
+}
+
+.colorid_sizes {
+	width: 65%;
+}
+
+.colorid_sizes>div:nth-child(0)>div {}
+
+.clothes_size div {
+	color: rgba(255, 255, 255, 0.8);
+	float: left;
+}
+
+.clothes_size div:hover {
+	cursor: pointer;
+}
+
+.clothes_size_txt {
+	width: 60px;
+	box-sizing: border-box;
+	padding-left: 12px !important;
+	display: inline-block;
+}
+
+.clothes_size_details:hover {
+	cursor: pointer;
+}
+
+.clothes_size_details {
+	width: 76%;
+	/*float: right;*/
+	margin-left: 3px;
+}
+
+.quantity_left,
+.quantity_right {
+	cursor: pointer;
+	width: 20px;
+	line-height: 16px;
+	text-align: center;
+	vertical-align: middle;
+	height: 20px;
+	border: 1px solid rgba(255, 255, 255, 0.8);
+	border-radius: 50%;
+}
+
+.quantity_left:hover,
+.quantity_right:hover {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+.clothes_quantity {
+	margin-top: 17px;
+	display: inline-block;
+	word-wrap: normal;
+}
+
+.clothes_quantity_num {
+	width: 60%;
+}
+
+.clothes_quantity div {
+	color: rgba(255, 255, 255, 0.8);
+	display: inline-block;
+}
+
+.clothes_quantity_txt {
+	display: inline-block;
+	width: 60px;
+	box-sizing: border-box;
+	padding-left: 12px;
+}
+
+.quantity_num {
+	width: 27%;
+	border: 1px solid rgba(255, 255, 255, 0.5) !important;
+	background: rgba(0, 0, 0, 1);
+	margin: 0px 9px;
+	color: rgba(255, 255, 255, 0.8);
+	text-align: center;
+}
+
+.active_size {
+	color: rgba(255, 255, 255, 0.8);
+	border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.brick>img:nth-child(1) {
+	width: 200px;
+}
+
+.img_Box {
+	overflow: hidden;
+	height: 280px;
+}
+
+.clothes_size {
+	margin-top: 17px;
+}
+
+
+/*屏幕小于1024*/
+
+@media screen and (max-width:1024px) {
+	.brick {
+		position: relative;
+		width: 186px;
+		height: 327px;
+	}
+	.polaroid {
+		float: left;
+		margin: 5px;
+	}
+	.img_Box {
+		overflow: hidden;
+		height: 270px;
+	}
+}

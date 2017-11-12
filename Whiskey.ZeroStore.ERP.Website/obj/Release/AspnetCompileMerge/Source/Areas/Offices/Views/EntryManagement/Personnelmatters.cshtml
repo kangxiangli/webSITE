@@ -1,0 +1,490 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.Utility.Data
+@model Entry
+
+<style>
+    .clwid .modal-dialog {
+   min-width:100%;
+   width:100%;
+    }
+   .clwid .modal-dialog .modal-content {
+        width:60%;
+        margin:30px auto;
+    }
+
+    #base {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    #userdiv {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+        #userdiv .form-group {
+        width:70%;
+        display:inline-block;
+        }
+
+    #base {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    #personnelDiv {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+     .imgClass {
+    width: 100%;
+    margin-left: 2%;
+    margin-top: 6%;
+    }
+</style>
+<div class="personnel">
+    <ul class="nav nav-tabs" role="tablist" id="navTab">
+        <li role="presentation"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">基本信息</a></li>
+        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">相关证件</a></li>
+        <li role="presentation" class="active"><a href="#personnel" aria-controls="personnel" role="tab" data-toggle="tab">人事</a></li>
+    </ul>
+    <div id="base" style="display:none">
+        @Html.HiddenFor(x => x.Id, new { @class = "form-control" });
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                入职人 :
+            </label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBox("RealName", "", new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                手机 :
+            </label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    @Html.TextBox("MobilePhone", "", new { @class = "form-control", @readonly = "readonly" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                性别 :
+            </label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" id="sexSpan" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                Mac地址 :
+            </label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" id="MacAddress" readonly class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                面试评价 :
+            </label>
+            <div class="col-md-8">
+                @*<textarea id="InterviewEvaluation"  style="width:90%;height:60px;"></textarea>*@
+                @Html.TextAreaFor(x=>x.InterviewEvaluation,new { @style = "width:90%;height:60px;" });
+            </div>
+        </div>
+        @Html.HiddenFor(x => x.MemberId, new { @class = "form-control" })
+    </div>
+    <div id="userdiv" style="display:none">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                银行卡:
+            </label>
+            <div class="col-md-8">
+                <div class="dropzone-box detailImgs" id="BankcardDiv">
+                    <img src="@Model.BankcardImgPath" id="BankcardImgPath" class="imgClass" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                身份证:
+            </label>
+            <div class="col-md-8">
+                <div class="dropzone-box detailImgs" id="IdCardDiv">
+                    <img src="@Model.IdCardImgPath" id="IdCardImgPath" class="imgClass" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                健康证:
+            </label>
+            <div class="col-md-8">
+                <div class="dropzone-box detailImgs" id="HealthCertificateDiv">
+                    <img src="@Model.HealthCertificateImgPath" id="HealthCertificateImgPath" class="imgClass" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                照片:
+            </label>
+            <div class="col-md-8">
+                <div class="dropzone-box detailImgs" id="PhotoDiv">
+                    <img src="@Model.PhotoImgPath" id="PhotoImgPath" class="imgClass" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="personnelDiv">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                入职时间 :
+            </label>
+            <div class="col-md-7">
+                <div class="input-daterange input-group">
+                    @Html.TextBox("EntryTime", "", new { @class = "start-date input-sm form_datetime", @placeholder = "入职日期" })
+
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                部门 :
+            </label>
+            <div class="col-md-7">
+                @Html.DropDownList("DepartmentId", (List<SelectListItem>)ViewBag.Department, new { @class = "form-control cur_selectpicker" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                职位 :
+            </label>
+            <div class="col-md-7">
+                <select id="JobPositionId" class="form-control cur_selectpicker"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                劳动合同:
+            </label>
+            <div class="col-md-8">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式)</span>
+                <br />
+                <div class="dropzone-box detailImgs" id="LaborContractDiv">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传图片<br>
+                    </div>
+                    <img src="@Model.LaborContractImgPath" id="LaborContractImgPath" style="float:right;width:50%; display:none;margin-right: 10%;margin-top:4%;" />
+                    <div class="fallback">
+                        <input name="file" type="file" multiple="" accept="image/jpeg,image/gif,image/png,image/jpg"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                简历:
+            </label>
+            <div class="col-md-8">
+                <span style="color: #e5603b"> (只能上传doc,docx格式)</span>
+                <br />
+                <div class="dropzone-box detailImgs" id="ResumeDiv">
+                    <div class="dz-default dz-message">
+                        <i class="fa fa-cloud-upload"></i>
+                        点击这里上传简历<br>
+                    </div>
+                    <a src="@Model.ResumeImgPath" onclick="downloadFile(this)" id="ResumeImgPath" style="float:right;width:50%; display:none;margin-right: 10%;margin-top:4%;" >简历</a>
+                    <div class="fallback">
+                        <input name="file" type="file" multiple="" accept="application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<link href="~/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="~/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="~/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="~/Content/Scripts/Layout/DataHelper.js"></script>
+<script type="text/javascript">
+
+
+    $(function () {
+        $("#navTab li").click(function () {
+            //personnelDiv personnel
+            if (!$(this).hasClass("active")) {
+                if ($(this).find("a").attr("aria-controls") == "home") { $("#base").css("display", ""); $("#userdiv").css("display", "none"); $("#personnelDiv").css("display", "none"); }
+                else if ($(this).find("a").attr("aria-controls") == "profile") { $("#userdiv").css("display", ""); $("#base").css("display", "none"); $("#personnelDiv").css("display", "none"); }
+                else { $("#base").css("display", "none"); $("#userdiv").css("display", "none"); $("#personnelDiv").css("display", ""); }
+            }
+        });
+        $(".form_datetime").datetimepicker({
+            format: 'yyyy/mm/dd',
+            autoclose: false,
+            minView: 2,
+            todayBtn: true
+        });
+        var EntryTime = "@Model.EntryTime" || "";
+        if (EntryTime != "") {
+            $("#EntryTime").val(new Date(Date.parse(EntryTime)).toLocaleDateString());
+        } else {
+            $("#EntryTime").val($DataHelper.getNowFormatDate("/", true));
+        }
+        var DepartmentId = "@Model.DepartmentId" || "";
+        var JobPositionId = "@Model.JobPositionId" || "";
+        $(".personnel #RealName").val("@Model.Member.RealName");
+        $(".personnel #MobilePhone").val("@Model.Member.MobilePhone");
+        var gender = "@Model.Member.Gender" == "0" ? "女" : "男";
+        $(".personnel #sexSpan").val(gender);
+        $(".personnel #MacAddress").val(("@Model.MacAddress").toUpperCase());
+ 
+        $("#LaborContractDiv").dropzone({
+            url: "/Upload/Multiple",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            paramName: "file",
+            maxFilesize: 1,
+            maxFiles: 1,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+
+                var dropper = this;
+                $.whiskey.web.ajaxRequest({
+                    actionUrl: "@Url.Action("Thumbnails")",
+                    params: { Id: "@Model.Id", type: 5 },
+                    lockButton: $(".modal-footer .btn-primary"),
+                    complete: function (data) {
+                        if ((typeof data == 'object')) {
+                            $.each(data, function (index, item) {
+                                var loadFile = {
+                                    name: item.FileName.toString(),
+                                    size: item.FileSize
+                                }
+                                dropper.emit("addedfile", loadFile);
+                                dropper.emit("thumbnail", loadFile, item.FilePath.toString());
+                                dropper.emit("success", loadFile);
+                                dropper.options.dictFiles.put("img-" + dropper.options.dictCounter, item.FilePath);
+                                dropper.options.dictCounter++;
+                                $("#LaborContractImgPath").css("display", "");
+                            });
+                        }
+                    }
+                });
+
+                this.on("sending", function (file, xhr, formData) {
+                    formData.append("ExtType", "Image");
+                    formData.append("SaveDir", "LaborContractImg");
+                });
+                this.on("addedfile", function (file) {
+                    var dropzone = this;
+                    file.previewElement.addEventListener("click", function () {
+                        dropzone.removeFile(file);
+                    });
+                });
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    var dropzone = this;
+                    if (data != null && data != undefined) {
+                        
+                        var arrFiles = data.files;
+                        var uploadPath = arrFiles[0];
+                        var choice = $("#choiceImg").val();
+                        var delimg = $("<div class='img-remove'></div>").click(function () {
+                            dropzone.emit("removedfile", file, choice, $(this));
+                        });
+                        $("#LaborContractDiv .dz-default").css("display", "none");
+                        $("#LaborContractImgPath").css("display", "");
+                        $("#LaborContractImgPath").attr("src", uploadPath);
+                    }
+                });
+                this.on("complete", function (data) {
+                    if (data.status == "error") {
+                        var errorInfo = $(data.previewElement).find("span[data-dz-errormessage]").text();
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: errorInfo
+                        });
+                    }
+                });
+            },
+            removedfile: function (file, choice, obj) {
+                _this = this;
+                if (confirm("确认要删除吗？")) {
+                    var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                    if (removeIndex >= 0) {
+                        _this.options.dictFiles.remove("img-" + removeIndex);
+                    }
+                    $("#LaborContractImgPath").css("display", "none");
+                    $("#LaborContractImgPath").attr("src", "");
+                    $("#LaborContractDiv .dz-default").css("display", "block");
+                    var _ref;
+                    if ((_ref = file.previewElement) != null) {
+                        _ref.parentNode.removeChild(file.previewElement);
+                    }
+                }
+                _this.files = [];
+                return this._updateMaxFilesReachedClass();
+            }
+        });
+
+        $("#ResumeDiv").dropzone({
+            url: "/Upload/Multiple",
+            acceptedFiles: ".doc,.docx",
+            paramName: "file",
+            maxFilesize: 1,
+            maxFiles: 1,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+
+                var dropper = this;
+                $.whiskey.web.ajaxRequest({
+                    actionUrl: "@Url.Action("Thumbnails")",
+                    params: { Id: "@Model.Id", type: 5 },
+                lockButton: $(".modal-footer .btn-primary"),
+                complete: function (data) {
+                    if ((typeof data == 'object')) {
+                        $.each(data, function (index, item) {
+                            var loadFile = {
+                                name: item.FileName.toString(),
+                                size: item.FileSize
+                            }
+                            dropper.emit("addedfile", loadFile);
+                            dropper.emit("thumbnail", loadFile, item.FilePath.toString());
+                            dropper.emit("success", loadFile);
+                            dropper.options.dictFiles.put("img-" + dropper.options.dictCounter, item.FilePath);
+                            dropper.options.dictCounter++;
+                            $("#ResumeImgPath").css("display", "");
+                        });
+                    }
+                }
+            });
+
+        this.on("sending", function (file, xhr, formData) {
+            formData.append("ExtType", "Word");
+            formData.append("SaveDir", "Resume");
+        });
+        this.on("addedfile", function (file) {
+            var dropzone = this;
+            file.previewElement.addEventListener("click", function () {
+                dropzone.removeFile(file);
+            });
+        });
+        //当上传完成后的事件，接受的数据为JSON格式
+        this.on("success", function (file, data) {
+            var dropzone = this;
+            if (data != null && data != undefined) {
+                var arrFiles = data.files;
+                var uploadPath = arrFiles[0];
+                var choice = $("#choiceImg").val();
+                var delimg = $("<div class='img-remove'></div>").click(function () {
+                    dropzone.emit("removedfile", file, choice, $(this));
+                });
+                $("#ResumeDiv .dz-default").css("display", "none");
+                $("#ResumeImgPath").css("display", "");
+                $("#ResumeImgPath").attr("href", uploadPath);
+            }
+        });
+        this.on("complete", function (data) {
+            if (data.status == "error") {
+                var errorInfo = $(data.previewElement).find("span[data-dz-errormessage]").text();
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: errorInfo
+                });
+            }
+        });
+    },
+        removedfile: function (file, choice, obj) {
+            _this = this;
+            if (confirm("确认要删除吗？")) {
+                var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                if (removeIndex >= 0) {
+                    _this.options.dictFiles.remove("img-" + removeIndex);
+                }
+                $("#ResumeImgPath").css("display", "none");
+                $("#ResumeImgPath").attr("href", "");
+                $("#ResumeDiv .dz-default").css("display", "block");
+                var _ref;
+                if ((_ref = file.previewElement) != null) {
+                    _ref.parentNode.removeChild(file.previewElement);
+                }
+            }
+            _this.files = [];
+            return this._updateMaxFilesReachedClass();
+        }
+    });
+
+        if (DepartmentId != "") {
+            $(".personnel #DepartmentId").val("@Model.DepartmentId");
+        }
+        GetJobPosition($("#DepartmentId").val());
+        if (JobPositionId != "") {
+            $(".personnel #JobPositionId").val("@Model.JobPositionId");
+        }
+        $("#DepartmentId").change(function () {
+            GetJobPosition($("#DepartmentId").val());
+        });
+    });
+
+    function GetJobPosition(Id) {
+        $.ajax({
+            url: "@Url.Action("GetJobPosition")",
+            type: "post",
+            data: { departmentId: Id },
+            success: function (msg) {
+                var data = eval(msg);
+                var optionHtml = "";
+                $(data).each(function () {
+                    optionHtml += "<option value='" + this.Id + "'>" + this.JobPositionName + "</option>";
+                });
+                $("#JobPositionId").html(optionHtml);
+                   $('.cur_selectpicker').selectpicker('refresh');
+            }
+        });
+    }
+    function dataValiPost() {
+
+        var errcou = 0;
+        var da = [];
+        var EntryTime = $(".personnel #EntryTime ").val();
+        if (EntryTime.trim().length == 0) {
+
+            $(".personnel #EntryTime ").css({ "border": "2px solid  #e5603b" }).attr("title", "请选择入职时间");
+            errcou += 1;
+        }
+        else {
+            $(".personnel #EntryTime ").css({ "border": "" });
+            da.push({ "EntryTime": EntryTime });
+        }
+        da.push({ "InterviewEvaluation": $(".personnel #InterviewEvaluation").val() });
+        da.push({ "DepartmentId": $(".personnel #DepartmentId").val() });
+        da.push({ "Id": $(".personnel #Id").val() });
+        da.push({ "EntryTime": EntryTime });
+        da.push({ "JobPositionId": $("#JobPositionId").val() });
+        var LaborContractImgPath = $(".modal-dialog #LaborContractImgPath").attr("src");
+            da.push({ "LaborContractImgPath": LaborContractImgPath });
+        var ResumeImgPath = $(".modal-dialog #ResumeImgPath").attr("href");
+            da.push({ "ResumeImgPath": ResumeImgPath });
+        if (errcou == 0) {
+            return { error: 0, data: da };
+        }
+        else {
+
+            return { error: 1 }
+        }
+    }
+</script>
+<script>
+    // cur_selectpicker 初始化
+    $(function () {
+        $('.cur_selectpicker').selectpicker();
+    })
+</script>

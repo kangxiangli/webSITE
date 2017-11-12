@@ -1,0 +1,6 @@
+
+[2017-08-08 17:51:39.074] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 43 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-08-08 17:53:11.167] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 73 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}

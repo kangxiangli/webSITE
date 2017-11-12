@@ -1,0 +1,86 @@
+﻿
+<style>
+    .adminlist .modal-content {
+        width: 700px;
+    }
+    .diacl .modal-dialog {
+        min-width: 999px;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle detailList" width="100%" id="vaildList">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $(".detailList").dataTable({
+            "sAjaxSource": "/StoreCollocation/Store/VaildViewList",
+            "fnServerParams": function (aoData) {
+                aoData.push({ name: "uid", value: '@ViewBag.uuid' });
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                if (aData.ParentId == null) {
+                    $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                }
+
+                $("td:eq(2)", nRow).css({ "float": "left", "width": "100%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+
+            {
+                "sTitle": "款号",
+                "bSortable": false,
+                "sName": "ProductBarcode",
+                "mData": function (data) {
+                    return data.ProductBarcode;
+                },
+            },
+            ]
+        });
+
+
+    });
+
+</script>

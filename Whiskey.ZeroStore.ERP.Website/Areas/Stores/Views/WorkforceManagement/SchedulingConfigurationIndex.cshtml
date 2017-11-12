@@ -1,0 +1,81 @@
+﻿
+<style>
+    .activeDate {
+        background-image: url("/Content/Images/themes/dh.png");
+        background-repeat: no-repeat;
+        background-size: 70% 70%;
+        background-position: 11px 7px;
+    }
+</style>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        调班申请需提前 :
+    </label>
+    <div class="col-md-4">
+        <input type="text" maxlength="1" value="@ViewBag.AdvanceDay" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" class="form-control" id="AdvanceDay" />
+    </div>
+</div>
+<table id="monthTable" class="table table-list table-hover valign-middle table-verify">
+    <tr>
+        <td data_value="01">1</td>
+        <td data_value="02">2</td>
+        <td data_value="03">3</td>
+        <td data_value="04">4</td>
+        <td data_value="05">5</td>
+        <td data_value="06">6</td>
+        <td data_value="07">7</td>
+    </tr>
+    <tr>
+        <td data_value="08">8</td>
+        <td data_value="09">9</td>
+        <td data_value="10">10</td>
+        <td data_value="11">11</td>
+        <td data_value="12">12</td>
+        <td data_value="13">13</td>
+        <td data_value="14">14</td>
+    </tr>
+    <tr>
+        <td data_value="15">15</td>
+        <td data_value="16">16</td>
+        <td data_value="17">17</td>
+        <td data_value="18">18</td>
+        <td data_value="19">19</td>
+        <td data_value="20">20</td>
+        <td data_value="21">21</td>
+    </tr>
+    <tr>
+        <td data_value="22">22</td>
+        <td data_value="23">23</td>
+        <td data_value="24">24</td>
+        <td data_value="25">25</td>
+        <td data_value="26">26</td>
+        <td data_value="27">27</td>
+        <td data_value="28">28</td>
+    </tr>
+    <tr>
+        <td data_value="29">29</td>
+        <td data_value="30">30</td>
+        <td data_value="31">31</td>
+
+    </tr>
+</table>
+<script type="text/javascript">
+    $(function () {
+        @{
+                foreach (var item in (List<string>)ViewBag.SchedulingConfiguration)
+                {
+                    @:$("#monthTable tr td[data_value='@item']").addClass("activeDate");
+                                }
+        }
+
+        $("#monthTable tr td").bind("click", function () {
+            var $this = $(this);
+            var valueStr = $this.attr("data_value");
+            if ($this.hasClass("activeDate")) {
+                $this.removeClass("activeDate");
+            } else {
+                $this.addClass("activeDate");
+            }
+        })
+    });
+</script>

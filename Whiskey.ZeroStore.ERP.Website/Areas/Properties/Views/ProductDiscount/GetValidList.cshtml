@@ -1,0 +1,157 @@
+﻿
+
+<div class="_validlist">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#valid_tab" data-toggle="tab">
+                有效验证列表
+            </a>
+        </li>
+        <li><a href="#invalid_tab" data-toggle="tab">无效验证列表</a></li>
+
+    </ul>
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="valid_tab">
+            <table id="nwe_table_1" class="table table-striped table-condensed table-list table-hover valign-middle" width="100%">
+                <thead>
+                </thead>
+                <tbody><tr><td>数据加载中……</td></tr></tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="invalid_tab">
+            <table id="nwe_table_2" class="table table-striped table-condensed table-list table-hover valign-middle" width="100%">
+                <thead>
+                </thead>
+                <tbody><tr><td>数据加载中……</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+    <input value="@ViewBag.actid" id="hid_actid" type="hidden"/>
+</div>
+ 
+<script>
+   
+    $("._validlist").load(function() {
+        alert(1);
+    });
+   
+</script>
+
+
+<script>
+    debugger
+    var datatable_install;
+  //  $(function () {
+        var actind = $("#hid_actid").val();
+        if (actind == "0")
+            $("a[href='#valid_tab']").click();
+        else {
+            $("a[href='#invalid_tab']").click();
+        }
+        $.post("/Properties/ProductDiscount/GetValidDataList", {}, function (dat) {
+
+            if (dat != null && dat != "") {
+                var validda = dat.validDa;
+                var invalidda = dat.invaliDa;
+
+                var conten = "";
+                for (var i = 0; i < validda.length; i++) {
+                    var te = validda[i];
+                    conten += validAddRow(te);
+                }
+                $("#nwe_table_1 tbody").html("").html(conten);
+
+                var invaconte = "";
+                for (var i = 0; i < invalidda.length; i++) {
+                    var te1 = invalidda[i];
+                    invaconte += invalidAddRow(te1);
+                }
+                $("#nwe_table_2 tbody").html("").html(invaconte);
+            }
+            else {
+                $("#nwe_table_1 tbody").html("").html("<tr><td>没有有效数据</td></tr>");
+                $("#nwe_table_2 tbody").html("").html("<tr><td>没有无效数据</td></tr>");
+            }
+        });
+
+        var dts = $("#nwe_table_1").dataTable({
+            "sDom": 't<"F clearfix datatable-footer"<"col-md-2"><"col-md-3"f><"col-md-7 text-right">>',
+            "iDisplayLength": 1000,
+
+            "aoColumns": [
+             {
+                 "sTitle": "商品编号",
+                 "bSortable": false,
+                 "sName": "ProductNumber",
+                 "mData": function (data) {
+                     return data.Num;
+                 },
+             },
+           
+           {
+               "sTitle": "总数",
+               "bSortable": false,
+               "sName": "Amount",
+               "mData": function (data) {
+                   return data.Amo;
+               }
+           },
+            {
+                "sTitle": "备注",
+                "bSortable": false,
+                "sName": "ProductName",
+
+
+            }
+            ]
+
+        });
+
+        var dts1 = $("#nwe_table_2").dataTable({
+            "sDom": 't<"F clearfix datatable-footer"<"col-md-2"><"col-md-3"f><"col-md-7 text-right">>',
+            "iDisplayLength": 1000,
+
+            "aoColumns": [{
+                "sTitle": "唯一标识",
+                "bSortable": false,
+                "sName": "ProductNumber",
+
+            },
+             {
+                 "sTitle": "编号",
+                 "bSortable": false,
+                 "sName": "ProductName",
+
+
+             },
+            {
+                "sTitle": "数量",
+                "bSortable": false,
+                "sName": "ProductName",
+
+
+            }
+            ]
+
+        });
+
+   // });
+
+
+    function validAddRow(da) {
+        if (da != undefined && da != "") {
+            var te = da.Type == 0 ? "货号" : "款号";
+            var str = "<tr><td >" + da.Number + "</td><td>" + da.Count + "</td><td >" + te + "</td></tr>";
+            return str;
+
+        }
+
+    }
+    function invalidAddRow(da) {
+        if (da != undefined && da != "") {
+            var str = "<tr><td>" + da.Uuid + "</td><td>" + da.Number + "</td><td>" + da.Count + "</td></tr>";
+            return str;
+        }
+
+    }
+</script>

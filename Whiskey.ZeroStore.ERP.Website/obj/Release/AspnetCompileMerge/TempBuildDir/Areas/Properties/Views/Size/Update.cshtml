@@ -1,0 +1,100 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Transfers
+@model SizeDto
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        一级品类 :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownList("ParentCategoryId", (List<SelectListItem>)ViewBag.ParentCategory, new { @class = "form-control selectpicker selectpicker_cur", @onchange = "getChildren()" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CategoryId) :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.CategoryId, (List<SelectListItem>)ViewBag.ChildrenCategory, new { @class = "form-control selectpicker selectpicker_cur" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SizeExtentionId) :
+    </label>
+    <div class="col-md-10">
+        @Html.DropDownListFor(m => m.SizeExtentionId, (List<SelectListItem>)ViewBag.SizeExtentions, new { @class = "form-control selectpicker selectpicker_cur" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SizeName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.SizeName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SizeCode) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.SizeCode, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Description) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.Id)
+<script type="text/javascript">
+    $(function () {
+        initData();
+
+    })
+
+    //初始化数据
+    function initData() {
+
+        var parentCategoryId = "@ViewBag.ParentCategoryId";
+        $("#ParentCategoryId option").each(function () {
+            if ($(this).val()==parentCategoryId) {
+                $(this).attr("selected", "selected");
+            }
+        })
+    }
+
+    //获取二级品类
+    function getChildren() {
+        var parentCategoryId = $("#ParentCategoryId").val();
+        $.ajax({
+            url: "@Url.Action("GetCategory")",
+            type: "post",
+            data: { CategoryId: parentCategoryId },
+            success: function (data) {
+                if (data!=null) {
+                    $(".bootbox #CategoryId").empty();
+                    for (var i = 0; i < data.length; i++) {
+                        var option = '<option value="' + data[i].Id + '">' + data[i].CategoryName + '</option>';
+                        $(".bootbox #CategoryId").append(option);
+
+                    }
+
+                       $('.selectpicker_cur').selectpicker();
+                       $('.selectpicker_cur').selectpicker('refresh');
+                }
+            }
+        });
+    }
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

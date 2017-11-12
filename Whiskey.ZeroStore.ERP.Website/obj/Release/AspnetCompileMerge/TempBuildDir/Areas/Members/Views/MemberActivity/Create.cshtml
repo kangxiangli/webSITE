@@ -1,0 +1,211 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Member
+@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Models.Enums
+@model MemberActivityDto
+
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<div class="form-group">
+    <label class="control-label col-md-3">
+        活动类型 :
+    </label>
+    <div class="col-md-7">
+        <select class="form-control selectpicker" name="ActivityType" id="ActivityType" onchange="setPrice()">
+            <option value="@((int)MemberActivityFlag.Recharge)">充值活动</option>
+            <option value="@((int)MemberActivityFlag.Score)">送积分活动</option>
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        活动名称 :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.ActivityName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        会员类型 :
+    </label>
+    <div class="col-md-7">
+        @Html.DropDownList("MemberTypeId", (List<SelectListItem>)ViewBag.MemberType, new { @class = "multiselect", @multiple = "multiple", @id = "MemberTypeId", @name = "MemberTypeId" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        活动店铺 :
+    </label>
+    <div class="col-md-5">
+        <select id="storeIds" name="storeIds" multiple="multiple" data-selected-text-format="values"></select>
+    </div>
+    <div class="col-md-4">
+        <label>
+            所有店铺:
+            @Html.CheckBoxFor(m => m.IsAllStore)
+        </label>
+    </div>
+</div>
+<div class="form-group" id="divPrice">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Price) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.Price, new { @class = "form-control", @value = "0" })
+    </div>
+</div>
+
+<div class="form-group" id="divRewardMoney">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.RewardMoney) :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.RewardMoney, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group" id="divScore">
+    <label class="control-label col-md-3">
+        赠送积分 :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.Score, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        设为永久有效：
+    </label>
+    <div class="col-md-1">
+        @Html.CheckBoxFor(m => m.IsForever, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group hidTime">
+    <label class="control-label col-md-3">
+        开始日期：
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(x => x.StartDate, new { @class = "start-date input-sm form-control form_datetime", @readonly = "readonly" })
+        @*<input size="16" type="text"   readonly class="start-date input-sm form-control form_datetime" onclick="showDate(this)" name="StartDate">*@
+    </div>
+</div>
+<div class="form-group hidTime">
+    <label class="control-label col-md-3">
+        结束日期：
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(x => x.EndDate, new { @class = "start-date input-sm form-control form_datetime", @readonly = "readonly" })
+
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        备注 :
+    </label>
+    <div class="col-md-7">
+        @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+<script src="/Content/Scripts/Bootstrap/bootstrap-multiselect.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+    $(function () {
+        
+        $("#storeIds").queryAllStore();
+        $("#IsAllStore").change(function () {
+            if ($(this).is(':checked')) {
+
+                $("#storeIds").val('')
+                    .prop('disabled', true)
+                    .selectpicker('refresh');
+            }
+            else {
+                $("#storeIds").val('')
+                    .prop('disabled', false)
+                    .selectpicker('refresh');
+            }
+        });
+        setPrice();
+        $(".bootbox #IsForever").change(function () {
+            var isForever = $(".bootbox #IsForever").attr("checked");
+            if ($(".bootbox #IsForever").is(":checked")) {
+                //获取当前时期并赋值给日期控件
+                var myDate = new Date();
+                var date = myDate.toLocaleDateString();
+                $(".form_datetime").attr("value", date);
+                $(".hidTime").css("display", "none");
+            } else {
+                $(".hidTime").css("display", "block");
+            }
+        });
+
+        //初始化多选框
+        $('#MemberTypeId').multiselect({
+            enableFiltering: true,
+            includeSelectAllOption:true,
+            allSelectedText: "全选",
+            nonSelectedText: "请选择",
+            filterPlaceholder: "查询",
+            nSelectedText: "个被选中",
+            selectAllText:"全选"
+        });
+
+
+
+    });
+
+    //获取当前时期并赋值给日期控件
+    var myDate = new Date();
+    var date = myDate.toLocaleDateString();
+    debugger
+    //$(".form_datetime").attr("value", date);
+    //初始化日期控件
+    $(".form_datetime").datetimepicker({
+        startDate: date,
+        format: 'yyyy/mm/dd hh:ii',
+        autoclose: false,
+        minView: 'hour',
+        todayBtn:true
+    });
+
+    //显示日期控件
+    function showDate(option) {
+        //$(option).datetimepicker('show');
+    };
+
+    //设置充值金额是否可用
+    function setPrice() {
+        debugger
+        var type = $(".bootbox #ActivityType").val();
+        if (type == "@((int)MemberActivityFlag.Recharge)") {
+            $(".bootbox #divPrice").css("display", "block");
+            $(".bootbox #divRewardMoney").css("display", "block");
+            $(".bootbox #divScore").css("display", "none");
+            $(".bootbox #Price").removeAttr("readonly");
+            $(".bootbox #Score").attr('value', "0");
+        } else {
+            $(".bootbox #divPrice").css("display", "none");
+            $(".bootbox #Price").attr('readonly', 'true');
+            $(".bootbox #Price").val("0");
+            $(".bootbox #divScore").css("display", "block");
+            $(".bootbox #divRewardMoney").css("display", "none");
+            $(".bootbox #RewardMoney").attr('value', "0");
+
+        }
+    }
+    //设置赠送积分还是储值
+    function setReward() {
+        debugger
+        var type = $(".bootbox #RewardType").val();
+        if (type == "@((int)RewardFlag.Money)") {
+            $(".bootbox #divRewardMoney").css("display", "block");
+            $(".bootbox #divScore").css("display", "none");
+            $(".bootbox #Score").attr('value', "0");
+        } else {
+            $(".bootbox #divScore").css("display", "block");
+            $(".bootbox #divRewardMoney").css("display", "none");
+            $(".bootbox #RewardMoney").attr('value', "0");
+        }
+    }
+</script>  

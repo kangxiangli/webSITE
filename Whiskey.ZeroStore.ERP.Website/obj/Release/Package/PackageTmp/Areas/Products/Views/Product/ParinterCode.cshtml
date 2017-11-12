@@ -1,0 +1,712 @@
+﻿<script>
+     /**
+     * 获取打印内容,调用打印机打印条码
+     * @@param data
+     * @@param ind
+     * @@param jmpPrinter
+     * @@param _time
+     */
+    function startPrint(data, ind, jmpPrinter, _time) {
+        //{ ProductNumber: _num, PrintCount: _cou }
+        nums = data;
+        if (nums.length > 0) {
+            $.post("/Products/Barcode/GetBarCodePrinterInfo", { barcodeInfos: nums }, function (da) {
+                if (da.ResultType != 3) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: da.Message
+                    });
+                } else {
+                    var _info = da.Data;
+                    if (ind == 0) //佳博
+                        GPrinter(_info, jmpPrinter, _time);
+                    else if (ind == 1) { //立像
+                        ArgPrinter(_info);
+                    } else {
+                        //$.whiskey.web.alert({
+                        //    type: "info",
+                        //    content: "未检测到所需的打印插件",
+                        //    callback: function () {
+                        //    }
+                        //});
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * 根据检测出的打印机对象,初始化打印机选择列表
+     */
+    function initSele() {
+        var str = "";
+        if (objPrint.object != null || window["GPRINTER"] != null) {
+            str += "<option value='0'>佳博热敏打印机GP3120TU</option>";
+        }
+        if (ArgoxPrinter.object != null) {
+            str += "<option value='1'>立像打印机OS-214PLUS</option>";
+        }
+        if (str == "") {
+            str = "<option value=''>没有可用的打印机</option>";
+            $("#next_but").attr("disabled", "disabled");
+        }
+        $("#_printer").html("").html(str);
+        $("#printsele").modal({ keyboard: false, backdrop: "static" }).css({
+            "margin-top": function () {
+                return $(window).height() / 4;
+            }
+        });
+
+    }
+
+
+    /**
+     * 佳博打印机打印
+     * @@param da
+     * @@param jmpPrinter:boolean 是否跳过打印步骤,虚拟打印时设为true,可跳过打印,直接生成流水号
+     * @@param _time
+     */
+    function GPrinter(da, jmpPrinter, _time) {
+        if (jmpPrinter) {
+            // #region 跳过真实打印
+
+            var li = [];
+            var _cou = 0;
+            for (var i = 0; i < da.length; i++) {
+                var d = da[i];
+                li.push({ ProductNumber: d.ProductNumber, LastCode: d.BarcodeNumbers });
+                var priCou = d.BarcodeNumbers.length;
+                for (var j = 0; j < priCou; j++) {
+                    _cou++;
+                }
+            }
+            PrintWartting(li, _cou, _time);
+
+            // #endregion
+        } else {
+            // #region 正常打印流程
+
+            if (objPrint.object == null && window["GPRINTER"] == null) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "提示：未检测到佳博热敏打印机",
+                    notes: "未检测到的原因可能是打印机未连接或相关打印插件未安装并且请使用IE浏览器，是否需要继续检测其他打印机？",
+                    lockButton: $("#barcodePrint"),
+                    success_event: function () {
+                        //startPrint(da);
+                    }
+                });
+            } else {
+                var li = [];
+                var _cou = 0;
+                for (var i = 0; i < da.length; i++) {
+                    var d = da[i];
+
+                    li.push({ ProductNumber: d.ProductNumber, LastCode: d.BarcodeNumbers });
+
+                    var priCou = d.BarcodeNumbers.length;
+                    for (var j = 0; j < priCou; j++) {
+                        _cou++;
+                        var barcode = d.ProductNumber + padleft(d.BarcodeNumbers[j]);
+                        gprint(barcode, 1, d);
+                    }
+                }
+                PrintWartting(li, _cou);
+            }
+
+            // #endregion
+        }
+    }
+
+    var setint;
+    function PrintWartting(li, _cou, _time) {
+        clearInterval(setint);
+        setint = setInterval(function () {
+            var reg = /(.*)分(.*)秒/gi;
+            var t = $(".tiemout_set").text();
+            var ar = reg.exec(t);
+            var minu = 5;
+            var seco = 0;
+            if (ar != undefined && ar.length == 3) {
+                minu = parseInt(ar[1]);
+                seco = parseInt(ar[2]);
+                if (parseInt(seco) == 0) {
+                    minu -= 1;
+                    seco = 59;
+                } else {
+                    seco = seco - 1;
+                }
+                if (minu == 0 && seco == 0) {
+                    clearInterval(setint);
+                    $(".diacl").find("[data-bb-handler='success']").click();
+                } else {
+                    var tm = minu + "分" + seco + "秒";
+                    $(".tiemout_set").text(tm);
+                }
+            }
+        }, 1000);
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "提示：条码是否打印成功？",
+            notes: "共打印" + _cou + "份,单击\"确认\"按钮确认打印成功，否则视为条码打印失败</br>倒计时<span style='color: #5ebd5e' class='tiemout_set'>4分59秒</span>后自动确认",
+            lockButton: $("#barcodePrint"),
+            success_event: function () {
+                $.post("/Products/Barcode/PrintSuccess", { da: li, PrintTime: _time }, function (dat) {
+                    clearInterval(setint);
+                    SetPrintTimeOutInfo(false);
+                });
+            },
+            cancel_event: function () {
+                clearInterval(setint);
+                SetPrintTimeOutInfo(false);
+            },
+            exit: function () {
+                SetPrintTimeOutInfo(false);
+            }
+        });
+    }
+
+    function gprint(barCode, cou, dData) {
+
+        
+        if (window["GPRINTER"] != null){
+            // winform 环境
+            GPRINTER.openPort("GPRINTER  GP-3120TU");
+            GPRINTER.clearBuffer();
+            var prj = $("#prinProj").val();
+            var direction = $("#paperDirection").val();
+            if (prj == "0") {
+                print38_winform(GPRINTER, barCode, dData);
+            } else if (prj == "2") {
+                print50120_shuban_winform(GPRINTER, barCode, dData);
+            } else {
+                if (direction == "0") {
+                    print48_winform(GPRINTER, barCode, dData);
+                } else {
+                    print48_shuban_winform(GPRINTER, barCode, dData);
+                }
+            }
+            GPRINTER.printLabel("1", cou.toString());
+            GPRINTER.closePort();
+        }
+        else if (objPrint != null) {
+            // IE环境
+            objPrint.xkOpenport("Gprinter  GP-3120TU");
+            objPrint.xkClearbuffer();
+            var prj = $("#prinProj").val();
+            var direction = $("#paperDirection").val();
+            if (prj == "0") {
+                print38(objPrint, barCode, dData);
+            } else if (prj == "2") {
+                print50120_shuban(objPrint, barCode, dData);
+            } else {
+                if (direction == "0") {
+                    print48(objPrint, barCode, dData);
+                } else {
+                    print48_shuban(objPrint, barCode, dData);
+                }
+            }
+
+            objPrint.xkPrintlabel("1", cou);
+            objPrint.xkCloseport();
+        }
+        
+
+    }
+
+    //立像打印机
+    function ArgPrinter(da) {
+        if (ArgoxPrinter != undefined) { //.object == null) {
+            $.whiskey.web.alert({
+                type: "info",
+                content: "未检测到立像OS-214PLUS打印机所需的打印插件",
+                callback: function () {
+                }
+            });
+            return false;
+        }
+        ArgoxPrinter.A_EnumUSB();
+        ArgoxPrinter.A_CreateUSBPort(1);
+        ArgoxPrinter.A_Set_ProcessDlg(0);
+        var _cou = 0;
+        var temcou = 0;
+        for (var i = 0; i < da.length; i++) {
+            var priCou = da[i].BarcodeNumbers.length;
+            for (var j = 0; j < priCou; j++) {
+                _cou++;
+                temcou++;
+                var barcode = da[i].ProductNumber + padleft(da[i].BarcodeNumbers[j]);
+                print(barcode, _cou, da[i]);
+                if (temcou % 2 == 0) {
+                    ArgoxPrinter.A_Print_Out(1, 1, 1, 1);
+                    temcou = 0;
+                }
+            }
+        }
+        if (temcou != 0)
+            ArgoxPrinter.A_Print_Out(1, 1, 1, 1);
+        ArgoxPrinter.A_ClosePrn();
+
+        $.whiskey.web.alert({
+            type: "success",
+            content: "打印完成，共打印" + _cou + "份",
+            callback: function () {
+            }
+        });
+    };
+
+    function print(barCode, _cou, dData) {
+        var _x = 28;
+        if (_cou % 2 == 0) {
+            _x = 228;
+        }
+        ArgoxPrinter.A_Prn_Text_TrueType(_x, 5, 24, "宋体", 1, 500, 0, 0, 0, _cou + "g" + 0, dData.ProductNumber, 1); //商品货号
+        ArgoxPrinter.A_Prn_Barcode(_x, 20, 1, 'o', 2, 0, 20, 'N', 1, barCode); //条形码
+
+        ArgoxPrinter.A_Prn_Text_TrueType(_x, 45, 24, "宋体", 1, 500, 0, 0, 0, _cou + "g" + 1, "尺码名称:" + dData.SizeName, 1); //尺码
+        ArgoxPrinter.A_Prn_Text_TrueType(_x, 60, 24, "宋体", 1, 500, 0, 0, 0, _cou + "g" + 2, "颜色:" + dData.ColorName + "  原价(￥):" + dData.TagPrice, 1); //原价品牌
+        ArgoxPrinter.A_Prn_Text_TrueType(_x, 75, 24, "宋体", 1, 500, 0, 0, 0, _cou + "g" + 3, "款式:" + dData.CategoryName, 1);
+        ArgoxPrinter.A_Prn_Text_TrueType(_x, 90, 24, "宋体", 1, 500, 0, 0, 0, _cou + "g" + 4, "品牌:" + dData.BrandName, 1);
+
+    }
+
+    function padleft(st) {
+        var _st = (st).toString(32);
+        var t = "000";
+        return t.substr(0, t.length - _st.length) + st;
+    }
+
+
+    // --------------------IE打印函数 begin---------------------
+    function print38(objPrint, barCode, dData) {
+        //30*80 尺码：
+        objPrint.xkSetup("30", "80", "4", "8", "0", "0", "0");
+        objPrint.xkSendcommand("GAP 3mm,0");
+        objPrint.xkWindowsfont(40, 122, 26, 270, 2, 0, "ARIAL", barCode);
+        objPrint.xkBarcode("110", "50", "93", "70", "0", "90", "2", "2", barCode);
+
+        objPrint.xkWindowsfont(140, 50, 26, 270, 2, 0, "ARIAL", "原价(￥)：" + dData.TagPrice);
+        objPrint.xkWindowsfont(165, 50, 26, 270, 2, 0, "ARIAL", "颜色：" + dData.ColorName + "    尺码：" + dData.SizeName);
+        objPrint.xkWindowsfont(190, 50, 26, 270, 2, 0, "ARIAL", "款式：" + dData.CategoryName);
+        objPrint.xkWindowsfont(215, 50, 26, 270, 2, 0, "ARIAL", "品牌：" + dData.BrandName);
+        objPrint.xkQRcode("50", "430", "4", "A", "0", dData.QRcode);
+        objPrint.xkWindowsfont(48, 437, 26, 270, 0, 0, "ARIAL", "0-Fashion.com");
+    }
+
+    function print48(objPrint, barCode, dData) {
+        //40*80
+        objPrint.xkSetup("40", "80", "4", "8", "0", "0", "0");
+        objPrint.xkSendcommand("GAP 3mm,0");
+        objPrint.xkWindowsfont(30, 88, 24, 270, 2, 0, "ARIAL", barCode);
+        objPrint.xkBarcode("100", "30", "93", "70", "0", "90", "2", "2", barCode);
+
+        var str7_1 = "成分:";
+        objPrint.xkWindowsfont(144, 30, 20, 270, 2, 0, "ARIAL", str7_1);
+        var str7_2 = dData.Fabric;
+        if (str7_2.length <= 22) {
+            objPrint.xkWindowsfont(144, 90, 20, 270, 2, 0, "ARIAL", str7_2);
+        } else {
+            var str7_2_1 = str7_2.substr(0, 22);
+            var str7_2_2 = str7_2.substr(22);
+            objPrint.xkWindowsfont(144, 90, 20, 270, 2, 0, "ARIAL", str7_2_1);
+            objPrint.xkWindowsfont(125, 90, 20, 270, 2, 0, "ARIAL", str7_2_2);
+        }
+
+        var str6 = "邮编:" + dData.PostCode + "  地址:" + dData.ProductionPlace;
+        objPrint.xkWindowsfont(169, 30, 20, 270, 2, 0, "ARIAL", str6);
+
+        var str5 = "制造商:" + dData.Manufacturer;
+        objPrint.xkWindowsfont(194, 30, 20, 270, 2, 0, "ARIAL", str5);
+
+        var str4 = "品名:" + dData.CateName + "  执行标准:" + dData.Standard;
+        objPrint.xkWindowsfont(219, 30, 20, 270, 2, 0, "ARIAL", str4);
+
+        var str3 = "安全类别:" + dData.Category + "  检验员:" + dData.Inspector;
+        objPrint.xkWindowsfont(244, 30, 20, 270, 2, 0, "ARIAL", str3);
+
+        var str2 = "颜色:" + dData.ColorName + "  尺码:" + dData.SizeName + "  等级:" + dData.Level;
+        objPrint.xkWindowsfont(269, 30, 20, 270, 2, 0, "ARIAL", str2);
+
+        objPrint.xkWindowsfont(307, 30, 30, 270, 2, 0, "ARIAL", "品牌：" + dData.BrandName);
+
+        objPrint.xkWindowsfont(270, 470, 35, 270, 2, 0, "ARIAL", "￥：" + dData.TagPrice);
+        objPrint.xkQRcode("45", "460", "4", "A", "0", dData.QRcode);
+
+        var str1 = "款号:" + dData.BigProdNum;
+        objPrint.xkWindowsfont(35, 465, 24, 270, 2, 0, "ARIAL", str1);
+    }
+
+    function print48_shuban(objPrint, barCode, dData) {
+        //40*80,竖版
+        objPrint.xkSetup("40", "80", "4", "8", "0", "0", "0");
+        objPrint.xkSendcommand("GAP 3mm,0");
+        objPrint.xkWindowsfont(70, 610, 24, 0, 2, 0, "ARIAL", barCode);
+        objPrint.xkBarcode("30", "540", "39", "70", "0", "0", "1", "3", barCode);
+
+        var str1 = "邮编: " + dData.PostCode;
+        objPrint.xkWindowsfont(25, 515, 22, 0, 2, 0, "ARIAL", str1);
+
+        var str2 = "地址: " + dData.ProductionPlace;
+        objPrint.xkWindowsfont(25, 495, 22, 0, 2, 0, "ARIAL", str2);
+
+        var str3 = "制造商: " + dData.Manufacturer;
+        objPrint.xkWindowsfont(25, 475, 22, 0, 2, 0, "ARIAL", str3);
+
+        var str4 = "洗涤方法: ";
+        objPrint.xkWindowsfont(25, 455, 22, 0, 2, 0, "ARIAL", str4);
+
+        //-----------------------400分割线---------------------------
+        var str6 = "面料成分: "; var height = 280;
+        objPrint.xkWindowsfont(25, height, 22, 0, 2, 0, "ARIAL", str6);
+        height = autoCalcHeight(objPrint, dData.Fabric, height, 20, 120, 10);
+
+        var str5 = "里料: "; height += 25;
+        objPrint.xkWindowsfont(25, height, 22, 0, 2, 0, "ARIAL", str5);
+        autoCalcHeight(objPrint, dData.Material, height, 20, 80, 13);
+
+        var str7 = "安全技术类别: " + dData.Category;
+        objPrint.xkWindowsfont(25, 260, 22, 0, 2, 0, "ARIAL", str7);
+
+        var str8 = "执行标准: " + dData.Standard;
+        objPrint.xkWindowsfont(25, 240, 22, 0, 2, 0, "ARIAL", str8);
+
+        var str9 = "等级: " + dData.Level;
+        objPrint.xkWindowsfont(25, 220, 22, 0, 2, 0, "ARIAL", str9);
+
+        var str10 = "检验员: " + dData.Inspector;
+        objPrint.xkWindowsfont(25, 200, 22, 0, 2, 0, "ARIAL", str10);
+
+        var str11 = "颜色: " + dData.ColorName;
+        objPrint.xkWindowsfont(25, 180, 22, 0, 2, 0, "ARIAL", str11);
+
+        var str12 = "价格: RMB" + dData.TagPrice;
+        objPrint.xkWindowsfont(25, 160, 22, 0, 2, 0, "ARIAL", str12);
+
+        var str13 = "尺码: " + dData.SizeName;
+        objPrint.xkWindowsfont(25, 140, 22, 0, 2, 0, "ARIAL", str13);
+
+        var str14 = "品名: " + dData.CateName;
+        objPrint.xkWindowsfont(25, 120, 22, 0, 2, 0, "ARIAL", str14);
+
+        var str15 = "款号: " + dData.BigProdNum;
+        objPrint.xkWindowsfont(25, 100, 22, 0, 2, 0, "ARIAL", str15);
+
+        var str16 = "品牌: " + dData.BrandName;
+        objPrint.xkWindowsfont(25, 80, 22, 0, 2, 0, "ARIAL", str16);
+
+        var str17 = "合格证";
+        objPrint.xkWindowsfont(95, 20, 50, 0, 2, 0, "ARIAL", str17);
+
+    }
+
+    function print50120_shuban(objPrint, barCode, dData) {
+        //50*120,竖版
+        var height = 0;
+        var fontsize = 23;
+        var _gapheight = 30;
+
+        objPrint.xkSetup("50", "120", "4", "8", "0", "0", "0");
+        objPrint.xkSendcommand("GAP 3mm,0");
+
+        objPrint.xkWindowsfont(90, 900, 25, 0, 2, 0, "ARIAL", barCode);
+        objPrint.xkBarcode("30", "820", "93", "70", "0", "0", "2", "2", barCode);
+
+        objPrint.xkQRcode("25", "625", "4", "A", "0", dData.QRcode);
+
+        var str11 = "￥" + dData.TagPrice;
+        objPrint.xkWindowsfont(220, 690, 40, 0, 2, 0, "ARIAL", str11);
+
+        var str3 = "品牌商: "; var height = 310;
+        objPrint.xkWindowsfont(25, height, fontsize, 0, 2, 0, "ARIAL", str3);
+        height = autoCalcHeight(objPrint, dData.Manufacturer, height, 21, 100, 13, fontsize);
+
+        var str2 = "地址: "; height += _gapheight;
+        objPrint.xkWindowsfont(25, height, fontsize, 0, 2, 0, "ARIAL", str2);
+        height = autoCalcHeight(objPrint, dData.ProductionPlace, height, 21, 80, 14, fontsize);
+
+        //---------------------执行标准分隔线-------------------
+        var str8 = "执行标准: " + dData.Standard; height += 45;
+        objPrint.xkWindowsfont(25, height, fontsize, 0, 2, 0, "ARIAL", str8);
+
+        var str5 = "里料成分: "; height += _gapheight;
+        objPrint.xkWindowsfont(25, height, fontsize, 0, 2, 0, "ARIAL", str5);
+        height = autoCalcHeight(objPrint, dData.Material, height, 21, 120, 13, fontsize);
+
+        var str6 = "面料成分: "; height += _gapheight;
+        objPrint.xkWindowsfont(25, height, fontsize, 0, 2, 0, "ARIAL", str6);
+        height = autoCalcHeight(objPrint, dData.Fabric, height, 21, 120, 13, fontsize);
+
+        var str4 = "洗涤标识: "; height += 35;
+        objPrint.xkWindowsfont(25, height, fontsize, 0, 2, 0, "ARIAL", str4);
+
+        var str7 = "安全类别: " + dData.Category; height += 35;
+        objPrint.xkWindowsfont(25, height, fontsize, 0, 2, 0, "ARIAL", str7);
+        var str9 = "等级: " + dData.Level;
+        objPrint.xkWindowsfont(180, height, fontsize, 0, 2, 0, "ARIAL", str9);
+
+        var widthSize_PostCode = dData.SizeExtention ? 240 : 180;
+
+        var str1 = "邮编: " + dData.PostCode;
+        objPrint.xkWindowsfont(widthSize_PostCode, 280, fontsize, 0, 2, 0, "ARIAL", str1);
+
+        var str10 = "检验员: " + dData.Inspector;
+        objPrint.xkWindowsfont(25, 280, fontsize, 0, 2, 0, "ARIAL", str10);
+
+        var str12 = "颜色: " + dData.ColorName;
+        objPrint.xkWindowsfont(widthSize_PostCode, 250, fontsize, 0, 2, 0, "ARIAL", str12);
+
+        var str13 = "尺码: " + dData.SizeName + (dData.SizeExtention ? " / " + dData.SizeExtention : "");
+        objPrint.xkWindowsfont(25, 250, fontsize, 0, 2, 0, "ARIAL", str13);
+
+        var str14 = "品名: " + dData.CateName;
+        objPrint.xkWindowsfont(25, 220, fontsize, 0, 2, 0, "ARIAL", str14);
+
+        var strgap = "";
+        for (var i = 0; i < 110; i++) {
+            strgap += "-";
+        }
+        objPrint.xkWindowsfont(25, 185, 10, 0, 2, 0, "ARIAL", strgap);
+
+        var str15 = "品牌: " + dData.BrandName;
+        objPrint.xkWindowsfont(25, 140, 25, 0, 2, 0, "ARIAL", str15);
+
+        var str16 = "款号: " + dData.BigProdNum;
+        objPrint.xkWindowsfont(25, 110, 25, 0, 2, 0, "ARIAL", str16);
+
+        var str17 = "合格证";
+        objPrint.xkWindowsfont(140, 30, 50, 0, 2, 0, "ARIAL", str17);
+    }
+
+    function autoCalcHeight(objPrint, data, height, plusHeight, leftPoint, colCount, fontsize) {
+        plusHeight = plusHeight || 20; colCount = colCount || 10; fontsize = fontsize || 22;
+        var rowcount = Math.ceil(data.length / colCount);
+        for (var i = 0; i < rowcount; i++) {
+            objPrint.xkWindowsfont(leftPoint, height, fontsize, 0, 2, 0, "ARIAL", data.substr(i * colCount, colCount));
+            if (i + 1 < rowcount) {
+                height += plusHeight;
+            }
+        }
+        return height;
+    }
+    // --------------------IE打印函数 end---------------------
+
+
+    // --------------------winform 打印函数 begin---------------------
+    function print38_winform(GPRINTER, barCode, dData) {
+        //30*80 尺码：
+        GPRINTER.setUp("30", "80", "4", "8", "0", "0", "0");
+        GPRINTER.sendCommand("GAP 3mm,0");
+        GPRINTER.windowsFont(40, 122, 26, 270, 2, 0, "ARIAL", barCode);
+        GPRINTER.barcode("110", "50", "93", "70", "0", "90", "2", "2", barCode);
+
+        GPRINTER.windowsFont(140, 50, 26, 270, 2, 0, "ARIAL", "原价(￥)：" + dData.TagPrice);
+        GPRINTER.windowsFont(165, 50, 26, 270, 2, 0, "ARIAL", "颜色：" + dData.ColorName + "    尺码：" + dData.SizeName);
+        GPRINTER.windowsFont(190, 50, 26, 270, 2, 0, "ARIAL", "款式：" + dData.CategoryName);
+        GPRINTER.windowsFont(215, 50, 26, 270, 2, 0, "ARIAL", "品牌：" + dData.BrandName);
+        GPRINTER.qrCode("50", "430", "H", "4", "A", "0", dData.qrCode);
+        GPRINTER.windowsFont(48, 437, 26, 270, 0, 0, "ARIAL", "0-Fashion.com");
+    }
+
+    function print48_winform(GPRINTER, barCode, dData) {
+        //40*80
+        GPRINTER.setUp("40", "80", "4", "8", "0", "0", "0");
+        GPRINTER.sendCommand("GAP 3mm,0");
+        GPRINTER.windowsFont(30, 88, 24, 270, 2, 0, "ARIAL", barCode);
+        GPRINTER.barcode("100", "30", "93", "70", "0", "90", "2", "2", barCode);
+
+        var str7_1 = "成分:";
+        GPRINTER.windowsFont(144, 30, 20, 270, 2, 0, "ARIAL", str7_1);
+        var str7_2 = dData.Fabric;
+        if (str7_2.length <= 22) {
+            GPRINTER.windowsFont(144, 90, 20, 270, 2, 0, "ARIAL", str7_2);
+        } else {
+            var str7_2_1 = str7_2.substr(0, 22);
+            var str7_2_2 = str7_2.substr(22);
+            GPRINTER.windowsFont(144, 90, 20, 270, 2, 0, "ARIAL", str7_2_1);
+            GPRINTER.windowsFont(125, 90, 20, 270, 2, 0, "ARIAL", str7_2_2);
+        }
+
+        var str6 = "邮编:" + dData.PostCode + "  地址:" + dData.ProductionPlace;
+        GPRINTER.windowsFont(169, 30, 20, 270, 2, 0, "ARIAL", str6);
+
+        var str5 = "制造商:" + dData.Manufacturer;
+        GPRINTER.windowsFont(194, 30, 20, 270, 2, 0, "ARIAL", str5);
+
+        var str4 = "品名:" + dData.CateName + "  执行标准:" + dData.Standard;
+        GPRINTER.windowsFont(219, 30, 20, 270, 2, 0, "ARIAL", str4);
+
+        var str3 = "安全类别:" + dData.Category + "  检验员:" + dData.Inspector;
+        GPRINTER.windowsFont(244, 30, 20, 270, 2, 0, "ARIAL", str3);
+
+        var str2 = "颜色:" + dData.ColorName + "  尺码:" + dData.SizeName + "  等级:" + dData.Level;
+        GPRINTER.windowsFont(269, 30, 20, 270, 2, 0, "ARIAL", str2);
+
+        GPRINTER.windowsFont(307, 30, 30, 270, 2, 0, "ARIAL", "品牌：" + dData.BrandName);
+
+        GPRINTER.windowsFont(270, 470, 35, 270, 2, 0, "ARIAL", "￥：" + dData.TagPrice);
+        GPRINTER.qrCode("45", "460", "H", "4", "A", "0", dData.qrCode);
+
+        var str1 = "款号:" + dData.BigProdNum;
+        GPRINTER.windowsFont(35, 465, 24, 270, 2, 0, "ARIAL", str1);
+    }
+
+    function print48_shuban_winform(GPRINTER, barCode, dData) {
+        //40*80,竖版
+        GPRINTER.setUp("40", "80", "4", "8", "0", "0", "0");
+        GPRINTER.sendCommand("GAP 3mm,0");
+        GPRINTER.windowsFont(70, 610, 24, 0, 2, 0, "ARIAL", barCode);
+        GPRINTER.barcode("30", "540", "39", "70", "0", "0", "1", "3", barCode);
+
+        var str1 = "邮编: " + dData.PostCode;
+        GPRINTER.windowsFont(25, 515, 22, 0, 2, 0, "ARIAL", str1);
+
+        var str2 = "地址: " + dData.ProductionPlace;
+        GPRINTER.windowsFont(25, 495, 22, 0, 2, 0, "ARIAL", str2);
+
+        var str3 = "制造商: " + dData.Manufacturer;
+        GPRINTER.windowsFont(25, 475, 22, 0, 2, 0, "ARIAL", str3);
+
+        var str4 = "洗涤方法: ";
+        GPRINTER.windowsFont(25, 455, 22, 0, 2, 0, "ARIAL", str4);
+
+        //-----------------------400分割线---------------------------
+        var str6 = "面料成分: "; var height = 280;
+        GPRINTER.windowsFont(25, height, 22, 0, 2, 0, "ARIAL", str6);
+        height = autoCalcHeight_winform(GPRINTER, dData.Fabric, height, 20, 120, 10);
+
+        var str5 = "里料: "; height += 25;
+        GPRINTER.windowsFont(25, height, 22, 0, 2, 0, "ARIAL", str5);
+        autoCalcHeight_winform(GPRINTER, dData.Material, height, 20, 80, 13);
+
+        var str7 = "安全技术类别: " + dData.Category;
+        GPRINTER.windowsFont(25, 260, 22, 0, 2, 0, "ARIAL", str7);
+
+        var str8 = "执行标准: " + dData.Standard;
+        GPRINTER.windowsFont(25, 240, 22, 0, 2, 0, "ARIAL", str8);
+
+        var str9 = "等级: " + dData.Level;
+        GPRINTER.windowsFont(25, 220, 22, 0, 2, 0, "ARIAL", str9);
+
+        var str10 = "检验员: " + dData.Inspector;
+        GPRINTER.windowsFont(25, 200, 22, 0, 2, 0, "ARIAL", str10);
+
+        var str11 = "颜色: " + dData.ColorName;
+        GPRINTER.windowsFont(25, 180, 22, 0, 2, 0, "ARIAL", str11);
+
+        var str12 = "价格: RMB" + dData.TagPrice;
+        GPRINTER.windowsFont(25, 160, 22, 0, 2, 0, "ARIAL", str12);
+
+        var str13 = "尺码: " + dData.SizeName;
+        GPRINTER.windowsFont(25, 140, 22, 0, 2, 0, "ARIAL", str13);
+
+        var str14 = "品名: " + dData.CateName;
+        GPRINTER.windowsFont(25, 120, 22, 0, 2, 0, "ARIAL", str14);
+
+        var str15 = "款号: " + dData.BigProdNum;
+        GPRINTER.windowsFont(25, 100, 22, 0, 2, 0, "ARIAL", str15);
+
+        var str16 = "品牌: " + dData.BrandName;
+        GPRINTER.windowsFont(25, 80, 22, 0, 2, 0, "ARIAL", str16);
+
+        var str17 = "合格证";
+        GPRINTER.windowsFont(95, 20, 50, 0, 2, 0, "ARIAL", str17);
+
+    }
+
+    function print50120_shuban_winform(GPRINTER, barCode, dData) {
+        //50*120,竖版
+        var height = 0;
+        var fontsize = 23;
+        var _gapheight = 30;
+
+        GPRINTER.setUp("50", "120", "4", "8", "0", "0", "0");
+        GPRINTER.sendCommand("GAP 3mm,0");
+
+        GPRINTER.windowsFont(90, 900, 25, 0, 2, 0, "ARIAL", barCode);
+        GPRINTER.barcode("30", "820", "93", "70", "0", "0", "2", "2", barCode);
+
+        //string x, string y, string level, string width,string mode, string content
+        GPRINTER.qrCode("25", "625", "H", "3", "A", dData.QRcode);
+
+        //objPrint.xkWindowsfont(90, 900, 25, 0, 2, 0, "ARIAL", barCode);
+        //objPrint.xkBarcode("30", "820", "93", "70", "0", "0", "2", "2", barCode);
+
+        //objPrint.xkQRcode("25", "625", "4", "A", "0", dData.QRcode);
+
+
+
+        var str11 = "￥" + dData.TagPrice;
+        GPRINTER.windowsFont(220, 690, 40, 0, 2, 0, "ARIAL", str11);
+
+        var str3 = "品牌商: "; var height = 310;
+        GPRINTER.windowsFont(25, height, fontsize, 0, 2, 0, "ARIAL", str3);
+        height = autoCalcHeight_winform(GPRINTER, dData.Manufacturer, height, 21, 100, 13, fontsize);
+
+        var str2 = "地址: "; height += _gapheight;
+        GPRINTER.windowsFont(25, height, fontsize, 0, 2, 0, "ARIAL", str2);
+        height = autoCalcHeight_winform(GPRINTER, dData.ProductionPlace, height, 21, 100, 13, fontsize);
+
+        //---------------------执行标准分隔线-------------------
+        var str8 = "执行标准: " + dData.Standard; height += 45;
+        GPRINTER.windowsFont(25, height, fontsize, 0, 2, 0, "ARIAL", str8);
+
+        var str5 = "里料成分: "; height += _gapheight;
+        GPRINTER.windowsFont(25, height, fontsize, 0, 2, 0, "ARIAL", str5);
+        height = autoCalcHeight_winform(GPRINTER, dData.Material, height, 21, 120, 13, fontsize);
+
+        var str6 = "面料成分: "; height += _gapheight;
+        GPRINTER.windowsFont(25, height, fontsize, 0, 2, 0, "ARIAL", str6);
+        height = autoCalcHeight_winform(GPRINTER, dData.Fabric, height, 21, 120, 13, fontsize);
+
+        var str4 = "洗涤标识: "; height += 35;
+        GPRINTER.windowsFont(25, height, fontsize, 0, 2, 0, "ARIAL", str4);
+
+        var str7 = "安全类别: " + dData.Category; height += 35;
+        GPRINTER.windowsFont(25, height, fontsize, 0, 2, 0, "ARIAL", str7);
+        var str9 = "等级: " + dData.Level;
+        GPRINTER.windowsFont(180, height, fontsize, 0, 2, 0, "ARIAL", str9);
+
+        var widthSize_PostCode = dData.SizeExtention ? 240 : 180;
+
+        var str1 = "邮编: " + dData.PostCode;
+        GPRINTER.windowsFont(widthSize_PostCode, 280, fontsize, 0, 2, 0, "ARIAL", str1);
+
+        var str10 = "检验员: " + dData.Inspector;
+        GPRINTER.windowsFont(25, 280, fontsize, 0, 2, 0, "ARIAL", str10);
+
+        var str12 = "颜色: " + dData.ColorName;
+        GPRINTER.windowsFont(widthSize_PostCode, 250, fontsize, 0, 2, 0, "ARIAL", str12);
+
+        var str13 = "尺码: " + dData.SizeName + (dData.SizeExtention ? " / " + dData.SizeExtention : "");
+        GPRINTER.windowsFont(25, 250, fontsize, 0, 2, 0, "ARIAL", str13);
+
+        var str14 = "品名: " + dData.CateName;
+        GPRINTER.windowsFont(25, 220, fontsize, 0, 2, 0, "ARIAL", str14);
+
+        var strgap = "";
+        for (var i = 0; i < 110; i++) {
+            strgap += "-";
+        }
+        GPRINTER.windowsFont(25, 185, 10, 0, 2, 0, "ARIAL", strgap);
+
+        var str15 = "品牌: " + dData.BrandName;
+        GPRINTER.windowsFont(25, 140, 25, 0, 2, 0, "ARIAL", str15);
+
+        var str16 = "款号: " + dData.BigProdNum;
+        GPRINTER.windowsFont(25, 110, 25, 0, 2, 0, "ARIAL", str16);
+
+        var str17 = "合格证";
+        GPRINTER.windowsFont(140, 30, 50, 0, 2, 0, "ARIAL", str17);
+    }
+    function autoCalcHeight_winform(GPRINTER, data, height, plusHeight, leftPoint, colCount, fontsize) {
+        plusHeight = plusHeight || 20; colCount = colCount || 10; fontsize = fontsize || 22;
+        var rowcount = Math.ceil(data.length / colCount);
+        for (var i = 0; i < rowcount; i++) {
+            GPRINTER.windowsFont(leftPoint, height, fontsize, 0, 2, 0, "ARIAL", data.substr(i * colCount, colCount));
+            if (i + 1 < rowcount) {
+                height += plusHeight;
+            }
+        }
+        return height;
+    }
+     // --------------------winform 打印函数 end---------------------
+
+</script>

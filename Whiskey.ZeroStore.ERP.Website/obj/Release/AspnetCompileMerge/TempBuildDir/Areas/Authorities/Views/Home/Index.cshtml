@@ -1,0 +1,506 @@
+﻿@{
+    ViewBag.Title = "后台管理";
+}
+@using Whiskey.Web.Helper;
+
+<script src="~/Content/Scripts/Echart/dist/echarts.js"></script>
+<style>
+	/*.bootstrap-select.btn-group .dropdown-menu li a span.check-mark {
+    display: block; 
+}*/
+</style>
+
+@{
+    string themePath = ViewBag.themePath ?? string.Empty;
+    string _statisticsFile = Path.Combine(themePath, "_Statistics.cshtml");
+}
+@{
+    if ((ViewBag.themeExist ?? false) && FileHelper.FileIsExist(_statisticsFile))
+    {
+        Html.RenderPartial(_statisticsFile);
+    }
+    else
+    {
+        @section ModuleName{
+            首页统计面板
+        }
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="stat-panel">
+                    <div class="stat-row">
+                        <div class="stat-cell bg-success">
+                            <i class="fa fa-cubes bg-icon" style="line-height:80px;height:80px;padding-top:20px;"></i>
+                            <div class="text-bg">本店交易率统计</div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-counters bordered no-border-t text-center">
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>97%</strong></span><br>
+                                <span class="text-sm">成交率</span>
+                            </div>
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>3%</strong></span><br>
+                                <span class="text-xs">退货率</span>
+                            </div>
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>16%</strong></span><br>
+                                <span class="text-xs">入会率</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="stat-panel">
+                    <div class="stat-row">
+                        <div class="stat-cell bg-warning" style="height: 155px;">
+                            <i class="fa fa-star-o bg-icon" style="line-height:80px;height:80px;padding:10px 0px 0px 50px;"></i>
+                            <span class="text-bg">完成本月业绩</span><br>
+                            <div style="height: 8px;"></div>
+                            <span class="text-bg"><strong>75%</strong></span><br>
+                            <span class="text-sm">差额：25%</span><br>
+                            <span class="text-sm">努力冲刺吧！</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="stat-panel">
+                    <div class="stat-cell bg-danger valign-middle">
+                        <i class="fa fa-comments bg-icon"></i>
+                        <span class="text-bg">会员评价</span><br>
+                        <div style="height: 8px;"></div>
+                        <span class="text-bg"><strong>124条</strong></span><br>
+                        <span class="text-sm">好评：62 条</span><br>
+                        <span class="text-sm">中评：34 条</span><br>
+                        <span class="text-sm">差评：28 条</span><br>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="stat-panel">
+                    <div class="stat-row">
+                        <div class="stat-cell bg-primary darker">
+                            <i class="fa fa-lightbulb-o bg-icon" style="line-height:80px;height:80px;padding-top:20px;"></i>
+                            <span class="text-bg">本店进销存总览</span>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-counters bg-primary no-border-b no-padding text-center">
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>12</strong></span><br>
+                                <span class="text-xs">库存</span>
+                            </div>
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>17</strong></span><br>
+                                <span class="text-xs">售出</span>
+                            </div>
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>49</strong></span><br>
+                                <span class="text-xs">进货</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-counters bg-primary no-border-b no-padding text-center">
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>203</strong></span><br>
+                                <span class="text-xs">退货</span>
+                            </div>
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>1056</strong></span><br>
+                                <span class="text-xs">会员</span>
+                            </div>
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>56</strong></span><br>
+                                <span class="text-xs">试衣</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="sale-hr" />
+
+        <div class="row">
+            <div class="col-lg-5">
+
+                <div class="panel widget-followers">
+                    <div class="panel-heading">
+                        <span class="panel-title"><i class="panel-title-icon fa fa-area-chart"></i>30天热卖排行榜</span>
+                    </div>
+                    <div class=" padding-sm">
+                        <ul class="sale-box">
+                            <li>
+                                <div class="sale-thumb">
+                                    <div style="display:block;width:80px;height:80px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;">
+                                        <img alt="User" src="/Content/UploadFiles/Products/Test/17/封面.jpg" style="margin:2px;max-width:74px;">
+                                    </div>
+                                    <span class="sale-label">145</span>
+                                </div>
+                                <div class="sale-main">
+                                    <span class="sale-info"><a href="#">白色 都市 包身 连衣裙</a></span>
+                                    <p>我们在各自的小路上匆匆行走，一直未曾停留，不经意间在某个路口相遇，于是轻轻问候，淡淡寒暄，然后挥手说再见。 </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="sale-thumb">
+                                    <div style="display:block;width:80px;height:80px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;">
+                                        <img alt="User" src="/Content/UploadFiles/Products/Test/15/封面.jpg" style="margin:2px;max-width:74px;">
+                                    </div>
+                                    <span class="sale-label">114</span>
+                                </div>
+                                <div class="sale-main">
+                                    <span class="sale-info"><a href="#">粉色 镶钻 奢华 连衣裙</a></span>
+                                    <p>品味如音乐会般内向默契，简致饱含得体尊重的高尚情感，低雅注重明暗与质感的光影对比，将自己高贵展示，出席人生的时时刻刻。 </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="sale-thumb">
+                                    <div style="display:block;width:80px;height:80px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;">
+                                        <img alt="User" src="/Content/UploadFiles/Products/Test/13/封面.jpg" style="margin:2px;max-width:74px;">
+                                    </div>
+                                    <span class="sale-label">82</span>
+                                </div>
+                                <div class="sale-main">
+                                    <span class="sale-info"><a href="#">复古 镂空 收腰 纯洁白色 连衣裙</a></span>
+                                    <p>光洁的风轻拍着回忆，宁馨香气穿透岁月的阻隔，在唇齿间、在血液里流旋，爱，携永此时。 </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="sale-thumb">
+                                    <div style="display:block;width:80px;height:80px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;">
+                                        <img alt="User" src="/Content/UploadFiles/Products/Test/11/封面.jpg" style="margin:2px;max-width:74px;">
+                                    </div>
+                                    <span class="sale-label">142</span>
+                                </div>
+                                <div class="sale-main">
+                                    <span class="sale-info"><a href="#">复古 镂空 收腰 纯洁白色 连衣裙</a></span>
+                                    <p>光洁的风轻拍着回忆，宁馨香气穿透岁月的阻隔，在唇齿间、在血液里流旋，爱，携永此时。 </p>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="sale-thumb">
+                                    <div style="display:block;width:80px;height:80px;overflow:hidden;border:1px solid #eaeaea;margin:0 auto 0 auto;">
+                                        <img alt="User" src="/Content/UploadFiles/Products/Test/3/封面.jpg" style="margin:2px;max-width:74px;">
+                                    </div>
+                                    <span class="sale-label">108</span>
+                                </div>
+                                <div class="sale-main">
+                                    <span class="sale-info"><a href="#">复古 镂空 收腰 纯洁白色 连衣裙</a></span>
+                                    <p>光洁的风轻拍着回忆，宁馨香气穿透岁月的阻隔，在唇齿间、在血液里流旋，爱，携永此时。 </p>
+                                </div>
+                            </li>
+                            <li>
+                                <button class="btn btn-warning btn-mini viewall">查看所有</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="panel widget-followers">
+                    <div class="panel-heading">
+                        <span class="panel-title"><i class="panel-title-icon fa fa-line-chart"></i>30天销量曲线 - @DateTime.Now.Date.AddMonths(-1).ToString("yyyy年MM月dd日") 至 @DateTime.Now.Date.ToString("yyyy年MM月dd日")</span>
+                    </div>
+                    <div class="padding-sm">
+                        <div id="sale-chart" style="height: 300px;"></div>
+                    </div>
+                </div>
+
+                <div class="panel widget-followers">
+                    <div class="panel-heading">
+                        <span class="panel-title"><i class="panel-title-icon fa fa-eye"></i>30天热卖颜色</span>
+                    </div>
+                    <div class="padding-sm">
+                        <div id="color-chart" style="height: 200px;"></div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-5">
+                <div class="panel widget-followers">
+                    <div class="panel-heading">
+                        <span class="panel-title"><i class="panel-title-icon fa fa-futbol-o"></i>30天热卖品牌</span>
+                    </div>
+                    <div class="padding-sm">
+                        <div id="brand-chart" style="height: 200px;"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-7">
+                <div class="panel widget-followers">
+                    <div class="panel-heading">
+                        <span class="panel-title"><i class="panel-title-icon fa fa-signal"></i>30天热卖品类</span>
+                    </div>
+                    <div class="padding-sm">
+                        <div id="category-chart" style="height: 207px;"></div>
+                        <div id="main" style="height:400px"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        @section Scripts{
+            <script type="text/javascript">
+                // 路径配置
+                require.config({
+                    paths: {
+                        echarts: '/content/scripts/echart/'
+                    }
+                });
+
+                // 使用
+                require(
+                    [
+                        'echarts',
+                        'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+                    ],
+                    function (ec) {
+                        // 基于准备好的dom，初始化echarts图表
+                        var myChart = ec.init(document.getElementById('main'));
+
+                        var option = {
+                            tooltip: {
+                                show: true
+                            },
+                            legend: {
+                                data: ['销量']
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    "name": "销量",
+                                    "type": "bar",
+                                    "data": [5, 20, 40, 10, 10, 20]
+                                }
+                            ]
+                        };
+
+                        // 为echarts对象加载数据
+                        myChart.setOption(option);
+                    }
+                );
+            </script>
+
+            <script type="text/javascript">
+
+                // 路径配置
+                require.config({
+                    paths: {
+                        echarts: '/content/scripts/echart/'
+                    }
+                });
+
+                // 使用
+                require(
+                    [
+                        'echarts',
+                        'echarts/chart/bar',
+                        'echarts/chart/line',
+                        'echarts/chart/pie'
+                    ],
+                    function (echarts) {
+
+
+                        var myChart = echarts.init(document.getElementById('category-chart'));
+
+                        var option = {
+                            tooltip: {
+                                show: true
+                            },
+                            legend: {
+                                data: ['销量']
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    "name": "销量",
+                                    "type": "bar",
+                                    "data": [5, 20, 40, 10, 10, 20]
+                                }
+                            ]
+                        };
+
+                        // 为echarts对象加载数据
+                        myChart.setOption(option);
+
+
+                        var saleChart = echarts.init(document.getElementById('sale-chart'));
+                        saleChart.setOption({
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            grid: {
+                                x: '35',
+                                y: '25',
+                                x2: '20',
+                                y2: '30',
+                                width: '90%'
+                            },
+                            calculable: true,
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    boundaryGap: false,
+                                    data: ['9-1', '9-2', '9-3', '9-4', '9-5', '9-6', '9-7', '9-8', '9-9', '9-10', '9-11', '9-12', '9-13', '9-14', '9-15']
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '销量',
+                                    type: 'line',
+                                    stack: '总量',
+                                    data: [12, 132, 61, 34, 20, 90, 10, 120, 132, 14, 34, 90, 230, 12, 132]
+                                }
+                            ]
+                        });
+
+
+
+                        var categoryChart = echarts.init(document.getElementById('main')); //category-chart
+
+                        categoryChart.setOption({
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            color: ['#87cefa'],
+                            grid: {
+                                x: '35',
+                                y: '25',
+                                x2: '20',
+                                y2: '30',
+                                width: '90%'
+                            },
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: ['外套', 'T恤', '衬衫', '连衣裙', '宽腿裤', '短裙', '打底衫', '针织衫', '长裤', '包包']
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '销量',
+                                    type: 'bar',
+                                    data: [27, 93, 85, 76, 154, 31, 22, 62, 72, 32]
+                                }
+                            ]
+                        });
+
+
+                        var brandChart = echarts.init(document.getElementById('brand-chart'));
+                        brandChart.setOption({
+                            tooltip: {
+                                trigger: 'item',
+                                formatter: "{a} <br/>{b} : {c} ({d}%)"
+                            },
+
+                            calculable: false,
+                            series: [
+
+                                {
+                                    name: '销量',
+                                    type: 'pie',
+                                    radius: [0, 70],
+                                    data: [
+                                        { value: 335, name: 'SNOWIMAGE' },
+                                        { value: 310, name: '米珂拉' },
+                                        { value: 234, name: '蓝地' },
+                                        { value: 135, name: '钻奇' },
+                                        { value: 1048, name: '慕托丽' },
+                                        { value: 251, name: '必然' },
+                                        { value: 347, name: 'THAT’S ALL' },
+                                        { value: 202, name: 'ZOKO' },
+                                        { value: 147, name: 'SEE SHINE' },
+                                        { value: 202, name: '注释' }
+                                    ]
+                                }
+                            ]
+                        });
+
+                        var colorChart = echarts.init(document.getElementById('color-chart'));
+                        colorChart.setOption({
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            grid: {
+                                x: '35',
+                                y: '25',
+                                x2: '20',
+                                y2: '30',
+                                width: '90%'
+                            },
+                            color: ['#cd5c5c'],
+                            calculable: false,
+                            xAxis: [
+                                {
+                                    type: 'category',
+                                    data: ['粉红色', '浅黄色', '咖啡色', '香槟色', '彩蓝色', '卡其色', '深灰色', '米白色', '米黄色', '浅紫色']
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: 'value'
+                                }
+                            ],
+                            series: [
+                                {
+                                    name: '销量',
+                                    type: 'bar',
+                                    data: [20, 49, 70, 32, 56, 76, 135, 162, 32, 20, 68, 33]
+                                }
+                            ]
+                        });
+                    }
+                );
+
+            </script>
+        }
+    }
+}

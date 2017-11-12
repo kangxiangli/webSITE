@@ -1,0 +1,292 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers;
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Authority
+@model  DepartmentDto
+<style>
+    .par_view label {
+        padding-top: 0px !important;
+    }
+   * {
+        font-size: 13px;
+    }
+
+    .pri-ul-li label {
+        margin-left: 10px;
+    }
+
+    .permis-contain li {
+        border-left: 1px solid gray;
+    }
+
+  
+    .modal-dialog {
+        width: 680px;
+    }
+    /*#defauright-tab ul li {
+    float:left;
+    }
+    #defauright-tab ul li a{
+        padding:7px 3px;
+    }*/
+</style>
+<div class="update-dep">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#baseinfo-tab" data-toggle="tab">
+                基本信息
+            </a>
+        </li>
+        @*<li><a href="#defauright-tab" id="defauright_a" data-toggle="tab">默认权限</a></li>*@
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="baseinfo-tab">
+            <div class="view par_view">
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.Id) :
+                    </label>
+                    <div class="col-md-7">
+                        @Model.Id
+                    </div>
+                    <input name="Id" id="hid-id" type="hidden" value="@Model.Id" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.DepartmentName) :
+                    </label>
+                    <div class="col-md-7">
+                        @Html.TextBoxFor(c => c.DepartmentName, new { @class = "form-control", placeholder = "请输入中文、字母或者数字" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.DepartmentType) :
+                    </label>
+                    <div class="col-md-7">
+                        @Html.EnumDropDownListFor(f => f.DepartmentType, new { @class = "form-control selectpicker" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        Mac地址 :
+                    </label>
+                    <div class="col-md-7">
+                        @Html.TextBoxFor(x=>x.MacAddress, new Dictionary<string, object> { { "class", "form-control" }, { "data-role", "tagsinput" } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.Description) :
+                    </label>
+                    <div class="col-md-7">
+                        <textarea class="form-control" id="Description" name="Description">@Model.Description</textarea>
+
+                    </div>
+                </div>
+                @*<div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.AdministratorId) :
+                    </label>
+                    <div class="col-md-7">
+                        @Html.DropDownList("AdminId", (List<SelectListItem>)ViewBag.Admin, new { @class = "form-control selectpicker" })
+                    </div>
+                </div>*@
+                @*<div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.IsDeleted) :
+                    </label>
+                    <input type="hidden" id="hid-isdel" value="@Model.IsDeleted" />
+                    <div class="col-md-7">
+                        <label>是<input type="radio" value="1" name="IsDeleted" /></label>
+                        <label>否<input type="radio" value="0" name="IsDeleted" /></label>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.IsEnabled) :
+                    </label>
+                    <input type="hidden" id="hid-isenabl" value="@Model.IsEnabled" />
+                    <div class="col-md-7">
+                        <label>是<input type="radio" value="1" name="IsEnabled" /></label>
+                        <label>否<input name="IsEnabled" value="0" type="radio" /></label>
+                    </div>
+                </div>*@
+                @*<div class="form-group">
+                    <label class="control-label col-md-3">
+                        上级部门 :
+                    </label>                    
+                    <div class="col-md-7">
+                        @Html.DropDownListFor(x => x.ParentId, (List<SelectListItem>)ViewBag.Departs, new { @class = "form-control selectpicker", @onchange = "initDepart()" })
+                    </div>
+                </div>*@
+                @*<div class="form-group warning alert-danger" id="warn" style="display: none;">
+                    <label class="control-label col-md-3">
+                        警告 :
+                    </label>
+                    <div class="col-md-5">
+                        <label class="control-label col-md-8">
+                            <i class="fa fa-warning"></i><span id="warnInfo">请选择下属部门负责人</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3" id="lalDepart">
+                       属下部门:
+                    </label>
+                    <div class="col-md-7">
+                        @Html.DropDownListFor(x => x.DepartmentIds, (List<SelectListItem>)ViewBag.Departments, new Dictionary<string, object> { { "class", "form-control selectpicker bla bla bli" }, { "multiple", "multiple" }, { "data-live-search", "true" }, { "onchange", "checkSubordinate()" } })
+                    </div>
+                </div>*@
+                
+                @*<div class="form-group">
+                    <label class="control-label col-md-3" id="lalDepart">
+                        @Html.DisplayNameFor(m => m.SubordinateId) :
+                    </label>
+                    <div class="col-md-7">
+                        @Html.DropDownListFor(x => x.SubordinateId, (List<SelectListItem>)ViewBag.Subordinate, new { @class = "form-control selectpicker", @onchange = "checkSubordinate()" })
+                    </div>
+                </div>*@
+            </div>
+        </div>
+        @*<div class="tab-pane fade" id="defauright-tab">
+            @{Html.RenderAction("LoadPermissionTree", "Department");}
+        </div>*@
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/tags")
+
+@*<link href="/Content/Styles/Bootstrap/BootstrapSelect/bootstrap-select.min.css" rel="stylesheet" />*@
+@*<script src="/Content/Scripts/Bootstrap/BootstrapSelect/bootstrap-select.min.js"></script>*@
+
+<script>
+    //初始化控件
+    //initSelect();
+    //initData();
+    
+    var isexisTree = false;
+    $(function () {
+
+        $(".update-dep #DepartmentName").keyup(function () {
+            var t = $(this).val().trim().replace(/[^\u4e00-\u9fa5\da-z]/gi, "");
+
+            $(this).val(t);
+            if (t != "") {
+                $("[data-bb-handler='success']").removeAttr("disabled");
+                $(this).parents("div:first").removeClass("has-error");
+            }
+            else {
+                $(this).parents("div:first").addClass("has-error");
+                $(this).attr("title", "部门名称不为空");
+                $("[data-bb-handler='success']").attr("disabled", "disabled");
+            }
+        });
+        var isdel = $("#hid-isdel").val();
+        var isenab = $("#hid-isenabl").val();
+        if (isdel) {
+            $(".par_view input[name='IsDeleted']").first().attr("checked", "checked");
+        }
+        else {
+            $(".par_view input[name='IsDeleted']").last().attr("checked", "checked");
+        }
+
+        if (isenab) {
+            $(".par_view input[name='IsEnabled']").first().attr("checked", "checked");
+        }
+        else {
+            $(".par_view input[name='IsEnabled']").last().attr("checked", "checked");
+        }
+    })
+    function editDa() {
+        var parId = $(".par_view #hid-id").val();
+        var parName = $(".par_view #DepartmentName").val();
+        var notes = $(".par_view #Description").val();
+        var admi = $("#AdminId option:selected").val();
+        var isdel = $(".par_view [name='IsDeleted']:checked").val();
+        var isenab = $(".par_view [name='IsEnabled']:checked").val();
+        $.post("/Authorities/Department/Edit", { parId: parId, partName: parName, notes: notes, admin: admi, isdel: isdel, isenab: isenab }, function (da) {
+
+            if (da.ResultType == 3) {
+                $.whiskey.datatable.instance.fnDraw(false);
+
+            }
+            //$.whiskey.datatable.instance.fnDraw(true);
+
+            if (da.ResultType != 3 && da.ResultType != 2) {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "修改失败",
+                    par: { keyboard: false, backdrop: "static" }
+                });
+            }
+        });
+
+    }
+
+    //$("#defauright_a").click(function () {
+
+    //    if (!isexisTree) {
+
+    //    }
+    //})
+
+    @*function initData() {
+        //debugger
+        var childId = "@Model.DepartmentIds";
+        var arrIds=new Array;
+        if (childId != "" && childId != null) {
+            arrIds = childId.split(',');
+            $("#DepartmentIds option").each(function () {
+                var option = $(this).val();               
+                for (var i = 0; i < arrIds.length; i++) {
+                    if (arrIds[i] == option) {
+                        $(this).attr("selected", "selected");
+                        continue;
+                    }
+                }
+            })            
+        }
+        $('.selectpicker').selectpicker('refresh');
+    }*@
+     
+    //校验下属部门负责人
+    //function checkSubordinate() {
+    //    var childId = $(".bootbox #DepartmentIds").val();
+    //    var SubordinateId = $("#SubordinateId").val();
+    //    var index = 0;         
+    //    if (SubordinateId == null || SubordinateId == "" || SubordinateId == undefined) {
+    //        $("#warn").css("display", "block");
+    //        $(".bootbox .btn-primary").attr("disabled", "disabled");
+    //        $("#warnInfo").html("请选择下属部门负责人");
+    //        index++;
+    //    }
+    //    if (childId == null || childId == "" || childId == undefined) {
+    //        //判断下属部门负责人            
+    //        $("#warn").css("display", "block");
+    //        $(".bootbox .btn-primary").attr("disabled", "disabled");
+    //        $("#warnInfo").html("请选择下属部门");
+    //        index++;
+    //    }  
+        
+    //    if (index ==2 || index==0) {
+    //        $("#warn").css("display", "none");
+    //        $(".bootbox .btn-primary").removeAttr("disabled");
+    //    }
+    //}
+    //初始化选择控件
+    //function initSelect() {
+    //    //初始化选择框
+    //    $('.selectpicker').selectpicker({
+    //        'selectedText': 'cat',
+    //        'noneSelectedText': "请选择负责部门",
+    //        'noneResultsText': '没有搜索到'
+    //    });
+    //}
+</script>
+
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

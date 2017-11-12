@@ -1,0 +1,107 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model TrainingBlogEntity
+<link href="~/Content/editor.md/css/editormd.min.css" rel="stylesheet" />
+<style>
+    .modal-content {
+        width: 1200px !important;
+    }
+
+    #editormd .editormd-preview ul li {
+        list-style: disc !important;
+    }
+
+    #editormd .editormd-preview ol li {
+        list-style: decimal !important;
+    }
+
+    .editormd-form label {
+        color: #000 !important;
+    }
+
+    .editormd-dialog-footer {
+        padding: 0 !important;
+    }
+
+        .editormd-dialog-footer .editormd-btn, .editormd-dialog-footer button {
+            color: #fff !important;
+        }
+
+    .editormd-enter-btn {
+        background: #4c94c8 !important;
+    }
+
+    .editormd-cancel-btn {
+        background: #888 !important;
+    }
+
+    .editormd-file-input input {
+        color: #fff !important;
+        background: #5ebd5e !important;
+    }
+</style>
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#baseInfo" data-toggle="tab">基础信息</a></li>
+    @*<li><a href="#editor" data-target-id="editor" data-toggle="tab">内容</a></li>*@
+</ul>
+<div class="tab-content">
+    @if (Model != null && Model.Id > 0)
+    {
+        @Html.HiddenFor(m => m.Id)
+    }
+
+    <div id="baseInfo" class="tab-pane active">
+        <div class="form-group">
+            <label class="control-label col-md-1">
+                @Html.LabelFor(m => m.Title)
+            </label>
+            <div class="col-md-11">
+                @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-1">
+                @Html.LabelFor(m => m.Content)
+            </label>
+            <div class="col-md-11">
+
+                <div id="editormd">
+                    @Html.TextAreaFor(m => m.Content, new { style = "display:none;" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-1">
+                @Html.LabelFor(m => m.IsTrain)
+            </label>
+            <div class="col-md-11">
+                @Html.CheckBoxFor(m => m.IsTrain)
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<script src="~/Content/editor.md/editormd.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        setTimeout(function () {
+            var editor = editormd({
+                id: 'editormd',
+                height: 500,
+                emoji: true,
+                htmlDecode: true,
+                path: "/Content/editor.md/lib/", // Autoload modules mode, codemirror, marked... dependents libs path
+                imageUpload: true,
+                imageFormats: ["jpg", "jpeg", "gif", "png"],
+                imageUploadURL: "/Offices/Training/Upload",
+                flowChart: true,
+                sequenceDiagram: true,
+                syncScrolling: true
+            });
+        }, 200)
+
+    })
+
+</script>

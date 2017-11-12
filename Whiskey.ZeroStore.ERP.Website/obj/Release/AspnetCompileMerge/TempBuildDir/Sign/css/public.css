@@ -1,0 +1,147 @@
+﻿/**
+ * Created by xiuxia on 2016/9/20.
+ */
+@charset "utf-8";
+html, body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
+}
+
+/*Clear border*/
+html, body, img {
+    border: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+li:focus {
+    tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.big_all_div {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+*:focus, *:active {
+    outline: none;
+    -moz-outline: none;
+    outline-style: none;
+    -moz-outline-style: none;
+    -webkit-outline: none;
+    -webkit-outline-style: none;
+    tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+button {
+    -webkit-appearance: none;
+    border: none;
+    -webkit-appearance: none;
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -webkit-appearance: square-button;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+
+}
+
+input[type="text"],
+input[type="password"] {
+    background-color: transparent;
+    border: none;
+    -webkit-appearance:none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+::-webkit-input-placeholder{
+    color: rgba(255, 255, 255, 0.4);
+}
+:-moz-placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+:-ms-input-placeholder{
+    color: rgba(255, 255, 255, 0.4);
+}
+::-webkit-scrollbar {
+    width: 0
+}
+
+button {
+    border: none
+}
+
+ul, ol {
+    list-style: none
+}
+
+b, em, i {
+    font-style: normal
+}
+
+a {
+    text-decoration: none
+}
+
+b {
+    font-weight: normal;
+}
+
+/*body*/
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: url("../img/bg.jpg") no-repeat;
+    background-size: cover;
+    color:rgba(255,255,255,0.8);
+    font-family: '华文细黑';
+}
+/*头标题*/
+.til_bak p {
+    height: 2.5rem;
+    line-height: 3.3rem;
+    font-size: 0.75rem;
+    left: 0.5rem;
+    position: absolute;
+    text-align: left;
+    cursor: pointer;
+}
+.til_bak p img {
+    width: 0.24rem;
+    vertical-align: middle;
+    opacity: 0.8;
+}
+.til_bak p span {
+    vertical-align: middle;
+    font-size: 0.75rem;
+    margin-left: 0.2rem;
+    color: rgba(255,255,255,0.8);
+}
+.account_infi,.staff_totle,.til_bak{
+    height: 2.5rem;
+    line-height: 3.3rem;
+    font-size: 0.9rem;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+    font-family: '华文细黑';
+}
+.back_ig {
+    height: 2.5rem;
+    line-height: 3.3rem;
+    font-size: 0.75rem;
+    left: 0.5rem;
+    position: absolute;
+    text-align: left;
+    cursor: pointer;
+    color: rgba(255,255,255,0.5);
+}
+
+/*end 头标题*/

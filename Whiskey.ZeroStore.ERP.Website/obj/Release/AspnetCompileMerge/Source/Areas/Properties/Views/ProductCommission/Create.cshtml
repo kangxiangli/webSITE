@@ -1,0 +1,129 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Data
+@model ProductCommissionDto
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-arrow-circle-left"></i> <a href="/Properties/ProductDiscount/index">返回提成列表</a></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <h5><i class="fa fa-credit-card"></i> <span>基本信息</span></h5>
+                @*<span style="margin-right:10px;"><input class="verifier" type="checkbox" data-class="switcher-default" checked="checked"></span>*@
+                @*<span><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>*@
+            </div>
+        </div>
+        <br />
+        <br />
+        @using (Ajax.BeginForm("Create", new { }, new AjaxOptions() { HttpMethod = "post", OnSuccess = "afterFun(data)" }, new { id = "form1" }))
+        {
+            <div class="valign-middle">
+                <div class="form-group">
+                    <label class="control-label col-md-3">提成名称：</label>
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(x => x.CommissionName, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">店铺：</label>
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(x => x.StoreName, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.HiddenFor(x => x.StoreId)
+                    </div>
+                    <div>
+                        <a class="btn btn-dark-gray" style="background-color: #5cb85c;" onclick="chooseStore()">选择店铺</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">品牌：</label>
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(x => x.BrandName, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.HiddenFor(x => x.BrandId)
+                    </div>
+                    <div>
+                        <a class="btn btn-dark-gray" style="background-color: #5cb85c;" onclick="chooseBrand()">选择品牌</a>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">季节：</label>
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(x => x.SeasonName, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.HiddenFor(x => x.SeasonId)
+                    </div>
+                    <div>
+                        <a class="btn btn-dark-gray" style="background-color: #5cb85c;" onclick="chooseSeason()">选择季节</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">提成百分比：</label>
+                    <div class="col-md-5">
+                        @Html.TextBoxFor(x => x.Percentage, new { @class = "form-control" })
+                    </div>
+                </div>
+                 
+            </div>
+            <div class="form-group">
+                <div class="col-md-4 text-right">
+                    <button type="submit" id="btnAdd" class="btn btn-primary">
+                        添加
+                    </button>
+                </div>
+                <div class="col-md-3 text-right">
+                    <button type="button" class="btn btn-default" onclick="getBack()">
+                        返回
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script src="/Content/Scripts/Bootstrap/bootstrap-multiselect.js"></script>
+<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+<script type="text/javascript">
+    //返回结果
+    function afterFun(data) {
+        if (data.ResultType == "@((int)OperationResultType.Success)") {
+            getBack();
+        } else {
+            $.whiskey.web.alert({
+                type: "danger",
+                content: data.Message,
+                callback: function () {
+                }
+            });
+        }
+    }
+
+
+    //选择店铺
+    function chooseStore() {
+        var view = new $.whiskey.web.ajaxView({
+            caption: "店铺列表",
+            actionUrl: "@Url.Action("Store", "ProductDiscount")"
+        });
+    }
+
+    //选择品牌
+    function chooseBrand() {
+        var view = new $.whiskey.web.ajaxView({
+            caption: "品牌列表",
+            actionUrl: "@Url.Action("Brand", "ProductDiscount")"
+        });
+    }
+
+    //选择品牌
+    function chooseSeason() {
+        var view = new $.whiskey.web.ajaxView({
+            caption: "季节列表",
+            actionUrl: "@Url.Action("Season", "ProductDiscount")"
+        });
+    }
+    //返回折扣列表
+    function getBack() {
+        location.href = "@Url.Action("Index")";
+    }
+
+</script>

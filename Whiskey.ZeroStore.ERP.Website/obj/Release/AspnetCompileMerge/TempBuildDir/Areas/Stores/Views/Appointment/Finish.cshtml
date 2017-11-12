@@ -1,0 +1,26 @@
+﻿
+<div>
+    
+    <div>
+        <div class="form-group no-margin-hr">
+            <label class="control-label col-md-3">留言：</label>
+            <div class="col-md-8">
+                <textarea id="ord_rejectMes" style="height:80px" class="form-control" placeholder="请输入不配货理由，不可为空……"></textarea>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(function () {
+        $("button[data-bb-handler='success']").attr("disabled", "disabled");
+        $("#ord_rejectMes").keyup(function () {
+            var t = $(this).val();
+            if (t.length == 0) {
+                $("button[data-bb-handler='success']").attr("disabled", "disabled");
+            }
+            else
+                $("button[data-bb-handler='success']").removeAttr("disabled");
+        });
+    })
+</script>

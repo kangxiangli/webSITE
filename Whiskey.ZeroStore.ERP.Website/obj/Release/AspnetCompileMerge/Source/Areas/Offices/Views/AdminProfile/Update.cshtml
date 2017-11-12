@@ -1,0 +1,277 @@
+﻿@using Whiskey.ZeroStore.ERP.Website.Areas.Authorities.Models;
+@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Member
+@model Administrator
+
+<style>
+    ul li {
+        list-style-type: none;
+    }
+    .img-thumbnail{
+        width:100%;
+        height:100%;
+    }
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+
+    <li><a href="#profile_tab" data-toggle="tab">相关证件</a></li>
+    <li><a href="#regist_tab" data-toggle="tab">登记表</a></li>
+    <li><a href="#labor_contract" data-toggle="tab">劳动合同</a></li>
+    <li><a href="#resume" data-toggle="tab">简历</a></li>
+</ul>
+<div id="update-profile" class="tab-content">
+    <input type="file" style="display:none" v-on:change="onChange" />
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        @Html.Hidden("adminId",Model.Id)
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                员工编号 :
+            </label>
+            <div class="col-md-8">
+                @Model.Member.UniquelyIdentifies
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.Member.Email) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(f => f.Member.Email, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.Member.MobilePhone) :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(f => f.Member.MobilePhone, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                员工姓名 :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(f => f.Member.RealName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                性别 :
+            </label>
+            <div class="col-md-8">
+                <select name="Member.Gender" class="form-control selectpicker">
+                    <option value="@((int)GenderFlag.Male)" @(Model.Member.Gender == (int)GenderFlag.Male ? "selected" : "")>男</option>
+                    <option value="@((int)GenderFlag.Female)" @(Model.Member.Gender == (int)GenderFlag.Female ? "selected" : "")>女</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                生日 :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(f => f.Member.DateofBirth, "{0:yyyy/MM/dd}", new { @class = "form-control datepicker" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                评价 :
+            </label>
+            <div class="col-md-8">
+                @Html.TextAreaFor(f => f.Notes, new { @class = "form-control", @rows = 10, @cols = 20 })
+            </div>
+        </div>
+       
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                入职时间 :
+            </label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(f => f.EntryTime, "{0:yyyy/MM/dd}", new { @class = "form-control datepicker" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.IsEnabled) :
+            </label>
+            <div class="col-md-8">
+                @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                @Html.DisplayNameFor(m => m.IsDeleted) :
+            </label>
+            <div class="col-md-8">
+                @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+            </div>
+        </div>
+
+    </div>
+
+    <div class="tab-pane fade" id="profile_tab">
+        
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                银行卡:
+            </label>
+            <div class="col-md-8">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span> <br />
+                <div class="dropzone-box detailImgs" id="BankcardDiv" v-on:click="upload('BankcardImgPath')">
+                    <img v-bind:src="BankcardImgPath" id="BankcardImgPath" class="img-thumbnail" />
+                    <input type="hidden" name="BankcardImgPath" v-bind:value="BankcardImgPath" />
+                    
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                身份证:
+            </label>
+            <div class="col-md-8">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span> <br />
+                <div class="dropzone-box detailImgs" id="IdCardDiv" v-on:click="upload('IdCardImgPath')">
+                    <img v-bind:src="IdCardImgPath" id="IdCardImgPath" class="img-thumbnail" />
+                    <input type="hidden" name="IdCardImgPath" v-bind:value="IdCardImgPath" />
+                    <input type="file" style="display:none" />
+
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                健康证:
+            </label>
+            <div class="col-md-8">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span> <br />
+                <div class="dropzone-box detailImgs" id="HealthCertificateDiv" v-on:click="upload('HealthCertificateImgPath')">
+                <img v-bind:src="HealthCertificateImgPath" id="HealthCertificateImgPath" class="img-thumbnail" />
+                    <input type="hidden" name="HealthCertificateImgPath" v-bind:value="HealthCertificateImgPath" />
+                   
+
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                照片:
+            </label>
+
+            <div class="col-md-8">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span> <br />
+                <div class="dropzone-box detailImgs" id="PhotoDiv" v-on:click="upload('PhotoImgPath')">
+                    <img v-bind:src="PhotoImgPath" id="PhotoImgPath" class="img-thumbnail" />
+                    <input type="hidden" name="PhotoImgPath" v-bind:value="PhotoImgPath" />
+                  
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="regist_tab">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                登记表:
+            </label>
+            <div class="col-md-8">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span> <br />
+                <div class="dropzone-box detailImgs" id="RegistFormDiv" v-on:click="upload('RegistFormPath')">
+                    <img v-bind:src="RegistFormPath" id="RegistFormPath" class="img-thumbnail" />
+                    <input type="hidden" name="RegistFormPath" v-bind:value="RegistFormPath" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="labor_contract">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                劳动合同:
+            </label>
+            <div class="col-md-8">
+                <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span> <br />
+                <div class="dropzone-box detailImgs" id="LaborContractImgDiv" v-on:click="upload('LaborContractImgPath')">
+                    <img v-bind:src="LaborContractImgPath" id="LaborContractImgPath" class="img-thumbnail" />
+                    <input type="hidden" name="LaborContractImgPath" v-bind:value="LaborContractImgPath" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="resume">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                简历:
+            </label>
+            <span style="color: #e5603b"> (只能上传jpg,jpeg,png,bmp格式,最大500KB)</span> <br />
+            <div class="col-md-8">
+                <div class="dropzone-box detailImgs" id="ResumeImgDiv" v-on:click="upload('ResumeImgPath')">
+                    <img v-bind:src="ResumeImgPath" id="ResumeImgPath" class="img-thumbnail" />
+                    <input type="hidden" name="ResumeImgPath" v-bind:value="ResumeImgPath" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var updateProfileVM = new Vue({
+        el: '#update-profile',
+        data: {
+            adminId:@Model.Id,
+            BankcardImgPath:'@ViewBag.Profile.BankcardImgPath',
+            IdCardImgPath:'@ViewBag.Profile.IdCardImgPath',
+            HealthCertificateImgPath:'@ViewBag.Profile.HealthCertificateImgPath',
+            PhotoImgPath: '@ViewBag.Profile.PhotoImgPath',
+            RegistFormPath: '@ViewBag.Profile.RegistFormPath',
+            LaborContractImgPath:'@ViewBag.Profile.LaborContractImgPath',
+            ResumeImgPath:'@ViewBag.Profile.ResumeImgPath',
+            selector: '',
+            fileSizeLimit: 500 * 1024  //KB
+        },
+        methods: {
+            upload: function ( selector) {
+                this.selector = selector;
+                document.querySelector("input[type=file]").click();
+            },
+
+            onChange: function (e) {
+                var _self = this;
+                if (!e.target.files || e.target.files.length <= 0) { return; }
+                if (e.target.files[0].size > _self.fileSizeLimit) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "图片大小超过了限制, 请修剪后重新上传！",
+                        callback: function () {
+                        }
+                    });
+                    return;
+                    
+                }
+                var inputFile = e.target;
+                var selector = _self.selector;
+
+
+                var file = e.target.files[0]
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function (e) {
+                    var ImgUrl = e.target.result;
+                    _self[selector] = ImgUrl;
+                    inputFile.value = '';
+                };
+            },
+        }
+    })
+    $(function () {
+        $(".datepicker").datepicker();
+        $(".selectpicker").selectpicker();
+    });
+</script>

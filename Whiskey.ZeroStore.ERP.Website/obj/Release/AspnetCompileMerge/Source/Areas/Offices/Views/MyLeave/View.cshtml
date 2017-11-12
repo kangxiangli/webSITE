@@ -1,0 +1,219 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+@model LeaveInfo
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.LeaveReason) :
+    </label>
+    <div class="col-md-10">
+        @Model.LeaveReason
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.VacationType) :
+    </label>
+    <div class="col-md-10">
+        <select id="VacationType" name="VacationType" class="form-control" disabled="disabled">
+            <option value="@((int)VacationFlag.SickLeave)">病假</option>
+            <option value="@((int)VacationFlag.Leave)">事假</option>
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        请假方式:
+    </label>
+    <div class="col-md-10">
+        <select id="LeaveMethod" name="LeaveMethod" class="form-control" disabled="disabled">
+            <option value="1">普通请假</option>
+            <option value="0">年假</option>
+            <option value="2">带薪休假</option>
+        </select>
+    </div>
+</div>
+<div class="form-group" id="annual_leaveCount">
+    <label class="control-label col-md-2">
+        可使用年假天数:
+    </label>
+    <div class="col-md-10">
+        <input type="text" id="MayUse" class="form-control" value="0" readonly />
+    </div>
+</div>
+<div class="form-group" id="paid_LeaveDays">
+    <label class="control-label col-md-2">
+        可使用带薪假天数:
+    </label>
+    <div class="col-md-10">
+        <input type="text" id="PaidCount" class="form-control" value="0" readonly />
+    </div>
+</div>
+<div class="form-group" id="annual_leaveType">
+    <label class="control-label col-md-2">
+        请假时间类型:
+    </label>
+    <div class="col-md-10">
+        <select id="UseAnnualLeaveDay" name="UseAnnualLeaveDay" class="form-control" disabled="disabled">
+            <option value="0.5">半天</option>
+            <option value="1">全天</option>
+        </select>
+    </div>
+</div>
+<div class="form-group" id="annual_leaveAmOrPm">
+    <label class="control-label col-md-2">
+    </label>
+    <div class="col-md-10">
+        <select id="AmOrPm" name="AmOrPm" class="form-control" disabled="disabled">
+            <option value="1">上午</option>
+            <option value="2">下午</option>
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        请假时间 :
+    </label>
+    <div class="col-md-10">
+        <div class="input-group">
+            @Html.TextBoxFor(x => x.StartTime, new { @class = "form-control datetime", @placeholder = "开始时间", @onchange = "computeDay(this)" })
+            <span class="input-group-addon" id="time_span">至</span>
+            @Html.TextBoxFor(x => x.EndTime, new { @class = "form-control datetime", @placeholder = "结束时间", @onchange = "computeDay(this)" })
+        </div>
+    </div>
+</div>
+<div class="form-group" id="rest_div">
+    <label class="control-label col-md-2">
+        休息时长 :
+    </label>
+    <div class="col-md-10">
+        <div class="input-group">
+            <input type="text" id="RestHours" name="RestHours" class="form-control" check-number check-int min-value="0" disabled="disabled"  value="0" max-value="3" />
+        </div>
+    </div>
+</div>
+<div class="form-group" id="leave_div">
+    <label class="control-label col-md-2">
+        请假小时数 :
+    </label>
+    <div class="col-md-10">
+        <div class="input-group">
+            <input type="text" id="LeaveDays" name="LeaveDays" class="form-control" readonly check-number check-int min-value="0" />
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(x => x.VerifyType) :
+    </label>
+    <div class="col-md-10">
+        <select id="VerifyType" name="VerifyType" class="form-control" disabled="disabled">
+            <option value="@((int)VerifyFlag.Verifing)">审核中</option>
+            <option value="@((int)VerifyFlag.Pass)">审核通过</option>
+            <option value="@((int)VerifyFlag.NoPass)">审核不通过</option>
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        操作人员 :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        //初始化审核状态
+        var verifyType = "@Model.VerifyType";
+        $(".bootbox #VerifyType option").each(function () {
+            var option = $(this).val();
+            if (option == verifyType) {
+                $(this).attr("selected", "selected");
+            }
+        });
+
+        //初始化请假类型
+        var vacationType = "@Model.VacationType";
+        $(".bootbox #VacationType option").each(function () {
+            var option = $(this).val();
+            if (option == vacationType) {
+                $(this).attr("selected", "selected");
+            }
+        });
+
+        if (parseInt("@Model.AmOrPm") > 0) {
+            $("#AmOrPm").css("display", "");
+        } else {
+            $("#AmOrPm").css("display", "none");
+        }
+
+        $("#UseAnnualLeaveDay").val("@Model.UseAnnualLeaveDay");
+        $("#LeaveMethod").val("@Model.LeaveMethod");
+        var _LeaveMethod = "@Model.LeaveMethod";
+        if (_LeaveMethod == "0") {
+            $("#annual_leaveCount").css("display", "");
+            $("#annual_leaveType").css("display", "");
+            $("#paid_LeaveDays").css("display", "none");
+            $("#time_span").css("display", "none");
+            $("#EndTime").css("display", "none");
+            $("#rest_div").css("display", "none");
+            $("#leave_div").css("display", "none");
+        } else if (_LeaveMethod == "2") {
+            $("#annual_leaveCount").css("display", "none");
+            $("#paid_LeaveDays").css("display", "");
+            $("#annual_leaveType").css("display", "");
+            $("#time_span").css("display", "none");
+            $("#EndTime").css("display", "none");
+            $("#rest_div").css("display", "none");
+            $("#leave_div").css("display", "none");
+        } else {
+            $("#annual_leaveCount").css("display", "none");
+            $("#annual_leaveType").css("display", "none");
+            $("#paid_LeaveDays").css("display", "none");
+            $("#time_span").css("display", "");
+            $("#EndTime").css("display", "");
+            $("#rest_div").css("display", "");
+            $("#leave_div").css("display", "");
+        }
+
+        $("#RestHours").val("@Model.RestHours");
+        $("#LeaveDays").val("@Model.LeaveDays");
+    });
+
+</script>

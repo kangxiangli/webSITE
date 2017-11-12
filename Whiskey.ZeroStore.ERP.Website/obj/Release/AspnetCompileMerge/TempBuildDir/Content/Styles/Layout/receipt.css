@@ -1,0 +1,211 @@
+      span.usname,.cardNum,.storedValue,.OfferGift,.CashStored,.petCard,.balance,.remark,.StoredCard{
+    color: #000 !important;
+}
+.cardNum,.storedValue,.OfferGift,.CashStored,.petCard,.balance,.remark,.StoredCard{
+  font-family: '宋体';
+	
+}
+   body, td, th {
+        font-family: Arial, "宋体";
+        font-size: 11px;
+        color: #000;
+    }
+
+    p {
+        padding: 0;
+        margin: 0;
+    }
+
+    .print_box {
+        width: 980px;
+        margin-right: auto;
+        margin-left: auto;
+        border: 2px dotted #000;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    ul, li {
+        list-style: none;
+    }
+
+    #print_tip {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+
+    .product_contain {
+        color: #000 !important;
+        padding-bottom: 5px;
+        margin-bottom: 5px;
+        width: 82%;
+    }
+
+    .product_details {
+        color: #000 !important;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .product_contain .product_details:last-child {
+        border: none !important;
+    }
+
+    .details_left {
+        color: #000 !important;
+        float: left;
+        width: 50%;
+        border-right: 1px solid #ccc;
+        padding: 2px 0 2px 0;
+        text-align: left;
+    }
+
+        .details_left table tr td, .details_right table tr td {
+            color: #000 !important;
+        }
+
+            .details_right table tr td span {
+                color: #000 !important;
+            }
+
+    .details_right {
+        color: #000 !important;
+        float: right;
+        width: 49%;
+        padding: 2px 0 2px 0;
+        text-align: right;
+        position: relative;
+    }
+
+        .details_right table {
+            position: absolute;
+            right: 0;
+        }
+
+    .account_detalis span {
+        color: #000 !important;
+    }
+
+    .account_detalis {
+    width: 450px;
+   
+     background-color:white !important;
+        color: #000 !important;
+        width: 95%;
+        position: relative;
+        padding: 0 0 10px 0px;
+        margin-bottom: 10px;
+    }
+
+        .account_detalis span:first-child {
+            position: absolute;
+            left: 0;
+        }
+
+        .account_detalis span:last-child {
+            position: absolute;
+            right: 0;
+        }
+
+    .clearfix:after {
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+
+    .clearfix {
+        *+height:3%;
+    }
+.mainprint{
+	width: 450px;
+	 margin:30px auto;
+	 background-color:white !important; 
+}
+  body, td, th {
+        font-family: Arial, "宋体";
+        font-size: 11px;
+        color: #000;
+    }
+    
+
+    .print_box {
+        width: 980px;
+        margin-right: auto;
+        margin-left: auto;
+        border: 2px dotted #000;
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    .print_logo{
+    	font-size: 25px;
+    	 font-family: '微软雅黑';
+    }
+    .articleNumber{
+    	font-weight: normal;
+    	 font-family: '微软雅黑';
+    	}
+    .print_size{
+    	font-family: '宋体';
+    }
+    .print_button{
+    	font-size:24px;
+    }
+    		
+strong{
+	color: #000;
+}
+.print_detail{
+	 text-align: center;
+	 position: relative;
+	  width: 90%;
+	   font-size: 22px;
+	   border-top:1px solid #000000;
+	   border-bottom: 1px solid rgba(0,0,0,.7);
+	   margin:10px 0 10px 0;
+}
+.customerName ,.customerId,Return_Fanchang{
+display: inherit;
+padding:5px;
+color:#000;
+}
+.print_member{
+border-bottom: 1px solid #000000;
+letter-spacing:5px;
+display: inline-block;
+padding:5px;color:#000;
+
+}
+.Print_Name,.Print_Name label{
+color:#000;
+}
+.print_list_detail{
+	width: 85%;
+	border-top:1px solid #000;
+	border-bottom: 1px solid #ccc;
+	padding:10px;
+}
+.print_remind_me{
+	 width: 85%;
+	 color:#000;
+}
+
+.print_tarcode{
+	width: 85%;
+}
+.amount_total{
+	font-weight: bold;
+	font-size: 14px;
+}
+.parting_line{
+	 font-size: 18px;
+	 letter-spacing: 2px;
+	 margin:-10px 0 10px 0;
+	 color:#000;
+}
+.important_information{
+	width: 85%;
+	padding:10px
+}

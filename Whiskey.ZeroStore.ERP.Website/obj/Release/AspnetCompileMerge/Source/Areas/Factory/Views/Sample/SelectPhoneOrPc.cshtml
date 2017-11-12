@@ -1,0 +1,94 @@
+﻿<style>
+    .cls_SelectPhoneOrPc .modal-dialog {
+        width: 40% !important;
+        max-width: 50%;
+    }
+
+    #div_select_val .selectitem {
+        width: 100px;
+        height: 100px;
+        margin:30px 16%;
+        -webkit-transition: all 0.5s ease-out;
+    }
+        #div_select_val .selectitem:hover {
+            cursor: pointer;
+            -webkit-transform:rotate(360deg) scale(1.2);
+            transform:rotate(360deg) scale(1.2);
+        }
+</style>
+<div id="div_select_val">
+    <div class="selectitem" fashion-val="0" data-dismiss="modal" aria-hidden="true" style="float:left;">
+        <img src="~/Content/Images/img/pc.png" />
+    </div>
+    <div class="selectitem" fashion-val="1" data-dismiss="modal" aria-hidden="true" style="float:right;">
+        <img src="~/Content/Images/img/iphone.png" />
+    </div>
+    <div class="clearfix" style="clear:both"></div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#div_select_val").delegate(".selectitem", "click.selval", function () {
+            var selval = $(this).attr("fashion-val");
+            showProductDetails(this, selval);
+        });
+
+        function showProductDetails(sender,phoneOrpc) {
+            if (phoneOrpc != null && phoneOrpc.length > 0) {
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "宝贝详情" + (phoneOrpc == "0" ? "（PC）" : "（手机）"),
+                    actionUrl: "@Url.Action("ProductDetailOnly")",
+                    diacl: "diaclg_productDetails",
+                    getParams: { Id: "@ViewBag.PONId", phoneOrpc: phoneOrpc },
+                    lockButton: $(sender),
+                    successEvent: function () {
+                        var $details = $(".diaclg_productDetails");
+                        var ponid = $details.find("#Id").val();
+                        var TemplateId = $details.find("#TemplateId").val();
+                        var TemplateContent = Html2String($details.find("#TemplateContent_Show").html());
+                        var temp_phoneOrpc = $details.find("#temp_phoneOrpc").val();
+                        var res = {
+                            Id: ponid,
+                            phoneOrpc: phoneOrpc
+                        };
+                        if (temp_phoneOrpc == "0") {
+                            res.TemplateId = TemplateId;
+                            res.TemplateContent = TemplateContent;
+
+                        } else {
+                            res.TemplatePhoneId = TemplateId;
+                            res.TemplatePhoneContent = TemplateContent;
+                        }
+
+                        $.whiskey.web.ajaxRequest({
+                            method: "POST",
+                            actionUrl: "@Url.Action("ProductDetailOnly")",
+                            params: res,
+                            complete: function (da) {
+                                if (da.ResultType == 3) {
+                                    $.whiskey.web.alert({
+                                        type: "success",
+                                        content: da.Message,
+                                        callback: function () {
+                                            $.whiskey.datatable.reset(true);
+                                        }
+                                    });
+                                } else {
+                                    $.whiskey.web.alert({
+                                        type: "info",
+                                        content: da.Message,
+                                        callback: function () {
+                                            $.whiskey.datatable.reset(true);
+                                        }
+                                    });
+                                }
+                                return true;
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+</script>

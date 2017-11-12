@@ -1,0 +1,1462 @@
+﻿@using Whiskey.ZeroStore.ERP.Models.Entities
+@model ProductOriginNumber
+
+<link rel="stylesheet" href="/content/styles/jquery/jquery.zTreeStyle.css" />
+<link rel="stylesheet" href="/content/editor/themes/default/default.css" />
+<!--<link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />-->
+<style>
+    .li_empt {
+        cursor: default !important;
+        background-color: transparent !important;
+    }
+
+    .wl {
+        width: 100px;
+        min-width: 111px !important;
+    }
+
+    .btnbc {
+        background-color: white !important;
+        background-image: url("") !important;
+    }
+
+        .btnbc:hover {
+            background-color: white !important;
+            background-image: url("") !important;
+        }
+
+    .dropdown ul li {
+        margin-top: 1px;
+        cursor: pointer;
+    }
+
+    #buysaid li {
+        list-style-type: none;
+    }
+
+    #collocPirc li {
+        list-style-type: none;
+        float: left;
+        width: 30%;
+    }
+
+    #collocPirc :after {
+        clear: both;
+        content: '';
+        visibility: hidden;
+        display: block;
+    }
+
+    #collocPirc li img {
+        margin-left: 15px;
+        margin-top: 10px;
+        width: 120px;
+    }
+
+    .child li {
+        float: left;
+        margin-left: 20px;
+    }
+
+    .child:after {
+        clear: both;
+        content: "";
+        visibility: hidden;
+        display: block;
+    }
+
+    .fa-circle-sy {
+        font-size: 50px;
+        color: #9ed441;
+        position: relative;
+    }
+
+    #maintainUl .pare li {
+        list-style-type: none;
+    }
+
+    #maintainUl .child li {
+        list-style-type: none;
+        /*float: left;*/
+    }
+    .img-remove {
+        position: absolute;
+        top: 0;
+        left: 12px;
+        width: 90px;
+        height: 90px;
+        display: block;
+        text-align: center;
+        color: #666;
+        border-bottom: 1px solid transparent;
+        font-weight: 600;
+        font-size: 10px;
+        text-transform: uppercase;
+        -webkit-transition: all 0.1s;
+        transition: all 0.1s;
+        border-radius: 3px;
+    }
+        .img-remove:hover {
+            content:"删除";
+        }
+        #base>.form-group>label:first-child{margin-left:-4.5%;}
+        #hangtag>.form-group>label:first-child{margin-left:-4.5%;}
+    .fa-life-ring {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            margin-left: -16px;
+    }
+</style>
+<div id="error_info_sh" style="text-align:center;font-size:15px;margin-bottom:10px">
+    <span style="color: #5ebd5e"></span>
+</div>
+<ul id="product" class="nav nav-tabs">
+
+    <li class="active">
+        <a href="#base" data-toggle="tab">商品属性</a>
+    </li>
+    <li class="">
+        <a href="#attach" data-toggle="tab">商城属性</a>
+    </li>
+    <li class="">
+        <a href="#hangtag" data-toggle="tab">吊牌属性</a>
+    </li>
+    <li class="">
+        <a href="#imagesTab" data-toggle="tab">主图和搭配图</a>
+    </li>
+    <li class="">
+        <a href="#dresser" data-toggle="tab">搭配属性</a>
+    </li>
+    <li class="">
+        <a href="#prodDescri" data-toggle="tab">商品描述</a>
+    </li>
+    <li class="">
+        <a href="#othdresser" data-toggle="tab">相关搭配</a>
+    </li>
+    <li class="">
+        <a href="#buysaid" data-toggle="tab">买手说</a>
+    </li>
+    <li class="">
+        <a href="#other" data-toggle="tab">其他</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade active in " id="base">
+        <div class="form-group">
+            <label id="orig_id" class="control-label col-md-2">原始款号:</label>
+            <div class="col-md-2">
+                @Html.TextBox("orignNum", (string)ViewBag.orignNum, new { @class = "form-control", @readonly = true, style = "background-color:#dddddd" })
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.CrowdId):</label>
+            <div class="col-md-2">
+                @Html.DropDownListFor(m => m.CrowdId, (List<SelectListItem>)ViewBag.Crowds, new { @class = "form-control selectpicker" })
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.BrandId):</label>
+            <div class="col-md-2">
+                @Html.DropDownListFor(m => m.BrandId, (List<SelectListItem>)ViewBag.Brand, new { @class = "form-control selectpicker" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.CategoryId):</label>
+            <div class="col-md-2">
+                @Html.DropDownListFor(m => m.CategoryId, (List<SelectListItem>)ViewBag.Category, new { @class = "form-control selectpicker" })
+                <input type="hidden" id="cateStat" />
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.SeasonId):</label>
+            <div class="col-md-2">
+                @Html.DropDownListFor(m => m.SeasonId, (List<SelectListItem>)ViewBag.Season, new { @class = "form-control selectpicker" })
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.TagPrice):</label>
+            <div class="col-md-2">
+                <div class="input-group" style="width:100% !important;">
+                    <span class="input-group-addon bg-primary no-border" style="height:32px;">￥</span>
+                    @Html.TextBoxFor(m => m.TagPrice, new { @class = "form-control", @onkeyup = "SetPrice();" })
+                    <span class="input-group-addon bg-primary no-border">元</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.WholesalePrice):</label>
+            <div class="col-md-2">
+                <div class="input-group" style="width:100% !important;">
+                    <span class="input-group-addon bg-primary no-border" style="height:32px;">￥</span>
+                    @Html.TextBoxFor(m => m.WholesalePrice, new { @class = "form-control", @onkeyup = "CheckDigit(this);" })
+                    <span class="input-group-addon bg-primary no-border">元</span>
+                </div>
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.PurchasePrice):</label>
+            <div class="col-md-2">
+                <div class="input-group" style="width:100% !important;">
+                    <span class="input-group-addon bg-primary no-border" style="height:32px;">￥</span>
+                    @Html.TextBoxFor(m => m.PurchasePrice, new { @class = "form-control", @onkeyup = "CheckDigit(this);" })
+                    <span class="input-group-addon bg-primary no-border">元</span>
+                </div>
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.Notes):</label>
+            <div class="col-md-2">
+                @Html.TextBoxFor(m => m.Notes, new { @class = "form-control" })
+            </div>
+        </div>
+        <div>
+            <button style="display:inline" class="btn btn-success" id="but_addDa1">新增数据</button>
+            <a class="btn btn-success fa fa-minus" style="display: none;" id="col_exp_bt">缩起列表</a>
+        </div>
+        <div class="form-group">
+            <table id="da_li" style="text-align:center" class="table">
+                <thead>
+                    <tr><th style="width: 10%; text-align: center">编号</th><th style="width: 25%; text-align: center">商品货号</th><th style="width: 20%; text-align: center">商品颜色</th><th style="width: 25%; text-align: center">商品尺码</th><th>操作</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div style="text-align:center"><span style="color:gray" id="tipmes"></span></div>
+        </div>
+        <div id="rowdat" style="display:none">
+            <input type="hidden" class="hid_da" value="@ViewBag.Color" />
+            <table>
+                <tr>
+                    <td>
+                        <span id="tr_cou"></span>
+                    </td>
+                    <td style="width:35%">
+                        <div class="">
+                            @Html.TextBox("ProductNumber", "", new { @class = "form-control", @readonly = "true", style = "background-color:#dddddd;font-family: '黑体';font-size: 17px;" })
+                        </div>
+                    </td>
+                    <td>
+                        <div class="">
+                            <div class="dropdown">
+                                <ul class="dropdown-menu wl dropul" role="menu" style="border:1px solid blue" aria-labelledby="dropdownMenu1"></ul>
+                                <button type="button" style='border:1px solid #c2c2c2;' class="wl btnbc btn dropdown-toggle" id="dropdownMenu1"
+                                        data-toggle="dropdown">
+                                    <span class="showcol">下拉选择</span>
+                                    <span class="caret" style="float:right;margin-top:5px"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="width:25%;padding-left:3px">
+                        <div class="">
+                            @Html.DropDownList("SizeId", (List<SelectListItem>)ViewBag.Size, new { @class = "form-control", @onchange = "GetProduNumber(this)" })
+                        </div>
+                    </td>
+                    <td style="width:10%;position:relative;">
+                        <a acc="del" href="javascript:void(0);" style="color: #5ebd5e" class="fa fa-life-ring"></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane fade clearfix" id="attach">
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductName)</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.ProductName, new { @class = "form-control", @onclick = "GetProductName();" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.Summary)</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Summary, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.TemplateId)</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.TemplateId, (List<SelectListItem>)ViewBag.Templates, new { @class = "form-control selectpicker " })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.TemplatePhoneId)</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.TemplatePhoneId, (List<SelectListItem>)ViewBag.TemplatesPhone, new { @class = "form-control selectpicker " })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.JumpLink)</label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.JumpLink, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div id="hangtag" class="tab-pane fade clearfix">
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Fabric):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.Fabric, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Material):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.Material, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.batching):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.batching, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Stuffing):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.Stuffing, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Category):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.Category, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.ProductionPlace):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.ProductionPlace, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Level):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.Level, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Standard):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.Standard, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Inspector):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.Inspector, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.PostCode):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.PostCode, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.Manufacturer):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.Manufacturer, new { @class = "form-control" })
+            </div>
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.CateName):</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ProductOriginNumberTag.CateName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">@Html.DisplayNameFor(m => m.ProductOriginNumberTag.WashingSymbols):</label>
+            <div class="col-md-4">
+                <div style="width:90px;height:90px;">
+                    <img class="img-thumbnail uploadImageWashingSymbols" src="" id="imgWashingSymbols" style="width:90px;height:90px;cursor:pointer;" />
+                    @Html.HiddenFor(m => m.ProductOriginNumberTag.WashingSymbols)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="imagesTab" class="tab-pane fade clearfix">
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.ProductCollocationImg)
+                </label>
+                <div class="col-md-8">
+                    <div style="width:90px;height:90px;">
+                        <img class="img-thumbnail uploadImage" src="@Model.ProductCollocationImg" id="imgProductCollocation" style="width:90px;height:90px;cursor:pointer;" onclick="$('#choiceImg').val('1')" />
+                        <input type="hidden" name="ProductCollocationImg" value="@Model.ProductCollocationImg" id="ProductCollocationImg">
+                    </div>
+                </div>
+            </div>
+            @Html.Hidden("choiceImg")
+            <div class="form-group">
+                <label class="control-label col-md-2">
+                    @Html.DisplayNameFor(m => m.OriginalPath)
+                </label>
+                <div class="col-md-8">
+                    <div style="width:90px;height:90px;">
+                        <img class="img-thumbnail uploadImage" src="@Model.OriginalPath" id="imgOriginalPath" style="width:90px;height:90px;cursor:pointer;" onclick="$('#choiceImg').val('0')" />
+                        @Html.HiddenFor(m => m.OriginalPath, Model.OriginalPath)
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">细节组图</label>
+                <div class="col-md-10">
+                    <div class="dropzone-box detailImgs">
+                        <div class="dz-default dz-message">
+                            <i class="fa fa-cloud-upload"></i>
+                            点击这里上传图片<br><span class="dz-text-small">或直接拖放选择</span>
+                        </div>
+                        <div class="fallback">
+                            <input name="file" type="file" accept="image/jpeg,image/gif,image/png,image/jpg" multiple="" />
+                        </div>
+                    </div>
+                </div>
+                @Html.Hidden("Images")
+            </div>
+        </div>
+
+    <div class="tab-pane fade clearfix" id="dresser">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                图片属性 :
+            </label>
+            <div class="col-md-10">
+                <div class="attribute-wrapper left">
+                    <ul class="Attributes ztree"></ul>
+                </div>
+            </div>
+            @Html.Hidden("Attributes", (string.Join(",", Model.ProductAttributes.Select(s => s.Id))))
+        </div>
+    </div>
+
+    <div class="tab-pane fade clearfix" id="prodDescri">
+        @Html.TextAreaFor(m => m.Description, new { @class = "article-editor", @style = "visibility:hidden;" })
+    </div>
+
+    <div class="tab-pane fade clearfix" id="othdresser">
+        <div class="row">
+            <div class="panel panel-search">
+                <div class="panel-heading clearfix">
+                    <div class="col-md-4 panel-title">
+                        <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal form-search text-left">
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-4">会员昵称</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("membName", "", new { @class = "form-control", @placeholder = "会员昵称/会员账号" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-4">搭配名称</label>
+                                <div class="col-md-8 ">
+                                    @Html.TextBox("collocationName", "", new { @class = "form-control", @placeholder = "搭配名称" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="control-label col-md-4">颜色</label>
+                            <div class="col-md-8">
+
+                                <div class="dropdown">
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2"></ul>
+                                    <button type="button" daval="-1" style='border:1px solid #c2c2c2;width:100%;background-color:white' class="btn dropdown-toggle btnbc" id="dropdownMenu2"
+                                            data-toggle="dropdown">
+                                        <span class="bttit">——下拉选择——</span>
+                                        <span class="caret right"></span>
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-4">风格</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("collocationStyles", (List<SelectListItem>)ViewBag.Styles, new { @class = "form-control selectpicker " })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-4">场合</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("collocationSituation", (List<SelectListItem>)ViewBag.Situation, new { @class = "form-control selectpicker " })
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer text-right clearfix ">
+                    <div class="pull-left panel-search">
+                        <button id="CollocationSearch" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                        <button id="CollocationClear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                    </div>
+                </div>
+            </div>
+            <div id="collocPirc" style="border:1px solid #c2c2c2">
+                <ul id="collocPirc_ul"></ul>
+</div>
+        </div>
+    </div>
+    <div class="tab-pane fade clearfix" id="buysaid">
+        <input id="isBignumbEdit" type="hidden" value="@ViewBag.isBignumbEdit" />
+        <input type="hidden" id="BuysaidAttrIds" name="BuysaidAttrIds" value="@Html.Raw(string.Join(",",Model.BuysaidAttributes.Select(s=>s.Id)))" />
+        <div class="buysaidsel">
+            <ul>
+                <li><label><input type="checkbox" value="1" /><span>单品来历：表达单品象征意味或含义，单品故事描述或点开链接相关专题</span></label></li>
+                <li><label><input type="checkbox" value="2" /><span>色彩分析：色彩所传达的气质</span></label></li>
+                <li><label><input type="checkbox" value="3" /><span>面料分析：面料的质感、考究、贵重、舒适</span></label></li>
+                <li><label><input type="checkbox" value="4" /><span>款式分析：设计细节分析</span></label></li>
+                <li><label><input type="checkbox" value="5" /><span>做工：工艺的复杂性、精妙</span></label></li>
+                <li><label><input type="checkbox" value="6" /><span>试穿体验：版型、舒适度</span></label></li>
+                <li><label><input type="checkbox" value="7" /><span>扬长避短：塑造体型、掩饰特型、凸显优势</span></label></li>
+                <li><label><input type="checkbox" value="8" /><span>实用性：方便实用、易搭配、造型丰富、不挑体型</span></label></li>
+            </ul>
+        </div>
+        <div>@Html.TextAreaFor(m => m.BuysaidText, new { @class = "article-editorbuysaid", })</div>
+    </div>
+    <div class="tab-pane fade clearfix" id="other">
+        <div class="form-group">
+            <div id="maintainUl"></div>
+            @Html.Hidden("MaintainIds", (string.Join(",", Model.MaintainExtends.Select(s => s.Id))))
+        </div>
+    </div>
+</div>
+<span id="textare_err" style="color: #5ebd5e"></span>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" style="overflow: hidden;">
+    <div class="modal-dialog img_show_view">
+        <div style="position:absolute; top:50%;right:20%">
+            <img style="max-width: 160px" />
+        </div>
+
+    </div>
+</div>
+
+<!--<script src="/Content/Scripts/Bootstrap/bootstrap-multiselect.js"></script>-->
+<script type="text/javascript" src="/content/editor/kindeditor-min.js"></script>
+<script type="text/javascript" src="/content/editor/lang/zh_CN.js"></script>
+
+<script src="/content/scripts/jquery/jquery.ztree.core-3.5.min.js"></script>
+<script src="/content/scripts/jquery/jquery.ztree.excheck-3.5.js"></script>
+
+
+<script type="text/javascript">
+
+    var dropper_create;
+    var tree;
+    var editor;
+    $(document).ready(function () {
+        $(".tab-content #base #BrandId option").eq(1).attr("selected", "selected");
+        $(".tab-content #base #CategoryId  option").eq(1).attr("selected", "selected");
+
+        editor = KindEditor.create(".article-editor", {
+            width: "100%",
+            height: "400px",
+            resizeType: 1,
+            uploadJson: "/content/editor/upload_json.ashx",
+            fileManagerJson: "/content/editor/file_manager_json.ashx",
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            contentEditable: true,
+            filterMode: false,
+            items: [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink'
+            ],
+            afterCreate: function (id) {
+                this.focus(id);
+            },
+            afterChange: function (id) {
+                this.sync(id);
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+        editor1 = KindEditor.create(".article-editorbuysaid", {
+            width: "100%",
+            height: "400px",
+            resizeType: 1,
+            uploadJson: "/content/editor/upload_json.ashx",
+            fileManagerJson: "/content/editor/file_manager_json.ashx",
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            contentEditable: true,
+            filterMode: false,
+            items: [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink'
+            ],
+            afterCreate: function (id) {
+                this.focus(id);
+            },
+            afterChange: function (id) {
+                this.sync(id);
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+        $("#cateStat").val($("#base #CategoryId option:selected").val());
+        $(".checked-all").click(function () {
+            var checkedStatus = this.checked;
+            var checkbox = $(this).parents('.tab-pane').find('input:checkbox');
+            checkbox.each(function () {
+                this.checked = checkedStatus;
+            });
+        });
+
+        dropper_create = new Dropzone(".detailImgs", {
+            url: "/Upload/Multiple",
+            init: function () {
+                this.options.imageCounter = 0;
+                this.options.dictCounter = 0;
+                this.options.dictFiles = new $.whiskey.hashtable();
+                this.on("successmultiple", function (file, data) {
+                    for (i = 0; i < data.files.length; i++) {
+                        dropper_create.options.dictFiles.put("img-" + (dropper_create.options.dictCounter++), data.files[i]);
+                    }
+                    SetImages();
+                });
+                this.on("errormultiple", function (file, data) {
+                });
+                this.on("sendingmultiple", function(file, xhr, formData) {
+                    formData.append("ExtType", "Image");
+                    formData.append("SaveDir", "Products");
+                });
+            },
+            removedfile:function (file) {
+                var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                if (removeIndex >= 0) {
+                    dropper_create.options.dictFiles.remove("img-" + removeIndex);
+                }
+                var _ref;
+                if ((_ref = file.previewElement) != null) {
+                    _ref.parentNode.removeChild(file.previewElement);
+                }
+                SetImages();
+                return this._updateMaxFilesReachedClass();
+            }
+        });
+
+        //初始化上传水洗符号图片
+        $(".uploadImageWashingSymbols").dropzone({
+            url: "/Upload/Multiple",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            paramName:"file",
+            maxFilesize: 1,
+            maxFiles:1,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    var dropzone = this;
+                    var arrFiles = data.files;
+                    var uploadPath = arrFiles[0];
+
+                    var delimg = $("<div class='img-remove'></div>").click(function () {
+                        dropzone.emit("removedfile", file, $(this));
+                    });
+                    $(".bootbox #ProductOriginNumberTag_WashingSymbols").attr("value", uploadPath);
+                    $(".bootbox #imgWashingSymbols").attr("src", uploadPath).after(delimg);
+                });
+                this.on("complete", function (data) {
+                    if (data.status == "error") {
+                        var errorInfo = $(data.previewElement).find("span[data-dz-errormessage]").text();
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: errorInfo
+                        });
+                    }
+                });
+                this.on("sendingmultiple", function (file, xhr, formData) {
+                    formData.append("SaveDir", "ProductsSymbols");
+                });
+            },
+            removedfile: function (file,obj) {
+                var _self = this;
+                if (confirm("确认要删除吗？")) {
+                    var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                    if (removeIndex >= 0) {
+                        _self.options.dictFiles.remove("img-" + removeIndex);
+                    }
+                    var _ref;
+                    if ((_ref = file.previewElement) != null) {
+                        _ref.parentNode.removeChild(file.previewElement);
+                    }
+
+                    $(".bootbox #ProductOriginNumberTag_WashingSymbols").attr("value", "");
+                    $(".bootbox #imgWashingSymbols").attr("src", "");
+                    obj.remove();
+                }
+                _self.files = [];
+                return this._updateMaxFilesReachedClass();
+            }
+        });
+
+        //初始化上传主图和搭配图
+        $(".uploadImage").dropzone({
+            url: "/Upload/Multiple",
+            acceptedFiles: "image/jpeg,image/gif,image/png,image/jpg",
+            paramName:"file",
+            maxFilesize: 1.5,
+            maxFiles:1,
+            autoProcessQueue: true, //开启自动上传（默认为true）
+            //addRemoveLinks:false,
+            init: function () {
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    var dropzone = this;
+                    var arrFiles = data.files;
+                    var uploadPath=arrFiles[0];
+                    var  choice = $("#choiceImg").val();
+
+                    var delimg = $("<div class='img-remove'></div>").click(function(){
+                        dropzone.emit("removedfile", file,choice,$(this));
+                    });
+                    //上传主图时
+                    if (choice==0) {
+                        $(".bootbox #OriginalPath").attr("value",uploadPath);
+                        $(".bootbox #imgOriginalPath").attr("src",uploadPath).after(delimg);
+                    }else if (choice==1) { //上传搭配图时
+                        $(".bootbox #ProductCollocationImg").attr("value",uploadPath);
+                        $(".bootbox #imgProductCollocation").attr("src",uploadPath).after(delimg);
+                    }else { //未知操作时
+
+                    }
+                });
+                this.on("complete", function (data) {
+                    if (data.status == "error") {
+                        var errorInfo = $(data.previewElement).find("span[data-dz-errormessage]").text();
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: errorInfo
+                        });
+                    }
+                });
+                this.on("sendingmultiple", function (file, xhr, formData) {
+                    formData.append("SaveDir", "Products");
+                });
+            },
+            removedfile:function (file,choice,obj) {
+                _this = this;
+                if (confirm("确认要删除吗？")) {
+                    var removeIndex = file.previewElement.querySelector("[data-dz-thumbnail]").title;
+                    if (removeIndex >= 0) {
+                        _this.options.dictFiles.remove("img-" + removeIndex);
+                    }
+                    var _ref;
+                    if ((_ref = file.previewElement) != null) {
+                        _ref.parentNode.removeChild(file.previewElement);
+                    }
+
+                    if (choice==0) {
+                        $(".bootbox #OriginalPath").attr("value","");
+                        $(".bootbox #imgOriginalPath").attr("src","");
+                    }else if (choice==1) {
+                        $(".bootbox #ProductCollocationImg").attr("value","");
+                        $(".bootbox #imgProductCollocation").attr("src","");
+                    }
+                    obj.remove();
+                }
+                _this.files=[];
+                return this._updateMaxFilesReachedClass();
+            }
+        });
+
+        var setting = {
+            check: {
+                enable: true,
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+                    idKey: "id",
+                    pIdKey: "pid",
+                    rootPId: null
+                }
+            },
+            async: {
+                
+                enable: true,
+                url: "@Url.Action("TreeList", "ProductAttribute")",
+                autoParam: ["id", "name"]
+            },
+            callback: {
+                onCheck: onTreeChecked,
+                onAsyncSuccess: function (event, treeId, treeNode, msg) {
+                    //tree.expandAll(true);
+                    var categories = "@Html.Raw(string.Join(",", Model.ProductAttributes.Select(s => s.Id)))";
+                    if (categories != undefined && categories.length > 0) {
+                        var ids = categories.split(",");
+                        for (var i = 0; i < ids.length; i++) {
+                            tree.checkNode(tree.getNodeByParam("id", ids[i], null), true, false);
+                        }
+                    }
+                }
+            }
+        };
+
+        tree = $.fn.zTree.init($(".Attributes"), setting);
+        tree.setting.check.chkboxType = { "Y": "p", "N": "p" };
+        tree.setting.view.fontCss["font-size"] = "14px";
+        tree.setting.view.fontCss["line-height"] = "20px";
+    });
+    //尺码全选或者取消
+    //$("#allSize").click(function (e) {
+    //    var tx = $(this).text();
+    //    if (tx == "全选") {
+    //        $("#base #SizeId").parent("div").find("[class='multiselect-container dropdown-menu']").find(":checkbox").prop("checked", true);
+    //    }
+    //    else {
+    //        $("#base #SizeId").parent("div").find("[class='multiselect-container dropdown-menu']").find(":checkbox").prop("checked", false);
+    //    }
+
+    //});
+
+    //判断商品货号是否重复
+    function GetProduNumber(objtr) {
+        GetProductNumber(objtr);
+        var lis = $("#da_li tbody tr");
+        if (lis == null || lis.length == 0) return;
+        var last;
+        if (objtr != undefined && objtr != null) {
+            last = $(objtr).parents("tr");
+        } else {
+            last = $("#da_li tbody tr:last");
+        }
+        if (lis.length > 1) {
+            var colorIdLast = last.find(".showcol").attr("clda");//颜色
+            var sizeIdLast = last.find("[name='SizeId']").find("option:selected").val();//尺码
+            for (var i = 0; i < lis.length; i++) {
+                if ($(lis[i]).index() == last.index()) {
+                    continue;
+                }
+                var sizeId = $(lis[i]).children().eq(3).find("option:selected").val();
+                var colorId = $(lis[i]).find(".showcol").attr("clda");
+                if (sizeId == "" || colorId == "") return;
+                var tx = last.children().eq(1).find(":text");
+                if (sizeId == sizeIdLast && colorId == colorIdLast) {
+                    $(tx).attr("title", "该商品编号重复").parents("div:first").addClass("has-error");
+                    $(".modal-content [data-bb-handler='success'] ").attr("disabled", "disabled");
+                    return;
+                } else {
+                    $(tx).attr("title", "").parents("div:first").removeClass("has-error");
+                    $(".modal-content [data-bb-handler='success'] ").removeAttr("disabled");
+                }
+            }
+        }
+    }
+
+    //获取商品货号
+    function GetProductNumber(objtr) {
+        var lis;
+        if (objtr != undefined && objtr != null) {
+            lis = $(objtr).parents("tr");
+        } else {
+            lis = $("#da_li tbody tr");
+        }
+        if (lis != null && lis.length > 0) {
+            $.each(lis, function (index, item) {
+                var $item = $(item);
+                var colorId = $item.find(".showcol").attr("clda");//颜色
+                var sizeId = $item.find("[name='SizeId']").find("option:selected").val();//尺码
+                $.ajax({
+                    type: "post",
+                    url: "GetProductNumberNotBigProNum",
+                    data: { colorId: colorId, sizeId: sizeId },
+                    success: function (data) {
+                        if (data.ResultType == 3) {
+                            $item.find(":input[name='ProductNumber']").val(data.Data);
+                        } else {
+                            $.whiskey.web.alert({
+                                type: "info",
+                                content: data.Message,
+                                callback: function () {
+                                    $(".modal-content [data-bb-handler='success'] ").attr("disabled", "disabled");
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+
+    function initColor() {
+        var t = JSON.parse($(".hid_da").val());
+        var opt = "";
+        for (var i = 0; i < t.length; i++) {
+            var arr = t[i].Text.split('|');
+            if (arr.length == 2) {
+                if (i == 0) {
+                    opt += "<li role='presentation' title='" + arr[1] + "' value='" + t[i].Value + "' style='margin-top:-5px;background: url(" + arr[0] + ") 0 0 repeat'>&nbsp;</li>";
+                }
+                else if (i == t.length - 1)
+                    opt += "<li role='presentation' title='" + arr[1] + "' value='" + t[i].Value + "' style='margin-bottom:-5px;background: url(" + arr[0] + ") 0 0 repeat'>&nbsp;</li>";
+                else
+                    opt += "<li role='presentation' title='" + arr[1] + "' value='" + t[i].Value + "' style='background: url(" + arr[0] + ") 0 0 repeat'>&nbsp;</li>";
+            }
+        }
+        if (opt.length > 0) {
+            var tx = t[0].Text.split('|')[1];
+            $(".showcol").attr("clda", t[0].Value).text(tx);
+            $(".dropdown ul[class~='wl']").html(opt);
+        }
+    }
+
+    function initColor1() {
+        var t = JSON.parse($(".hid_da").val());
+
+        var opt = "<li role='presentation' title='——下拉选择——' value='-1' style='text-align:center;margin-bottom:5px'><span>——下拉选择——</span></li>";
+        for (var i = 0; i < t.length; i++) {
+            var arr = t[i].Text.split('|');
+            if (arr.length == 2) {
+                if (i == 0) {
+                    opt += "<li role='presentation' title='" + arr[1] + "' value='" + t[i].Value + "' style='margin-top:-5px;background: url(" + arr[0] + ") 0 0 repeat'>&nbsp;</li>";
+
+                }
+                else if (i == t.length - 1)
+                    opt += "<li role='presentation' title='" + arr[1] + "' value='" + t[i].Value + "' style='margin-bottom:-5px;background: url(" + arr[0] + ") 0 0 repeat'>&nbsp;</li>";
+                else
+                    opt += "<li role='presentation' title='" + arr[1] + "' value='" + t[i].Value + "' style='background: url(" + arr[0] + ") 0 0 repeat'>&nbsp;</li>";
+            }
+        }
+        if (opt.length > 0) {
+            var tx = t[0].Text.split('|')[1];
+            // $(".showcol").attr("clda", t[0].Value).text(tx);
+            $("ul[aria-labelledby='dropdownMenu2']").html(opt);
+            $("ul[aria-labelledby='dropdownMenu2'] li").click(function () {
+                var t = $(this).attr("title");
+                var val = $(this).attr("value");
+                $("#dropdownMenu2 .bttit").html(t);
+                $("#dropdownMenu2").attr("daval", val);
+            });
+        }
+    }
+    function initPage() {
+        var isBignumbEdit = $("#isBignumbEdit").val();
+        if (isBignumbEdit == "true") {
+            $("a[href='\\#othdresser'],a[href='\\#buysaid'],a[href='\\#maintain']").remove();
+        }
+    }
+
+    function onTreeChecked(event, treeId, treeNode) {
+        var nodes = tree.getCheckedNodes(true);
+        var ids = "";
+        for (var n = 0; n < nodes.length; n++) {
+            ids.length == 0 ? ids = nodes[n].id : ids += "," + nodes[n].id;
+        }
+        $("#Attributes").val(ids);
+        SetPopover(treeNode.id);
+    }
+
+    function SetPopover(id) {
+        @*$.whiskey.web.ajaxRequest({
+                actionUrl: "@Url.Action("Tooltip", "ProductAttribute", new { area="Products" })",
+                params: { Id: id },
+                method: "POST",
+                lockButton: null,
+                complete: function (data) {
+                    if (typeof (data) == 'object') {
+                        if (data.ResultType == 3) {
+                            $(".attribute-wrapper").popover('destroy').popover({
+                                content: data.Data.Description,
+                                trigger: "manual",
+                                placement: "top"
+                            }).popover('show');
+                        }
+                    }
+                }
+            });*@
+    }
+
+    function SetMajorImage(wrapper) {
+        var imageIndex = $(wrapper).children().children("img").attr("title");
+        if (typeof (dropper_create.options.dictFiles) != "undefined" && imageIndex >= 0) {
+            $("#OriginalPath").animate({
+                opacity: "0.1",
+            }, 'slow', function () {
+                $("#OriginalPath").animate({
+                    opacity: "1.0",
+                });
+            });
+            $("#OriginalPath").val(dropper_create.options.dictFiles.get("img-" + imageIndex));
+        }
+    }
+
+    function SetDiscount(Id) {
+        if (typeof (Id) == "undefined" || Id.length == 0) {
+            $("#RetailDiscount").find("option[value='1.0']").attr("selected", true);
+            $("#WholesaleDiscount").find("option[value='1.0']").attr("selected", true);
+            SetPrice();
+        } else {
+            $.whiskey.web.ajaxRequest({
+                actionUrl: "@Url.Action("Discount")",
+                params: { Id: Id },
+                lockButton: $("#BrandId"),
+                complete: function (data) {
+                    if ((typeof data == 'object')) {
+                        if (typeof (data.RetailDiscount) != "undefined") {
+                            $("#RetailDiscount").find("option[value='" + data.RetailDiscount + "']").attr("selected", true);
+                        }
+                        if (typeof (data.WholesaleDiscount) != "undefined") {
+                            $("#WholesaleDiscount").find("option[value='" + data.WholesaleDiscount + "']").attr("selected", true);
+                        }
+                        SetPrice();
+                    }
+                }
+            });
+        }
+
+    }
+
+    function SetPrice() {
+        var tagPrice = $("#TagPrice");
+        tagPrice.val(tagPrice.val().replace(/[^\d*\.?]/gi, ""));
+        var pric = parseInt(tagPrice.val());
+        if (pric >= 0) {
+            validatePrice(tagPrice,pric);
+        }
+    }
+
+    //价格区间校验
+    function validatePrice($selector,price){
+        if (price > 1000000) {
+            $selector.parent("div").addClass("has-error").attr("title", "请输入0-1000000之间的价格");
+            $("button[data-bb-handler='success']").attr("disabled", "disabled");
+        } else {
+            $selector.parent("div").removeClass("has-error");
+            $("button[data-bb-handler='success']").removeAttr("disabled");
+        }
+    }
+
+    function CheckDigit(obj){
+        var $this = $(obj);
+        var price = $this.val().replace(/[^\d*\.?]/gi, "")
+        validatePrice($this,price);
+        $this.val(price);
+    }
+
+    function SetImages() {
+        var detailImages = "";
+        dropper_create.options.dictFiles.each(function (index,item) {
+            detailImages+=item+',';
+        });
+        $("#Images").val(detailImages);
+    }
+
+    function GetProductName() {
+        var categoryName = $("#base #CategoryId option:selected").text();
+        var colorName = $("#base #ColorId option:selected").text();
+        var brandName = $("#base #BrandId option:selected").text();
+        var sizeName = $("#base #SizeId option:selected").text();
+        var seasonName = $("#base #SeasonId option:selected").text();
+        var styleName = $("#base #StyleId option:selected").text();
+        var materialName = $("#base #MaterialId option:selected").text();
+        var occasionName = $("#base #OccasionId option:selected").text();
+        var productName = "";
+        if ($("#attach #ProductName").val().length == 0) {
+            if (brandName != "选择品牌") productName += brandName;
+            if (categoryName != "选择分类") productName += categoryName;
+            if (seasonName != "选择季节") productName += seasonName;
+            if (colorName != "选择颜色") productName += colorName;
+            if (styleName != "选择风格") productName += styleName;
+            if (materialName != "选择面料") productName += materialName;
+            if (occasionName != "选择场合") productName += occasionName;
+            // if (sizeName != "选择尺码") productName += sizeName;
+            $("#attach #ProductName").val(productName.replace(/[^\u4e00-\u9fa5\da-z]/gi, ""));
+        }
+    }
+
+</script>
+<script>
+
+    $(function () {
+        initColor();
+        initColor1();
+        initPage();
+        initMaintain();
+        $("#base #TagPrice").keydown(function () {
+            var reg = /^\d+\.?\d*$/;
+            var tx = $(this).val().trim();
+            if (tx.length > 0 && !reg.test(tx)) {
+                $(this).val(tx.substr(0, tx.length - 1));
+            }
+        }).keyup(function () {
+            var isloop = true;
+            while (isloop) {
+                var reg = /^\d+\.?\d*$/;
+                var tx = $(this).val().trim();
+                var res = reg.test(tx);
+                if (tx.length > 0 && !res) {
+                    $(this).val(tx.substr(0, tx.length - 1));
+                } else (res)
+                isloop = false;
+            }
+
+        }).blur(function () {
+            var reg = /^\d+\.$/;
+            var tx = $(this).val().trim();
+            if (tx.length > 0 && reg.test(tx)) {
+                $(this).val(tx + "00");
+            }
+        });
+
+        //颜色下拉菜单注册点击事件
+        $(document).undelegate(".dropul li", "click").delegate(".dropul li", "click", function () {
+            var shona = $(this).attr("title");
+            var shova = $(this).val();
+            var tb = $(this).parents("tr:first").find("button");
+            tb.find(".showcol").attr("clda", shova).text(shona);
+            GetProduNumber(tb);
+        });
+
+//      $('.multiselect').multiselect({
+//          enableFiltering: true,
+//          allSelectedText: "全选",
+//          nonSelectedText: "请选择",
+//          filterPlaceholder: "查询",
+//          nSelectedText: "个被选中",
+//      });
+        //当尺码的下拉列表加载时，初始化
+        $("#rowdat td option").each(function () {
+            var tx = $(this).val();
+            if (tx == "-1" || tx == "") {
+                $(this).attr("disabled", "disabled");
+            }
+        });
+        $("#BrandId option").each(function () {
+            var tx = $(this).val();
+            if (tx == "-1" || tx == "") {
+                $(this).attr("disabled", "disabled");
+            }
+        });
+
+        $("#CategoryId option").each(function () {
+            var tx = $(this).val();
+            if (tx == "-1" || tx == "") {
+                $(this).attr("disabled", "disabled");
+            }
+        });
+
+        //重新选择商品编号
+        $("#base #BrandId").change(function() {
+            GetProduNumber();
+        });
+
+        $("#base #CategoryId").change(function () {
+            updateSize();
+        });
+
+        //单击添加数据
+        $("#but_addDa1").click(function () {
+            var tr_cou = 0;
+            var reg = /\D*(\d+)\D*/g;
+            var res = reg.exec($("#tr_cou").html()); //显示当前第几款
+            if (res != null) {
+                tr_cou = parseInt(res[1]);
+            }
+
+            if (tr_cou > 2) {
+                $("#col_exp_bt").show();
+                $("#tipmes").html('点击“缩起列表”按钮将列表缩起……').show();
+            } else {
+                $("#col_exp_bt").hide();
+                $("#tipmes").hide();
+            }
+            tr_cou = tr_cou + 1;
+            $("#tr_cou").html("").html("第" + tr_cou + "款");
+            var htm = $("#rowdat table tbody").html();
+            htm = htm.replace("tr_cou", "").replace("ProductNumber", "ProductNumber" + "_" + tr_cou).replace("ColorId", "ColorId" + "_" + tr_cou).replace("SizeId", "SizeId" + "_" + tr_cou);
+            $("#da_li tbody").append(htm);
+            if ($("#da_li tbody tr").length > 1) {
+                $("#da_li tbody tr:last").find("input").attr("title", "该商品款号重复").parents("div:first").addClass("has-error");
+            }
+
+            GetProduNumber();
+            return false;
+        });
+        //展开列表或者缩起列表
+        $("#col_exp_bt").click(function () {
+            if ($(this).attr("class").match("fa-minus")) {
+                $(this).removeClass("fa-minus").addClass("fa-plus").text("展开列表");
+                $("#da_li tbody tr").hide(500);
+                $("#tipmes").html('点击“展开列表”按钮查看详细数据……').show();
+            } else {
+                $(this).removeClass("fa-plus").addClass("fa-minus").text("缩起列表");
+                $("#da_li tbody tr").show(500);
+                $("#tipmes").html('点击“缩起列表”按钮将列表缩起……').show();
+            }
+        });
+        $("#da_li tbody").delegate("a[acc='del']", "click", function () {
+            var alltrs = $("#da_li tbody tr");
+            var partr = $(this).parents("tr");
+            var colorId = partr.find(".showcol").attr("clda");//颜色
+            var sizeId = partr.find("[name='SizeId']").find("option:selected").val();//尺码
+            if (alltrs.length > 2) {
+                $("#col_exp_bt").show();
+            } else {
+                $("#col_exp_bt").hide();
+                $("#tipmes").hide();
+            }
+            var sameCurTrs = alltrs.filter(function (index, item) {
+                if (index != partr.index()) {
+                    var $item = $(item);
+                    var hascolor = $item.find(".showcol").attr("clda") == colorId;
+                    var hassize = $item.find("[name='SizeId']").find("option:selected").val() == sizeId;
+                    return hascolor && hassize;
+                }
+                return false;
+            });
+
+            partr.remove();
+
+            if (sameCurTrs.length == 1) {
+                sameCurTrs.find(":input[name='ProductNumber']").attr("title", "").parents("div:first").removeClass("has-error");
+                $(".modal-content [data-bb-handler='success'] ").removeAttr("disabled");
+            }
+        });
+        $(document).delegate(".btnbc", "click", function () {
+            $(this).css({
+                "bordeer": "1px solid  #5ebd5e",
+                " background-color": "white !important",
+                "background-image": "url('') !important"
+            });
+        });
+
+        $("#CollocationSearch").click(function () {
+            var membName = $("#membName").val().trim();
+            var collocationName = $("#collocationName").val().trim();
+            var collocationColorId = $("#dropdownMenu2").attr("daval");
+            var collocationStyles = $("#collocationStyles option:selected").val();
+            var collocationSituation = $("#collocationSituation option:selected").val();
+
+            var conditions = new $.whiskey.filter.group();
+            conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+            if (collocationName != "")
+                conditions.Rules.push(new $.whiskey.filter.rule("CollocationName", collocationName, "contains"));
+            if (collocationStyles != "" && collocationStyles != "-1")
+                conditions.Rules.push(new $.whiskey.filter.rule("ProductAttrId", collocationStyles, "equal"));
+            if (collocationSituation != "" && collocationSituation != "-1")
+                conditions.Rules.push(new $.whiskey.filter.rule("SituationId", collocationSituation, "equal"));
+            if (collocationColorId != "-1" && collocationColorId != "")
+                conditions.Rules.push(new $.whiskey.filter.rule("ColorId", collocationColorId, "equal"));
+            if (membName != "") {
+                var group = new $.whiskey.filter.group();
+                group.Operate = "or";
+                group.Rules.push(new $.whiskey.filter.rule("Member.MemberName", membName, "contains"));
+                group.Rules.push(new $.whiskey.filter.rule("Member.UniquelyIdentifies", membName, "contains"));
+
+                conditions.Groups.push(group);
+            }
+
+            $.post("GetCollocationInfo", { "Conditions": JSON.stringify(conditions) }, function (da) {
+                var $collocPirc_ul = $("#collocPirc_ul");
+                $collocPirc_ul.find("li:not(:has(.fa-circle-sy))").remove();
+                var resul = "";
+                if (da != "") {
+                    for (var i = 0; i < da.length; i++) {
+                        var t = da[i];
+                        var li = t.collpics;
+                        for (var j = 0; j < li.length; j++) {
+                            var picpath = li[j].ImagePath;
+                            var pictit = li[j].TextInfo;
+                            var id = li[j].Id;
+                            var hasexist = $collocPirc_ul.find("li>img[data-col='" + id + "']").length > 0;
+                            if (!hasexist) {
+                                resul += "<li><img class='othdresser-img' data-col='" + id + "' src='" + picpath + "' title='" + pictit + "'/></li>";
+                            }
+                        }
+                    }
+                }
+                $collocPirc_ul.append(resul);
+            });
+        });
+        $("#CollocationClear").click(function () {
+            $("#membName").val("");
+            $("#collocationName").val("");
+            $("#collocationStyles option:eq(0)").attr("selected", "selected");
+            $("#collocationSituation option:eq(0)").attr("selected", "selected");
+            $("#dropdownMenu2").attr("daval", "-1").find(".bttit").html("——下拉选择——");
+        });
+
+        requireValid();
+
+        $("#path_copy").click(function () {
+            $(".prodCollImg").val($("#OriginalPath").val());
+            $(".prodCollImg").change();
+            return false;
+        });
+    });
+    //加载保养维护
+    function initMaintain() {
+        var ids = $("#MaintainIds").val();
+
+        $.post("/Properties/Maintain/GetMaintainByIds", { ids: "" }, function (da) {
+            if (da.ResultType == 3) {
+                var resu = "<ul class='pare'>";
+                var t = da.Data;
+                for (var i = 0; i < t.length; i++) {
+                    if (ids != undefined) {
+                        resu += "<li><label><input value=" + t[i].Id + " type='checkbox'>" + t[i].ExtendName + "</label>";
+                        if (t[i].childrens != undefined && t[i].childrens.length > 0) {
+                            resu += "<ul class='child'>";
+                            for (var j = 0; j < t[i].childrens.length; j++) {
+                                var chil = t[i].childrens[j];
+                                resu += "<li><label><input value=" + chil.Id + " type='checkbox'>" + chil.ExtendName + "</label></li>";
+                            }
+                            resu += "</ul>";
+                        }
+                        resu += "</li>";
+                    }
+                }
+                resu += "</ul>";
+                $("#maintainUl").html(resu);
+                var _ids = ids.split(",");
+                for (var i = 0; i < _ids.length; i++) {
+                    $("#maintainUl input[value='" + _ids[i] + "']").prop("checked", "checked");
+                }
+                $("#maintainUl input").click(function () {
+                    if ($(this).is(":checked")) {
+                        $(this).parents("li").parents("li").children("label").find("input").prop("checked", "checked");
+
+                    } else {
+                        var len = $(this).parents("li:first").siblings("li").find("input:checked").length;
+                        if (len == 0)
+                            $(this).parents("li").parents("li").children("label").find("input").removeAttr("checked");
+                    }
+                    var chec = $(this).is(":checked");
+                    $(this).parents("li:first").find("li").find("input").prop("checked", chec);
+
+                });
+            }
+        });
+
+        $("#maintainUl").delegate("input", "click", function () {
+            var res = ",";
+            $("#maintainUl input:checked").each(function () {
+                res += $(this).val() + ",";
+            });
+            $("#MaintainIds").val(res);
+        });
+    }
+    function updateSize() {
+        var cateId = $("#base #CategoryId option:selected").val();
+        if (cateId != "" && cateId != "-1") {
+            $.post("/Product/GetSizeByCategId", { catId: cateId }, function (da) {
+                var $size = $("#rowdat #SizeId").html("");
+                var $sizes = $("#da_li tbody tr").find("td:eq(3) select").html("");
+                $(".modal-content [data-bb-handler='success'] ").prop("disabled", true);
+                if (da.ResultType == 3) {
+                    var str = "";
+                    for (var i = 0; i < da.Data.length; i++) {
+                        str += "<option value='" + da.Data[i].vl + "'>" + da.Data[i].tx + "</option>";
+                    }
+                    $sizes.html(str);
+                    $size.html(str);
+                    $(".modal-content [data-bb-handler='success'] ").prop("disabled", false);
+                    GetProduNumber();
+                }
+            })
+        }
+    }
+
+</script>
+<script src="~/Content/plupload-2.1.8/js/plupload.full.min.js"></script>
+<script src="~/Content/plupload-2.1.8/js/jquery.plupload.queue/jquery.plupload.queue.min.js"></script>
+<script>
+    $(function () {
+
+        $(".prodCollImg").dblclick(function () {
+            var imgsrc = $("input[name='ProductCollocationImg']").val();
+
+            if (imgsrc.length > 0) {
+                $(".img_show_view img").attr("src", imgsrc);
+                $("#myModal").modal();
+            }
+
+        }).attr("title", $("input[name='ProductCollocationImg']").val()).text($("input[name='ProductCollocationImg']").val().substr(0, 40));
+        var uploader = new plupload.Uploader({
+            browse_button: 'browse',
+            url: '/Products/Product/CollocationImgUpload',
+            flash_swf_url: '~/Content/plupload-2.1.8/js/Moxie.swf">~/Content/plupload-2.1.8/js/Moxie.swf',
+            filters: {
+                mime_types: [
+                    { title: "*.png", extensions: "png" }, { title: "*.jpg", extensions: "jpg" }
+                ],
+                max_file_size: '400kb',
+                prevent_duplicates: true
+            }
+        });
+
+        uploader.init();
+        uploader.bind('FilesAdded', function (uploader, files) {
+
+            $(".prodCollImg").text("开始上传");
+            uploader.start();
+
+        });
+        uploader.bind('BeforeUpload', function (uploader, file) {
+            $(".prodCollImg").text("正在上传");
+        }); //
+        uploader.bind('FileUploaded', function (uploader, file, obj) {
+
+            $(".prodCollImg").text(file.name);
+            if (obj.response != null && obj.response.length > 0) {
+                var res = $.parseJSON(obj.response);
+                if (res.ResultType == 3) {
+                    $(".prodCollImg").text(res.Data.substr(0, 40) + "...");
+                    $(".prodCollImg").attr("title", res.Data);
+                    $("input[name='ProductCollocationImg']").val(res.Data);
+                    $(".prodCollImg").change();
+                } else {
+                    $("input[name='ProductCollocationImg']").val("");
+                    $(".prodCollImg").text("上传失败");
+                }
+            }
+        });
+
+        $("#collocPirc").delegate("img","mouseenter",function() {
+            $(this).css("cursor", "pointer");
+        }).delegate("img","mouseleaver",function() {
+            $(this).css("cursor", "default");
+        }).delegate("img", "click", function (e) {
+            var sou = e.target;
+            if (sou.tagName == "IMG" || sou.tagName == "I") {
+                if ($(sou).parent().find("i").length != 0) {
+                    $(sou).parent().find("i").remove();
+                }
+                else {
+                    var _left = -(sou.width / 2 + 20) + "px";
+
+                    var i = $('<i class="fa fa-check-circle-o fa-circle-sy"></i>').css("left", _left);
+                    $(sou).after(i);
+                }
+            }
+        });
+
+        //买手说标签
+        var attr = $("#BuysaidAttrIds").val();
+        if (attr != undefined && attr != "") {
+            var attids = attr.split(",");
+            for (var i = 0; i < attids.length; i++) {
+                var vl = attids[i];
+                $("#buysaid .buysaidsel input[value='" + vl + "']").attr("checked", "checked");
+            }
+        }
+
+    });
+
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+       
+  		$('.selectpicker').selectpicker();
+           $('.selectpicker').selectpicker('refresh'); 
+    })
+</script>

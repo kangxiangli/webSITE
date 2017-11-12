@@ -1,0 +1,426 @@
+﻿
+<style>
+    .modal-content {
+        width: 1000px;
+    }
+</style>
+
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#prod_detail_tab" data-toggle="tab">
+            商品操作明细
+        </a>
+    </li>
+    <li><a href="#printdetail_tab" data-toggle="tab">打印详情</a></li>
+
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="prod_detail_tab">
+        <div>
+            <table id="nwe_table_detail" class="table table-list  valign-middle" width="100%">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="printdetail_tab">
+        <table id="print_prod_detail" class="table table-list  valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+
+
+<script>
+    var datatable_install;
+    $(document).ready(function () {
+
+        var dts = $("#nwe_table_detail").dataTable({
+            "bScrollCollapse": true,
+            "bSort": false,
+            "bScrollInfinite": false,
+            "sPaginationType": "full_numbers",
+            "sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-5 info"i><"col-md-7 text-right"p>>',
+            "sAjaxSource": "/Logs/ProductOperationLog/GetProductLogByNumber",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group(); conditions.Operate = "or";
+                var attrName = '@ViewBag.proNum';
+                if (attrName != "" && attrName.length > 0) {
+                    var attrNames = attrName.split(",");
+                    attrNames.forEach(function (valueone) {
+                        var group = new $.whiskey.filter.group();
+                        group.Operate = "or";
+                        group.Rules.push(new $.whiskey.filter.rule("ProductNumber", valueone, "equal"));
+                        group.Rules.push(new $.whiskey.filter.rule("ProductBarcode", valueone, "equal"));
+
+                        conditions.Groups.push(group);
+                    });
+                }
+                //var index = ind;
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var isEnabled = aData.IsEnabled;
+                if (isEnabled == false) {
+                    $(nRow).css({ "color": " #e5603b" });
+                }
+                $(nRow).find("td:eq(0)").html(iDisplayIndex + 1);
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+
+            },
+            "aoColumns": [
+             {
+                 "sTitle": "编号",
+                 "bSortable": false,
+                 "mData": function (data) {
+                     return data.ProductNumber;
+                 },
+             },
+
+              {
+                  "sTitle": "商品货号",
+                  "bSortable": false,
+                  "mData": function (data) {
+                      return data.ProductNumber;
+                  },
+              },
+                {
+                    "sTitle": "打印标识",
+                    "bSortable": false,
+                    "mData": function (data) {
+                        return data.MaxFlag;
+                    },
+
+                },
+               //{
+               //    "sTitle": "日志标识",
+               //    "bSortable": false,
+               //    "mData": function (data) {
+               //        return data.LogFlag;
+               //    },
+               //},
+               {
+                   "sTitle": "操作时间",
+                   "bSortable": false,
+                   "mData": function (data) {
+                       return $.whiskey.tools.dateFormat(data.CreatedTime, "yyyy/MM/dd HH:mm");
+                   },
+               },
+           {
+               "sTitle": "操作明细",
+               "bSortable": false,
+               "mData": function (data) {
+                   return data.Description;
+               },
+           },
+
+            {
+                "sTitle": "操作人",
+                "bSortable": false,
+                "mData": function (data) {
+                    return data.AdminName;
+                },
+            }
+            ]
+
+        });
+        $(dts).addClass("table table-striped");
+        //$.whiskey.datatable.instances[0]=dts;
+        $.whiskey.datatable.instances[0] = dts;
+        //datatable_install = $.whiskey.datatable.instance;
+        //alert("hi");
+
+        $("#Search_par").click(function () {
+            $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+
+        });
+        //$("#AttributeNameOrNum").keyup(function () {
+        //    if (event.keyCode == 13) {
+        //        // alert("hi");
+        //        $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+        //        event.stopPropagation();
+        //    }
+        //});
+        //$("#Clear_par").click(function () {
+        //    $("#AttributeNameOrNum").val("");
+        //    //$("#DepartmentId option").eq(0).attr("selected", true);
+        //});
+        // $(".bootbox-close-button:last").hide();
+
+
+        $("body").delegate("#nwe_table_1 .px", "click", function () {
+
+            //var par = $("#nwe_table_1 td input[type=checkbox]:checked").parents("tr").prevAll(".treegrid-expanded").children("td:first").children().children(":checkbox");
+
+            var par = $(this).parents("tr:first").attr("class");
+
+            var regex = /.+treegrid-parent-(\S+)/;
+            var resul = regex.exec(par);
+
+            if (resul != null) {
+                var chisty = ".treegrid-" + resul[1];
+                if ($(this).is(":checked")) {
+                    $(chisty).children("td:first").children().children().prop("checked", "checked");
+                }
+                var checkcou = 0;
+                $(chisty).nextAll(".treegrid-parent-" + resul[1]).each(function () {
+
+                    if ($(this).children("td:first").children().children().is(":checked")) {
+                        checkcou++;
+                    }
+                });
+                if (checkcou > 0)
+                    $(chisty).children("td:first").children().children().prop("checked", "checked");
+                else
+                    $(chisty).children("td:first").children().children().prop("checked", false);
+            }
+            else {
+
+                var regex = /.+treegrid-(DE\d+)/;
+                var ischecked = $(this).is(":checked");
+                if (regex.exec(par).length < 1) return false;
+                var parid = regex.exec(par)[1];
+
+                var id = ".treegrid-" + parid;
+                var parentid = ".treegrid-parent-" + parid;
+
+                $(id).nextAll(parentid).each(function () {
+
+                    // alert($(this).children("td:first").children().children().attr("checked"));
+
+                    $(this).children("td:first").children().children().prop("checked", ischecked);
+                });
+
+
+            }
+        })
+
+    });
+
+
+    $("#print_prod_detail").dataTable({
+        "bScrollCollapse": true,
+        "bSort": false,
+        "bScrollInfinite": false,
+        "sPaginationType": "full_numbers",
+        "sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-5 info"i><"col-md-7 text-right"p>>',
+        "sAjaxSource": "/Logs/ProductOperationLog/GetBarcodesByNum",
+        "fnServerParams": function (aoData) {
+            var conditions = new $.whiskey.filter.group(); conditions.Operate = "or";
+            var attrName = '@ViewBag.proNum';
+            if (attrName != "" && attrName.length > 0) {
+                var attrNames = attrName.split(",");
+                attrNames.forEach(function (valueone) {
+                    var group = new $.whiskey.filter.group();
+                    group.Operate = "or";
+                    group.Rules.push(new $.whiskey.filter.rule("ProductNumber", valueone, "equal"));
+
+                    conditions.Groups.push(group);
+                });
+            }
+            //var index = ind;
+            aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+
+        },
+        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+            var isEnabled = aData.IsEnabled;
+            if (isEnabled == false) {
+                $(nRow).css({ "color": " #e5603b" });
+            }
+            $(nRow).find("td:eq(0)").html(iDisplayIndex + 1);
+            return nRow;
+        },
+        "fnDrawCallback": function () {
+
+        },
+        "aoColumns": [
+        {
+            "sTitle": "编号",
+            "bSortable": false,
+            "mData": function (data) {
+                return "";
+            },
+        },
+          {
+              "sTitle": "商品货号",
+              "bSortable": false,
+              "mData": function (data) {
+                  return data.ProductNumber;
+              },
+          },
+           {
+               "sTitle": "一维码",
+               "bSortable": false,
+               "mData": function (data) {
+                   return data.ProductNumber + data.OnlyFlag;
+               },
+           },
+                {
+                    "sTitle": "状态",
+                    "bSortable": false,
+                    "mData": function (data) {
+                        var te = "";
+                        if (data.Status == 0)
+                            te = "未使用";
+                        else if (data.Status == 1)
+                            te = "已入库";
+                        else te = "已废除";
+                        return te;
+                    },
+                },
+           {
+               "sTitle": "操作时间",
+               "bSortable": false,
+               "mData": function (data) {
+                   return $.whiskey.tools.dateFormat(data.CreatedTime, "yyyy/MM/dd HH:mm");
+               },
+           },
+        {
+            "sTitle": "操作人",
+            "bSortable": false,
+            "mData": function (data) {
+                return data.AdminName;
+            },
+        },
+        {
+            "sTitle": "操作",
+            "bSortable": false,
+            "mData": function (data) {
+                var curcode = data.ProductNumber + data.OnlyFlag;
+                return "<a onclick='reStartPrint(\"" + data.ProductNumber + "\",\"" + curcode + "\")' class='restartprint btn btn-success'>补打</a>";
+            },
+        }
+        ]
+
+    });
+
+    function getCheckedProdNums() {
+        var nums = [];
+        $("#nwe_table_1 tbody tr").find(":checkbox:checked").parents("tr").each(function () {
+            var t = $(this).find("td:eq(2)").text();
+            nums.push(t);
+        });
+
+        return nums;
+    }
+</script>
+<script>
+    function reStartPrint(ProductNumber, barcode, ind) {
+        var ind = ind || 0;
+        var BarcodeOnlyInfo = {
+            ProductNumber: ProductNumber,
+            BarcodeInfos: [{
+                ProductNumber: barcode,
+                PrintCount: 1
+            }]
+        };
+        if (BarcodeOnlyInfo) {
+            $.post("/Products/Barcode/GetBarCodePrinterInfoOnly", BarcodeOnlyInfo, function (da) {
+                if (da.ResultType != 3) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: da.Message
+                    });
+                } else {
+                    var _info = da.Data;
+                    if (ind == 0) //佳博
+                        reGPrinter(_info);
+                    else if (ind == 1) { //立像
+                        reArgPrinter(_info);
+                    } else {
+                        //$.whiskey.web.alert({
+                        //    type: "info",
+                        //    content: "未检测到所需的打印插件",
+                        //    callback: function () {
+                        //    }
+                        //});
+                    }
+                }
+            });
+        }
+    };
+
+    function reGPrinter(da) {
+
+        // 检测打印机
+        if (objPrint.object == null && window["GPRINTER"] == null) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "提示：未检测到佳博热敏打印机",
+                notes: "未检测到的原因可能是打印机未连接或相关打印插件未安装并且请使用IE浏览器，是否需要继续检测其他打印机？",
+                lockButton: $("#barcodePrint"),
+                success_event: function () {
+
+                }
+            });
+            return;
+        }
+       
+        if (!da || !da.length || da.length <= 0) {
+            return;
+        }
+
+        var _cou = 0;
+        for (var i = 0; i < da.length; i++) {
+            var d = da[i];
+            $.each(d.BarcodeNumbers, function (index, barcode) {
+                _cou++;
+                gprint(barcode, 1, d);
+            });
+        }
+        $.whiskey.web.alert({
+            type: "success",
+            content: "打印完成，共打印 " + _cou + " 份",
+            callback: function () {
+            }
+        });
+    };
+
+    function reArgPrinter(da) {
+        if (ArgoxPrinter != undefined) { //.object == null) {
+            $.whiskey.web.alert({
+                type: "info",
+                content: "未检测到立像OS-214PLUS打印机所需的打印插件",
+                callback: function () {
+                }
+            });
+            return false;
+        }
+        ArgoxPrinter.A_EnumUSB();
+        ArgoxPrinter.A_CreateUSBPort(1);
+        ArgoxPrinter.A_Set_ProcessDlg(0);
+        var _cou = 0;
+        var temcou = 0;
+
+        for (var i = 0; i < da.length; i++) {
+            var d = da[i];
+            $.each(d.BarcodeNumbers, function (index, item) {
+                _cou++;
+                temcou++;
+                var barcode = item;
+                print(barcode, _cou, d);
+                if (temcou % 2 == 0) {
+                    ArgoxPrinter.A_Print_Out(1, 1, 1, 1);
+                    temcou = 0;
+                }
+            });
+        }
+
+        if (temcou != 0)
+            ArgoxPrinter.A_Print_Out(1, 1, 1, 1);
+        ArgoxPrinter.A_ClosePrn();
+
+        $.whiskey.web.alert({
+            type: "success",
+            content: "打印完成，共打印" + _cou + "份",
+            callback: function () {
+            }
+        });
+    };
+
+</script>

@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=640,user-scalable=no">
+      <link rel="stylesheet" href="css/style_wodedapei.css">
+       <link rel="stylesheet" href="css/reset.css"/>
+    <link rel="stylesheet" href="css/pullToRefresh.css"/>
+    <link rel="stylesheet" href="css/swiper.css">
+       <script src="js/jquery-2.1.1.min.js"></script>
+        <script src="js/fabric_with_gestures.js"></script>
+         <script src="js/appcan.js"></script>
+       
+    <title>我的搭配</title>
+</head>
+<body>
+<script>
+    function closedapei(){
+           appcan.window.close(-1);
+    }
+</script>
+               <!-- 二级页面-->
+<div class="pagetwo">
+    <div class="header">
+        <div class="contain">
+     
+    <div class="back back_dapei" onclick="closedapei();"><span href=""><img src="img/l@2x.png" alt="">返回</span>
+      </div>
+        <span class="title">我的搭配</span>
+        
+        <div class="selection"><img src="img/cjdp@2x.png" alt="">     
+            </div>  
+        </div>     
+    </div>
+
+    <div class="contain">
+                
+<canvas id="c"></canvas>
+<script id="main">
+var arr = new Array();
+var selectObj=null;   //被选中的canvas对象
+
+   $(function(){
+var canvas = new fabric.Canvas('c');
+canvas.setBackgroundColor('rgba(255, 255, 255,.4)', canvas.renderAll.bind(canvas));
+canvas.selection = false;
+var canvasWidth=380;
+var canvasHeight=380;
+
+canvas.setWidth(canvasWidth);
+canvas.setHeight(canvasHeight);
+
+adjustCanvasLocation(canvasWidth, canvasHeight);//初始化canvas大小
+
+   function adjustCanvasLocation(canvasWidth, canvasHeight) {
+  $('#c').css('width', canvasWidth);
+  $('#c').css('height', canvasHeight);
+  $('#c').css('left', ($(window).width() - canvasWidth) / 2);
+  $('#c').css('border','2px dashed #FFFFFF');
+  $('.upper-canvas').css('width', canvasWidth);
+  $('.upper-canvas').css('height', canvasHeight);
+  $('.upper-canvas').css('left', ($(window).width() - canvasWidth) / 2);
+  $('.canvas-container').css('height', canvasHeight);
+  
+
+}
+
+
+ fabric.Image.fromURL('img/bg_add@2x.png',function(img){
+    img.scale(0.5).set({
+         left:(canvasWidth/2)-30,
+         top: (canvasHeight/2)-30,
+         height:120,
+         width:120,
+         angle:0,
+         lockMovementX:true,
+         lockMovementY:true,
+         hasControls:false,
+         hasBorders:false,
+         centeredRotation:true
+
+        })
+    canvas.add(img).setActiveObject(img);
+     img.type='add_danpin';
+
+   
+
+ });
+ canvas.on({
+        'mouse:up':function(e){//打开三级页面，选择单品
+     if(e.target && e.target.type =='add_danpin'){
+   
+        $('.pagetwo').css('display','none');
+        $('.pageone').css('display','none');
+        $('.pagethree').css('display','block');
+        $('.pagethree').animate({'right':'0%'},150); 
+        canvas.remove(e.target);
+        }
+    } 
+    });
+
+ //添加图片按钮打开3级页面
+ $('.addEle').click(function(){
+   $('.pagetwo').css('display','none');
+        $('.pageone').css('display','none');
+        $('.pagethree').css('display','block');
+        $('.pagethree').animate({'right':'0%'},150);
+ })
+ //添加文字
+    $('.txt').click(function(){
+         if($('.addtxt').is(":hidden")){
+       $('.addtxt').show();
+      }else{
+        $('.addtxt').hide();
+      }
+    });
+
+    $('input[type=button]').click(function(){
+      var txt=$('.text').val();
+
+      var canText=new fabric.Text(txt,
+      {
+          left:0,
+          top:110,
+          angle:0,
+          fill:'#80ff80'
+      });
+      canvas.add(canText);
+      canvas.setActiveObject(canText);
+      $('.addtxt').hide();
+    });
+
+/*添加图片*/
+ $('.single').on('click',function(e){
+          e.preventDefault();
+          //返回2级页面
+          $('.pagethree').css('display','none');
+          $('.pagetwo').css('display','block');
+          //吧选中的图片，添加到画布
+          var selectImg=e.target;
+          var newImage = new fabric.Image(selectImg);
+      
+          newImage.setWidth(200);
+          newImage.setHeight(300);
+          newImage.setTop((canvas.getHeight()-100)/2);
+          newImage.setLeft((canvas.getWidth()-100)/2);
+          newImage.scale(0.5).set({
+         angle:0,
+         cornerColor:"red",
+         rotatingPointOffset:45,
+         borderColor:"orange", 
+         cornerStyle :"circle",
+         cornerSize:35,         //控制点大小
+         centeredRotation:true
+
+  
+  });
+ 
+    newImage.setControlVisible("ml",false);          //去除不需要的控制点
+    newImage.setControlVisible("tl",false);
+    newImage.setControlVisible("tr",false);
+    newImage.setControlVisible("bl",false);
+    newImage.setControlVisible("mt",false);
+    newImage.setControlVisible("mr",false);
+    newImage.setControlVisible("mb",false);
+    canvas.add(newImage).setActiveObject(newImage);
+    canvas.renderAll();
+    arr.push(newImage);
+
+        })
+
+     /*上移下移*/
+ $('#shangyi').click(function(){
+
+
+     for (var i =0; i <arr.length; i++) {
+   
+          if(selectObj == arr[i]){
+          arr[i].moveTo(i+1);
+          var item=arr[i+1];
+          arr[i+1]=arr[i];
+          arr[i]=item;
+          break;
+          }
+     }
+          if(selectObj==arr[arr.length-1]){
+    console.log('已到最高层');
+    return;
+  }
+ 
+ })
+  $('#xiayi').click(function(){
+
+
+     for (var i =0; i <arr.length; i++) {
+   
+          if(selectObj == arr[i]){
+          arr[i].moveTo(i-1);
+          var item=arr[i-1];
+          arr[i-1]=arr[i];
+          arr[i]=item;
+          break;
+          }
+     }
+         
+ 
+ })
+ 
+//循环添加数组图片
+// for (var i =0;i<arrURL.length; i++) {
+//     fabric.Image.fromURL(arrURL[i], function(img) {
+//   img.scale(0.5).set({
+//          left: 150,
+//          top: 120,
+//          angle:0,
+//          cornerColor:"red",
+//          rotatingPointOffset:45,
+//          borderColor:"orange", 
+//          cornerStyle :"circle",
+//          cornerSize:35,         //控制点大小
+//          centeredRotation:true
+
+  
+//   });
+    
+
+//     img.setControlVisible("ml",false);          //去除不需要的控制点
+//     img.setControlVisible("tl",false);
+//     img.setControlVisible("tr",false);
+//     img.setControlVisible("bl",false);
+//     img.setControlVisible("mt",false);
+//     img.setControlVisible("mr",false);
+//     img.setControlVisible("mb",false);
+//     canvas.add(img).setActiveObject(img);
+
+//     img.on({
+//         'mouseup':function(){
+            
+//             var role=Math.round(img.getAngle());    //角度
+//             var x_y=img.getCenterPoint();   //x+y坐标
+//             var x=x_y.toString().split(',')[0];//x      
+//             var y=x_y.toString().split(',')[1];//y
+//             var kuan=Math.round(img.getBoundingRectWidth());    //拉伸宽度
+//             document.getElementById("xval").value=x;
+//             document.getElementById("yval").value=y;
+//             document.getElementById("role").value=role;
+//             document.getElementById("kuan").value=kuan;
+
+//         }
+
+//     });
+
+// });
+                
+// }
+
+/*层级关系*/
+  canvas.on('object:selected',function(e){
+    var el=e.target;
+    selectObj=el;
+  });
+
+  /*删除对像*/
+  $('.remove,.remove>img,remove>p').click(function(){
+      canvas.remove(selectObj);
+          for (var i=0;i<arr.length;i++) {
+                if(selectObj==arr[i]){
+                  console.log(arr);
+                 arr.splice(arr[i],1);
+                  console.log(arr);
+                  break;
+                }
+          }
+  })
+  /*图像翻转*/
+  $('.fanzhuan').click(function(){
+ selectObj.setScaleX(-selectObj.getScaleX()).setCoords();
+    canvas.renderAll();
+  })
+/*限制图片不能超过边界*/
+  // canvas.on('object:moving',function(e){
+  //   var el=e.target;
+  //   var elWidth=el.getBoundingRectWidth();
+  //   var elHeight=el.getBoundingRectHeight();
+
+  //   el.left=el.left<0?0:el.left;
+  //   el.top=el.top<0?0:el.top;
+  //   el.left=el.left>canvas.width-elWidth?canvas.width-elWidth:el.left;
+  //   el.top=el.top>canvas.height-elHeight?canvas.height-elHeight:el.top;
+  // });
+// 
+//点击添加背景
+$('.addBackground').click(function(){
+
+   if($('.img-box').is(":hidden")){
+       $('.img-box').show();
+      }else{
+        $('.img-box').hide();
+      }
+
+})
+$('.img-box img').each(function (i, e) {
+    $(this).on('click touchstart', function (e) {
+      e.preventDefault();
+      var bgel = e.target;
+     var  newBg = new fabric.Image(bgel);
+      newBg.set('width', canvas.width);
+      newBg.set('height',canvas.height);
+      canvas.setBackgroundImage(newBg);
+      canvas.renderAll();
+      canvas.selection = false;
+     $('.wu').click(function(){
+        canvas.setBackgroundImage(null);
+        canvas.renderAll();
+         $('.img-box').hide();
+     })
+         $('.img-box').hide();
+    })
+   
+  });
+
+//素材
+$('.sucai').click(function(){
+      if($('.sucai_img').is(":hidden")){
+       $('.sucai_img').show();
+      }else{
+        $('.sucai_img').hide();
+      }
+});
+
+
+
+$('.sucai_img img').click(function(e){
+         e.preventDefault();
+          var selectImg=e.target;
+          var newImage = new fabric.Image(selectImg);
+          newImage.setWidth(200);
+          newImage.setHeight(200);
+          newImage.setTop((canvas.getHeight()-100)/2);
+          newImage.setLeft((canvas.getWidth()-100)/2);
+          newImage.scale(0.5).set({
+         angle:0,
+         cornerColor:"red",
+         rotatingPointOffset:45,
+         borderColor:"orange", 
+         cornerStyle :"circle",
+         cornerSize:35,         //控制点大小
+         centeredRotation:true
+  });
+    newImage.setControlVisible("ml",false);          //去除不需要的控制点
+    newImage.setControlVisible("tl",false);
+    newImage.setControlVisible("tr",false);
+    newImage.setControlVisible("bl",false);
+    newImage.setControlVisible("mt",false);
+    newImage.setControlVisible("mr",false);
+    newImage.setControlVisible("mb",false);
+    canvas.add(newImage).setActiveObject(newImage);
+    canvas.renderAll();
+    $('.sucai_img').hide();
+
+});
+
+ //锁定
+$('.lock,.lock img,.lock p').click(function(){
+ selectObj.set({
+         lockMovementX:true,
+         lockMovementY:true,
+         hasControls:false,
+         hasBorders:true,
+         centeredRotation:true
+
+        });
+})     
+//截图
+            $("#save").on({
+            click:function(){
+            
+var imageUrl = canvas.toDataURL({
+                format: 'png'
+            });
+window.open(imageUrl);
+
+
+            }
+        }); 
+        })
+
+</script>
+<div class="zuobiao" style="display: none;">
+    X坐标<input id="xval" name="x" type="text" value="0"/>    Y坐标<input id="yval" name="y" type="text" value="0"/>
+     角度：<input id="role" type="text"> 拉伸宽度：<input id="kuan" type="text"></input>
+     保存截图：<input type="button" id="save"name="save" value="保存">
+</div>
+
+  </div>    <!--contain结尾-->
+<footer>
+<div class="sucai_img">
+  <img src="img/close.png" alt="">
+   <img src="img/com_in.png" alt="">
+</div>
+<div class="img-box">
+  <img src="img/tour1.jpg" alt="">
+   <img src="img/tour2.jpg" alt="">
+    <img src="img/tour3.jpg" alt="">
+     <img src="img/tour4.jpg" alt="">
+     <div class="wu"><b>无</b></div>
+</div> 
+<div class="addtxt"><p>请输入要添加的文字</p><input type="text" class="text"><input type="button" value="确定"></div>
+<div class="swiper-container">
+        <div class="swiper-wrapper">
+            <li class="active swiper-slide addEle">
+                    <img src="img/tab_1tj_pre_@2x.png"/>
+                    <p>添加</p>   
+            </li>
+          
+            <li class="remove swiper-slide">
+                     <img src="img/tab_2sc_@2x.png"/>
+                    <p>删除</p>
+             
+            </li>
+            <li class="fanzhuan swiper-slide">         
+                   <img src="img/tab_3xz_@2x.png"/>
+                    <p>翻转</p>
+           
+            </li>
+            <li class="swiper-slide lock">
+               
+                   <img src="img/tab_4sd_@2x.png"/>
+                    <p>锁定</p>
+             
+            </li>
+            <li class="txt swiper-slide">
+               
+                  <img src="img/tab_5wz_@2x.png"/>
+                    <p>文字</p>
+              
+            </li>
+            <li class="swiper-slide sucai">
+                
+                    <img src="img/tab_6sc_@2x.png"/>
+                    <p>素材</p>
+               
+            </li>
+            <li class="addBackground swiper-slide">  
+                    <img src="img/tab_7bj_@2x.png"/>
+                    <p>背景</p>
+               
+            </li>
+             <li class="swiper-slide" id="shangyi">
+                
+                    <img src="img/tab_8sy_@2x.png"/>
+                    <p>上移</p>
+               
+            </li>
+             <li class="swiper-slide" id="xiayi">           
+                    <img src="img/tab_9xy_@2x.png"/>
+                    <p>下移</p>
+               
+            </li>
+        </div>
+        </div>
+         <script src="js/swiper.min.js"></script>
+
+    <!-- Initialize Swiper -->
+    <script>
+    var swiper = new Swiper('.swiper-container', {
+        pagination: '.swiper-pagination',
+        slidesPerView: 5,
+        paginationClickable: true,
+        spaceBetween: 30,
+        freeMode: false,
+    });
+    </script>
+
+    
+</footer>
+</div>
+<!-- 三级页面，克隆我的单品页面（调取后台数据，只有选择用途） -->
+<div class="pagethree">
+<div class="header">
+    <div class="contain">
+      <div class="back"><a href=""><img src="img/l@2x.png" alt="">返回</a></div>
+            <div class="color"><img src="img/nav_ys@2x.png" alt="">颜色</div>
+            <div class="fengge"><img src="img/nav_fg@2x.png" alt="">风格</div>
+    </div>
+</div>
+<div id="main">
+
+    <div id="wrapper">
+        <ul>
+            <li>
+                <div class="all_info">
+                    <div class="img_box">
+                        <a class="single" href="#">
+                            <img src="img/1.png" alt="png"/>
+                        </a>
+                    </div>
+                    <div class="bt_gray">
+                        <p>
+                            <img class="money" src="img/one.png"/>
+                            ￥10</p>
+
+                        <div class="cloth_sea"><b class="clothing">开衫</b><i class="seasion">夏季</i></div>
+                        <div class="praise">
+                            <div class="praise_box"><img src="images/z.png" alt="png"/>0</div>
+                            <div class="info_box"><img src="images/pl.png" alt="png"/>15</div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="all_info">
+                    <div class="img_box">
+                        <a class="single" href="#">
+                            <img src="img/2.png" alt="png"/>
+                        </a>
+                    </div>
+                    <div class="bt_gray">
+                        <p><img class="money" src="img/one.png"/>￥10</p>
+
+                        <div class="cloth_sea"><b class="clothing">开衫</b><i class="seasion">夏季</i></div>
+                        <div class="praise">
+                            <div class="praise_box"><img src="images/z.png" alt="png"/>0</div>
+                            <div class="info_box"><img src="images/pl.png" alt="png"/>15</div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="all_info">
+                    <div class="img_box">
+                        <a class="single" href="#">
+                            <img src="img/3.jpg" alt="png"/>
+                        </a>
+                    </div>
+                    <div class="bt_gray">
+                        <p><img class="money" src="img/one.png"/>￥10</p>
+
+                        <div class="cloth_sea"><b class="clothing">开衫</b><i class="seasion">夏季</i></div>
+                        <div class="praise">
+                            <div class="praise_box"><img src="images/z.png" alt="png"/>0</div>
+                            <div class="info_box"><img src="images/pl.png" alt="png"/>15</div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="all_info">
+                    <div class="img_box">
+                        <a class="single" href="#">
+                            <img src="img/4.jpg" alt="png"/>
+                        </a>
+                    </div>
+                    <div class="bt_gray">
+                        <p><img class="money" src="img/one.png"/>￥10</p>
+
+                        <div class="cloth_sea"><b class="clothing">开衫</b><i class="seasion">夏季</i></div>
+                        <div class="praise">
+                            <div class="praise_box"><img src="images/z.png" alt="png"/>0</div>
+                            <div class="info_box"><img src="images/pl.png" alt="png"/>15</div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="all_info">
+                    <div class="img_box">
+                        <a class="single" href="#">
+                            <img src="img/2.png" alt="png"/>
+                        </a>
+                    </div>
+                    <div class="bt_gray">
+                        <p><img class="money" src="img/one.png"/>￥10</p>
+
+                        <div class="cloth_sea"><b class="clothing">开衫</b><i class="seasion">夏季</i></div>
+                        <div class="praise">
+                            <div class="praise_box"><img src="images/z.png" alt="png"/>0</div>
+                            <div class="info_box"><img src="images/pl.png" alt="png"/>15</div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="all_info">
+                    <div class="img_box">
+                        <a class="single" href="#">
+                            <img src="img/3.jpg" alt="png"/>
+                        </a>
+                    </div>
+                    <div class="bt_gray">
+                        <p><img class="money" src="img/one.png"/>￥10</p>
+
+                        <div class="cloth_sea"><b class="clothing">开衫</b><i class="seasion">夏季</i></div>
+                        <div class="praise">
+                            <div class="praise_box"><img src="images/z.png" alt="png"/>0</div>
+                            <div class="info_box"><img src="images/pl.png" alt="png"/>15</div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="all_info">
+                    <div class="img_box">
+                        <a class="single" href="#">
+                            <img src="img/4.jpg" alt="png"/>
+                        </a>
+                    </div>
+                    <div class="bt_gray">
+                        <p><img class="money" src="img/one.png"/>￥10</p>
+
+                        <div class="cloth_sea"><b class="clothing">开衫</b><i class="seasion">夏季</i></div>
+                        <div class="praise">
+                            <div class="praise_box"><img src="images/z.png" alt="png"/>0</div>
+                            <div class="info_box"><img src="images/pl.png" alt="png"/>15</div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script src="js/zepto.min.js"></script>
+<script src="js/event.js"></script>
+<script src="js/touch.js"></script>
+<script src="js/iscroll.js"></script>
+<script src="js/pullToRefresh.js"></script>
+<script>
+    /*  $(function(){
+     $("ul").empty();
+     getProducts();
+     });*/
+
+    refresher.init({
+        id: "wrapper",
+        pullDownAction: Refresh,
+        pullUpAction: Load
+    });
+    function Refresh() {
+        setTimeout(function () {    // <-- Simulate network congestion, remove setTimeout from production!
+            var el, li, i;
+            el = document.querySelector("#wrapper ul");
+            //这里写你的刷新代码
+            document.getElementById("wrapper").querySelector(".pullDownIcon").style.display = "none";
+            document.getElementById("wrapper").querySelector(".pullDownLabel").innerHTML = "<img class='finish' src='images/ok.png'/>刷新成功";
+            setTimeout(function () {
+                wrapper.refresh();
+                document.getElementById("wrapper").querySelector(".pullDownLabel").innerHTML = "";
+            }, 1000);//模拟qq下拉刷新显示成功效果
+            /****remember to refresh after  action completed！ ---yourId.refresh(); ----| ****/
+        }, 1000);
+    }
+    function Load() {
+        setTimeout(function () {// <-- Simulate network congestion, remove setTimeout from production!
+            getProducts();
+            /*var el, li, i;
+             el = document.querySelector("#wrapper ul");
+             for (i = 0; i < 1; i++) {
+             li = document.createElement('li');
+             li.innerHTML = '<div><div class="img_box"><img src="img/1.png" alt="png"/>  </div><div class="bt_gray"><p><span class="money"></span>￥10</p> <div class="cloth_sea"><b class="clothing">开衫</b><i class="seasion">夏季</i></div><div class="praise"><div class="praise_box"><img src="images/z.png" alt="png"/>0</div> <div class="info_box"><img src="images/pl.png" alt="png"/>15</div></div></div></div>'
+             el.appendChild(li, el.childNodes[0]);
+             }*/
+
+            wrapper.refresh();
+            /****remember to refresh after action completed！！！   ---id.refresh(); --- ****/
+        });
+    }
+
+    function getProducts() {
+        var param = window.location.search;
+        var categoryId = "";
+        if (param != null && param != "") {
+            var regex = new RegExp('categoryId=\\d*', 'i');
+            var keyword = regex.exec(param);
+            categoryId = keyword[0].split('=')[1];
+        }
+        var pageIndex = $("#pageIndex").val();
+        var headBox = ' <li><div class="all_info">';
+        var footBox = '</div></li>';
+        var headGray = '<div class="bt_gray">';
+        var footGray = '</div>';
+        $.ajax({
+            url: "/apiproduct/getlist",
+            type: "post",
+            data: {PageIndex: pageIndex, CategoryId: categoryId},
+            success: function (data) {
+                if (data.ResultType == 3) {
+                    var entities = data.Data;
+                    if (entities == null || entities.length == 0) {
+                        return false;
+                    }
+                    var num = parseInt(pageIndex) + 1;
+                    $("#pageIndex").attr('value', num);
+                    for (var i = 0; i < entities.length; i++) {
+                        var image = entities[i].CoverImagePath;
+                        var color = entities[i].ColorPath;
+                        var price = entities[i].Price;
+                        var category = entities[i].CategoryName;
+                        var season = entities[i].SeasonName;
+                        var jumpLink = entities[i].JumpLink;
+                        var img = '<div class="img_box"><a class="single" href="' + jumpLink + '"><img src="' + image + '" alt="img"></a></div>';
+                        var p = '<p><img class="money" src="' + color + '">￥' + price + '</p>';
+                        var sea = '<div class="cloth_sea"><b class="clothing">' + category + '</b><i class="seasion">' + season + '</i></div>';
+                        var temp = '<div class="praise"><div class="praise_box"><img src="/Content/Images/Template/Image/z.png" alt="png">0</div><div class="info_box"><img src="/Content/Images/Template/Image/pl.png" alt="png">15</div></div>';
+                        var html = headBox + img + headGray + p + sea + temp + footGray + footBox;
+                        $("ul").append(html);
+                    }
+                } else {
+                    return false;
+                }
+
+            }
+        })
+    }
+</script>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,128 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model Subject
+@Html.HiddenFor(x => x.Id, new { @id="SubjectId"})
+<div class="form-group">
+    <label class="control-label col-md-2">
+        专题名称 :
+    </label>
+    <div class="col-md-10" id="divName">
+        @Html.TextBoxFor(m => m.SubjectName, new { @class = "form-control", @onfocus = "removeClass(this)" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        专题简介 :
+    </label>
+    <div class="col-md-10" id="divName">
+        @Html.TextAreaFor(m => m.Summary, new { @class = "form-control", @onfocus = "removeClass(this)" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        上传专题 :
+    </label>
+    <div class="col-md-10">
+        <div class="dropzone-box">
+            <div class="dz-default dz-message">
+                <i class="fa fa-cloud-upload"></i>
+                <br><span class="dz-text-small">请将整个专题文件夹直接拖放选择</span>
+            </div>
+            <div class="fallback">
+                <input name="file" type="file" id="file" multiple="multiple" accept="image/jpeg,image/gif,image/png,image/jpg" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <input type="button" class="btn btn-primary" value="提交" />
+    <button data-bb-handler="cancel" type="button" class="btn btn-default"><i class="fa fa-close"> 关闭 </i></button>
+</div>
+<script type="text/javascript">
+    $(function () {
+        //初始化上传控件
+        var myDropzone = new Dropzone(".dropzone-box", {
+            url: "/Subject/Update",
+            acceptedFiles: ".zip,.rar",
+            uploadMultiple: false,
+            parallelUploads: 1,
+            maxFilesize:"20",
+            autoProcessQueue: false, //关闭自动上传
+            init: function () {
+                this.on("sending", function (file, xhr, formData) {
+                    var SubjectName = $("#divName #SubjectName").val();
+                    var Summary = $("#Summary").val();
+                    var SubjectId = $("#SubjectId").val();
+                    formData.append("SubjectId", SubjectId);
+                    formData.append("Summary", Summary);
+                    formData.append("SubjectName", SubjectName);
+                });
+                //$(".modal-footer .btn-primary").attr("disabled", "disabled");
+                //this.on("addedfile", function () {
+                //    $(".modal-footer .btn-primary").removeAttr("disabled");
+                //});
+                var submitButton = document.querySelector(".modal-footer .btn-primary")
+                myDropzone = this; // closure
+                //为上传按钮添加点击事件
+                submitButton.addEventListener("click", function () {
+                    var SubjectName =$.trim($("#divName #SubjectName").val());
+                    var Summary = $.trim($("#Summary").val());
+                    if (SubjectName == "" || SubjectName==null) {
+                        alert("请填写专题名称");
+                        $("#divName #SubjectName").addClass('input-validation-error tooltip-danger');
+                        return false;
+                    }
+                    if (SubjectName.length > 50) {
+                        alert("专题名称字符不能超过了50个");
+                        $("#divName #SubjectName").addClass('input-validation-error tooltip-danger');
+                        return false;
+                    }
+                    if (Summary.length > 150) {
+                        alert("专题简介字符不能超过了150个");
+                        $("#Summary").addClass('input-validation-error tooltip-danger')
+                        return false;
+                    }
+                    //手动上传所有图片
+                    myDropzone.processQueue();
+                });
+                //当上传完成后的事件，接受的数据为JSON格式
+                this.on("success", function (file, data) {
+                    if (data.ResultType!=3) {
+                        alert(data.Message);
+                    } else {
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: "添加成功",
+                            callback: function () {
+                                //$(".bootbox").modal("hide");
+                                $.whiskey.datatable.reset(false);
+                            }
+                        });
+                    }
+
+                    //for (var i = 0; i < data.length; i++) {
+                    //    if (file.name == data[i]) {
+                    //        var message = "该文件已经存在";
+                    //        var node, _i, _len, _ref, _results;
+                    //        file.previewElement.classList.remove("dz-success");
+                    //        file.previewElement.classList.add("dz-error");
+                    //        if (typeof message !== "String" && message.error) {
+                    //            message = message.error;
+                    //        }
+                    //        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                    //        _results = [];
+                    //        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    //            node = _ref[_i];
+                    //            _results.push(node.textContent = message);
+                    //        }
+                    //        return _results;
+                    //    }
+                    //}
+
+                });
+            }
+        });
+    })
+    function removeClass(my) {
+        $(my).removeClass("input-validation-error tooltip-danger");
+    }
+</script>

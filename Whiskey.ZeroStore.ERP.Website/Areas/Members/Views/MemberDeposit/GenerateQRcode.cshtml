@@ -1,0 +1,62 @@
+﻿
+<div id="restult">
+    <div class="col-md-13">
+        <div class="form-group no-margin-hr" style="text-align:center;">
+            <h4 style="font-weight:bold;letter-spacing:2px">请打开微信扫一扫支付</h4>
+            <div style="position:relative; margin: 10px auto;display:inline-block">
+                <img src="@ViewBag.image" />
+                <img src="" style="width:20px;height:20px;position:absolute;top:50%;left:50%;margin-left:-10px;margin-top:-10px;background:red" />
+            </div>
+
+
+            @{
+
+                if (ViewBag.error == "")
+                {
+                    @:<img src="@ViewBag.image" />
+    }
+                else
+                {
+                    @:@ViewBag.error
+    }
+            }
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $("button[data-bb-handler='success']").remove();
+        var pay_status = -2;
+        var i = setInterval(function () {
+            $.ajax({
+                type: "post",
+                url: "@Url.Action("GetWxOrderPayStatus")",
+                data: { out_trade_no: "@ViewData["out_trade_no"]" },
+                success: function (data) {
+                    pay_status = data;
+                    function result_abnormal(img_src, title) {
+                        var result_abnormal = '<img src="' + img_src + '" alt="" style="width:100px;height:100px;margin:10px">' +
+                             '<h2 style="font-weight:bolder;letter-spacing:2px; margin:10px auto;color:#fff">' + title + '</h2>';
+                        $("#restult").html(result_abnormal);
+                    }
+
+                    switch (data) {
+                        case "-1":
+                            result_abnormal('/Content/Images/payabnormal.png', '支付失败！订单异常');
+                            clearInterval(i);
+                            break;
+                        case "1":
+                            debugger;
+                            result_abnormal('/Content/Images/paysuccess.png', '恭喜您！支付成功');
+                            clearInterval(i);
+                            break;
+                        case "2":
+                            result_abnormal('/Content/Images/payerror.png', '抱歉！支付失败');
+                            clearInterval(i);
+                            break;
+                    }
+                }
+            })
+        }, 2000);
+    });
+</script>

@@ -1,0 +1,138 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model FactorysDto
+
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active"><a href="#baseinfo_tab" data-toggle="tab">基本信息</a></li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        <div class="creat_div" style="margin-top:20px;margin-left:-50px">
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.FactoryName) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(x => x.FactoryName, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.DepartmentId) :
+                </label>
+                <div class="col-md-4">
+                    @Html.DropDownListFor(m => m.DepartmentId, (List<SelectListItem>)ViewBag.Departments, new { @class = "form-control selectpicker2", @data_live_search = "true", @onchange = "changedepartment(this);" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.StoreId) :
+                </label>
+                <div class="col-md-4">
+                    @Html.DropDownListFor(m => m.StoreId, (List<SelectListItem>)ViewBag.Stores, new { @class = "form-control selectpicker2", @onchange = "changestore(this);" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.StorageId) :
+                </label>
+                <div class="col-md-4">
+                    @Html.DropDownListFor(m => m.StorageId, (List<SelectListItem>)ViewBag.Storages, new { @class = "form-control selectpicker2" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.BrandId) :
+                </label>
+                <div class="col-md-4">
+                    @Html.DropDownListFor(m => m.BrandId, (List<SelectListItem>)ViewBag.Brands, new { @class = "form-control selectpicker2" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.FactoryAddress) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(x => x.FactoryAddress, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Leader) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(x => x.Leader, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.MobilePhone) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(x => x.MobilePhone, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.MacAddress) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(x => x.MacAddress, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.Notes) :
+                </label>
+                <div class="col-md-4">
+                    @Html.TextAreaFor(m => m.Notes, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.HiddenFor(f => f.Id)
+
+<script>
+    $(function () {
+        $("#BrandId option[value='-1']").prop("disabled", true);
+        $(".selectpicker2").selectpicker({ noneSelectedText: '请选择', size: 10 });
+    });
+    function changedepartment(sender) {
+        var depid = $(sender).val();
+        $("#StoreId,#StorageId").html('');
+        if (depid && depid > 0) {
+            $.whiskey.web.ajaxRequest({
+                actionUrl: "GetDepartmentStores",
+                params: { departmentId: depid },
+                hideLoading: true,
+                complete: function (data) {
+                    var $store = $("#StoreId");
+                    $.each(data, function (ind, item) {
+                        $store.append("<option value='" + item.Value + "'>" + item.Text + "</option>");
+                    });
+                    $("#StoreId").change();
+                    $(".selectpicker2").selectpicker('refresh');
+                }
+            });
+        }
+    }
+    function changestore(sender) {
+        var stoid = $(sender).val();
+        $("#StorageId").html('');
+        if (stoid && stoid > 0) {
+            $.whiskey.web.ajaxRequest({
+                actionUrl: "GetStoreStorages",
+                params: { storeId: stoid },
+                hideLoading: true,
+                complete: function (data) {
+                    var $storage = $("#StorageId");
+                    $.each(data, function (ind, item) {
+                        $storage.append("<option value='" + item.Value + "'>" + item.Text + "</option>");
+                    });
+                    $storage.selectpicker('refresh');
+                }
+            });
+        }
+    }
+</script>

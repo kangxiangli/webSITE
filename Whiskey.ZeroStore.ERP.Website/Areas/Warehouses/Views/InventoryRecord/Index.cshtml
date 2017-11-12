@@ -1,0 +1,489 @@
+﻿@{ var DesignerInfo = ViewBag.DesignerInfo;}
+<style>
+    .view-inventory {
+        cursor: pointer;
+    }
+</style>
+
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">所属店铺</label>
+                        <div class="col-md-8">
+                            @Html.DropDownList("StoreId", (List<SelectListItem>)DesignerInfo.Item2, new { @class = "form-control cur_selectpicker", placeholder = "请选择店铺" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">所属仓库</label>
+                        <div class="col-md-8">
+                            @Html.DropDownList("StorageId", (List<SelectListItem>)DesignerInfo.Item3, new { @class = "form-control cur_selectpicker", placeholder = "请选择仓库" })
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">创建日期</label>
+                        <div class="col-md-8">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">入库编号/商品条码</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="txtBarcode" name="txtBarcode" placeholder="入库编号/商品条码" value="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">商品品牌</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="txtBrand" name="txtBrand" placeholder="商品品牌" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">入库单号</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="RecordOrderNumber" name="RecordOrderNumber" placeholder="入库单号" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                    <a href="@Url.Action("Index","AddProduct")" class="btn btn-success btn-padding-right"><span><i class="fa fa-arrow-right"></i>入库</span></a>
+                    <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                    <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-2 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-4">
+                <h5><span class="invent_cou"></span></h5>
+            </div>
+            <div class="col-md-6 text-right">
+                <span><input class="enabler" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                <span style="margin-left:20px;"><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+@section Scripts{
+<script>
+        $(function () {
+            @if (DesignerInfo.Item1!=true) {
+                <Text>
+            $("#StoreId").queryManageStore();
+            $("#StoreId").change(function () {
+                        getStorage();
+                    });
+
+                    getStorage();
+                </Text>
+            }else
+            {
+                <Text>
+            $("#StoreId,#StorageId").prop("disabled",true);
+                </Text>
+            }
+        })
+
+        //商店-仓库联动
+        function getStorage() {
+            var storeid = $("#StoreId option:selected").val();
+            if (storeid == null || storeid == "")
+                storeid = -1;
+            $.post("/Storage/GetStorage", { storeId: storeid, title: "请下拉选择" }, function (da) {
+                $("#StorageId").html("");
+                $("#StorageId").append(getOptions(da, "该店铺下没有关联的仓库"));
+
+                $('.cur_selectpicker').selectpicker('refresh');
+            })
+        }
+
+        //验证表单中的数据正确性
+        function formNumberValid(formobj) {
+            if ($(formobj).children(".has-error").length > 0) {
+                $.whiskey.web.alert({ type: "warning", content: "输入的数据有错误……", callback: function () { return true } })
+            } else
+                return false;
+        }
+
+        $(function () {
+            $("body").delegate('#StoreId', 'change', function () {
+                var storeid = $(this).children("option:selected").val();
+                $.post("/Storage/GetStorage", { storeId: storeid, title: "" }, function (da) {
+                    $(".create-storage").html("");
+                    $(".create-storage").append(getOptions(da, ""));
+                })
+            })
+        })
+
+</script>
+    <script type="text/javascript">
+        function Disable(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要禁用这条数据吗？",
+                notes: "提示：禁用后数据将不在其他任何地方使用",
+                actionUrl: "@Url.Action("Disable")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+        function Enable(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要启用这条数据吗？",
+                notes: "提示：启用才可以在任何地方使用",
+                actionUrl: "@Url.Action("Enable")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "bPaginate": true,
+                "bFilter": true,
+                "bLengthChange": 20,
+                "bScrollCollapse": true,
+                "sAjaxSource": "@Url.Action("List")",
+                "oLanguage": {
+                    "sZeroRecords": "对不起，查询不到任何相关数据",
+                    "sInfoEmtpy": "找不到相关数据"
+
+                },
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    var brandName = $("#txtBrand").val();
+                    var adminName = $("#txtAdminName").val();
+                    var storeId = parseInt($("#StoreId").val());
+                    if (!isNaN(storeId) && storeId > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("StoreId", storeId, "equal"));
+                    }
+                    // 商品条码筛选
+                    var txtBarcode = $("#txtBarcode").val();
+                    if (txtBarcode && txtBarcode.length > 0) {
+                        aoData.push({ name: "txtBarcode", value: txtBarcode });
+                    }
+
+                    // 商品品牌筛选
+                    if (brandName && brandName.length > 0) {
+                        aoData.push({ name: "txtBrandName", value: brandName });
+                    }
+
+
+                    // 日期筛选
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    }
+
+
+
+                    // swicher过滤
+                    if ($(".trusher").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                        if ($(".enabler").is(":checked")) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                        } else {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                        }
+                    }
+                    else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                    }
+
+                    // 生成expression
+                    $(".form-search .form-control[name!='StartDate'][name!='EndDate'][name!='txtBarcode'][name!='txtBrand']").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value != "")
+                            value = value.trim();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                        }
+
+                    });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        "dataType": 'json',
+                        "type": "POST",
+                        "url": sSource,
+                        "data": aoData,
+                        "success": function (json) {
+                            //var t = json.Other.split('|');
+                            //$(".invent_cou").text("总库存数：" + t[0] + "，当前页库存数：" + t[1]);
+                            fnCallback(json);
+
+                            //fnCallback();
+                        }
+                    });
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                    $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+                    $("td:eq(2)", nRow).css({ "width": "12%" });
+                    return nRow;
+                },
+                "fnDrawCallback": function (osetting) {
+
+                    $(".table-list").treegrid({
+                        initialState: "collapsed",
+                        treeColumn: 2,
+                        expanderExpandedClass: 'treegrid-expander-expanded',
+                        expanderCollapsedClass: 'treegrid-expander-collapsed',
+
+                    });
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+
+                    });
+                    $(".table tr td input[type=checkbox]").checked = true;
+                    $(".treegrid-expander").css({ "margin-left": 0, "float": "left" });
+                },
+                "aoColumns": [
+                    {
+                        "bVisible": false,
+                        "bSearchable": false,
+                        "sName": "Id",
+                        "mData": "Id"
+                    },
+                    {
+                        "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                        "sName": "Id",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            return $.whiskey.datatable.tplListCheckbox(data.Id);
+                        }
+                    },
+                    {
+                        "sTitle": "序号",
+                        "bSortable": false,
+                        "sName": "RowNumber",
+                        "mData": function (data) {
+                            var index = data.iDisplayIndex + 1;
+                            return '' + index + '';
+                        }
+                    },
+                    {
+                        "sTitle": "入库单号",
+                        "bSortable": false,
+                        "sName": "RecordOrderNumber",
+                        "mData": function (data) {
+                            return data.RecordOrderNumber ? data.RecordOrderNumber : "无";
+                        }
+                    },
+                    {
+                        "sTitle": "编号",
+                        "bSortable": false,
+                        "sName": "IdentifyId",
+                        "mData": "IdentifyId"
+                    },
+
+                    {
+                        "sTitle": "所属店铺",
+                        "bSortable": false,
+                        "sName": "StoreId",
+                        "mData": function (data) {
+                            return data.StoreName;
+                        },
+                    },
+                    {
+                        "sTitle": "所属仓库",
+                        "bSortable": false,
+                        "sName": "StorageId",
+                        "mData": function (data) {
+                            return data.StorageName;
+                        },
+                    },
+                     {
+                         "sTitle": "吊牌总价格(￥)",
+                         "bSortable": false,
+                         "sName": "RetailPrice",
+                         "mData": function (data) {
+                             return data.TagPrice;
+                         },
+                     },
+                     {
+                         "sTitle": "品牌数量",
+                         "bSortable": false,
+                         "sName": "BrandCount",
+                         "mData": function (data) {
+                             if (data.BrandCount > 0) {
+                                 return data.BrandCount;
+                             } else {
+                                 return data.TotalBrandCount;
+                             }
+                         }
+                     },
+                    {
+                        "sTitle": "入库数量",
+                        "bSortable": false,
+                        "sName": "Count",
+                        "mData": function (data) {
+                            return "<span class='view-inventory' data-id=" + data.Id + " data-identifyid=" + data.IdentifyId + ">" + data.Quantity + "</span>";
+                        },
+                    },
+
+                    {
+                        "sTitle": "操作人员",
+                        "bSortable": false,
+                        "sName": "AdminName",
+                        "mData": function (data) {
+                            return data.MemberName;
+                        },
+                    },
+                    {
+                        "sTitle": "入库时间",
+                        "bSortable": false,
+                        "sName": "CreatedTime",
+                        "mData": function (data) {
+                            return $.whiskey.tools.dateFormat(data.CreatedTime, "yyyy-MM-dd HH:mm");
+                        }
+
+                    },
+                    {
+                        "sTitle": "控制操作",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            var func = getBtn.bind(data);
+                            var controller = $.whiskey.datatable.controller(func);
+                            return controller;
+                        }
+                    }
+                ]
+
+            });
+
+            function getBtn() {
+                var data = this;
+                var controller = "";
+                var isDeleted = data.IsDeleted;
+                var isEnabled = data.IsEnabled;
+                if (isDeleted == false) {
+                    if (!isEnabled) {
+                        controller += $.whiskey.datatable.tplEnable(data.Id);
+                    } else {
+                        controller += $.whiskey.datatable.tplDisable(data.Id);
+                    }
+                }
+                return controller;
+            }
+
+            /// 查看入库详细信息
+            $(document).delegate(".view-inventory", "click", function () {
+                var recordId = $(this).data("id");
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "查看入库记录",
+                    actionUrl: "@Url.Action("GetInventory")",
+                    getParams: { RecordId: recordId },
+                    lockButton: $(this),
+                    successTit: "确定",
+                    successEvent: function () { }
+                });//end dialog
+            });//end delegate
+
+
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+
+            $("#Export").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length == 0) {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+
+                    });
+                    return;
+                }
+                var ids = [];
+                for (var i = 0; i < list.length; i++) {
+                    ids.push(list[i].value);
+                }
+                //跳转
+                location.href = "@Url.Action("Export")" + "?ids=" + ids.join(",");
+
+            });
+
+        });
+    </script>
+
+    <script src="~/Content/Scripts/Common/comm.js"></script>
+    
+}
+

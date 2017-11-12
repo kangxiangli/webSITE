@@ -1,0 +1,323 @@
+﻿
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+
+
+<div class="row">
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="myLeave">
+            <div class="panel panel-search">
+                <div class="panel-heading clearfix">
+                    <div class="col-md-4 panel-title">
+                        <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                    </div>
+                    <div class="col-md-8 text-right">
+                        <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal form-search">
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-3">部门：</label>
+                                <div class="col-md-7">
+                                    @Html.DropDownList("DepartmentId", (List<SelectListItem>)ViewBag.depList, new { @class = "form-control ser_sel selectpicker", data_live_search = "true" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-3">调班人：</label>
+                                <div class="col-md-7">
+                                    @Html.TextBox("SuccessionName_main", "", new { @class = "form-control", placeholder = "输入员工姓名" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-3">审核状态：</label>
+                                <div class="col-md-7">
+                                    <select id="ToExamineResult" class="form-control selectpicker">
+                                        <option value="">请选择</option>
+                                        <option value="0">审核中</option>
+                                        <option value="1">审核通过</option>
+                                        <option value="2">审核未通过</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-3">申请日期：</label>
+                                <div class="col-md-7">
+                                    <div class="input-daterange input-group">
+                                        @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                        <span class="input-group-addon">至</span>
+                                        @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="panel-footer text-right clearfix ">
+                    <div class="pull-left">
+                        <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                        <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-list">
+                <div class="panel-heading clearfix">
+                    <div class="col-md-4 panel-title">
+                        <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                    </div>
+                </div>
+                <table class="table table-list table-hover valign-middle" width="100%">
+                    <thead>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="~/Content/Scripts/Layout/DataHelper.js"></script>
+@*<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>*@
+@section Scripts{
+
+    <script type="text/javascript">
+
+        var power = "@ViewBag.Power";
+        if (power == "True") {
+            $("#departAtten").css("display", "block");
+        }
+        $(document).ready(function () {
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("List")",
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    var DepartmentId = $("#DepartmentId").val();
+                    var ToExamineResult = $("#ToExamineResult").val();
+                    if (DepartmentId != "") {
+                        aoData.push({ name: "DepartmentId", value: DepartmentId });
+                    }
+                    if (ToExamineResult != "") {
+                        aoData.push({ name: "ToExamineResult", value: ToExamineResult });
+                    }
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    }
+                    aoData.push({ name: "SuccessionName", value: $("#SuccessionName_main").val() });
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                    $("td:eq(2)", nRow).css({ "float": "left", "width": "100%" });
+                    $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                    return nRow;
+                },
+                "fnDrawCallback": function () {
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table-list tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+                    });
+
+                    $(".table-list").treegrid({
+                        saveState: true,
+                        treeColumn: 2,
+                        expanderExpandedClass: 'treegrid-expander-expanded',
+                        expanderCollapsedClass: 'treegrid-expander-collapsed'
+                    });
+
+                },
+
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        return '';
+                    }
+                },
+                 {
+                     "sTitle": "部门",
+                     "bSortable": false,
+                     "sName": "RealName",
+                     "mData": function (data) {
+                         return data.admin_DepartmentName;
+                     },
+                 },
+                {
+                    "sTitle": "员工姓名",
+                    "bSortable": false,
+                    "sName": "RealName",
+                    "mData": function (data) {
+                        var realNameController = "";
+                        realNameController = '<span onclick="ViewWorkeTimeUpdate(this,\'' + data.AdminId + '\');" style="cursor:pointer">' + data.RealName + '</span>';
+                        return realNameController;
+                    },
+                },
+                {
+                    "sTitle": "调班日期",
+                    "bSortable": false,
+                    "sName": "VacationType",
+                    "mData": function (data) {
+                        var dataStr = $.whiskey.tools.dateFormat(data.CreatedTime);
+                        dataStr = dataStr.replace("月", "|").split("|")[0];
+                        return $DataHelper.getYearOrMonth(dataStr, 1) + "-" + $DataHelper.getYearOrMonth(dataStr, 2) + "-" + data.Day;
+                    },
+                },
+                {
+                    "sTitle": "补班日期",
+                    "bSortable": false,
+                    "sName": "StartTime",
+                    "mData": function (data) {
+                        var dataStr = $.whiskey.tools.dateFormat(data.CreatedTime);
+                        dataStr = dataStr.replace("月", "|").split("|")[0];
+                        return $DataHelper.getYearOrMonth(dataStr, 1) + "-" + $DataHelper.getYearOrMonth(dataStr, 2) + "-" + data.OffDay;
+                    },
+                },
+                {
+                    "sTitle": "代班人",
+                    "bSortable": false,
+                    "sName": "EndTime",
+                    "mData": function (data) {
+                        return data.SuccessionName;
+                    },
+                },
+                {
+                    "sTitle": "部门",
+                    "bSortable": false,
+                    "sName": "LeaveDays",
+                    "mData": function (data) {
+                        return data.DepartmentName;
+                    },
+                },
+                {
+                    "sTitle": "审核状态",
+                    "bSortable": false,
+                    "sName": "VerifyType",
+                    "mData": function (data) {
+                        if (data.ToExamineResult == 0) {
+                            return '<span class="label label-success" style="cursor:pointer;margin-right: 16px;" onclick=ToExamineResult(1,"' + data.Id + '")>通过</span><span onclick="ToExamineResult(2,' + data.Id + ')" class="label label-danger" style="cursor:pointer">不通过</span>';
+                        } else if (data.ToExamineResult == 2) {
+                            return "<span style='color: #5ebd5e !important'>未通过</span>";
+                        } else {
+                            return "<span style='color:#56bc76 !important'>已通过</span>";
+                        }
+                    },
+                },
+                {
+                    "sTitle": "控制操作",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        var controller = "";
+                        controller += $.whiskey.datatable.tplView(data.Id);
+                        return controller;
+                    }
+                }
+                ]
+
+            });
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+
+
+        });
+        function et(tli) {
+            if ($.isArray(tli)) {
+                var ret;
+                for (i in tli) {
+                    ret = $.extend({}, ret, tli[i]);
+                }
+                return ret;
+            }
+        }
+
+        function View(sender, Id) {
+            var view = new $.whiskey.web.ajaxView({
+                caption: "详细信息",
+                actionUrl: "/Offices/ClassApplication/View",
+                params: { Id: Id },
+                lockButton: $(sender),
+            });
+        }
+        function ToExamineResult(statues, Id) {
+            $.ajax({
+                url: "@Url.Action("ToExamineHander")",
+                type: "post",
+                data: { ToExamineStatues: statues, Id: Id },
+                success: function (da) {
+                    if (da.ResultType == 3) {
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: "审核成功!",
+                        });
+                        //审核成功后消息—1
+                        var a = $(".shift_audit").html() - 1;
+                        $(".shift_audit").html(a);
+                        if (parseInt(a) == 0) {
+                            $(".shift_audit").css("display", "none")
+                        } else {
+                            $(".shift_audit").css("display", "black")
+                        }
+
+                        $.whiskey.datatable.reset(false);
+                    }
+                    else {
+                        $.whiskey.web.alert({
+                            type: "error",
+                            content: "审核异常！",
+                            callback: function () {
+
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        function ViewWorkeTimeUpdate(sender, Id) {
+            var dialog = new $.whiskey.web.ajaxView({
+                caption: "当月排班信息",
+                actionUrl: "/Stores/WorkforceManagement/ViewUpdate?Id=" + Id,
+                //getParams: { Id: Id },
+                lockButton: $(sender)
+            });
+        }
+    </script>
+
+}

@@ -1,0 +1,912 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+<style>
+    .pcou {
+        width: 120px;
+        padding-left: 0;
+    }
+
+    .total {
+        width: 100px;
+        padding-left: 0;
+    }
+
+    .diaclg .modal-dialog {
+        width: 80% !important;
+        max-width: 80%;
+    }
+
+    .recommend {
+        color: #4c94c8;
+    }
+
+    .input-group-addon {
+        background: rgba (0,0,0,0.2);
+    }
+
+    #DataTables_Table_2_wrapper > .datatable-footer > .text-right {
+        margin-top: -15px;
+        width: 47%;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search text-left">
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">商品品牌</label>
+                        <div class="col-md-9">
+                            @Html.DropDownList("ProductOriginNumber.BrandId", (List<SelectListItem>)ViewBag.Brand, new { @class = "form-control ser_sel selectpicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">商品类别</label>
+                        <div class="col-md-9 ">
+                            @Html.DropDownList("ProductOriginNumber.CategoryId", (List<SelectListItem>)ViewBag.Category, new { @class = "form-control ser_sel selectpicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">商品季节</label>
+                        <div class="col-md-9">
+                            @Html.DropDownList("ProductOriginNumber.SeasonId", (List<SelectListItem>)ViewBag.Season, new { @class = "form-control ser_sel selectpicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">颜色</label>
+                        <div class="col-md-9">
+                            @Html.DropDownList("ColorId", (List<SelectListItem>)ViewBag.Color, new { @class = "form-control ser_sel selectpicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">图片</label>
+                        <div class="col-md-9">
+                            <select class="form-control ser_sel selectpicker" name="hasImg" id="hasImg">
+                                <option value="">请选择</option>
+                                <option value="1">有</option>
+                                <option value="0">无</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">审核状态</label>
+                        <div class="col-md-9">
+                            @Html.DropDownList("ProductOriginNumber.IsVerified", EnumHelper.GetSelectList(typeof(CheckStatusFlag)), "请选择", new { @class = "form-control ser_sel selectpicker" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3" style="margin-right:15px;">搜索</label>
+                        <div class="input-group" style="display: flex; width:51% !important;">
+                            <input type="text" class="form-control keywords" name="keywords" id="keywords">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    商品款号<span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    <li data-type="ProductName"><a href="javascript:;">名称</a></li>
+                                    <li data-type="BigProdNum"><a href="javascript:;">商品款号</a></li>
+                                    <li data-type="OriginNumber"><a href="javascript:;">原始款号</a></li>
+                                    <li data-type="ProductNumber"><a href="javascript:;">商品货号</a></li>
+                                    <li data-type="Notes"><a href="javascript:;">备注</a></li>
+                                </ul>
+                                <input type="hidden" id="hideOtherInfo" name="hideOtherInfo" value="BigProdNum" />
+                            </div><!-- /btn-group -->
+                        </div><!-- /input-group -->
+                    </div>
+
+                </div><!-- /.col-md-4 -->
+
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">面向人群</label>
+                        <div class="col-md-9">
+                            @Html.DropDownList("ProductOriginNumber.CrowdId", (List<SelectListItem>)ViewBag.Crowds, new { @class = "form-control ser_sel selectpicker" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-3">创建日期</label>
+                        <div class="col-md-9">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date  form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date  form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left panel-search">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+            <div class="pull-right panel-control">
+                @*<button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>*@
+                @*<button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>*@
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            @*<div class="col-md-8 text-right ">
+                <span style="margin:10px;" class="swit_sel"><input class="verifier " type="checkbox" data-class="switcher-default"></span>
+                <span><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+            </div>*@
+        </div>
+        <div hidden="hidden" class="loading_hid_img" style="position:fixed;left:45%;top:40%"><img src="~/Content/Images/ajax_loader.gif" /></div>
+        <table class="table table-list table-hover valign-middle" width="100%" style="width:100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="modal_di"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <img style="position:fixed;top:40%;left:45%" class="modal-body" src="/content/images/ajax_loader.gif">
+</div>
+@section Scripts{
+
+    <link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+    <script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+    <script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+    <script src="~/Content/Scripts/Common/comm.js"></script>
+    <script src="~/Content/Scripts/Bootstrap/bootstrap-multiselect.js"></script>
+    <link href="/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "bScrollCollapse": false,
+                "bStateSave": true,
+                "sDom": '<"H clearfix datatable-header text-center"r>t<"F clearfix datatable-footer"<"col-md-5"<"col-md-4 info  text-left"i><"pcou col-md-7 text-left info">><"col-md-7 text-right"p>>',
+                "sAjaxSource": "@Url.Action("List")",
+                "aLengthMenu": [10],
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    var keywords = $(".keywords").val().trim();
+                    var hasImg = $("#hasImg").val();
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    }
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+
+                    if (hasImg) {
+                        aoData.push({ name: "hasImg", value: hasImg });
+                    }
+                    $(".form-search .ser_sel[name!=hasImg]").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0 && value != "-1") {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                        }
+                    });
+
+                    if (keywords.length > 0) {
+
+                        var otherInfoType = $("#hideOtherInfo").val();
+
+                        if (otherInfoType == "ProductName") {
+                            conditions.Rules.push(new $.whiskey.filter.rule("ProductName", keywords, "equal"));
+                        }
+                        else if (otherInfoType == "OriginNumber") {
+                            conditions.Rules.push(new $.whiskey.filter.rule("OriginNumber", keywords, "equal"));
+                        }
+                        else if (otherInfoType == "ProductNumber") {
+                            conditions.Rules.push(new $.whiskey.filter.rule("ProductNumber", keywords, "equal"));
+                        }
+                        else if (otherInfoType == "Notes") {
+                            conditions.Rules.push(new $.whiskey.filter.rule("Notes", keywords, "equal"));
+                        } else if (otherInfoType == "BigProdNum") {
+                            conditions.Rules.push(new $.whiskey.filter.rule("BigProdNum", keywords, "equal"));
+                        }
+                    }
+                    var prodarrIds = [];
+                    var idstr = "";
+                    $(".Coll").each(function () {
+                        var ids = $(this).val().trim();
+                        if (ids != "") {
+                            idstr += ids;
+                        }
+                    });
+                    if (idstr != "") {
+                        var tearr = idstr.split(',');
+                        if (tearr.length > 0) {
+                            for (var i = 0; i < tearr.length; i++) {
+                                var _id = tearr[i];
+                                if (_id != "" && prodarrIds.indexOf(_id) == -1) {
+                                    prodarrIds.push(_id);
+                                }
+                            }
+                        }
+                    }
+                    var arrids = "";
+                    if (prodarrIds.length > 0) {
+                        arrids = "," + prodarrIds.join(',') + ",";
+                        conditions.Rules.push(new $.whiskey.filter.rule("OtherColloIds", arrids, "contains"));
+                    }
+
+
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+
+                    $.whiskey.tools.other(conditions);
+                },
+                "fnPreDrawCallback": function (oSettings) {
+                    //alert("hi");
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    var isEnabled = aData.IsEnabled;
+                    if (isEnabled == false) {
+                        $(nRow).css({ "color": " #5ebd5e" });
+                    }
+                    $("td:eq(0)", nRow).addClass("text-right");
+                    $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+
+                    $("td:eq(2)", nRow).css({ "width": "10%", "padding-left": "0" });
+                    $("td:last", nRow).addClass("text-middle").css({ "width": "13%" });
+                    //$("td:last button", nRow).css({ "margin": "2px" });
+                    $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                    return nRow;
+                },
+                "fnFooterCallback": function () {
+
+                },
+                "fnDrawCallback": function (da, json) {
+                    $.whiskey.tools.json("");
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table-list tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+                    });
+                    var inistat = "collapsed";
+                    var KeywordsVal = $("#Keywords").val();
+                    if (KeywordsVal && KeywordsVal.length > 0) {
+                        inistat = "expanded";
+                    }
+                    $(".table-list").treegrid({
+                        initialState: inistat,
+                        treeColumn: 2,
+                        expanderExpandedClass: 'treegrid-expander-expanded',
+                        expanderCollapsedClass: 'treegrid-expander-collapsed',
+
+                    });
+                    var tds = $(".treegrid-expander-expanded, .treegrid-expander-collapsed, .treegrid-expander").parents("tr").find("td:eq(3)");
+
+                    var cou = 0;
+                    if (tds.length > 0) {
+                        for (var i = 0; i < tds.length; i++) {
+                            var te = $(tds[i]).text();
+                            if (te != "")
+                                cou += parseInt(te);
+                        }
+                        if (cou > 0) {
+                            $(".pcou").html("当前页总数:" + cou);
+                        }
+                    }
+                }
+                ,
+                "aoColumns": [
+                    {
+                        "bVisible": false,
+                        "bSearchable": false,
+                        "sName": "Id",
+                        "mData": "Id"
+                    },
+                    {
+                        "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                        "sName": "Id",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+
+                            return $.whiskey.datatable.tplListCheckbox(data.Id);
+                        }
+                    },
+                    {
+                        "sTitle": "排序",
+                        "bSortable": false,
+                        "sName": "Number",
+                        "mData": function (data) {
+                            return "";
+                        }
+                    },
+                    {
+                        "sTitle": "<span class='prtit' >商品款号</span>",
+                        "bSortable": false,
+                        "sName": "BigProdNum",
+                        "mData": function (data) {
+                            if (data.ParentId == "") {
+                                return "<span style='color:blue'>" + data.BigProdNum + "</span>";
+                            } else {
+                                //return "<span style='color: #5ebd5e'>" + data.BigProdNum + "</span>";
+                                return "";
+                            }
+                        }
+                    },
+                    {
+                        "sTitle": "数量",
+                        "bSortable": false,
+                        "sName": "ProductNumber",
+                        "mData": function (data) {
+                            var reg = /\d+/;
+                            if (!reg.test(data.ParentId))
+                                return data.ChilCou;
+                            else return "";
+                        }
+                    },
+                    {
+                        "sTitle": "商品货号",
+                        "bSortable": false,
+                        "sName": "ProductNumber",
+                        "mData": function (data) {
+                            var reg = /\d+/;
+                            if (reg.test(data.ParentId)) {
+                                return "<span class='_pnum' style=\"font-family: '黑体';font-size: 17px;\">" + data.ProductNumber + "</span>";
+                            }
+                            return "";
+                        }
+                    },
+                    {
+                        "sTitle": "商品图片",
+                        "sName": "ThumbnailPath",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            if (data.ThumbnailPath == null || data.ThumbnailPath == "null" || data.ThumbnailPath == "") {
+                                return "";
+                            }
+                            else {
+                                return '<div class="thumbnail-img_five_box"><div class="thumbnail-img_five"><div class="thumbnail-img_f"><img class="popimg" src="' + data.ThumbnailPath + '"/></div></div></div>';
+                            }
+                        }
+                    },
+                    {
+                        "sTitle": "品牌",
+                        "bSortable": false,
+                        "sName": "BrandName",
+                        "mData": function (data) {
+                            return data.BrandName;
+                        }
+                    },
+                    {
+                        "sTitle": "款式",
+                        "bSortable": false,
+                        "sName": "BrandName",
+                        "mData": function (data) {
+                            return data.CategoryName;
+                        }
+                    },
+                    {
+                        "sTitle": "季节",
+                        "bSortable": false,
+                        "sName": "SeasonName",
+                        "mData": function (data) {
+                            return data.SeasonName;
+                        }
+                    },
+                    {
+                        "sTitle": "尺码",
+                        "bSortable": false,
+                        "sName": "SizeName",
+                        "mData": function (data) {
+                            return data.SizeName;
+                        }
+                    },
+                    {
+                        "sTitle": "颜色",
+                        "bSortable": false,
+                        "sName": "ColorName",
+                        "mData": function (data) {
+                            if (data.ParentId == "") {
+                                return ""
+                            } else {
+                                var st = "<img src='" + data.ColorImg + "' title='" + data.ColorName + "' style='width:40px;margin:0 auto;'>";
+                                return st;
+                            }
+                        }
+                    },
+                    {
+                        "sTitle": "吊牌价",
+                        "bSortable": false,
+                        "sName": "TagPrice",
+                        "mData": function (data) {
+                            return data.TagPrice;
+                        },
+                    },
+                    {
+                        "sTitle": "审核状态",
+                        "bSortable": false,
+                        "sName": "IsVerified",
+                        "mData": function (data) {
+                            var option = "";
+                            if (data.ParentId == "") {
+                                if (data.IsVerified == "@((int)CheckStatusFlag.待审核)") {
+                                    option = $.whiskey.datatable.lblColor("待审核", 'warning');
+                                } else if (data.IsVerified == "@((int)CheckStatusFlag.未通过)") {
+                                    option = $.whiskey.datatable.lblColor("未通过", 'danger');
+                                    //option = "<label onclick='VerifyRefuse(this,\"" + data.Id + "\");'>" + $.whiskey.datatable.lblColor("未通过", 'danger') + "</label>";
+                                } else {
+                                    option = $.whiskey.datatable.lblColor("通过", 'success');
+                                }
+                            }
+                            return option;
+                        },
+                    },
+                    {
+                        "sTitle": "查看",
+                        "bSortable": false,
+                        "sName": "HtmlPath",
+                        "mData": function (data) {
+                            if (data.JumpLink == "" || data.JumpLink == null) {
+                                if (data.HtmlPath == "" || data.HtmlPath == null) {
+                                    return "";
+                                } else {
+                                    var st = "<a href='" + data.HtmlPath + "' target='_blank' class='img-circle'>查看</a>";
+                                    return st;
+                                }
+                            } else {
+                                var st = "<a href='" + data.JumpLink + "' target='_blank' class='img-circle'>查看</a>";
+                                return st;
+                            }
+                        }
+                    },
+                    {
+                        "sTitle": "控制操作",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            var controller = "";
+                            var isDeleted = data.IsDeleted;
+
+                            var reg = /[par|org](\d+)/;
+                            var res = reg.exec(data.Id);
+                            var hasmodel = false;
+                            if (res != null && res != "" && res.length == 2) {
+                                if (!isDeleted) {
+                                    controller += $.whiskey.datatable.tplView(data.Id);
+                                    if (data.ParentId == "") {
+                                        hasmodel = true;
+                                        if (data.IsVerified == "@((int)CheckStatusFlag.待审核)") {
+                                            controller += $.whiskey.datatable.tplVerify(data.Id);
+                                            controller += $.whiskey.datatable.tplDisVerify(data.Id);
+                                        }
+                                    }
+                                } else {
+                                    if (data.ParentId == "") {
+                                        controller += $.whiskey.datatable.tplView(data.Id);
+                                    }
+                                    controller += $.whiskey.datatable.tplRecovery(data.Id);
+                                }
+                                var st = "<button title='查看商品明细' type='button' onclick='searDetails(this)' class='btn btn-xs  btn-padding-right'><i class='fa fa-th-list'></i> </button>";
+                                controller = controller + st;
+                                if (data.IsVerified == "@((int)CheckStatusFlag.未通过)") {
+                                    controller += "<button title='查看原因' onclick=\'VerifyReason(this,\"" + data.Id + "\")\' class='btn btn-xs  btn-padding-right'><i class='fa fa-eye'></i></button>";
+                                }
+                                return controller;
+                            }
+                            if (!isDeleted) {
+                                if (data.ParentId == "") {
+                                    controller += $.whiskey.datatable.tplView(data.Id);
+                                    if (data.IsVerified == "@((int)CheckStatusFlag.待审核)") {
+                                        controller += $.whiskey.datatable.tplVerify(data.Id);
+                                        controller += $.whiskey.datatable.tplDisVerify(data.Id);
+                                    }
+                                }
+                            } else {
+                                if (data.ParentId == "") {
+                                    controller += $.whiskey.datatable.tplView(data.Id);
+                                }
+                                controller += $.whiskey.datatable.tplRecovery(data.Id);
+                            }
+                            var st = "<button title='查看商品明细' type='button' onclick='searDetails(this)' class='btn btn-xs  btn-padding-right'><i class='fa fa-th-list'></i> </button>";
+                            st += "<button title='查看操作明细' type='button' onclick='searOperationDetails(this)' class='btn btn-xs  btn-padding-right'><i class='fa fa-outdent' style='margin-top: 8px;'></i> </button>";
+                            return controller + st;
+                        }
+                    }
+                ]
+
+            });
+
+            $("#Export").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]:checked:not([value^='par'])");
+                if (list.length > 0) {
+                    var printer = $.whiskey.exporter.ajaxExport({
+                        actionUrl: "@Url.Action("Export")",
+                        lockButton: $(this),
+                        fileName: "新导出文件",
+                        topMargin: 10,
+                        leftMargin: 10,
+                        contentWidth: "98%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#RemoveAll").on("click", function () {
+                var list = $(".table-list tbody input:checked");
+
+                if (list.length > 0) {
+                    var ids = [];
+                    var parids = [];
+                    for (var i = 0; i < list.length; i++) {
+                        var t = list[i];
+                        //ids.push(t.value);
+                        if (t.value.indexOf("par") == -1 && ids.indexOf(t.value) == -1) {
+                            ids.push(t.value);
+                        } else {
+                            var _parid = t.value;
+                            var cl = ".treegrid-parent-" + _parid;
+                            var curcou = $(cl).find(".te_1_che:checked").length;
+                            if (curcou == $(cl).length) {
+                                parids.push(t.value);
+                            } else {
+                                $(cl).find(".te_1_che:checked").each(function () {
+                                    var _id = $(this).val();
+                                    if (_id != "" && _id != undefined && ids.indexOf(_id) == -1)
+                                        ids.push(_id);
+                                });
+                            }
+                        }
+                    }
+                    if (parids.length != 0)
+                        ids = parids;
+
+                    var isdele = !$(".trusher").is(":checked");
+                    var tit = "确认要将这些数据移至回收站吗？";
+                    var desc = "提示：数据移动到回收站后，随时可以从回收站中将其恢复";
+                    if (isdele) {
+                        tit = "确认要将这些数据从回收站移除吗？";
+                        desc = "提示：数据将会从回收站中永久移除，不支持恢复,请谨慎操作";
+                    }
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: tit,
+                        notes: desc,
+                        actionUrl: "@Url.Action("Remove")",
+                        lockButton: $(list),
+                        params: { ids: ids, isDele: isdele },
+                        complete: function (da) {
+                            $.whiskey.datatable.reset(false);
+                            if (da.ResultType == 3) {
+                                $.whiskey.web.alert({
+                                    type: "success",
+                                    content: "操作成功！",
+                                    callback: function () {
+                                    }
+                                });
+                            } else {
+                                $.whiskey.web.alert({
+                                    type: "info",
+                                    content: da.Message,
+                                    callback: function () {
+                                    }
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#RecoveryAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据恢复吗？",
+                        notes: "提示：将数据从回收站移动至正常数据列表里",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#DeleteAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据彻底删除吗？",
+                        notes: "提示：数据删除后将不可能再恢复，请谨慎操作！",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#Search").on("click", function () {
+                $.whiskey.datatable.reset(false);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+                $("select").each(function () {
+                    $(this).find("option:eq(0)").prop("selected", "selected");
+                });
+
+            });
+
+        });
+
+        function searDetails(send) {
+            var num = "";
+            var partr = $(send).parents("tr");
+            if (partr.hasClass("treegrid-parent-")) {
+                var pid = partr.find(":checkbox").val();
+                num = $(".treegrid-parent-" + pid).find("._pnum").map(function () { return $(this).text().trim(); }).get().join(",");
+            } else {
+                num = partr.find("._pnum").text().trim();
+            }
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "商品操作明细",
+                actionUrl: "/Logs/ProductOperationLog/ProductLogDetails?num=" + num,
+
+            });
+        }
+
+        function searOperationDetails(send) {
+            var num = "";
+            var partr = $(send).parents("tr");
+            if (partr.hasClass("treegrid-parent-")) {
+                var pid = partr.find(":checkbox").val();
+                num = $(".treegrid-parent-" + pid).find("._pnum").map(function () { return $(this).text().trim(); }).get().join(",");
+            } else {
+                num = partr.find("._pnum").text().trim();
+            }
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "操作明细",
+                actionUrl: "/Logs/ProductOperationLog/ProductOperationLogDetails?num=" + num,
+
+            });
+        }
+
+        function View(sender, Id) {
+            var view = new $.whiskey.web.ajaxView({
+                caption: "详细信息",
+                actionUrl: "@Url.Action("View")",
+                params: { Id: Id },
+                lockButton: $(sender),
+            });
+        }
+
+        function Remove(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要将这条数据移至回收站吗？",
+                notes: "提示：数据移动到回收站后可从随时将其恢复",
+                actionUrl: "@Url.Action("Remove")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Recovery(sender, id) {
+            var parId = id;
+            var reg = /par\d+/;
+            if (reg.test(id)) {
+                var parsty = ".treegrid-parent-" + id;
+                var ids = [];
+                $(parsty).each(function () {
+                    var id = $(this).find(":checkbox").val();
+                    ids.push(id);
+                })
+                parId = ids;
+            }
+            var reg1 = /org\d+/;
+            if (reg1.test(id)) {
+                parId = id;
+            }
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要恢复这条数据吗？",
+                notes: "提示：将数据从回收站移动至正常数据列表里",
+                actionUrl: "@Url.Action("Recovery")",
+                params: { ids: parId },
+                lockButton: $(sender),
+                complete: function (da) {
+                    if (da.ResultType == 3) {
+                        $.whiskey.web.alert({
+                            type: "success",
+                            content: "恢复成功",
+                            par: { keyboard: false, backdrop: "static" },
+                            callback: function () {
+                                $.whiskey.datatable.reset(true);
+                            }
+                        });
+                    } else
+                        $.whiskey.web.alert({
+                            type: "info",
+                            content: "恢复失败",
+                            callback: function () {
+
+                            }
+                        });
+
+
+                }
+            });
+        }
+
+        function Delete(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要彻底删除这条数据吗？",
+                notes: "提示：数据彻底删除后不可恢复，请谨慎操作！",
+                actionUrl: "@Url.Action("Delete")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Verify(sender, Id, isverified) {
+            Id = Id.replace(/[^0-9]/ig, "");
+            if (isverified == 1) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要将这件商品审核通过吗？",
+                    notes: "提示：商品审核后信息不可再修改",
+                    actionUrl: "@Url.Action("Verify")",
+                    params: { Id: Id },
+                    lockButton: $(sender),
+                    complete: function (da) {
+                        if (da.ResultType == 3) {
+                            $.whiskey.web.alert({
+                                type: "success",
+                                content: "审核成功",
+                                par: { keyboard: false, backdrop: "static" },
+                                callback: function () {
+                                    $.whiskey.datatable.reset(true);
+                                }
+                            });
+                        } else
+                            $.whiskey.web.alert({
+                                type: "info",
+                                content: "审核失败",
+                                callback: function () {
+
+                                }
+                            });
+                    }
+                });
+            } else {
+                VerifyRefuse(sender, Id);
+            }
+        }
+        function VerifyRefuse(sender, Id) {
+            Id = Id.replace(/[^0-9]/ig, "");
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "审核未通过",
+                actionUrl: "@Url.Action("VerifyRefuse")",
+                lockButton: $(sender),
+                getParams: { Id: Id },
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(false);
+                    return true;
+                },
+            });
+        }
+
+        function VerifyReason(sender, Id) {
+            Id = Id.replace(/[^0-9]/ig, "");
+            $.whiskey.web.ajaxView({
+                actionUrl: "VerifyRefuse",
+                params: { Id: Id },
+                caption: "未通过原因",
+            });
+        }
+        function Reject(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要驳回这件商品的审核吗？",
+                notes: "提示：商品若未被销售或采购才能驳回审核",
+                actionUrl: "@Url.Action("Reject")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Enable(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要启用这件商品吗？",
+                notes: "提示：启用后商品才可以被采购",
+                actionUrl: "@Url.Action("Enable")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Disable(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要禁用这件商品吗？",
+                notes: "提示：禁用后商品不能再被采购",
+                actionUrl: "@Url.Action("Disable")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+    </script>
+
+}

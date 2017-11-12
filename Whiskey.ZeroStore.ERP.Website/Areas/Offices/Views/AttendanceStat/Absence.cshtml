@@ -1,0 +1,186 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+
+<div class="row">
+    <div class="form-group">
+        <label class="control-label col-md-2">
+            忘记打卡:
+        </label>
+        <div class="col-md-2">
+            <label class="control-label">
+                @ViewBag.PardonCount
+            </label>
+        </div>
+    </div>
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="AbsenceList">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $("#AbsenceList").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("AbsenceList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("AttendanceTime", "@ViewBag.StartTime", "greater"));
+                conditions.Rules.push(new $.whiskey.filter.rule("AttendanceTime", "@ViewBag.EndTime", "less"));
+                //获取当前用户
+                conditions.Rules.push(new $.whiskey.filter.rule("AdminId", "@ViewBag.AdminId", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                $("td:eq(2)", nRow).css({ "float": "left", "width": "100%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnDrawCallback": function () {
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table-list tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+                });
+
+                $(".table-list").treegrid({
+                    saveState: true,
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed'
+                });
+
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+			{
+			    "sTitle": "编号",
+			    "bSortable": false,
+			    "sName": "RowNumber",
+			    "mData": function (data) {
+			        return '';
+			    }
+			},
+            {
+                "sTitle": "考勤日期",
+                "bSortable": false,
+                "sName": "AttendanceTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.AttendanceTime);
+                },
+            },           
+            {
+                "sTitle": "考勤状态",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    var word = "";
+                    //if (data.IsLate == -1) {
+                    //    word += "迟到";
+                    //}
+                    //if (data.IsLeaveEarly == -1) {
+                    //    word += "早退";
+                    //}
+                    @*if (data.LeaveInfoId != null) {
+                        if (data.LeaveInfoType == "@((int)AttendanceFlag.AmLeave)") {
+                            word += "上午请假";
+                        } else if (data.LeaveInfoType == "@((int)AttendanceFlag.PmLeave)") {
+                            word += "下午请假";
+                        } else {
+                            word += "全天请假";
+                        }
+                    }*@
+                    if (data.IsAbsence == -1) {
+                        if (data.AbsenceType == "@((int)AttendanceFlag.AmAbsence)") {
+                            word += "上午缺勤";
+                        } else if (data.AbsenceType == "@((int)AttendanceFlag.PmAbsence)") {
+                            word += "下午缺勤";
+                        } else {
+                            word += "全天缺勤";
+                        }
+                    }
+                    if (data.IsNoSignOut == -1)
+                    {
+                        word += " 未签退 ";
+                    }
+                    @*if (data.OvertimeId != null) {
+                        if (data.OvertimeType == "@((int)AttendanceFlag.AmOvertime)") {
+                            word += "上午加班";
+                        } else if (data.OvertimeType == "@((int)AttendanceFlag.PmOvertime)") {
+                            word += "下午加班";
+                        } else {
+                            word += "全天加班";
+                        }
+                    }*@
+                    return word;
+                },
+            },
+            {
+                "sTitle": "忘记打卡",
+                "bSortable": false,
+                "sName": "AttendanceTime",
+                "mData": function (data) {
+                    if (data.PardonCount>=3) {
+                        return "本月已经使用完"
+                    } else {
+                        if (data.IsPardon == "True") {
+                            return "已兑换"
+                        } else {
+                            return '<button type="button" class="btn btn-success btn-padding-right" onclick="Pardon(\'' + $.whiskey.tools.dateFormat(data.AttendanceTime) + '\')"><i class="fa fa-plus"></i> <span>忘记打卡</span></button>';
+                        }
+                    }                    
+                },
+            },
+
+
+            ]
+
+        });
+
+    });
+
+    function Pardon(date) {
+        $.ajax({
+            url: "@Url.Action("Pardon")",
+            type: 'post',
+            data: { Date: date },
+            success: function (data) {
+                alert(data.Message);
+                $.whiskey.datatable.reset(false);
+            }
+        });
+    }
+
+</script>

@@ -1,0 +1,873 @@
+﻿
+
+
+
+
+
+
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">所属店铺</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("StoreId","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">购买会员</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("MemberId","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">快递公司</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("ExpressId","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">支付公司</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("PaymentId","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">订单标识</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("OrderGuid","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">订单号码</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("OrderNumber","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">订单状态</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("OrderStatus","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">备注信息</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Notes","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">运输方式</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("DeliverType","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">快递运费</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("ExpressFee","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">快递公司</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("ExpressCompany","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">快递单号</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("ExpressNumber","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">收件人</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Receiver","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">所在城市</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("CityName","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">所在省份</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("ProvinceName","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">家庭地址</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("HomeAddress","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">固定电话</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Telephone","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">手机号码</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("MobilePhone","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">邮政编码</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("ZipCode","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">付款方式</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("PaymentType","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">支付公司</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("PaymentCompany","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">付款帐号</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("PaymentAccount","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">付款流水</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("PaymentTradeNumber","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">现金消费</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Cash","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">刷卡消费</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Card","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">积分消费</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Score","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">储值消费</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Balance","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">抹去价格</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Coupon","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">找回零钱</label>
+                        <div class="col-md-8">
+                            @Html.TextBox("Change","", new { @class = "form-control"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">创建日期</label>
+                        <div class="col-md-8">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                    <button id="Create" title="创建一条新数据" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>新增数据</span></button>
+                    <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                    <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                    <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <span><input class="enabler" type="checkbox" data-class="switcher-default" checked="checked"></span>
+                <span style="margin-left:20px;"><input class="trusher" type="checkbox" data-class="switcher-default" checked="checked"></span>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance=$(".table-list").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("List")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var startDate = $(".start-date").val();
+                var endDate = $(".end-date").val();
+                if (startDate.length > 0 && endDate.length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                }
+                if ($(".trusher").is(":checked")) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                    if ($(".enabler").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                    }
+                } else {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                }
+                $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            }, 
+			{
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+			
+            {
+                "sTitle": "所属店铺",
+                "bSortable": false,
+                "sName": "StoreId",
+                "mData": function(data){
+                    return data.StoreId;
+                },
+            }, 
+            {
+                "sTitle": "购买会员",
+                "bSortable": false,
+                "sName": "MemberId",
+                "mData": function(data){
+                    return data.MemberId;
+                },
+            }, 
+            {
+                "sTitle": "快递公司",
+                "bSortable": false,
+                "sName": "ExpressId",
+                "mData": function(data){
+                    return data.ExpressId;
+                },
+            }, 
+            {
+                "sTitle": "支付公司",
+                "bSortable": false,
+                "sName": "PaymentId",
+                "mData": function(data){
+                    return data.PaymentId;
+                },
+            }, 
+            {
+                "sTitle": "订单标识",
+                "bSortable": false,
+                "sName": "OrderGuid",
+                "mData": function(data){
+                    return data.OrderGuid;
+                },
+            }, 
+            {
+                "sTitle": "订单号码",
+                "bSortable": false,
+                "sName": "OrderNumber",
+                "mData": function(data){
+                    return data.OrderNumber;
+                },
+            }, 
+            {
+                "sTitle": "订单状态",
+                "bSortable": false,
+                "sName": "OrderStatus",
+                "mData": function(data){
+                    return data.OrderStatus;
+                },
+            }, 
+            {
+                "sTitle": "备注信息",
+                "bSortable": false,
+                "sName": "Notes",
+                "mData": function(data){
+                    return data.Notes;
+                },
+            }, 
+            {
+                "sTitle": "运输方式",
+                "bSortable": false,
+                "sName": "DeliverType",
+                "mData": function(data){
+                    return data.DeliverType;
+                },
+            }, 
+            {
+                "sTitle": "快递运费",
+                "bSortable": false,
+                "sName": "ExpressFee",
+                "mData": function(data){
+                    return data.ExpressFee;
+                },
+            }, 
+            {
+                "sTitle": "快递公司",
+                "bSortable": false,
+                "sName": "ExpressCompany",
+                "mData": function(data){
+                    return data.ExpressCompany;
+                },
+            }, 
+            {
+                "sTitle": "快递单号",
+                "bSortable": false,
+                "sName": "ExpressNumber",
+                "mData": function(data){
+                    return data.ExpressNumber;
+                },
+            }, 
+            {
+                "sTitle": "收件人",
+                "bSortable": false,
+                "sName": "Receiver",
+                "mData": function(data){
+                    return data.Receiver;
+                },
+            }, 
+            {
+                "sTitle": "所在城市",
+                "bSortable": false,
+                "sName": "CityName",
+                "mData": function(data){
+                    return data.CityName;
+                },
+            }, 
+            {
+                "sTitle": "所在省份",
+                "bSortable": false,
+                "sName": "ProvinceName",
+                "mData": function(data){
+                    return data.ProvinceName;
+                },
+            }, 
+            {
+                "sTitle": "家庭地址",
+                "bSortable": false,
+                "sName": "HomeAddress",
+                "mData": function(data){
+                    return data.HomeAddress;
+                },
+            }, 
+            {
+                "sTitle": "固定电话",
+                "bSortable": false,
+                "sName": "Telephone",
+                "mData": function(data){
+                    return data.Telephone;
+                },
+            }, 
+            {
+                "sTitle": "手机号码",
+                "bSortable": false,
+                "sName": "MobilePhone",
+                "mData": function(data){
+                    return data.MobilePhone;
+                },
+            }, 
+            {
+                "sTitle": "邮政编码",
+                "bSortable": false,
+                "sName": "ZipCode",
+                "mData": function(data){
+                    return data.ZipCode;
+                },
+            }, 
+            {
+                "sTitle": "付款方式",
+                "bSortable": false,
+                "sName": "PaymentType",
+                "mData": function(data){
+                    return data.PaymentType;
+                },
+            }, 
+            {
+                "sTitle": "支付公司",
+                "bSortable": false,
+                "sName": "PaymentCompany",
+                "mData": function(data){
+                    return data.PaymentCompany;
+                },
+            }, 
+            {
+                "sTitle": "付款帐号",
+                "bSortable": false,
+                "sName": "PaymentAccount",
+                "mData": function(data){
+                    return data.PaymentAccount;
+                },
+            }, 
+            {
+                "sTitle": "付款流水",
+                "bSortable": false,
+                "sName": "PaymentTradeNumber",
+                "mData": function(data){
+                    return data.PaymentTradeNumber;
+                },
+            }, 
+            {
+                "sTitle": "现金消费",
+                "bSortable": false,
+                "sName": "Cash",
+                "mData": function(data){
+                    return data.Cash;
+                },
+            }, 
+            {
+                "sTitle": "刷卡消费",
+                "bSortable": false,
+                "sName": "Card",
+                "mData": function(data){
+                    return data.Card;
+                },
+            }, 
+            {
+                "sTitle": "积分消费",
+                "bSortable": false,
+                "sName": "Score",
+                "mData": function(data){
+                    return data.Score;
+                },
+            }, 
+            {
+                "sTitle": "储值消费",
+                "bSortable": false,
+                "sName": "Balance",
+                "mData": function(data){
+                    return data.Balance;
+                },
+            }, 
+            {
+                "sTitle": "抹去价格",
+                "bSortable": false,
+                "sName": "Coupon",
+                "mData": function(data){
+                    return data.Coupon;
+                },
+            }, 
+            {
+                "sTitle": "找回零钱",
+                "bSortable": false,
+                "sName": "Change",
+                "mData": function(data){
+                    return data.Change;
+                },
+            }, 
+            {
+                "sTitle": "更新时间",
+                "bSortable": false,
+                "sName": "UpdatedTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.UpdatedTime);
+                }
+            },
+            {
+                "sTitle": "操作人员",
+                "bSortable": false,
+                "sName": "AdminName",
+                "mData": function(data){
+                    return data.AdminName;
+                },
+            }, 
+            {
+                "sTitle": "控制操作",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    var controller = $.whiskey.datatable.controller(data);
+                    return controller;
+                }
+            }
+            ]
+
+        });
+
+        $("#Create").on("click", function () {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "创建数据",
+                actionUrl: "@Url.Action("Create")",
+                lockButton: $(this),
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(false);
+					return true;
+                },
+            });
+        });
+
+        $("#Print").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var printer = $.whiskey.printer.ajaxPreview({
+                    actionUrl: "@Url.Action("Print")",
+                    lockButton: $(this),
+                    topMargin: "2%",
+                    leftMargin: "4%",
+                    contentWidth: "93.5%",
+                    contentHeight: "100%",
+                    params: list
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+
+        $("#Export").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var printer = $.whiskey.exporter.ajaxExport({
+                    actionUrl: "@Url.Action("Export")",
+                    lockButton: $(this),
+                    fileName: "新导出文件",
+                    topMargin: 10,
+                    leftMargin: 10,
+                    contentWidth: "98%",
+                    contentHeight: "100%",
+                    params: list
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+        $("#RemoveAll").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要将这些数据移至回收站吗？",
+                    notes: "提示：数据移动到回收站后，随时可以从回收站中将其恢复",
+                    actionUrl: "@Url.Action("Remove")",
+                    params: list,
+                    complete: function () {
+                        $.whiskey.datatable.reset(false);
+                    }
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+        $("#RecoveryAll").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要将这些数据恢复吗？",
+                    notes: "提示：将数据从回收站移动至正常数据列表里",
+                    actionUrl: "@Url.Action("Recovery")",
+                    params: list,
+                    complete: function () {
+                        $.whiskey.datatable.reset(false);
+                    }
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+
+        $("#DeleteAll").on("click", function () {
+            var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+            if (list.length > 0) {
+                var confirm = new $.whiskey.web.ajaxConfirm({
+                    question: "确认要将这些数据彻底删除吗？",
+                    notes: "提示：数据删除后将不可能再恢复，请谨慎操作！",
+                    actionUrl: "@Url.Action("Recovery")",
+                    params: list,
+                    complete: function () {
+                        $.whiskey.datatable.reset(false);
+                    }
+                });
+            } else {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "请至少选择一条数据！",
+                    callback: function () {
+                    }
+                });
+            }
+        });
+
+
+        $("#Search").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+
+        $("#Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+
+
+    });
+
+    function View(sender, Id) {
+        var view = new $.whiskey.web.ajaxView({
+            caption: "详细信息",
+            actionUrl: "@Url.Action("View")",
+            params: { Id: Id },
+            lockButton: $(sender),
+        });
+    }
+
+
+    function Update(sender, Id) {
+        var dialog = new $.whiskey.web.ajaxDialog({
+            caption: "修改信息",
+            actionUrl: "@Url.Action("Update")",
+            getParams: { Id: Id },
+            lockButton: $(sender),
+            formValidator: function () {
+                var $form = $(".modal-form");
+                if (!$form.valid()) {
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            postComplete: function () {
+                $.whiskey.datatable.reset(true);
+				return true;
+            },
+        });
+    }
+
+    function Remove(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要将这条数据移至回收站吗？",
+            notes: "提示：数据移动到回收站后可从随时将其恢复",
+            actionUrl: "@Url.Action("Remove")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    function Recovery(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要恢复这条数据吗？",
+            notes: "提示：将数据从回收站移动至正常数据列表里",
+            actionUrl: "@Url.Action("Recovery")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    function Delete(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要彻底删除这条数据吗？",
+            notes: "提示：数据彻底删除后不可恢复，请谨慎操作！",
+            actionUrl: "@Url.Action("Delete")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+
+    function Enable(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要启用这条数据吗？",
+            notes: "提示：启用才可以在任何地方使用",
+            actionUrl: "@Url.Action("Enable")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+
+    function Disable(sender, Id) {
+        var confirm = new $.whiskey.web.ajaxConfirm({
+            question: "确认要禁用这条数据吗？",
+            notes: "提示：禁用后数据将不在其他任何地方使用",
+            actionUrl: "@Url.Action("Disable")",
+            params: { Id: Id },
+            lockButton: $(sender),
+            complete: function () {
+                $.whiskey.datatable.reset(true);
+            }
+        });
+    }
+</script>
+
+}
+

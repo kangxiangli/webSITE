@@ -1,0 +1,251 @@
+﻿<style>
+	.modal-content {
+    width: 878px !important;
+}
+.dataTables_length label{
+	width: 120px;
+    display: flex;
+}
+</style>
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">                
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                  <div class="col-md-4">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-5">价格：</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("Price", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-5">优惠价数量：</label>
+                        <div class="col-md-4">
+                            @Html.TextBox("CouponQuantity", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+ 
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+            <div class="pull-right">
+                <div class="button-normal">                    
+                </div>
+                <div class="button-recycle">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="partners">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instance = $("#partners").dataTable({
+                //"sDom": '<"H clearfix datatable-header text-center">rt<"F clearfix datatable-footer"<"col-md-5 info"i><"col-md-7 text-right"p>>',
+                "sAjaxSource": "@Url.Action("PartnerLevelList")",
+                //"iDisplayLength": 10000,
+                "aLengthMenu": ["5", "10", "15", "20"],
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    conditions.Rules.push(new $.whiskey.filter.rule("PartnerId", "@ViewBag.PartnerId", "greater"));
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    }
+                    if ($(".trusher").is(":checked")) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                        if ($(".enabler").is(":checked")) {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                        } else {
+                            conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "false", "equal"));
+                        }
+                    } else {
+                        conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "true", "equal"));
+                    }
+                    $(".form-search select").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                        }
+                    });
+                    $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+                        if (value != null && value.length > 0) {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                        }
+                    });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    if (aData.ParentId==null) {
+                        $("td:eq(1)", nRow).html(iDisplayIndex + 1);
+                    }
+
+                    $("td:eq(2)", nRow).css({ "float": "left", "width": "100%" });
+                    $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                    return nRow;
+                },
+                "fnDrawCallback": function () {
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+                    });
+
+                    $(".table-list").treegrid({
+                        //saveState: true,
+                        initialState: 'collapsed',
+                        treeColumn: 1,
+                        expanderExpandedClass: 'treegrid-expander-expanded',
+                        expanderCollapsedClass: 'treegrid-expander-collapsed'
+                    });
+
+                },
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        return "";
+
+                    }
+                },
+                {
+                  "sTitle": "等级名称",
+                  "bSortable": false,
+                  "sName": "LevelName",
+                  "mData": function (data) {
+                      return data.LevelName;
+                  }
+                },
+                {
+                    "sTitle": "等级",
+                    "bSortable": false,
+                    "sName": "Level",
+                    "mData": function (data) {
+                        return data.Level;
+                    },
+                },                 
+                 {
+                     "sTitle": "购买价格",
+                     "bSortable": false,
+                     "sName": "Price",
+                     "mData": function (data) {
+                         return data.Price
+                     },
+                 },
+                  {
+                      "sTitle": "优惠券数量",
+                      "bSortable": false,
+                      "sName": "CouponQuantity",
+                      "mData": function (data) {
+                          return data.CouponQuantity
+                      },
+                  },
+                 {
+                     "sTitle": "购买",
+                     "bSortable": false,
+                     "sName": "PhoneNum",
+                     "mData": function (data) {
+                         return '<a style="cursor:pointer;color:green" onclick="orderLevel(this)" data-leveId="' + data.Id + '" data-partnerId="@ViewBag.PartnerId" >购买</a>';
+                     },
+                 },
+                ]
+
+        });
+
+
+
+
+        
+
+
+        $("#Search").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+
+        $("#Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+
+
+    });
+          
+        function orderLevel(option) {
+            var Id = $(option).attr("data-leveId");
+            var partnerId = $(option).attr("data-partnerId");
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要购买吗？",
+                notes: "提示：购买后享有更多优惠",
+                actionUrl: "@Url.Action("OrderLevel")",
+                params: { Id: Id, PartnerId: partnerId },                
+                complete: function (data) {
+                    debugger
+                    if (data.ResultType==3) {
+                        $(".modal").modal("hide");
+                        location.href = "@Url.Action("Index")";
+                    } else {
+
+                    }
+                }
+            });
+        }
+         
+    </script>

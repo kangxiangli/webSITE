@@ -1,0 +1,232 @@
+﻿@using Whiskey.Utility.Data
+@using Whiskey.ZeroStore.ERP.Transfers
+<style>
+		.modal-content {
+    width: 895px !important;
+}
+.pagination{
+	margin-top: 32px;;
+}
+</style>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        搜索条件 :
+    </label>
+    <div class="col-md-8 divStoreId">
+        <input type="text" name="keyWord" placeholder="会员昵称/评论内容" class="form-control" id="keyWord" />
+    </div>
+    <div class="col-md-2 ">
+        <button data-bb-handler="success" type="button" class="btn btn-primary searchComment">
+            <i class="fa fa-search">
+                搜索
+            </i>
+        </button>
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%" id="tableComment">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+        var tableComment;
+        $(document).ready(function () {
+           tableComment = $.whiskey.datatable.instance = $("#tableComment").dataTable({
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("CommentList")",
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+                    if (startDate.length > 0 && endDate.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate + " 00:01:01", "greater"));
+                        conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate + " 23:59:59", "less"));
+                    }
+                    var word = $("#keyWord").val();
+                    //$(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                    //    var field = $(this).attr("name");
+                    //    var value = $(this).val();
+                    //    if (value != null && value.length > 0) {
+                    //        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    //    }
+                    //});
+                    //单品Id
+                    var Id = "@ViewBag.SingleProId";
+                    conditions.Rules.push(new $.whiskey.filter.rule("Id", Id, "contains"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("MemberName", word, "contains"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("Comment", word, "contains"));
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+                "aoColumns": [{
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "编号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        var index = data.iDisplayIndex + 1;
+                        return '' + index + '';
+                    }
+                },
+                {
+                    "sTitle": "会员昵称",
+                    "bSortable": false,
+                    "sName": "MemberName",
+                    "mData": function (data) {
+                        return data.MemberName;
+                    },
+                },
+                {
+                    "sTitle": "评论内容",
+                    "bSortable": false,
+                    "sName": "Comment",
+                    "mData": function (data) {
+                        var comm = data.Comment;
+                        if (comm.length>3){
+                            var temp = comm.substring(0, 3);
+                            return '<span style="cursor:pointer" onclick="showComment(this)" data-comment="' + comm + '">' + temp + "..." + '</span>';
+                        }
+                        else {
+                            return data.Comment;
+                        }
+                    },
+                },
+
+                {
+                    "sTitle": "评论时间",
+                    "bSortable": false,
+                    "sName": "CreatedTime",
+                    "mData": function (data) {
+                        return $.whiskey.tools.dateFormat(data.CreatedTime);
+                    }
+                },
+
+                {
+                    "sTitle": "控制操作",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        //var controller = $.whiskey.datatable.controller(data);
+                        var controller ="<button   title=\"将数据从库中彻底抹去\" type=\"button\"  onclick=\"DeleteComment(this,'" + data.Id + "');\" class=\"btn btn-xs  btn-padding-right\"><i class=\"fa fa-remove\"></i> </button>";//= $.whiskey.datatable.tplView(data.Id);
+                        //controller += "<button   title=\"将数据从库中彻底抹去\" type=\"button\"  onclick=\"DeleteComment(this,'" + data.Id + "');\" class=\"btn btn-xs  btn-padding-right\"><i class=\"fa fa-remove\"></i> </button>";
+                        return controller;
+                    }
+                }
+                ]
+
+            });
+
+            $("#DeleteAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据彻底删除吗？",
+                        notes: "提示：数据删除后将不可能再恢复，请谨慎操作！",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+
+            $(".bootbox .searchComment").on("click", function () {
+                alert(12);
+                tableComment.fnDraw();
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+
+
+        });
+
+        function View(sender, Id) {
+            var view = new $.whiskey.web.ajaxView({
+                caption: "详细信息",
+                actionUrl: "@Url.Action("View")",
+                params: { Id: Id },
+                lockButton: $(sender),
+            });
+        }
+        //强制刷新列表
+        function reload() {
+            temp.fnDraw();
+        }
+
+        //显示评论
+        function showComment(my) {
+            var comment = $(my).attr('data-comment');
+            bootbox.dialog({
+                message: comment,
+                // message:formBody,
+                title: "评论内容",
+                buttons: {
+                    cancel: {
+                        label: "关闭",
+                        icon: "fa-close",
+                        className: "btn-default",
+                        callback: function () {
+                        }
+                    }
+                }
+            });
+        }
+
+        function DeleteComment(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要彻底删除这条数据吗？",
+                notes: "提示：数据彻底删除后不可恢复，请谨慎操作！",
+                actionUrl: "@Url.Action("DeleteApproval")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+</script>
+
+

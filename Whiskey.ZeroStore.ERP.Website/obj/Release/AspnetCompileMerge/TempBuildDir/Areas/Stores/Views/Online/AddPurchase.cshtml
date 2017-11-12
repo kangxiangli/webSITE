@@ -1,0 +1,132 @@
+﻿<div class="form-group">
+    <label class="control-label col-md-3">
+        采购店铺 :
+    </label>
+    <div class="col-md-6">
+        <select class="form-control" id="ReceiptStoreId" name="ReceiptStoreId"></select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        采购仓库 :
+    </label>
+    <div class="col-md-6">
+        <select class="form-control" name="ReceiptStorageId" id="ReceiptStorageId"></select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        店铺类型 :
+    </label>
+    <div class="col-md-6">
+        @Html.DropDownList("StoreType", (List<SelectListItem>)ViewBag.StoreTypes, new { @class = "form-control", @disabled= "disabled" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        总价格 :
+    </label>
+    <label class="control-label col-md-2"><span id="all_balance" data-orgPrice="@ViewBag.AllPrice">@ViewBag.AllPrice</span> 元</label>
+    <label class="control-label col-md-2">
+        <label style="color:#00ff21;display:none;" id="lbl_jisuan">（无需结算）</label>
+        <input type="hidden" value="false" id="WithoutMoney" name="WithoutMoney" />
+    </label>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        店铺余额 :
+    </label>
+    <label class="control-label col-md-2"><span id="store_balance">0</span> 元</label>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#ReceiptStoreId").queryManageStore();
+        btnDisabled();
+        //当选择采购店铺时
+        $("#ReceiptStoreId").on("change", function () {
+            var storeId = $(this).val();
+            if (storeId == "" || storeId == null || storeId == undefined) {
+
+            } else {
+                getStorageId(storeId);
+                 $('.selectpicker').selectpicker();
+            }
+            btnDisabled();
+        })
+        //当选择采购仓库
+        $("#ReceiptStorageId").on("change", function () {
+            btnDisabled();
+        })
+    })
+    //无需结算
+    function jiesuan_change(withoutmoney) {
+        var $all_balance = $("#all_balance");
+        if (withoutmoney) {
+            $all_balance.html("0");
+            $("#lbl_jisuan").show();
+        } else {
+            $all_balance.html($all_balance.attr("data-orgPrice"));
+            $("#lbl_jisuan").hide();
+        }
+        $("#WithoutMoney").val(withoutmoney);
+
+        btnDisabled();
+    }
+
+    //获取仓库
+    function getStorageId(storeId) {
+        $("#ReceiptStorageId").empty();
+        var htmlPart = "<option value>请选择</option>";
+        $.ajax({
+            url: "@Url.Action("GetStorages")",
+            type: "POST",
+            data: { StoreId: storeId },
+            success: function (da) {
+                var length = da.list.length;
+                var part = '<option value="~Id">~Name</option>';
+                for (var i = 0; i < length; i++) {
+                    var data = da.list[i];
+                    var id = data.Id;
+                    var name = data.StorageName;
+                    htmlPart += part.replace("~Id", id).replace("~Name", name);
+                }
+                $("#ReceiptStorageId").append(htmlPart);
+                $("#StoreType").val(da.StoreType);
+
+                if (da.IsPay == false) {
+                    jiesuan_change(true);
+                } else {
+                    jiesuan_change(false);
+                }
+
+                $("#store_balance").html(da.Balance);
+            }
+        })
+    }
+
+    //禁用提交
+    function btnDisabled() {
+        var storeId = $("#ReceiptStoreId").val();
+        var storageId = $("#ReceiptStorageId").val();
+        var index = 0;
+        if (storeId == "" || storeId == null || storeId == undefined) {
+            index++;
+        }
+        if (storageId == "" || storageId == null || storageId == undefined) {
+            index++;
+        }
+
+        var all_balance = $("#all_balance").html();
+        var store_balance = $("#store_balance").html();
+        var subPrice = parseFloat(store_balance) - parseFloat(all_balance);
+        if (index == 0) {
+            $(".bootbox .btn-primary").removeAttr("disabled");
+            var withoutMoney = $("#WithoutMoney").val();
+            if ((subPrice < 0 || isNaN(subPrice)) && withoutMoney != "true") {
+                $(".bootbox .btn-primary").attr("disabled", true);
+            }
+        } else {
+            $(".bootbox .btn-primary").attr("disabled", true);
+        }
+    }
+</script>

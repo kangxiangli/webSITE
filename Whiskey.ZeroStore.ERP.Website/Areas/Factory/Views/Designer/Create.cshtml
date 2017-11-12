@@ -1,0 +1,178 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model DesignerDto
+
+<style>
+    #myTabContent ul li {
+        position: relative;
+        z-index: 9999;
+    }
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        <div class="creat_div" style="margin-top:20px;margin-left:-50px">
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    @Html.DisplayNameFor(m => m.FactoryId) :
+                </label>
+                <div class="col-md-4">
+                    @Html.DropDownListFor(m => m.FactoryId, (List<SelectListItem>)ViewBag.GetFactorys, new { @class = "form-control selectpicker" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    所属部门 :
+                </label>
+                <div class="col-md-4">
+                    <input type="text" id="Department" class="form-control" readonly data-depid="" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    所属店铺 :
+                </label>
+                <div class="col-md-4">
+                    <input type="text" id="Store" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    所属仓库 :
+                </label>
+                <div class="col-md-4">
+                    <input type="text" id="Storage" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    代理品牌 :
+                </label>
+                <div class="col-md-4">
+                    <input type="text" id="Brand" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    员工编号 :
+                </label>
+                <div class="col-md-4  no-margin-hr">
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.AdminId, new { @class = "input-sm form-control", @readonly = "" })
+                        <span class="btn sel-btn input-group-addon" style="z-index:999;">选择</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">
+                    员工姓名 :
+                </label>
+                <div class="col-md-4  no-margin-hr">
+                    <input type="text" id="hid_AdminName" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function brand() {
+        if ($("#AdminId").val()) {
+            $("button[data-bb-handler='success']").removeAttr("disabled");
+        }
+        else {
+            $("button[data-bb-handler='success']").attr("disabled", "disabled");
+        }
+    };
+
+    $(function () {
+
+        $("button[data-bb-handler='success']").attr("disabled", "disabled");
+
+        $(".sel-btn").click(function () {
+            var depid = $(".DivCreate #Department").attr("data-depid");
+            if (depid && depid > 0) {
+                $(".creat_div").parents(".modal-content:first").hide();
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "员工列表",
+                    actionUrl: "@Url.Action("Admin")",
+                    getParams: { DepartmentId: depid },
+                    lockButton: $(this),
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        if (!$form.valid()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    successEvent: function () {
+                        var $radio = $("input[type='radio']:checked");
+                        var $row = $radio.parents("tr:first");
+                        var aid = $radio.val();
+                        var aname = $row.find("td:eq(3)").text();
+                        $(".creat_div #hid_AdminName").val(aname);
+                        $(".creat_div #AdminId").val(aid);
+                        $.post("@Url.Action("GetInfoById")", { AdminId: aid }, function (dat) {
+                            if (dat.ResultType != 3) {
+                                $(".creat_div #AdminId").parents("div:first").addClass("has-error").attr("title", "已存在同名的设计师");
+                                $("button[data-bb-handler='success']").attr("disabled", "disabled");
+                            }
+                            else {
+                                $(".creat_div #AdminId").parents("div:first").removeClass("has-error").removeAttr("title");
+                                $("button[data-bb-handler='success']").removeAttr("disabled");
+                            }
+                            brand();
+                        })
+                        $(".creat_div").parents(".modal-content:first").show();
+                    },
+                    closeEvent: function () {
+                        $(".creat_div").parents(".modal-content:first").show();
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(false);
+                        return true;
+                    },
+                });
+            }
+
+        });
+
+        $(".DivCreate #FactoryId").change(function () {
+            var fid = $(this).val();
+            var $div = $(".DivCreate");
+            var $Department = $div.find("#Department").val("").attr("data-depid", "");
+            var $Store = $div.find("#Store").val("");
+            var $Storage = $div.find("#Storage").val("");
+            var $Brand = $div.find("#Brand").val("");
+            $div.find("#AdminId,#hid_AdminName").val("");
+            if (fid && fid > 0) {
+                $.whiskey.web.ajaxRequest({
+                    actionUrl: "GetFactoryInfo",
+                    params: { factoryId: fid },
+                    hideLoading: true,
+                    complete: function (data) {
+                        if (data) {
+                            $Department.val(data.DepartmentName).attr("data-depid", data.DepartmentId);
+                            $Store.val(data.StoreName);
+                            $Storage.val(data.StorageName);
+                            $Brand.val(data.BrandName);
+                        }
+                    }
+                });
+            }
+        });
+    })
+
+</script>
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+    })
+</script>

@@ -1,0 +1,413 @@
+﻿@using System.Diagnostics.Eventing.Reader
+@using System.Web.Razor.Parser.SyntaxTree
+@using NPOI.SS.Formula.Functions
+@using Whiskey.ZeroStore.ERP.Models
+@model SalesCampaign
+
+<style>
+    .modal-content {
+        width: 1000px;
+    }
+
+   
+   
+</style>
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+    <li><a href="#prods_tab" data-toggle="tab">活动商品</a></li>
+    <li><a href="#store_tab" data-toggle="tab">参与店铺</a></li>
+
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+
+        <div class="form-group">
+
+            <label class="control-label col-md-4">活动编号：</label>
+            <div class="col-md-4 ">
+                <span class="campaign_pronum">@Model.CampaignNumber</span>
+
+            </div>
+
+        </div>
+        <div class="form-group">
+
+            <label class="control-label col-md-4">活动名称：</label>
+            <div class="col-md-4 ">
+                <span>@Model.CampaignName</span>
+
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">活动开始时间：</label>
+            <div class="col-md-4 ">
+                <span style="color: #5ebd5e">@Model.CampaignStartTime</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            <label class="control-label col-md-4">活动结束时间：</label>
+            <div class="col-md-4">
+                <span style="color: #5ebd5e">@Model.CampaignEndTime</span>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">可参与者类型：</label>
+            <div class="col-md-4">
+                @if (Model.SalesCampaignType == SalesCampaignType.NoMemberOnly)
+                {
+                    <span style="color: #5ebd5e">仅限非会员</span>
+                }
+                @if (Model.SalesCampaignType == SalesCampaignType.MemberOnly)
+                {
+                    <span style="color: #5ebd5e">仅限会员</span>
+                }
+                @if (Model.SalesCampaignType == SalesCampaignType.EveryOne)
+                {
+                    <span style="color: #5ebd5e">不限定</span>
+                }
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">会员专享折扣：</label>
+            <div class="col-md-4">
+                @Model.MemberDiscount<span>折</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">非会员折扣：</label>
+            <div class="col-md-4">
+                @Model.NoMmebDiscount<span>折</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-4">活动描述：</label>
+            <div class="col-md-4">
+                @Model.Descript
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">是否可以同时参与其他活动：</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.OtherCampaign ? "是" : "否")
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">是否可以同时使用其他代金券：</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.OtherCashCoupon ? "是" : "否")
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">是否已删除：</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.IsDeleted ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">是否可用：</label>
+            <div class="col-md-4">
+                @Html.Raw(Model.IsEnabled ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">活动创建时间：</label>
+            <div class="col-md-4">
+                @Model.CreatedTime
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">操作人：</label>
+            <div class="col-md-4">
+
+                @if (Model.Administrator != null)
+                {
+                    <span>@Model.Administrator.Member.MemberName</span>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="prods_tab">
+        <div class="row">
+            <div class="panel panel-search">
+                <div class="panel-heading clearfix">
+                    <div class="col-md-4 panel-title">
+                        <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                    </div>
+                    <div class="col-md-8 text-right">
+                        <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal form-search">
+
+                        <div class="col-md-4">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-4">商品款号</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("BigProdNum", "", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-4">商品名称</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("ProductName", "", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group no-margin-hr">
+                                <label class="control-label col-md-4">品牌</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("BrandId", (List<SelectListItem>)ViewBag.Brand, new { @class = "form-control _number_select selectpicker" })
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer text-right clearfix ">
+                    <div class="pull-left">
+                        <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                        <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table id="table-list-box" class="table tab_view table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="store_tab">
+        <div class="panel panel-list">
+
+            <div class="panel-body">
+                @foreach (var item in ViewBag.Stores as List<SelectListItem>)
+                {
+                    <div class="col-md-2">
+
+                        <label>
+                            @if (item.Selected)
+                            {
+
+                                <input type="checkbox" value="@item.Value" checked disabled/>
+                            }
+                            else
+                            {
+                                <input type="checkbox" value="@item.Value" disabled />
+                            }
+                            @item.Text
+                        </label>
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+	$("#myTabContent").on("mouseover", ".popimg", function () {
+		
+                if (this.tagName == "IMG") {
+                    var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                    
+                    toolTip(strImg);
+                    console.log(this.src);
+                } else {
+                    $(this).find("img").each(function () {
+                        var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                        toolTip(strImg);
+                    });
+                }
+            }).on("mouseout", function () {
+                $("body").find("#toolTipLayer").hide();
+            });
+
+</script>
+<script>
+    
+
+    $(function () {
+        $('#prods_tab .switcher').switcher({
+            on_state_content: "展开搜索",
+            off_state_content: "隐藏搜索"
+        }).on("click", function () {
+            var panel_body = $(this).parents('.panel-heading').siblings(".panel-body");
+            if (panel_body.is(":hidden")) {
+                panel_body.slideDown('fast');
+            } else {
+                panel_body.slideUp('fast');
+            }
+        });
+
+        $("#prods_tab #Search").on("click", function () {
+            $.whiskey.datatable.reset(false, $tablview_dt);
+        });
+        $("#prods_tab #Clear").click(function () {
+            $("#prods_tab .panel-search select").find("option:eq(0)").attr("selected", "selected");
+            $("#prods_tab .panel-search input").val("");
+        });
+        $("#prods_tab #BrandId option").each(function () {
+            var tx = $(this).val();
+            if (tx == "-1" || tx == "") {
+                $(this).attr("disabled", "disabled").val("");
+            }
+        });
+    });
+
+    $(function () {
+        var tabName = '@ViewBag.TabName';
+        if (tabName && tabName.length > 0) {
+            //console.log(tabName);
+            $('a[href="#' + tabName + '"]').tab('show')
+        }
+        $tablview_dt = $(".tab_view").dataTable({
+            "bScrollCollapse": false,
+            "bStateSave": true,
+            "sDom": '<"H clearfix datatable-header text-center"r>t<"F clearfix datatable-footer"<"col-md-5"<"col-md-4 info  text-left"i><"pcou col-md-7 text-left info">><"col-md-7 text-right"p>>',
+            "sAjaxSource": "@Url.Action("ViewProduDa")",
+            "aLengthMenu": [10],
+            "fnServerParams": function (aoData) {
+                var num = $(".campaign_pronum").text();
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("CampaignNumber", num, "equal"));
+
+                $("#prods_tab .form-search input[name!='StartDate'][name!='EndDate'][name!='CreatedTime'],#prods_tab .form-search select").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, $(this).hasClass("_number_select") ? "equal" : "contains"));
+                    }
+                });
+
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "fnPreDrawCallback": function (oSettings) {
+                //alert("hi");
+            }
+        ,
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var isEnabled = aData.IsEnabled;
+                if (isEnabled == false) {
+                    $(nRow).css({ "color": " #5ebd5e" });
+                }
+//                $("td:eq(0)", nRow).addClass("text-right");
+
+                $("td:eq(0)", nRow).text(iDisplayIndex + 1);
+                $("td:eq(2)", nRow).css({ "width": "13%", "padding-left": "0" });
+                //$("td:eq(4)", nRow).css({ "float": "left","width":"13%" });
+                $("td:last", nRow).addClass("text-middle").css({ "width": "15%" });
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                return nRow;
+            },
+            "fnFooterCallback": function () {
+
+            },
+            "fnDrawCallback": function (da, json) {
+                $.whiskey.tools.json("");
+
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+
+            {
+                "sTitle": "排序",
+                "bSortable": false,
+                "sName": "Number",
+                "mData": function (data) {
+                    return "";
+                }
+            },
+            {
+                "sTitle": "商品款号",
+                "bSortable": false,
+                "sName": "BigProdNum",
+                "mData": function (data) {
+                    return data.BigProdNum;
+                }
+
+            },
+             {
+                 "sTitle": "商品名称",
+                 "bSortable": false,
+                 "sName": "ProductName",
+                 "mData": function (data) {
+
+                     return data.ProductName;
+
+                 }
+             },
+              {
+                  "sTitle": "品牌",
+                  "bSortable": false,
+                  "sName": "BrandName",
+                  "mData": function (data) {
+
+                      return data.BrandName;
+
+                  }
+              },
+
+                {
+                    "sTitle": "吊牌价(￥)",
+                    "bSortable": false,
+                    "sName": "ProductNumber",
+                    "mData": function (data) {
+
+                        return data.TagPrice;
+
+                    }
+                },
+                {
+                    "sTitle": "主图",
+                    "bSortable": false,
+                    "sName": "ThumbnailPath",
+                    "mData": function (data) {
+                        return "<div class='thumbnail-img_five_box'><div class='thumbnail-img_five'><div class='thumbnail-img_f'> <img class='popimg' src='" + data.ThumbnailPath + "' onerror='imgloaderror(this);' /> </div></div></div>"
+                    }
+                },
+
+            {
+                "sTitle": "创建时间",
+                "bSortable": false,
+                "sName": "CreatedTime",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.CreatedTime, "yyyy-MM-dd");
+                }
+
+            },
+            ]
+
+        });
+    });
+</script>
+<script>
+	 // selectpicker_b 初始化
+    $(function () {
+        	 $('.selectpicker').selectpicker();
+    })
+  
+</script>

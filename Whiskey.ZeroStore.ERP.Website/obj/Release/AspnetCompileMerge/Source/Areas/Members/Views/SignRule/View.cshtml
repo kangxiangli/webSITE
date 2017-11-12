@@ -1,0 +1,134 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Member
+@model SignRule
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Week) :
+    </label>
+    <div class="col-md-10">
+        第 @Model.Week 天
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.SignRuleName) :
+    </label>
+    <div class="col-md-10">
+        @Model.SignRuleName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.PrizeType) :
+    </label>
+    <div class="col-md-10">
+        <select class="form-control" name="PrizeType" id="PrizeType" onchange="initIndex()" disabled>
+            <option value="@((int)PrizeFlag.Score)">积分</option>
+            <option value="@((int)PrizeFlag.Coupon)">优惠券</option>
+            @*<option value="@((int)PrizeFlag.Res)">物品</option>*@
+        </select>
+    </div>
+</div>
+<div class="form-group divCoupon">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CouponId) :
+    </label>
+    <div class="col-md-8">
+         @Html.Raw(Model.CouponId == null ? string.Empty : Model.Coupon.CouponName)        
+    </div>
+    
+</div>
+<div class="form-group divPrize">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.PrizeId) :
+    </label>
+    <div class="col-md-8">         
+        @Html.Raw(Model.PrizeId == null ? string.Empty : Model.Prize.PrizeName)        
+    </div>    
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Model.Notes        
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        操作人员 :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        var prizeType = "@Model.PrizeType"
+
+        $(".bootbox #PrizeType option").each(function () {
+            var value = $(this).val();
+            if (value == prizeType) {
+                $(this).attr("selected", "selected");
+            }
+        })
+
+         
+        //初始化添加界面
+        initIndex();
+    })
+    
+    //初始化添加界面
+    function initIndex() {
+        var prizeType = $(".bootbox #PrizeType").val();
+        if (prizeType == "@((int)PrizeFlag.Score)") {
+            $(".divCoupon").css("display", "none");
+            $(".divPrize").css("display", "block");
+            $(".bootbox #CouponName").attr("value", "请选择");
+            $(".bootbox #PrizeName").attr("value", "请选择");
+        } else if (prizeType == "@((int)PrizeFlag.Coupon)") {
+            $(".divCoupon").css("display", "block");
+            $(".divPrize").css("display", "none");
+            $(".bootbox #PrizeName").attr("value", "请选择");
+            $(".bootbox #Score").attr("value", "0");
+        } else {
+            $(".divCoupon").css("display", "none");
+            $(".divPrize").css("display", "block");
+            $(".bootbox #CouponName").attr("value", "请选择");
+            $(".bootbox #Score").attr("value", "0");
+        }
+    }
+
+</script>

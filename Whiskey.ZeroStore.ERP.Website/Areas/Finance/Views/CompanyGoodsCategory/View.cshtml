@@ -1,0 +1,144 @@
+
+@using Whiskey.ZeroStore.ERP.Models
+@model CompanyGoodsCategory
+
+<style>
+
+</style>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CompanyGoodsCategoryName) :
+    </label>
+    <div class="col-md-10">
+        @Model.CompanyGoodsCategoryName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ImgAddress) :
+    </label>
+    <div class="col-md-10">
+        <img src="@Model.ImgAddress"  style="max-height:400px;max-width:400px" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UniqueIdentification) :
+    </label>
+    <div class="col-md-10">
+        @Model.UniqueIdentification
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Type) :
+    </label>
+    <div class="col-md-10">
+        @ViewBag.TypeName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        ¸¸Àà±ð :
+    </label>
+    <div class="col-md-10">
+        @(Model.Parent == null ? "" : Model.Parent.CompanyGoodsCategoryName)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsUniqueness) :
+    </label>
+    <div class="col-md-10">
+        @(Model.IsUniqueness ? "ÊÇ" : "·ñ")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.TotalQuantity) :
+    </label>
+    <div class="col-md-10">
+        @(Model.TotalQuantity ?? 0)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UsedQuantity) :
+    </label>
+    <div class="col-md-10">
+        @(Model.UsedQuantity ?? 0)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Price) :
+    </label>
+    <div class="col-md-10">
+        @(Model.Price ?? 0)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Status) :
+    </label>
+    <div class="col-md-10">
+        @ViewBag.StatusName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Model.Notes
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+        @UiHelper.showEnabled(Model.IsEnabled)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+        @UiHelper.showDeleted(Model.IsDeleted)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.OperatorId) :
+    </label>
+    <div class="col-md-10">
+        @UiHelper.showOperator(Model.Operator)
+    </div>
+</div>
+
+<script>
+    $(function () {
+
+
+    });
+</script>
+

@@ -1,0 +1,30 @@
+﻿<style>
+    .activeDate {
+        background-image: url("/Content/Images/themes/dh.png");
+        background-repeat: no-repeat;
+        background-size: 70% 70%;
+        background-position: 11px 7px;
+    }
+    .form-group_box{
+    	display: flex;
+    line-height: 32px;
+    height: 32px;
+         
+    }
+    .form-group_box .control-label{
+    	padding-top: 0px !important; 
+    }
+    .md_box{
+    	width: 125px;
+    	height: 32px;
+    margin-right: 5px;
+    }
+</style>
+<div class="form-group form-group_box">
+    <label class="control-label col-md-3">
+        考勤积分配置 :
+    </label>
+    <div class="col-md-4">
+        <input class="md_box" type="text" maxlength="3" value="@ViewBag.LeavePoints" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^0-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" class="form-control" id="LeavePoints" />积分/时
+    </div>
+</div>

@@ -1,0 +1,13 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model PartnerManageDto
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        拒绝原因 :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.CheckNotes, new { @class = "form-control", @resize = "none", @rows = "12" })
+    </div>
+</div>
+
+@Html.HiddenFor(f=>f.Id)

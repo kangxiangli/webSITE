@@ -1,0 +1,280 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model Order
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.StoreId) :
+    </label>
+    <div class="col-md-10">
+		@Model.StoreId
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.MemberId) :
+    </label>
+    <div class="col-md-10">
+		@Model.MemberId
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.ExpressId) :
+    </label>
+    <div class="col-md-10">
+		@Model.ExpressId
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.PaymentId) :
+    </label>
+    <div class="col-md-10">
+		@Model.PaymentId
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.OrderGuid) :
+    </label>
+    <div class="col-md-10">
+		@Model.OrderGuid
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.OrderNumber) :
+    </label>
+    <div class="col-md-10">
+		@Model.OrderNumber
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.OrderStatus) :
+    </label>
+    <div class="col-md-10">
+		@Model.OrderStatus
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Notes) :
+    </label>
+    <div class="col-md-10">
+		@Model.Notes
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.DeliverType) :
+    </label>
+    <div class="col-md-10">
+		@Model.DeliverType
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.ExpressFee) :
+    </label>
+    <div class="col-md-10">
+		@Model.ExpressFee
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.ExpressCompany) :
+    </label>
+    <div class="col-md-10">
+		@Model.ExpressCompany
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.ExpressNumber) :
+    </label>
+    <div class="col-md-10">
+		@Model.ExpressNumber
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Receiver) :
+    </label>
+    <div class="col-md-10">
+		@Model.Receiver
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.CityName) :
+    </label>
+    <div class="col-md-10">
+		@Model.CityName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.ProvinceName) :
+    </label>
+    <div class="col-md-10">
+		@Model.ProvinceName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.HomeAddress) :
+    </label>
+    <div class="col-md-10">
+		@Model.HomeAddress
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Telephone) :
+    </label>
+    <div class="col-md-10">
+		@Model.Telephone
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.MobilePhone) :
+    </label>
+    <div class="col-md-10">
+		@Model.MobilePhone
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.ZipCode) :
+    </label>
+    <div class="col-md-10">
+		@Model.ZipCode
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.PaymentType) :
+    </label>
+    <div class="col-md-10">
+		@Model.PaymentType
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.PaymentCompany) :
+    </label>
+    <div class="col-md-10">
+		@Model.PaymentCompany
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.PaymentAccount) :
+    </label>
+    <div class="col-md-10">
+		@Model.PaymentAccount
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.PaymentTradeNumber) :
+    </label>
+    <div class="col-md-10">
+		@Model.PaymentTradeNumber
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Cash) :
+    </label>
+    <div class="col-md-10">
+		@Model.Cash
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Card) :
+    </label>
+    <div class="col-md-10">
+		@Model.Card
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Score) :
+    </label>
+    <div class="col-md-10">
+		@Model.Score
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Balance) :
+    </label>
+    <div class="col-md-10">
+		@Model.Balance
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Coupon) :
+    </label>
+    <div class="col-md-10">
+		@Model.Coupon
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.Change) :
+    </label>
+    <div class="col-md-10">
+		@Model.Change
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+		@Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+		@Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+		@Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		@Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+		@Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+		操作人员 :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

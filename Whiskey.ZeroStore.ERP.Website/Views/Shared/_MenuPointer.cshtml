@@ -1,0 +1,16 @@
+﻿<script>
+    function menuPointerFunc() {
+        var pul = $("ul.navigation,#sidebar ul.nav");
+        var pli = pul.find("li.has-sub");
+        var aaaa = pli.find(">a>span.tip_count");
+        pli.find(">a>span.tip_count").remove();
+        var badges = pli.find("ul.dropdown-menu li .badge:not(:empty())");
+        badges.each(function (i, item) {
+            var $a = $(item).parents("li.has-sub").find("> a")
+            if ($a.find("span.tip_count").length == 0) {
+                var $span = $("<span />").addClass("tip_count").css("display", "inline-block").html("&nbsp;");
+                $a.append($span);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,318 @@
+﻿@model Whiskey.ZeroStore.ERP.Models.VideoEquipment
+<style>
+    .clre {
+        color:  #5ebd5e;
+        padding: 6px;
+        border: 1px solid #cecece;
+    }
+
+    .diaclg .modal-dialog {
+        width: 80%;
+        max-width: 80%;
+    }
+
+    #userdiv {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .state_content {
+        float: left;
+        margin: 26px 0 10px 44px;
+    }
+
+    .ruleCreat {
+        padding: 2rem;
+        background: rgba(0, 0, 0, 0.2);
+    }
+</style>
+<link href="~/Content/Styles/Bootstrap/bootstrap-multiselect.css" rel="stylesheet" />
+
+<ul class="nav nav-tabs" role="tablist" id="navTab">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">基本信息</a></li>
+</ul>
+
+<div class="ruleCreat" id="base">
+
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">@Html.DisplayNameFor(m => m.VideoName):</label>
+        <div class="col-md-6">
+            @Html.TextBox("VideoName", "", new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">@Html.DisplayNameFor(m => m.snNumber):</label>
+        <div class="col-md-6">
+            @Html.TextBox("snNumber", "", new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label id="" class="control-label col-md-2">@Html.DisplayNameFor(m => m.StoreId):</label>
+        <div class="col-md-6">
+            <select id="StoreId" name="StoreId" class="form-control"></select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label id="orig_id" class="control-label col-md-2">描述:</label>
+        <div class="col-md-6">
+            <textarea name="Descript" id="Descript" class="form-control"></textarea>
+
+        </div>
+    </div>
+
+</div>
+
+<div id="userdiv" style="display:none">
+    <input class="switcherSeach" type="checkbox" data-class="switcher-default" checked="checked">
+    <div class="form-group" style="margin-top:20px">
+        <div id="phoneseach">
+            <label class="control-label col-md-1">手机:</label>
+            <div class="col-md-6">
+                <input id="memberPhone" class="form-control" />
+            </div>
+        </div>
+        <div id="departmentseach" style="display:none;">
+            <label class="control-label col-md-1">部门:</label>
+            <div class="col-md-6">
+                @Html.DropDownList("DepartmentId", (List<SelectListItem>)ViewBag.Department, new { @class = "form-control", @id = "DepartmentId", @name = "DepartmentId" })
+            </div>
+        </div>
+        <button id="SearchMember" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+    </div>
+
+    <table id="searchTable" class="table table-list table-hover valign-middle" width="100%">
+        <thead>
+
+        </thead>
+    </table>
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#home1" aria-controls="home1" role="tab" data-toggle="tab">使用者列表</a></li>
+    </ul>
+    <div class="panel panel-list">
+
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+                <tr> <th style="width:30%">姓名</th><th style="width:40%">部门</th><th>操作</th></tr>
+            </thead>
+            <tbody id="videoUser"></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    var seachType = 0;
+    function dataValiPost() {
+        var errcou = 0;
+        var da = [];
+        var VideoName = $(".ruleCreat #VideoName").val();
+        if (VideoName.trim().length == 0) {
+            $(".ruleCreat #VideoName").css({ "border": "2px solid  #5ebd5e" }).attr("title", "名称不为空");
+            errcou += 1;
+        }
+        else {
+            $(".ruleCreat #VideoName").css({ "border": "" });
+            da.push({ "VideoName": VideoName });
+        }
+        var snNumber = $(".ruleCreat #snNumber").val();
+        if (snNumber.trim().length == 0) {
+            $(".ruleCreat #snNumber").css({ "border": "2px solid  #5ebd5e" }).attr("title", "摄像机号不能为空");
+            errcou += 1;
+        }
+        else {
+            $(".ruleCreat #snNumber").css({ "border": "" });
+            da.push({ "snNumber": snNumber });
+        }
+
+        var StoreId = $(".ruleCreat #StoreId").val();
+        if (snNumber.trim().length == 0) {
+            $(".ruleCreat #StoreId").css({ "border": "2px solid  #5ebd5e" }).attr("title", "店铺必须选择");
+            errcou += 1;
+        }
+        else {
+            $(".ruleCreat #StoreId").css({ "border": "" });
+            da.push({ "StoreId": StoreId });
+        }
+
+        var descript = $(".ruleCreat #Descript").val();
+        if (descript.trim().length == 0) {
+            $(".ruleCreat #Descript").css({ "border": "2px solid  #5ebd5e" }).attr("title", "描述不为空");
+            errcou += 1;
+        }
+        else {
+            da.push({ "Descript": descript });
+        }
+
+        da.push({ IsEnabled: true });
+        da.push({ IsDeleted: false });
+        if (errcou == 0) {
+            return { error: 0, data: da };
+        }
+        else {
+
+            return { error: 1 }
+        }
+    }
+    //$("#navTab li").click(function () {
+    //    if (!$(this).hasClass("active")) {
+    //        if ($(this).find("a").attr("aria-controls") == "home") { $("#base").css("display", ""); $("#userdiv").css("display", "none"); }
+    //        else { $("#userdiv").css("display", ""); $("#base").css("display", "none"); }
+    //    }
+    //});
+    $(function () {
+        $("#base #StoreId").queryManageStore();
+        //*************加载数据列表******
+        $createdatatable = $("#searchTable").dataTable({
+            "bScrollCollapse": false,
+            "bStateSave": true,
+            "sDom": '<"H clearfix datatable-header text-center"r>t<"F clearfix datatable-footer"<"col-md-5"<"col-md-8 info  text-left"i><"pcou col-md-7 text-left info">><"col-md-7 text-right"p>>',
+            "sAjaxSource": "@Url.Action("SearchMember")",
+            "aLengthMenu": [10],
+            "fnServerParams": function (aoData) {
+                aoData.push({ name: "seachType", value: seachType });
+                aoData.push({ name: "phone", value: $("#memberPhone").val() });
+                aoData.push({ name: "Department", value: $("#DepartmentId").val() });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                var isEnabled = aData.IsEnabled;
+                if (isEnabled == false) {
+                    $(nRow).css({ "color": " #5ebd5e" });
+                }
+
+                $("td:eq(0)", nRow).text(iDisplayIndex + 1);
+                $("td:eq(1)", nRow).css({ "width": "13%", "padding-left": "0" });
+                //$("td:eq(4)", nRow).css({ "float": "left","width":"13%" });
+                $("td:last", nRow).addClass("text-middle").css({ "width": "15%" });
+                return nRow;
+            },
+            "fnFooterCallback": function () {
+
+            },
+            "fnDrawCallback": function (da, json) {
+            },
+
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+        {
+            "sTitle": "编号",
+            "bSortable": false,
+            "sName": "RowNumber",
+            "mData": function (data) {
+                var index = data.iDisplayIndex + 1;
+                return '' + index + '';
+            }
+        },
+
+        {
+            "sTitle": "姓名",
+            "bSortable": false,
+            "sName": "VideoName",
+            "mData": function (data) {
+                return data.MemberName;
+            },
+        },
+        {
+            "sTitle": "部门",
+            "bSortable": false,
+            "sName": "snNumber",
+            "mData": function (data) {
+                return data.departmentName;
+            },
+        },
+                {
+                    "sTitle": "操作",
+                    "bSortable": false,
+                    "sName": "snNumber",
+                    "mData": function (data) {
+                        return "<button type=\"button\" onclick=\"AddUser('" + data.MemberName + "','" + data.departmentName + "','" + data.Id + "')\" class=\"form-control plus_but\"><i class=\"fa fa-life-ring\"></i></button>" + "</td>";
+                    },
+                },
+            ]
+
+        });
+        //*******************************
+
+
+        $("#snNumber").blur(function () {
+            if (!CheckIsExistence($("#snNumber").val())) {
+                if (checkIsExistenceMsg != "") {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: checkIsExistenceMsg
+                    });
+                }
+            }
+        });
+
+        $('.switcherSeach').switcher({
+            //theme: 'square',
+            on_state_content: "手机",
+            off_state_content: "部门"
+        }).on("click", function () {
+            if ($(".switcherSeach").is(":checked")) {
+                $("#spandesc").html("手机:");
+                $("#departmentseach").css("display", "none");
+                $("#phoneseach").css("display", "");
+                seachType = 0;
+            } else {
+                $("#departmentseach").css("display", "");
+                $("#phoneseach").css("display", "none");
+                seachType = 1;
+            }
+            var panel_body = $(this).parents('.panel-heading').siblings(".panel-body");
+            if (panel_body.is(":hidden")) {
+                panel_body.slideDown('fast');
+            } else {
+                panel_body.slideUp('fast');
+
+            }
+            //$(".panel-body").toggle("slow");
+        });
+        $('.switcherSeach').parent().addClass("state_content");
+        $("#SearchMember").click(function () {
+            $("#searchTable").css("display", "");
+            if (seachType == 0) {
+                if ($("#memberPhone").val() == "") {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请输入手机号！",
+                        callback: function () {
+
+                        }
+                    });
+                }
+            }
+            $createdatatable.api().draw(false);
+        });
+    });
+
+
+    function AddUser(MemberName, storeName, memberId) {
+        var tr_id = memberId + "tr";
+        if ($("#" + tr_id).length > 0) {
+            $.whiskey.web.alert({
+                type: "info",
+                content: "已经添加到使用者列表,不能重复添加！"
+            });
+        }
+        else {
+            var htmlStr = "<tr id='" + tr_id + "'>";
+            htmlStr += "<td>" + MemberName + "</td>";
+            htmlStr += "<td>" + storeName + "</td>";
+            htmlStr += "<td>" + "<button type=\"button\" onclick=\"RemoveUser('" + memberId + "')\" class=\"form-control remove_but\"><i class=\"fa fa-life-ring\"></i> <span>删除</span></button>" + "</td>";
+            htmlStr += "</tr>";
+            $("#videoUser").prepend(htmlStr);
+        }
+    }
+
+    function RemoveUser(memberId) {
+        $("#" + memberId + "tr").remove();
+    }
+
+
+
+</script>

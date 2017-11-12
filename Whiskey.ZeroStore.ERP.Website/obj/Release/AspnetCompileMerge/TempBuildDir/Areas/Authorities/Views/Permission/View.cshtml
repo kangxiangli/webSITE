@@ -1,0 +1,152 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model Permission
+
+<div class="form-group">
+    <label class="control-label col-md-4">
+		所属模块ID :
+    </label>
+    <div class="col-md-8">
+		@Model.ModuleId
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        所属模块名称 :
+    </label>
+    <div class="col-md-8">
+        @ViewBag.moduName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.AreaName) :
+    </label>
+    <div class="col-md-8">
+        @Model.AreaName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.ControllName) :
+    </label>
+    <div class="col-md-8">
+        @Model.ControllName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.ActionName) :
+    </label>
+    <div class="col-md-8">
+        @Model.ActionName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.PermissionName) :
+    </label>
+    <div class="col-md-8">
+		@Model.PermissionName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-8">
+		@Model.Description
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m => m.OnlyFlag) :
+    </label>
+    <div class="col-md-8">
+		@Model.OnlyFlag
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.Icon) :
+    </label>
+    <div class="col-md-8">
+		@Model.Icon
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.Style) :
+    </label>
+    <div class="col-md-8">
+		@Model.Style
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.onClickScripts) :
+    </label>
+    <div class="col-md-8">
+		@Model.onClickScripts
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsDisplayIcon) :
+    </label>
+    <div class="col-md-8">
+		@Model.IsDisplayIcon
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsDisplayText) :
+    </label>
+    <div class="col-md-8">
+		@Model.IsDisplayText
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.UpdatedTime) :
+    </label>
+    <div class="col-md-8">
+		@Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.CreatedTime) :
+    </label>
+    <div class="col-md-8">
+		@Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsEnabled) :
+    </label>
+    <div class="col-md-8">
+		@Html.Raw(Model.IsEnabled==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		@Html.DisplayNameFor(m=>m.IsDeleted) :
+    </label>
+    <div class="col-md-8">
+		@Html.Raw(Model.IsDeleted==true?"是":"否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+		操作人员 :
+    </label>
+    <div class="col-md-8">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>

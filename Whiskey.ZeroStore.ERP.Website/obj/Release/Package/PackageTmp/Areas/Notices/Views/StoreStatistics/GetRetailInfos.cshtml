@@ -1,0 +1,356 @@
+﻿<style>
+    .modal-content {
+        width: 1245px;
+    }
+    /*.table-hover_btn_box>tbody>tr>td {
+    	    border-top: 1px solid rgba(0,0,0,0.1);
+    }*/
+    .table-hover_btn_box> thead >tr> th{
+    	text-align: center;
+    }
+    .table-hover_btn_box>tbody>tr>td:nth-child(4){
+    	width: 9%;
+    }
+
+    td.details-control {
+        background: url('/Content/Images/details_open.png') no-repeat center center;
+        cursor: pointer;
+    }
+
+    tr.shown td.details-control {
+        background: url('/Content/Images/details_close.png') no-repeat center center;
+    }
+    #DataTables_Table_0>tbody>tr>td:nth-child(3)>.treegrid-expander {
+    margin: 0px !important;
+    width: 0 !important;
+}
+     .details-control{
+     	width: 3% !important;
+     }
+  .textCenter th {
+    text-align: center;
+}
+   .thumbnail-img_five_box{
+				 position: relative;
+				 width: 60px;
+				 height: 60px;
+				margin: 0 auto;
+				 border: 1px solid #eaeaea;
+			 }
+			.thumbnail-img_five {
+				left: 0;
+				padding: 2px;
+				height: 96%;
+				overflow: hidden;
+			}
+			.thumbnail-img_f{
+				max-width: 60px;
+				margin: 0 auto 0 auto;
+				position: relative;
+				padding-bottom: 60px;
+				height: 0;
+				overflow: hidden;
+			}
+			.thumbnail-img_five img {
+				width: 100%;
+			}
+</style>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-4">
+                <h5><span class="invent_cou"></span></h5>
+            </div>
+
+        </div>
+        <table class="table table-list-pv table-hover table-hover_btn_box valign-middle" width="100%">
+            <thead>
+                <tr></tr>
+            </thead>
+        </table>
+        <input type="hidden" id="storeid_pv" value="@ViewBag.id" />
+        <input type="hidden" id="startDate_pv" value="@ViewBag.startDate" />
+        <input type="hidden" id="endDate_pv" value="@ViewBag.endDate" />
+    </div>
+</div>
+<script>
+	$(".table-hover_btn_box").on("mouseover", ".popimg", function () {
+		
+                if (this.tagName == "IMG") {
+                    var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                    
+                    toolTip(strImg);
+                   // console.log(this.src);
+                } else {
+                    $(this).find("img").each(function () {
+                        var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                        toolTip(strImg);
+                    });
+                }
+            }).on("mouseout", function () {
+                $("body").find("#toolTipLayer").hide();
+            });
+
+</script>
+<script>
+    $(function () {
+
+       var table = $(".table-list-pv").DataTable({
+            "bPaginate": true,
+            "bFilter": true,
+            "bLengthChange": 20,
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("GetRetailInfos")",
+            "oLanguage": {
+                "sZeroRecords": "对不起，查询不到任何相关数据",
+                "sInfoEmtpy": "找不到相关数据"
+            },
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                var storeid = $("#storeid_pv").val();
+                var startDate = $("#startDate_pv").val();
+                var endDate = $("#endDate_pv").val();
+
+                if (startDate.length > 0 && endDate.length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("StoreId", storeid, "equal"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", startDate, "greater"));
+                    conditions.Rules.push(new $.whiskey.filter.rule("CreatedTime", endDate, "less"));
+                }
+
+                $(".form-search .form-control[name][name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+
+                    if (value != null && value != "")
+                        value = value.trim();
+                    if (value != null && value.length > 0 && value != "-1") {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                    }
+
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+              //  $("td", nRow).addClass("list_btn_blue");
+                 $("td", nRow).css({ "text-align": "center" });
+                return nRow;
+            },
+            "fnDrawCallback": function (osetting) {
+                $(".table-list").treegrid({
+                    initialState: "collapsed",
+                    treeColumn: 2,
+                    expanderExpandedClass: 'treegrid-expander-expanded',
+                    expanderCollapsedClass: 'treegrid-expander-collapsed',
+
+                });
+                $(".checked-all").click(function () {
+                    var checkedStatus = this.checked;
+                    $(".table tr td input[type=checkbox]").each(function () {
+                        this.checked = checkedStatus;
+                    });
+
+                });
+                $(".table tr td input[type=checkbox]").checked = true;
+               $(".treegrid-expander").css({ "margin": 0  });
+            },
+            "aoColumns": [
+                {
+                    "bVisible": false,
+                    "bSearchable": false,
+                    "sName": "Id",
+                    "mData": "Id"
+                },
+                {
+                    "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                    "sName": "Id",
+                    "bSortable": false,
+                    "bSearchable": false,
+                    "mData": function (data) {
+                        return $.whiskey.datatable.tplListCheckbox(data.Id);
+                    }
+                },
+                {
+                    "sTitle": "序号",
+                    "bSortable": false,
+                    "sName": "RowNumber",
+                    "mData": function (data) {
+                        return "1";
+                    }
+                },
+                {
+                    "bSortable": false,
+                    "className": 'details-control',
+                    'data': null,
+                    "defaultContent": ''
+                },
+                {
+                    "sTitle": "店铺",
+                    "bSortable": false,
+                    "sName": "StoreId",
+                    "mData": function (data) {
+                        return data.StoreName;
+                    }
+                },
+                 {
+                     "sTitle": "销售编号",
+                     "bSortable": false,
+                     "sName": "StoreId",
+                     "mData": function (data) {
+                         return data.RetailNumber;
+                     }
+                 },
+                 {
+                     "sTitle": "销售数量",
+                     "bSortable": false,
+                     "sName": "StoreId",
+                     "mData": function (data) {
+                         //return '<span class="label label-info" data-retailnumber="' + data.RetailNumber + '" onclick="showRetailInfo(this)">' + data.RetailCount + '</span>';
+                         return data.RetailCount;
+                     }
+                 },
+                 {
+                     "sTitle": "销售总额(￥)",
+                     "bSortable": false,
+                     "sName": "StoreId",
+                     "mData": function (data) {
+                         return data.ConsumeCount;
+                     }
+                 },
+                  {
+                      "sTitle": "现金(￥)",
+                      "bSortable": false,
+                      "sName": "StoreId",
+                      "mData": function (data) {
+                          return data.CashConsume;
+                      }
+                  },
+                   {
+                       "sTitle": "刷卡(￥)",
+                       "bSortable": false,
+                       "sName": "StoreId",
+                       "mData": function (data) {
+                           return data.SwipeConsume;
+                       }
+                   },
+                    {
+                        "sTitle": "储值(￥)",
+                        "bSortable": false,
+                        "sName": "StoreId",
+                        "mData": function (data) {
+                            return data.StoredValueConsume;
+                        }
+                    },
+                     {
+                         "sTitle": "积分",
+                         "bSortable": false,
+                         "sName": "StoreId",
+                         "mData": function (data) {
+                             return data.ScoreConsume;
+                         }
+                     },
+                     {
+                         "sTitle": "抹去",
+                         "bSortable": false,
+                         "sName": "StoreId",
+                         "mData": function (data) {
+                             return data.EraseConsume;
+                         }
+                     },
+                     {
+                         "sTitle": "店铺活动",
+                         "bSortable": false,
+                         "sName": "StoreActivityId",
+                         "mData": function (data) {
+                             return data.StoreActivityId?'有':'无';
+                         }
+                     },
+                     {
+                         "sTitle": "优惠券",
+                         "bSortable": false,
+                         "sName": "CouponNumber",
+                         "mData": function (data) {
+                             return data.CouponNumber?'有':'无';
+                         }
+                     },
+                     {
+                         "sTitle": "会员折扣",
+                         "bSortable": false,
+                         "sName": "CouponNumber",
+                         "mData": function (data) {
+                             return data.LevelDiscount > 0 ? data.LevelDiscount : '无';
+                         }
+                     },
+                     {
+                         "sTitle": "会员折扣优惠",
+                         "bSortable": false,
+                         "sName": "CouponNumber",
+                         "mData": function (data) {
+                             return data.LevelDiscountAmount;
+                         }
+                     },
+                 {
+                     "sTitle": "销售时间",
+                     "bSortable": false,
+                     "sName": "StoreId",
+                     "mData": function (data) {
+                         return $.whiskey.tools.dateFormat(data.CreatedTime);
+                     }
+                 },
+                  {
+                      "sTitle": "会员",
+                      "bSortable": false,
+                      "sName": "StoreId",
+                      "mData": function (data) {
+                          if (data.MemberName == "")return "<span style='color: #e5603b'>[非会员]</span>";
+                          return "<span style='color:green'>"+data.MemberName+"</span>";
+                      }
+                  },
+                        {
+                            "sTitle": "操作人",
+                            "bSortable": false,
+                            "sName": "StoreId",
+                            "mData": function (data) {
+                                return data.AdminName;
+                            }
+                        }
+            ]
+        });
+
+       $(".table-list-pv").on('click', 'td.details-control', function () {
+           var tr = $(this).closest('tr');
+           var row = table.row(tr);
+           if (row.child.isShown()) {
+               row.child.hide();
+               tr.removeClass('shown');
+           }
+           else {
+               row.child(showChild(row.data())).show();
+               tr.addClass('shown')
+           }
+       })
+       function showChild(data) {
+           //console.log(data);
+           var thead = '<table class="table">'+ '<tr class="textCenter"><th>图片</th><th>流水号</th><th>商品名称</th><th>品牌</th><th>出货仓库</th><th>数量</th><th>吊牌价</th><th>零售价</th></tr>'
+           if (data.Child && data.Child.length > 0) {
+               var arr = data.Child;
+               for (var i = 0; i < arr.length; i++) {
+                   thead += '<tr><td>' + generateImg(arr[i].ThumbnailPath) + '</td><td>' + arr[i].ProductBarcode + '</td><td>' + arr[i].ProductName + '</td><td>' + arr[i].BrandName + '</td><td>' + arr[i].StorageName + '</td><td>1</td><td>' + arr[i].ProductTagPrice + '</td><td>' + arr[i].ProductRetailPrice + '</td></tr>'
+               }
+           }
+           thead += '</table>';
+
+           return thead;
+       }
+
+       function generateImg(imgPath) {
+           var imgUrl = '@UiHelper.WebUrl()' + imgPath;
+           return "<div class='thumbnail-img_five_box'><div class='thumbnail-img_five'><div class='thumbnail-img_f'><img class='popimg' src='" + imgUrl + "' onerror='imgloaderror(this);'></div></div></div>"
+       }
+
+    });
+</script>

@@ -1,0 +1,141 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model  MemberActivity
+@using Whiskey.ZeroStore.ERP.Transfers
+<div class="form-group">
+    <label class="control-label col-md-3">
+        活动名称 :
+    </label>
+    <div class="col-md-7">
+        @Model.ActivityName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        会员类型 :
+    </label>
+    <div class="col-md-7">
+        @{
+            if (Model.MemberTypes.Count() > 0)
+            {
+                <select class="form-control">
+                    @foreach (var item in Model.MemberTypes)
+                    {
+                        <option>@item.MemberTypeName</option>
+                    }
+                </select>
+            }
+        }
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        活动店铺 :
+    </label>
+    <div class="col-md-5">
+        <select id="storeIds" name="storeIds" multiple="multiple" data-selected-text-format="count>3" class="form-control"></select>
+    </div>
+    <div class="col-md-4">
+        <label>
+            所有店铺:
+            @Html.DisplayFor(m => m.IsAllStore)
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Price) :
+    </label>
+    <div class="col-md-7">
+        @Model.Price
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Score) :
+    </label>
+    <div class="col-md-7">
+        @Model.Score
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsForever) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsForever == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.StartDate) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsForever == true ? "永久" : Model.StartDate.ToString())
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.EndDate) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsForever == true ? "永久" : Model.EndDate.ToString())
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        备注 :
+    </label>
+    <div class="col-md-7">
+        @Model.Notes
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.CreatedTime
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        操作人员 :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>
+
+<script>
+    var storeIds = '@Model.StoreIds'.split(',').map(i => parseInt(i));
+    $("#storeIds").queryAllStore({
+        selected: storeIds,
+        filter: function (i) { return storeIds.indexOf(i.Id) !== -1 }
+    });
+
+</script>

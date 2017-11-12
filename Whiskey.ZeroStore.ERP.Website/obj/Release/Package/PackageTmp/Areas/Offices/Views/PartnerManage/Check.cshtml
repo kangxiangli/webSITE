@@ -1,0 +1,88 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model PartnerManageCheck
+
+<style>
+    .modal-dialog {
+        width: 800px;
+    }
+</style>
+
+<ul id="myTab" class="nav nav-tabs">
+    <li class="active">
+        <a href="#baseinfo_tab" data-toggle="tab">
+            基本信息
+        </a>
+    </li>
+    <li><a href="#defaulrole_tab" data-toggle="tab">用户角色</a></li>
+</ul>
+
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade in active" id="baseinfo_tab">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.DepartmentName) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.DepartmentName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.StoreName) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.StoreName, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.StoreTypeId) :
+            </label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(f => f.StoreTypeId, (IEnumerable<SelectListItem>)ViewBag.StoreTypes, new { @class = "form-control selectpicker" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.StorageName) :
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.StorageName, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="defaulrole_tab" style="height:auto;">
+        @if (((Dictionary<int, string>)ViewBag.roles) == null || ((Dictionary<int, string>)ViewBag.roles).Count() == 0)
+            {
+            <span style="text-align:center">无数据……</span>
+        }
+        else
+        {
+            foreach (var item in (Dictionary<int, string>)ViewBag.roles)
+            {
+                <label style="margin-left:20px">
+                    @if (Model.Roles.Any(a => a.Id == item.Key))
+                    {
+                        <input type="checkbox" name="role" value="@item.Key" checked />@item.Value
+                    }
+                    else
+                    {
+                        <input type="checkbox" name="role" value="@item.Key" />@item.Value
+                    }
+                </label>
+            }
+        }
+    </div>
+</div>
+
+@Html.HiddenFor(f => f.Id)
+@Html.HiddenFor(f => f.PartnerManageId)
+
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+	$('.selectpicker').selectpicker('refresh');
+    })
+</script>

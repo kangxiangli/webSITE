@@ -1,0 +1,141 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Office
+@model WorkTime
+
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.WorkTimeName) :
+    </label>
+    <div class="col-md-7">
+        @Model.WorkTimeName
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsFlexibleWork) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsFlexibleWork == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.WorkTimeType) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.WorkTimeType == (int)WorkTimeFlag.AllDay ? "全天班" : "小时工")
+    </div>
+</div>
+<div class="form-group worktime">
+    <label class="control-label col-md-3" id="labAmStartTime">
+        @Html.DisplayNameFor(m => m.AmStartTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.AmStartTime
+    </div>
+</div>
+ <div class="form-group worktime aftTime">
+    <label class="control-label col-md-3" id="labAmEndTime">
+        @Html.DisplayNameFor(m => m.AmEndTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.AmEndTime
+    </div>
+</div>
+<div class="form-group worktime aftTime">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.PmStartTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.PmStartTime
+    </div>
+</div>
+<div class="form-group worktime">
+    <label class="control-label col-md-3" id="labPmEndTime">
+        @Html.DisplayNameFor(m => m.PmEndTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.PmEndTime
+    </div>
+</div>
+<div class="form-group worktime">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.WorkHour) :
+    </label>
+    <div class="col-md-7">
+        @Model.WorkHour（小时）
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.Summary) :
+    </label>
+    <div class="col-md-7">
+        @Model.Summary        
+    </div>
+</div>
+ <div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-7">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-3">
+        操作人员 :
+    </label>
+    <div class="col-md-7">
+        @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+       //初始化弹性工作数据
+        setFlexible();
+    })    
+    //弹性工作时间
+    function setFlexible() {
+        var check = "@Model.IsFlexibleWork";        
+        if (check == "True") {
+            $(".bootbox .worktime").css("display", "none");
+        } else {
+            $(".bootbox .worktime").css("display", "block");
+            setWorkTime();
+        }
+    }
+    //工作时间类型
+    function setWorkTime() {
+        var workTimeType="@Model.WorkTimeType";
+        if (workTimeType=="@((int)WorkTimeFlag.HalfDay)") {
+            $(".bootbox .aftTime").css("display", "none");
+            $(".bootbox #labAmStartTime").text("上班时间");
+            $(".bootbox #labPmEndTime").text("下班时间");
+        }
+    }
+</script>

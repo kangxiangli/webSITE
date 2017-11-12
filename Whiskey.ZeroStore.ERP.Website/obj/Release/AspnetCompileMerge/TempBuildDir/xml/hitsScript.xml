@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<doc>
+  <hitsScript>
+    <name>统计文章点击脚本</name>
+	  <script>
+      &lt;script src="/Content/Scripts/Jquery/jquery-1.11.1.min.js"&gt;&lt;/script&gt;
+      &lt;script type="text/javascript" &gt;
+       $(function(){
+        GetHits();
+       });
+       function GetHits(){
+         $.ajax({
+      	  url:'/Article/AddHits?id=$articleId',
+      	  type:'GET',
+      	  data:{},
+      	  success:function(data){       	     
+      	  }
+      	  });       	
+       }
+     &lt;/script&gt;
+	  </script>
+  </hitsScript>
+</doc>

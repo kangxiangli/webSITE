@@ -1,0 +1,93 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+@model TemplateTheme
+<style>
+     .modal-dialog {
+        width: 900px;
+    }
+</style>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ThemeLogo) :
+    </label>
+    <div class="col-md-4">
+        <img src="@Model.ThemeLogo" style="width:80px;height:80px;" />
+    </div>
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.BackgroundImg) :
+    </label>
+    <div class="col-md-4">
+        <img src="@Model.BackgroundImg" style="width:80px;height:80px;" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Name)：
+    </label>
+    <div class="col-md-10">
+        @Model.Name
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Path)：
+    </label>
+    <div class="col-md-10">
+        @Model.Path
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ThemeFlag)：
+    </label>
+    <div class="col-md-10">
+        @Model.ThemeFlag.ToString()
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Notes)：
+    </label>
+    <div class="col-md-10">
+        @Model.Notes
+    </div>
+</div>
+ <div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.UpdatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.UpdatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.CreatedTime) :
+    </label>
+    <div class="col-md-10">
+        @Model.CreatedTime
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsEnabled) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.IsDeleted) :
+    </label>
+    <div class="col-md-10">
+        @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.OperatorId) :
+    </label>
+    <div class="col-md-10">
+        @Model.Operator.Member.MemberName
+    </div>
+</div>

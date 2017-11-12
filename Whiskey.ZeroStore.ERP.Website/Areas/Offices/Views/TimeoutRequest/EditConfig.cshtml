@@ -1,0 +1,37 @@
+﻿<div id="timeout-request-config">
+    <div class="row">
+        <div class="form-group">
+            <label class="control-label col-md-3">
+                超长审批天数 :
+            </label>
+            <div class="col-md-9">
+                <input type="text" name="limitdays" class="form-control form-datetime" v-model="config.limitdays" />
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+  
+    $(function () {
+        let baseUrl = '/Offices/TimeoutRequest';
+        smsConfigVM = new Vue({
+            el: "#timeout-request-config",
+            data: {
+                config: {}
+            },
+            mounted: function () {
+                var _self = this;
+                $.getJSON(`${baseUrl}/GetConfig`, function (res) {
+                    if (res.ResultType === 3) {
+                        _self.config = res.Data;
+                    }
+                })
+            }
+            
+        })
+    })
+
+</script>

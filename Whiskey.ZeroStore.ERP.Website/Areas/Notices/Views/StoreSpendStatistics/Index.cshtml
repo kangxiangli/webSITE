@@ -1,0 +1,659 @@
+﻿
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+                <input class="switcher" type="checkbox" data-class="switcher-default" checked="checked">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">所属店铺</label>
+                        <div class="col-md-8">
+                            <select class="form-control" id="StoreId" name="StoreId"></select>
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="col-md-5">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">操作人</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("A", "", new { @class = "form-control", placeholder = "操作人名称" })
+                            </div>
+                        </div>
+                    </div>*@
+                <div class="col-md-5">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">创建日期</label>
+                        <div class="col-md-8">
+                            <div class="input-daterange input-group">
+                                @Html.TextBox("StartDate", "", new { @class = "start-date input-sm form-control", @placeholder = "开始日期" })
+                                <span class="input-group-addon">至</span>
+                                @Html.TextBox("EndDate", "", new { @class = "end-date input-sm form-control", @placeholder = "结束日期" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+
+            <div class="pull-right">
+                <div class="button-normal">
+                    <button id="Add" title="添加记录" type="button" class="btn btn-success btn-padding-right"><i class="fa fa-plus"></i> <span>添加记录</span></button>
+                    <button id="Print" title="打印预览" type="button" class="btn btn-facebook btn-padding-right"><i class="fa fa-print"></i> <span>打印预览</span></button>
+                    <button id="Export" title="导出文件" type="button" class="btn btn-warning btn-padding-right"><i class="fa fa-save"></i> <span>导出文件</span></button>
+                    <button id="RemoveAll" title="将选择的项移至回收站" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-remove"></i> <span>移除所选</span></button>
+                </div>
+                <div class="button-recycle">
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal fade" id="modal_di"
+             aria-labelledby="myModalLabel" aria-hidden="true">
+            <img style="position:fixed;top:40%;left:45%" class="modal-body" src="/content/images/ajax_loader.gif">
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-2 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+            <div class="col-md-4">
+                <h5><span class="invent_cou"></span></h5>
+            </div>
+
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+                <tr></tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<link href="/content/styles/jquery/jquery.treegrid.css" rel="stylesheet" />
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.js"></script>
+<script src="/content/scripts/jquery/treegrid/jquery.treegrid.bootstrap3.js"></script>
+@section Scripts{
+
+    <script type="text/javascript">
+        $(function () {
+            $("#StoreId").queryManageStore();
+            var t = new Date();
+            var month = t.getMonth() - 1;
+            t.setMonth(month);
+            t.setDate(1);
+            $(".start-date").val(t.toLocaleDateString());
+            t.setDate(30);
+            $(".end-date").val(t.toLocaleDateString());
+
+            $.whiskey.datatable.instance = $(".table-list").dataTable({
+                "bPaginate": true,
+                "bFilter": true,
+                "bLengthChange": 20,
+                "bScrollCollapse": false,
+                "sAjaxSource": "@Url.Action("List")",
+                "oLanguage": {
+                    "sZeroRecords": "对不起，查询不到任何相关数据",
+                    "sInfoEmtpy": "找不到相关数据"
+                },
+                "fnServerParams": function (aoData) {
+                    var conditions = new $.whiskey.filter.group();
+
+                    var startDate = $(".start-date").val();
+                    var endDate = $(".end-date").val();
+
+                    if (!startDate) {
+                        startDate = new Date();
+                    }
+
+                    if (!endDate) {
+                        endDate = new Date();
+                    }
+                    aoData.push({ name: 'startDate', value: startDate });
+                    aoData.push({ name: 'endDate', value: endDate });
+                    $(".form-search .form-control[name!='StartDate'][name!='EndDate']").each(function () {
+                        var field = $(this).attr("name");
+                        var value = $(this).val();
+
+                        if (value != null && value != "")
+                            value = value.trim();
+                        if (value != null && value.length > 0 && value != "-1") {
+                            conditions.Rules.push(new $.whiskey.filter.rule(field, value, "equal"));
+                        }
+
+                    });
+                    aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+                },
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $(nRow).addClass("treegrid-" + aData.Id + (aData.ParentId != null ? " treegrid-parent-" + aData.ParentId : ""));
+                    $("td:eq(1)", nRow).text(iDisplayIndex + 1);
+                    $("td:eq(2)", nRow).css({ "width": "12%" });
+                    return nRow;
+                },
+                "fnDrawCallback": function (osetting) {
+                    $(".table-list").treegrid({
+                        initialState: "collapsed",
+                        treeColumn: 2,
+                        expanderExpandedClass: 'treegrid-expander-expanded',
+                        expanderCollapsedClass: 'treegrid-expander-collapsed',
+
+                    });
+                    $(".checked-all").click(function () {
+                        var checkedStatus = this.checked;
+                        $(".table tr td input[type=checkbox]").each(function () {
+                            this.checked = checkedStatus;
+                        });
+
+                    });
+                    $(".table tr td input[type=checkbox]").checked = true;
+                    $(".treegrid-expander").css({ "margin-left": 0, "float": "left" });
+                },
+                "aoColumns": [
+                    {
+                        "bVisible": false,
+                        "bSearchable": false,
+                        "sName": "Id",
+                        "mData": "Id"
+                    },
+                    {
+                        "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                        "sName": "Id",
+                        "bSortable": false,
+                        "bSearchable": false,
+                        "mData": function (data) {
+                            return $.whiskey.datatable.tplListCheckbox(data.Id);
+                        }
+                    },
+                    {
+                        "sTitle": "序号",
+                        "bSortable": false,
+                        "sName": "RowNumber",
+                        "mData": function (data) {
+                            return "1";
+                        }
+                    },
+                    {
+                        "sTitle": "店铺",
+                        "bSortable": false,
+                        "sName": "StoreId",
+                        "mData": function (data) {
+                            return data.StoreName;
+                        }
+                    },
+
+                     {
+                         "sTitle": "店铺盈利(￥)",
+                         "bSortable": false,
+                         "sName": "StoreId",
+                         "mData": function (data) {
+                             return data.Gain;
+                         }
+                     },
+                     {
+                         "sTitle": "店铺成本(￥)",
+                         "bSortable": false,
+                         "sName": "StoreId",
+                         "mData": function (data) {
+                             return data.Cost;
+                         }
+                     },
+                      {
+                          "sTitle": "水费(￥)",
+                          "bSortable": false,
+                          "sName": "StoreId",
+                          "mData": function (data) {
+                              return data.WaterRate;
+
+                          }
+                      },
+                      {
+                          "sTitle": "电费(￥)",
+                          "bSortable": false,
+                          "sName": "StoreId",
+                          "mData": function (data) {
+                              return data.ElectricCharge;
+                          }
+                      },
+                       {
+                           "sTitle": "房租(￥)",
+                           "bSortable": false,
+                           "sName": "StoreId",
+                           "mData": function (data) {
+                               return data.Chummage;
+
+                           }
+                       },
+                        {
+                            "sTitle": "工资(￥)",
+                            "bSortable": false,
+                            "sName": "StoreId",
+                            "mData": function (data) {
+                                return data.SalaryCoun;
+
+                            }
+                        },
+                         {
+                             "sTitle": "杂费(￥)",
+                             "bSortable": false,
+                             "sName": "StoreId",
+                             "mData": function (data) {
+                                 return data.Other;
+                             }
+                         },
+                          {
+                              "sTitle": "税金(￥)",
+                              "bSortable": false,
+                              "sName": "StoreId",
+                              "mData": function (data) {
+                                  return data.Taxes;
+                              }
+                          },
+                            {
+                                "sTitle": "盈利(￥)",
+                                "bSortable": false,
+                                "sName": "StoreId",
+                                "mData": function (data) {
+                                    return data.Profit;
+                                }
+                            },
+                ]
+            });
+        });
+        $(document).ready(function () {
+            $("#Add").click(function () {
+                var dialog = new $.whiskey.web.ajaxDialog({
+                    caption: "添加记录",
+                    actionUrl: "@Url.Action("Create")",
+                    lockButton: $(this),
+                    formValidator: function () {
+                        var $form = $(".modal-form");
+                        var tit = $("#Title").val().trim();
+                        if (tit == "") {
+                            alert("标题不为空");
+                            return false;
+                        }
+                        var storeid = $("form #StoreId option:selected:last").val();
+                        if (storeid == "") {
+                            alert("请选择店铺");
+                            return false;
+                        }
+                        var amount = $("#Amount").val().trim();
+                        if (amount == "") {
+                            alert("请输入总金额");
+                            return false;
+                        }
+                        var starttime = $("#StartTime").val().trim();
+                        var endtime = $("#EndTime").val().trim();
+                        if (starttime == "" || endtime == "") {
+                            alert("请选择开始时间或结束时间");
+                            return false;
+                        }
+                        var img = $("#OrderImg").val();
+                        if (img == "") {
+                            alert("请上传图片");
+                            return false;
+                        }
+                        if (!$form.valid()) {
+                            return false;
+                        } else
+                            return true;
+                    },
+                    postComplete: function () {
+                        $.whiskey.datatable.reset(true);
+                        return true;
+                    },
+                });
+
+            });
+            $("#Print").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var printer = $.whiskey.printer.ajaxPreview({
+                        actionUrl: "@Url.Action("Print")",
+                        lockButton: $(this),
+                        topMargin: "2%",
+                        leftMargin: "4%",
+                        contentWidth: "93.5%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#Export").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var printer = $.whiskey.exporter.ajaxExport({
+                        actionUrl: "@Url.Action("Export")",
+                        lockButton: $(this),
+                        fileName: "新导出文件",
+                        topMargin: 10,
+                        leftMargin: 10,
+                        contentWidth: "98%",
+                        contentHeight: "100%",
+                        params: list
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#RemoveAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据移至回收站吗？",
+                        notes: "提示：数据移动到回收站后，随时可以从回收站中将其恢复",
+                        actionUrl: "@Url.Action("Remove")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#RecoveryAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据恢复吗？",
+                        notes: "提示：将数据从回收站移动至正常数据列表里",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#DeleteAll").on("click", function () {
+                var list = $.whiskey.web.getIdByChecked(".table-list td input[type=checkbox]");
+                if (list.length > 0) {
+                    var confirm = new $.whiskey.web.ajaxConfirm({
+                        question: "确认要将这些数据彻底删除吗？",
+                        notes: "提示：数据删除后将不可能再恢复，请谨慎操作！",
+                        actionUrl: "@Url.Action("Recovery")",
+                        params: list,
+                        complete: function () {
+                            $.whiskey.datatable.reset(false);
+                        }
+                    });
+                } else {
+                    $.whiskey.web.alert({
+                        type: "info",
+                        content: "请至少选择一条数据！",
+                        callback: function () {
+                        }
+                    });
+                }
+            });
+
+            $("#Search").on("click", function () {
+
+                $.whiskey.datatable.reset(false);
+            });
+
+            $("#Clear").on("click", function () {
+                $.whiskey.web.clearForm(".form-search");
+            });
+
+        });
+
+        function showInfo(id, tag, sender) {
+            var url = "/Notices/StoreStatistics/";
+            var tit = "";
+            switch (tag) {
+
+                case "realAmount":
+                    url += "GetRealAmountInfo";
+                    tit = "销售信息";
+                    break;
+                case "retail":
+                    url += "GetRetailInfos";
+                    tit = "销售信息";
+                    break;
+                case "returned":
+                    url += "GetReturnedInfos";
+                    tit = "退货信息";
+                    break;
+                case "returnedMone":
+                    url += "GetReturnedMoneInfos";
+                    tit = "退货金额";
+                    break;
+                case "addMemb":
+                    url += "GetAddMemInfo";
+                    tit = "新增会员信息";
+                    break;
+                case "balanceRech":
+                    url += "GetBalanceRechange";
+                    tit = "储值充值信息";
+                    break;
+                case "scoreRechag":
+                    url += "GetScorRechang";
+                    tit = "积分充值信息";
+                    break;
+                case "emplo":
+                    url += "GetEmployeInfo";
+                    tit = "员工销售业绩";
+                    break;
+                case "Cost":
+                    //url += "GetCostInfo";
+                    //tit = "店铺成本";
+                    break;
+                default:
+            }
+            var startDate = $(".start-date").attr("startdate_data");
+            var endDate = $(".end-date").attr("enddate_data");
+            if (tit != "") {
+
+                var view = new $.whiskey.web.ajaxView({
+                    caption: tit,
+                    actionUrl: url,
+                    params: { id: id, startDate: startDate, endDate: endDate },
+                    lockButton: $(sender),
+
+                });
+            }
+
+        }
+
+
+        function View(sender, Id) {
+            var view = new $.whiskey.web.ajaxView({
+                caption: "详细信息",
+                actionUrl: "@Url.Action("View")",
+                params: { Id: Id },
+                lockButton: $(sender),
+            });
+        }
+
+        function Update(sender, Id) {
+
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "修改信息",
+                actionUrl: "@Url.Action("Update")",
+                getParams: { Id: Id },
+                lockButton: $(sender),
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                postComplete: function () {
+                    $.whiskey.datatable.reset(true);
+                    return true;
+                },
+            });
+
+        }
+
+        function Remove(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要将这条数据移至回收站吗？",
+                notes: "提示：数据移动到回收站后可从随时将其恢复",
+                actionUrl: "@Url.Action("Remove")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Recovery(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要恢复这条数据吗？",
+                notes: "提示：将数据从回收站移动至正常数据列表里",
+                actionUrl: "@Url.Action("Recovery")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Delete(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要彻底删除这条数据吗？",
+                notes: "提示：数据彻底删除后不可恢复，请谨慎操作！",
+                actionUrl: "@Url.Action("Delete")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+
+        function Enable(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要启用这条数据吗？",
+                notes: "提示：启用才可以在任何地方使用",
+                actionUrl: "@Url.Action("Enable")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+
+        function Disable(sender, Id) {
+            var confirm = new $.whiskey.web.ajaxConfirm({
+                question: "确认要禁用这条数据吗？",
+                notes: "提示：禁用后数据将不在其他任何地方使用",
+                actionUrl: "@Url.Action("Disable")",
+                params: { Id: Id },
+                lockButton: $(sender),
+                complete: function () {
+                    $.whiskey.datatable.reset(true);
+                }
+            });
+        }
+    </script>
+
+    <script src="~/Content/Scripts/Common/comm.js"></script>
+    <script>
+        $(function () {
+            $("#StoreId").change(function () {
+                getStorage();
+            });
+            $(".col-md-8 :text[class='form-control']:not(':last')").each(function () {
+                $(this).blur(function () { numberValid(this) });
+
+            });
+            getStorage();
+
+        })
+
+        //获取仓库信息
+        function getStorage() {
+            var storeid = $("#StoreId option:selected").val();
+            if (storeid == null || storeid == "")
+                storeid = -1;
+            $.post("/Storage/GetStorage", { storeId: storeid, title: "请下拉选择" }, function (da) {
+                $("#StorageId").html("");
+                $("#StorageId").append(getOptions(da, "该店铺下没有关联的仓库"));
+            })
+        }
+
+        //查询之前数据格式校验
+
+        //验证表单中的数据正确性
+        function formNumberValid(formobj) {
+            if ($(formobj).children(".has-error").length > 0) {
+                $.whiskey.web.alert({ type: "warning", content: "输入的数据有错误……", callback: function () { return true } })
+            } else
+                return false;
+        };
+
+        $(function () {
+            $("body").delegate('#StoreId', 'change', function () {
+                var storeid = $(this).children("option:selected").val();
+                $.post("/Storage/GetStorage", { storeId: storeid, title: "" }, function (da) {
+                    $(".create-storage").html("");
+                    $(".create-storage").append(getOptions(da, ""));
+                });
+            });
+        });
+        //$(function () {
+        //    $("body").delegate('.num-tag', 'blur', function () {
+        //        var reg = /\d+/;
+        //        numberValid(this);
+        //    });
+        //})
+    </script>
+}
+

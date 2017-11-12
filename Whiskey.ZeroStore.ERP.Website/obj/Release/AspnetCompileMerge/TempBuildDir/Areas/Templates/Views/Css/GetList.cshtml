@@ -1,0 +1,138 @@
+﻿
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-10">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-2">名称</label>
+                        <div class="col-md-5">
+                            @Html.TextBox("CSSName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list "></i> <span>数据列表</span></h5>
+            </div>
+        </div>
+        <table class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //搜索
+        $("#Search").on("click", function () {
+            $.whiskey.datatable.reset(false);
+        });
+        //清楚搜索
+        $("#Clear").on("click", function () {
+            $('.bootbox #CSSName').val("");
+        });
+
+        $.whiskey.datatable.instance = $(".table-list").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("List")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                var name = $('.bootbox #CSSName').val();
+                conditions.Rules.push(new $.whiskey.filter.rule("CSSName", name, "contains"));
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+			{
+			    "sTitle": "编号",
+			    "bSortable": false,
+			    "sName": "RowNumber",
+			    "mData": function (data) {
+			        var index = data.iDisplayIndex + 1;
+			        return '' + index + '';
+			    }
+			},
+            {
+                "sTitle": "名称",
+                "bSortable": false,
+                "sName": "CSSName",
+                "mData": function (data) {
+                    return data.CSSName;
+                },
+            },
+            {
+                "sTitle": "路径",
+                "bSortable": false,
+                "sName": "CSSPath",
+                "mData": function (data) {
+                    return data.CSSPath;
+                },
+            },
+            {
+                 "sTitle": "更新时间",
+                 "bSortable": false,
+                 "sName": "UpdatedTime",
+                 "mData": function (data) {
+                     return $.whiskey.tools.dateFormat(data.UpdatedTime);
+                 }
+            },
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                //"sName": "StoreType",
+                "mData": function (data) {
+                    return '<button  title="点击选择会将路径显示到CSS路径的文本框内" type="button" class="btn btn-success btn-padding-right"  data-name="' + data.CSSName + '" data-path="'+data.CSSPath+'" onclick="SetCSS(this)"><i class="fa fa-send"></i> <span>选择</span></button>';
+                },
+            },
+            ]
+
+        });
+
+    });
+
+    //选择店铺
+    function SetCSS(option) {
+        var path = $(option).attr("data-path");
+        var name = $(option).attr("data-name");
+        $("#CSSName").val(name);
+        $("#CSSPath").val(path);
+        $(".bootbox").modal('hide');
+    }
+</script>
+
+

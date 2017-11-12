@@ -1,0 +1,15 @@
+
+[2017-09-11 16:38:55.390] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 8 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-09-11 16:38:55.477] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 8 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-09-11 16:38:58.458] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 7 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-09-11 16:39:15.065] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 8 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}
+
+[2017-09-11 16:53:41.400] INFO  Whiskey.Core.Data.Entity.CodeFirstDbContext 46 USER-20160427FL\Administrator 
+{Whiskey.Core.Logging.OperatingLog}

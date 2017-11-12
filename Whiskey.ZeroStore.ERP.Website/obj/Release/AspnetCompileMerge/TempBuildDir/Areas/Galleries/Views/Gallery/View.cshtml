@@ -1,0 +1,114 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Models
+@model Gallery
+
+
+<ul id="product" class="nav nav-tabs">
+    <li class="active">
+        <a href="#base" data-toggle="tab">图片预览</a>
+    </li>
+    <li class="">
+        <a href="#others" data-toggle="tab">基础属性</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <div class="tab-pane fade active in " id="base">
+        <img class="preview" src="@Model.OriginalPath" style="max-width:560px;" />
+    </div>
+
+    <div class="tab-pane fade clearfix" id="others">
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.PictureName) :
+            </label>
+            <div class="col-md-10">
+                @Model.PictureName
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Description) :
+            </label>
+            <div class="col-md-10">
+                @Model.Description
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.Tags) :
+            </label>
+            <div class="col-md-10">
+                @Model.Tags
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.OriginalPath) :
+            </label>
+            <div class="col-md-10">
+                @Model.OriginalPath
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.ThumbnailPath) :
+            </label>
+            <div class="col-md-10">
+                @Model.ThumbnailPath
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.UpdatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.UpdatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.CreatedTime) :
+            </label>
+            <div class="col-md-10">
+                @Model.CreatedTime
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsEnabled) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsEnabled == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                @Html.DisplayNameFor(m => m.IsDeleted) :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.IsDeleted == true ? "是" : "否")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                操作人员 :
+            </label>
+            <div class="col-md-10">
+                @Html.Raw(Model.Operator != null ? Model.Operator.Member.MemberName : "")
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+
+

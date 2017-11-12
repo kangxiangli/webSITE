@@ -1,0 +1,153 @@
+﻿<style>
+   .adminlist .modal-content {
+            width: 943px;
+    }
+   .datatable-footer>.col-md-3:nth-child(2){
+    	    width: 21% !important;
+    }
+   .datatable-footer>.col-md-7:nth-child(3) {
+    width: 46% !important;
+    margin-top: -10px !important;
+}
+</style>
+<div id="admin_div">
+    <div class="row">
+        <div class="panel panel-search">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+                </div>
+                <div class="col-md-8 text-right">
+                </div>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal form-search">
+                    <div class="col-md-7">
+                        <div class="form-group no-margin-hr">
+                            <label class="control-label col-md-4">员工姓名</label>
+                            <div class="col-md-7">
+                                @Html.TextBox("Member.RealName", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-footer text-right clearfix ">
+
+                <div class="pull-left">
+                    <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                    <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel panel-list">
+            <div class="panel-heading clearfix">
+                <div class="col-md-4 panel-title">
+                    <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+                </div>
+            </div>
+            <table class="table table-list table-hover valign-middle" width="100%" id="AdminList">
+                <thead>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instances[0] = $("#admin_div #AdminList").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("AdminList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("AdminId", "@ViewBag.AdminId", "equal"));
+                $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0) {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                });
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+
+            {
+                "sTitle": "员工名称",
+                "bSortable": false,
+                "sName": "RealName",
+                "mData": function (data) {
+                    return data.RealName;
+                },
+            },
+            {
+                 "sTitle": "选择",
+                 "bSortable": false,
+                 "sName": "",
+                 "mData": function (data) {
+                     return '<button type="button" onclick="choose(this)"  class="btn btn-light-green" data-name="' + data.RealName + '"  data-id="' + data.Id + '">选择</button>';
+                 },
+             },
+            ]
+        });
+
+        $("#admin_div #Search").on("click", function () {
+            $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[0]);
+        });
+
+        $("#admin_div #Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+
+    });
+
+    //选择店铺
+    function choose(my) {
+        var name = $(my).attr("data-name");
+        var id = $(my).attr("data-id");
+        var index = 0;
+        $("#AdminIds option").each(function () {
+            var val = $(this).val();
+            if (val == id) {
+                index = 1;
+            }
+        });
+        if (index == 0) {            
+            var option = '<option value="' + id + '" selected="selected">' + name + '</option>';
+            $("#AdminIds").append(option);
+            $('.selectpicker').selectpicker('refresh');
+        }
+
+
+        //$(".adminlist").modal("hide");
+    }
+</script>

@@ -1,0 +1,175 @@
+﻿<div id="recharge-generate">
+
+    <!--生成储值信息-->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-control">
+                <label class="control-label col-md-4">
+                    选择会员:已选择{{memberIds.length}}
+                </label>
+                <div class="col-md-4">
+                    <button type="button" v-on:click="showMember" class="btn btn-success">选择</button>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-md-8">
+            <div class="form-control">
+                <label class="control-label col-md-4">
+                    选择充值活动:
+                </label>
+                <div class="col-md-4">
+                    <select id="rechargeActivity">
+                        <option value="">请选择充值活动</option>
+                        <option v-bind:value="item.Id" v-for="item in rechargeActivity">{{item.ActivityName}}</option>
+                    </select>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-8">
+            <div class="form-control">
+                <label class="control-label col-md-4">
+                    选择充值日期
+                </label>
+                <div class="col-md-8">
+                    <div class="input-daterange input-group">
+                        <input type="text" v-on:change.native="showRechargeActivity" id="CreateStartDate" class="start-date input-sm form-control" value="" placeholder="开始日期" />
+                        <span class="input-group-addon">至</span>
+                        <input type="text" v-on:change.native="showRechargeActivity" id="CreateEndDate" class="start-date input-sm form-control" value="" placeholder="结束日期" />
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+    <script>
+        var rechargeGenerateVM;
+        $(function () {
+           
+        var baseUrl = '/Commons/RechargeGenerate';
+
+        rechargeGenerateVM = new Vue({
+            el: "#recharge-generate",
+            data: {
+                id: 0,
+                isLimit: 0,
+                isDeleted: false,
+                isEnabled: true,
+                memberIds: [],
+                numbers: [],
+                pageDatas: [], //分页数据
+                currentId: 0,
+                pageInfo: {
+                    pageIndex: 1,
+                    pageSize: 10,
+                    pageCount: 0,
+                    totalCount: 0
+                },
+                start: '',
+                end:'',
+                currentId: 0,
+                rechargeActivity:[]
+            },
+            mounted: function () {
+               
+                $("#store").queryAllStore({onlyAttach:true})
+                $(".input-daterange").datepicker();
+               
+                   
+                this.showActivity();
+            },
+            methods: {
+                addMember(id) {
+                    if (this.memberIds.indexOf(id) === -1) {
+                        this.memberIds.push(id);
+                    }
+                },
+                showActivity() {
+                    var _self = this;
+                    $.getJSON(`${baseUrl}/ShowRechargeActivity`)
+                        .done(function (res) {
+                            if (res.ResultType === 3) {
+                                _self.rechargeActivity = res.Data;
+                                _self.$nextTick(function () {
+                                    $("#rechargeActivity").selectpicker('render');
+                                })
+
+                            }
+                        })
+                }
+                ,
+                showMember() {
+                    var _self = this;
+                    var dialog = new $.whiskey.web.ajaxDialog({
+                            caption: "选择会员",
+                            actionUrl: "@Url.Action("MemberSelect")",
+                            lockButton: $(this),
+                            getParams: { showOptBtn: 1, memberIds: _self.memberIds.join(',') },
+                            lockButton: $(this),
+                            formValidator: function () {
+                                _self.memberIds = vmRecommendMember.checkedIds.map(x => x);
+                                $("#view-member").parents(".modal-content")
+                                    .find(".modal-header button[data-dismiss=modal]")
+                                    .trigger('click');
+                                return false;
+                            },
+                            postComplete: function () {
+                                return;
+                            },
+
+                     });
+                },
+                save() {
+                    var memberIds = this.memberIds;
+                    var activityId = $("#rechargeActivity").val();
+                    var start = $("#CreateStartDate").val();
+                    var end = $("#CreateEndDate").val();
+                    if (memberIds.length <= 0) {
+                        alert("请选择会员");
+                        return;
+                    }
+                   
+                    if (!activityId || isNaN(activityId) || activityId <= 0) {
+                        alert("请选择充值活动");
+                        return;
+                    }
+                    if (!start || !end) {
+                        alert("请选择日期");
+                        return;
+                    }
+                    var payload = {
+                        memberIds: memberIds,
+                        rechargeActivityId: activityId,
+                        start: start,
+                        end: end
+                    };
+                    $.post(`${baseUrl}/Save`, payload)
+                        .done(function (res) {
+                            if (res.ResultType === 3) {
+                                $("#recharge-generate").parents(".modal-content")
+                                    .find(".modal-header button[data-dismiss=modal]")
+                                    .trigger('click');
+                                rechargeVM.search();
+                            }
+                            else {
+                                alert(res.Message);
+                            }
+                        })
+                }
+
+            }
+
+        })
+    })
+
+    </script>

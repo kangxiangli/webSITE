@@ -1,0 +1,15 @@
+﻿@{
+    string themePath = ViewBag.themePath ?? string.Empty;
+}
+@{
+    if (ViewBag.themeExist ?? false)
+    {
+        Html.RenderPartial(Path.Combine(themePath, "_Foot.cshtml"), ViewBag as object);
+    }
+    else
+    {
+        <div class="row">
+            <div id="footer" class="col-md-12">版权所有　@DateTime.Now.Year　&copy;　零时尚ERP管理平台V2　设计&开发：<a href="http://www.0-fashion.com" target="_blank">0-Fashion</a></div>
+        </div>
+    }
+}

@@ -1,0 +1,27 @@
+﻿<strong style="color:#cdee22;">/*$PONInfo.xxx$*/ 调用方法统一为 $PONInfo.xxx$ 形式</strong> <br />
+                1、ProductName 商品标题，Summary 促销标题，Description 商品描述<br />
+                2、Category.CategoryName 商品品类（$PONInfo.Category.xxx$ 品类信息）<br />
+                3、Brand.BrandName 商品品牌（$PONInfo.Brand.xxx$ 品牌信息）<br />
+                4、Season.SeasonName 商品季节（$PONInfo.Season.xxx$ 季节信息）<br />
+                5、ProductOriginNumberTag.Standard 执行标准（$PONInfo.ProductOriginNumberTag.xxx$ 吊牌属性）<br />
+                6、BuysaidAttributes:{} 买手说标签（$PONInfo.BuysaidAttributes:{
+                $it.AttriName$ 标签名称，$it.Descri$ 标签描述
+                }$）<br />
+                7、BuysaidText 买手说内容<br />
+                8、ProductAttributes:{} 搭配属性（
+                $it.AttributeName$ 属性名称，$it.Description$ 属性描述，$it.IconPath$ 属性图标，$it.ParentId$ 父级Id
+                $it.Children:{}$
+                $）<br />
+                9、ProductImages:{} 细节图（
+                $it.OriginalPath$ 原始图片，$it.ThumbnailSmallPath$ 小缩略图，
+                $it.ThumbnailMediumPath$ 中缩略图，$it.ThumbnailLargePath$ 大缩略图
+                ）<br />
+                10、MemberColloEles:{} 相关搭配（
+                $it.EleType$ 元素类型//0表示图片元素，1表示文本元素，
+                $it.ImagePath$ 图片路径，$it.EleInfo$ 元素信息//图片和文字的位置和尺寸信息，
+                $it.TextInfo$ 文本内容，$it.TextColor$ 文本颜色，$it.TextFont$ 文本字体
+                ）<br />
+                11、MaintainExtends:{} 其它（
+                $it.ExtendName$ 名称，$it.Descript$ 内容，$it.ImgPath$ 图片，$it.ParentId 父级Id
+                ）<br />
+                12、Products:{} 当前款号包含的所有商品

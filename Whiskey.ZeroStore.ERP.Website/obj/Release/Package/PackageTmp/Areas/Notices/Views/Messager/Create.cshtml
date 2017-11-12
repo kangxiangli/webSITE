@@ -1,0 +1,119 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@model MessagerDto
+<link href="/Content/Editor/themes/default/default.css" rel="stylesheet" />
+<style>
+    .modal-dialog {
+        width: 80%;
+        max-width:80%;
+    }
+</style>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ReceiverId) :
+    </label>
+    <div class="col-md-8">
+        @Html.DropDownListFor(x => x.ReceiverIds, (List<SelectListItem>)ViewBag.ReceiverIds, new Dictionary<string, object> { { "class", "form-control selectpicker bla bla bli" }, { "multiple", "multiple" }, { "data-live-search", "true" } })
+    </div>
+    <button title="选择接受人" type="button" class="btn btn-success btn-padding-right" onclick="chooseAdmin()"><span>选择</span></button>
+</div>
+@*<div class="form-group">
+        <label class="control-label col-md-2">
+            @Html.DisplayNameFor(m=>m.MessageType) :
+        </label>
+        <div class="col-md-8">
+            @Html.TextBoxFor(m=> m.MessageType, new { @class = "form-control" })
+        </div>
+    </div>*@
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.MessageTitle) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextBoxFor(m => m.MessageTitle, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.Description) :
+    </label>
+    <div class="col-md-8">
+        @Html.TextAreaFor(m => m.Description, new { @class = "article-editor" })
+    </div>
+</div>
+<link href="/Content/Styles/Bootstrap/BootstrapSelect/bootstrap-select.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/BootstrapSelect/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="/content/editor/kindeditor-min.js"></script>
+<script type="text/javascript" src="/content/editor/lang/zh_CN.js"></script>
+<script type="text/javascript">
+
+    //初始化选择控件
+    $('.selectpicker').selectpicker({
+        'selectedText': 'cat',
+        'noneSelectedText': "请选择员工",
+        'noneResultsText': '没有搜索到'
+    });
+
+     //选择员工
+    function chooseAdmin() {
+        $.ajax({
+            url: "@Url.Action("Admin")",
+            type: "get",
+            success: function (data) {
+                bootbox.dialog({
+                    message: data,
+                    // message:formBody,
+                    className: "adminlist",
+                    title: "会员列表",
+                    buttons: {
+                        cancel: {
+                            label: "关闭",
+                            icon: "fa-close",
+                            className: "btn-default",
+                            callback: function () {
+                                $(".memberlist").modal("hide");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        //初始化页眉编辑器
+        var editor = KindEditor.create(".article-editor", {
+            width: "100%",
+            height: "400px",
+            resizeType: 1,
+            uploadJson: "/content/editor/uploadArticle_json.ashx",
+            fileManagerJson: "/content/editor/file_managerArticle_json.ashx",
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            contentEditable: true,
+            filterMode: true,
+            items: [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink'
+            ],
+            afterCreate: function (id) {
+                this.focus(id);
+            },
+            afterChange: function (id) {
+                this.sync(id);
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+
+    });
+</script>

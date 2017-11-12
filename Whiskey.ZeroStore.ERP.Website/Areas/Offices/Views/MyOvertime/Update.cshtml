@@ -1,0 +1,184 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.Utility.Data
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+@model OvertimeDto
+
+<div class="form-group" id="warning" style="display:none">
+    <label class="control-label col-md-8" style="color: #5ebd5e">
+        *审核通过，不能进行编辑
+    </label>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.OvertimeReason) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.OvertimeReason, new { @class = "form-control" })
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-2">
+        加班时间 :
+    </label>
+    <div class="col-md-10">
+        <div class="input-group">
+            @Html.TextBoxFor(x => x.StartTime, new { @class = "form-control form_datetime", @placeholder = "开始时间", @onchange = "computeDay(this)" })
+            <span class="input-group-addon">至</span>
+            @Html.TextBoxFor(x => x.EndTime, new { @class = "form-control form_time", @placeholder = "结束时间", @onchange = "computeDay(this)" })
+        </div>
+    </div>
+</div>
+<div class="form-group" id="rest_div">
+    <label class="control-label col-md-2">
+        休息时长 :
+    </label>
+    <div class="col-md-10">
+        <div class="input-group">
+            <input type="text" id="RestHours" name="RestHours" class="form-control" check-number min-value="0" value="@ViewBag.RestHours" max-value="3" />
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(x => x.OvertimeDays) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.OvertimeDays, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(x => x.GetPoints) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m => m.GetPoints, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(x => x.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(x => x.Id)
+@Html.HiddenFor(x => x.AdminId)
+<input type="hidden" id="Lengthleave" value="@ViewBag.Lengthleave" />
+<input type="hidden" id="OvertimePoints" value="@ViewBag.OvertimePoints" />
+<link href="/Content/Styles/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.min.js"></script>
+<script src="/Content/Scripts/Bootstrap/DateTimePicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript">
+
+    $("#StartTime").datetimepicker({
+        startDate: $.whiskey.tools.dateFormat(new Date(), "yyyy-MM-dd hh:mm"),
+        language: 'zh-CN',
+        minView: 'hour',
+        todayBtn: true,
+        minuteStep: 30,
+        format: 'yyyy/mm/dd hh:ii'
+    });
+
+    $('#EndTime').datetimepicker({
+        startDate: $.whiskey.tools.dateFormat(new Date("@Model.StartTime"), "yyyy-MM-dd hh:mm"),
+        startView: 1,
+        minView: 0,
+        maxView: 1,
+        minuteStep: 30,
+        language: 'zh-CN',
+        format: 'yyyy/mm/dd hh:ii'
+    });
+    $("#StartTime").val("@Model.StartTime");
+    $("#EndTime").val("@Model.EndTime");
+    $(function () {
+        //审核通过后不能修改
+        var verifyType = "@Model.VerifyType";
+        if (verifyType == "@((int)VerifyFlag.Pass)") {
+            $("#warning").css("display", "block");
+            $(".bootbox .btn-primary").attr("disabled", "disabled");
+        }
+        $("#RestHours").blur(function () {
+            var _resthour = parseFloat($(this).val());
+            var _leaveDays = parseFloat($("#Lengthleave").val());
+            if (_resthour < 0) {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "休息时长不能小于0！"
+                });
+                return;
+            }
+            if ((_resthour * 10) % 5 != 0) {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "休息时长必须为0.5的倍数！"
+                });
+                $(this).val(0);
+                $("#LeaveDays").val(_leaveDays);
+                return;
+            }
+            if (_resthour >= _leaveDays && _leaveDays > 0) {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "休息时长不能大于加班时长！"
+                });
+                return;
+            }
+            var overtimeDays = _leaveDays - _resthour;
+            var overtimePoints = parseFloat($("#OvertimePoints").val());
+            $("#OvertimeDays").val(overtimeDays);
+            $("#GetPoints").val(overtimeDays * overtimePoints);
+        });
+    });
+    function computeDay(obj) {
+        var startTime = $(".bootbox #StartTime").val();
+        var endTime = $(".bootbox #EndTime").val();
+        var id = $(obj).attr("id");
+        if ($(obj).attr("name") == "StartTime") {
+            if ($(obj).val() != "") {
+                var end_date = $("#StartTime").val().split(" ")[0];
+                $('#EndTime').val($("#StartTime").val());
+            }
+            $('#EndTime').datetimepicker('setStartDate', $.whiskey.tools.dateFormat(new Date(startTime), "yyyy-MM-dd hh:mm"));
+        }
+        if (startTime == "" || endTime == "") {
+            return;
+        }
+        $.ajax({
+            url: "@Url.Action("ComputeWorkDay")",
+            type: 'post',
+            data: { StartDate: startTime, EndDate: endTime },
+            success: function (data) {
+                if (data.ResultType != "@((int)OperationResultType.Success)") {
+                    $.whiskey.web.alert({
+                        type: "danger",
+                        content: data.Message,
+                        callback: function () {
+                            $("#Lengthleave").val("0");
+                            $("#LeaveDays").val("0");
+                        }
+                    });
+                    return;
+                }
+                var value = data.Data;
+                if (parseFloat(value) < 0) {
+                    if (id != "StartTime") {
+                        $.whiskey.web.alert({
+                            type: "danger",
+                            content: "加班时间必须大于0"
+                        });
+                        return;
+                    }
+                    return;
+                }
+                var overtimePoints = parseFloat($("#OvertimePoints").val());
+                var time = parseFloat(value) - parseFloat($("#RestHours").val());
+                $("#Lengthleave").val(value);
+                $(".bootbox #OvertimeDays").val(time);
+                $("#GetPoints").val(time * overtimePoints);
+                return;
+            }
+        });
+    }
+</script>

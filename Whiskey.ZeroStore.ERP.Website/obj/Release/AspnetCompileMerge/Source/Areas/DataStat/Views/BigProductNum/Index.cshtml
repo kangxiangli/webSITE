@@ -1,0 +1,426 @@
+﻿
+<style>
+	#store-memu{width: 280px !important;margin-left: 0;}
+	#store-memu li{float: left;}
+	.child_memu{width: 163px !important;padding: 7px 0;margin-top: 6px;min-width:86px}
+	.child_memu li a{text-align: center;max-width: 163px;}
+	.memu{width: 307px !important;min-width: 86px !important;padding: 7px 0;margin-top: 6px;}
+	.dropdown_sale{margin-right:10px;height: 100%;}
+	.bootstrap-select{height:100%}
+	.bootstrap-select button{background: rgba(0,0,0,.1);padding: 10px 38px;}
+	.bootstrap-select .open{margin-top:15px}
+	.open .dropdown-toggle.btn-default{background-color:rgba(0,0,0,.1) !important;}
+	.btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default{
+		background-color: rgba(0,0,0,0.1)!important; 
+	}
+	#OutStoreId{
+		min-width: 100px; 
+		min-height: 100%;
+		padding:10px 20px
+	}
+	
+	.dropdown_sale>a{background: rgba(0,0,0,.2);}  
+	.dropdown_sale>a:focus{background: rgba(0,0,0,.2);}
+	.dropdown_sale>a:active{color: #fff !important;}
+	.memu li:hover{background: rgba(0,0,0,.4);}
+	.memu li a:hover{background: none;}
+	.memu li{float: left;max-width: 101px;cursor: pointer;}
+	.child_memu li{cursor: pointer;}
+	.time button ,.pageSize button{background: rgba(0,0,0,.2); padding: 20px 23px;line-height: 0px;}
+	.time button:active,.time button:focus,.pageSize button:active,.pageSize button:focus{background: rgba(0,0,0,.2);}
+	 .saledetails{top:0%;right:25%;width: 300px;background: rgba(0,0,0,.2);border-radius: 4px;display: none;min-width: 325px;}
+     .SaleData li{color:#fff;font-size: 14px;text-decoration: none;list-style-type: none;float: left;margin:5px;padding:5px}
+     .SaleData li:hover{cursor: pointer;background: rgba(0,0,0,.2);}
+     .datepicker-dropdown{background: rgba(0,0,0,1) !important;}
+    #Search{float: left;margin-left:8px;height: 39px;}
+     .nodataDiv{position: absolute;top: 43%;left: 22%;width: 59px;height: 20px;border: 1px solid #ccc;color: #ccc;border-radius: 4px;line-height: 17px;display: none;}
+.sale_content{width: 100%;height: 40px;position: absolute;top: 6%;left: 2%;}
+.sale_content>div{float: left;margin:0;}
+.ThumbnailPath{display: inline-block;}
+.ThumbnailPath img{width: 100%;cursor:pointer}
+.thumbnail-img_five{display: none;position: relative;width: 60px;height: 60px;border: 1px solid #eaeaea;padding:2px}
+</style>
+<div id="saleStatistics" style="width: 100%;height:800px;position:relative;">
+	<!-- Single button -->
+
+</div>
+ <div class="nodataDiv">暂无销售</div>
+  <div class="sale_content">
+<div class="dropdown dropdown_sale" style="z-index: 999;">
+           <select id="OutStoreId" class="form-control"></select>
+</div>
+
+<div class="dropdown  dropdown_sale dropdown_category" style="z-index: 999;">
+            <a class="btn dropdown-toggle switch_store" data-toggle="dropdown" href="#" disabled="disabled">
+                <i class="icon-font"></i>&nbsp;
+                <span id="big-category-size" class="current-font">全部尺码</span>&nbsp;
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu child_memu" id="erji-memu-category-size"  data-type="SizeId">
+            </ul>
+</div>
+<div class="dropdown dropdown_sale" style="z-index: 999;">
+            <a class="btn dropdown-toggle switch_store" data-toggle="dropdown" href="#" disabled="disabled">
+                <i class="icon-font"></i>&nbsp;
+                <span id="big-color" class="current-font">全部颜色</span>&nbsp;
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu child_memu"  id="erji-memu-color"  data-type="ColorId">
+            	<li><a href="javascript:;" unselectable="on" data-value="">全部颜色</a></li>
+            </ul>
+</div>
+<div class="btn-group time" role="group" aria-label="..." style="z-index: 999;margin-left:5px">
+  <button type="button" class="btn btn-default" time-data="7" style="background: rgba(0,0,0,.9);">前7天</button>
+  <button type="button" class="btn btn-default" time-data="30">前30天</button>
+  <button type="button" class="btn btn-default" time-data="90">前90天</button>
+  <button type="button" class="btn btn-default" time-data="other">其他</button>
+  <div class="col-md-12 timeRange" style="position: absolute;right: 2%;top: 111%;z-index: 999;display: none;">
+                    <div class="form-group no-margin-hr">
+                        <div class="col-md-12">
+                            <div class="input-daterange input-daterange_sale input-group">
+                                <input class="start-date  form-control" id="StartDate" name="StartDate" placeholder="开始日期" type="text" value="">
+                                <span class="input-group-addon">至</span>
+                                <input class="end-date  form-control" id="EndDate" name="EndDate" placeholder="结束日期" type="text" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+</div>
+<button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+<div  id="saleSwicher" style="z-index: 999;">
+                                 <span class="changeDate_swicher saleSwicher"> 
+                                 <input class="saleReturn" type="checkbox" data-class="switcher-default" checked="checked">
+                                 </span>
+ </div>
+<form class="navbar-search  hidden-phone animated bounceInDown" action="" style="float:left;margin:8px 1%">
+   <button type="button" class="btn search_btn searchBigProductNum"><i class="fa fa-search"></i></button>
+   <input type="text" class="search-query bigProductNum" placeholder="搜索货品"  value="" onkeydown="javascript:if(event.keyCode==13) return false;"onkeyup="javascript:if(event.keyCode==13) return false;"     >
+</form>
+<div class="thumbnail-img_five">
+	<div class="ThumbnailPath" style="max-width: 60px;margin: 0 auto 0 auto;position: relative;padding-bottom: 53px;height: 0;overflow: hidden;">
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="/Content/scripts/echart/echarts.js"></script>
+<script type="text/javascript">
+	var StoreId=-1;
+	var allData={};
+	var json={};
+	json.Days=7;
+	json.StatType=0
+	var categoryOption={};
+    var CountFromCurrentStoreArr=[];//全网数据
+	var CountFromAllStoreArr=[];//当前店铺数据
+    var  Xname=[];
+      	$(function(){
+      		require.config({
+            paths: {
+                echarts: '/content/scripts/echart/'
+            }
+        });
+      		plotWithOptions();
+      	})
+      	
+      	function plotWithOptions(){
+      		   /*获得当前用户所管理的门店下拉列表*/
+//              $.get("/Authorities/Home/GetManagedStores",function(da){
+//                if (da.ResultType == 3) {              
+//                      var data  = da.Data;
+//                  $.each(data,function(i,item){                  
+//                   $('#store-memu').append('<li><a href="javascript:;" unselectable="on" data-value="'+item.StoreId+'">'+item.StoreName+'</a></li>');           
+//                  });  
+//                  var selectStores=$('#store-memu li').eq(0).find('a');
+//                    $('#big-logo').html(selectStores.text());
+//                    StoreId=selectStores.attr("data-value");
+//                            json.StoreId=parseInt(StoreId)
+//                    $('#store-memu li a').bind('click',function(){   
+//                          var activeStore=$(this).text();
+//                           StoreId=$(this).attr('data-value');
+//                            json.StoreId=parseInt(StoreId)
+//                          $('#big-logo').html(activeStore);
+//                          /*切换店铺后要重新获得颜色和尺码*/
+//                      $("#erji-memu-color,#erji-memu-category-size").siblings("a").attr("disabled","disabled");
+//                      $("#big-color").html("全部颜色");$("#big-category-size").html("全部尺码");
+//                      $(".thumbnail-img_five").hide();
+//                    })
+//                }  
+//              })
+                    $(".dropdown_sale #OutStoreId").queryManageStore({ defaultSelect:true,callback:function(){
+                    	  json.StoreId = $("#OutStoreId").val();
+                    }});
+					           
+					  $('#OutStoreId').change(function () {
+					          json.StoreId = $("#OutStoreId").val();
+					            /*切换店铺后要重新获得颜色和尺码*/
+                        $("#erji-memu-color,#erji-memu-category-size").siblings("a").attr("disabled","disabled");
+                        $("#big-color").html("全部颜色");$("#big-category-size").html("全部尺码");
+                        $(".thumbnail-img_five").hide();
+					 });
+      		  /*搜索该大款号所拥有的颜色和尺码*/
+      		 $('.searchBigProductNum').bind("click",function(){
+      		 	var bigProductNum=$('.bigProductNum').val();
+      		 	json.BigProductNum=bigProductNum;
+      		 	if(bigProductNum==''||bigProductNum==undefined){
+      		 		$.whiskey.web.alert({
+                        type: "warning",
+                        content: "请填写7位数字大款号",
+                        callback: function () {
+                 
+                        }
+                    });
+      		 	}else{
+      		 		 $.get("/datastat/bigproductnum/queryoptions",{'storeId':StoreId,'bigProductNum':bigProductNum},function(da){
+      		 			if(da.ResultType==3){
+      		 				var colorarr=da.Data.Color;
+      		 				var sizearr=da.Data.Size;
+      		 				var ThumbnailPath=da.Data.ThumbnailPath;
+      		 				$("#big-color").html("全部颜色");$("#big-category-size").html("全部尺码");
+      		 				$("#erji-memu-color,#erji-memu-category-size").empty();
+      		 				$.each(colorarr,function(i,item){
+      		 					$("#erji-memu-color").append("<li data-id="+item.Id+"><a>"+item.Name+"</a></li>");
+      		 				});
+      		 				
+      		 				$.each(sizearr ,function(i,item){
+      		 					$("#erji-memu-category-size").append("<li data-id="+item.Id+"><a>"+item.Name+"</a></li>");
+      		 				});
+      		 				
+      		 				$(".ThumbnailPath").html('<img id="ThumbnailPath" src="'+ThumbnailPath+'" alt="" class="popimg" onerror="imgloaderror(this);"/>')
+      		 				
+      		 				if(colorarr.length){$("#erji-memu-color").siblings("a").removeAttr("disabled")}else{$.whiskey.web.alert({
+                        type: "warning",
+                        content: "该款号没有库存",
+                        callback: function () {
+                        }
+                    })};
+      		 				if(sizearr.length)$("#erji-memu-category-size").siblings("a").removeAttr("disabled");
+      		 				
+      		 				$('.child_memu li a').unbind("click").bind('click',function(){
+      		   	 			 var activeoptions=$(this).text();	//回填字段
+      		   	 			 var activeoptionsId =$(this).parents("ul").attr("data-type");///四种ID，让下面的json，判断存取那个ID
+      		   	 			 var current_font=$(this).parents(".child_memu").siblings().find(".current-font");	//回填字段的dom
+      		   	 			 var current_Id=$(this).parent().attr('data-id');	//对应的ID号
+      		   	 			 if(activeoptionsId=="SizeId"){
+      		   	 			 	delete json['ColorId'];
+      		   	 			 	$("#big-color").html("全部颜色");
+      		   	 			 }
+      		   	 			 if(activeoptionsId=="ColorId"){
+      		   	 			 	delete json['SizeId'];
+      		   	 			 	$("#big-category-size").html("全部尺码");
+      		   	 			 }
+      		   	 			  current_font.html(activeoptions);
+      		   	 			  json[activeoptionsId]=current_Id;
+      		   	 	    	  $(this).parent().css("background","rgba(0,0,0,.9)").siblings().css("background","none");
+      		   	 		
+      		   	          });
+      		   	          
+      		   	          $(".thumbnail-img_five").fadeIn();
+      		 			}else{
+      		 				$.whiskey.web.alert({
+                        type: "warning",
+                        content: "抱歉！ 信息有误或款号无效，请选择正确的店铺及款号",
+                        callback: function () {
+                 
+                        }
+                    });
+      		 			}
+      		 	  	
+      		 	  	
+      		 	  })
+      		 	
+      		 	
+      		 	}
+      		 	
+      		 	 
+      		 
+      		 	
+      		 	
+      		 })
+      		   	  	/*为所有下拉绑定事件*/	
+      		   	 $('.memu li a ').bind('click',function(){
+      		   	 		 var activeoptions=$(this).text();	//回填字段
+      		   	 		 var activeoptionsId =$(this).parents("ul").attr("data-type");///四种ID，让下面的json，判断存取那个ID
+      		   	 		 var current_font=$(this).parents(".memu").siblings().find(".current-font");	//回填字段的dom
+      		   	 		 var current_Id=$(this).parent().attr('data-id');	//对应的ID号
+      		   	 		  current_font.html(activeoptions);
+      		   	 		  json[activeoptionsId]=current_Id;
+      		   	 	      $(this).parent().css("background","rgba(0,0,0,.9)").siblings().css("background","none");
+      		   	 });
+      		   
+//                  
+                     $('.time button').bind('click',function(){
+                            var activetime=$(this).attr('time-data');
+                            if(activetime=='other'){
+                            	$(".timeRange").fadeIn();
+                            	delete json.Days;
+                            }else{
+                            	$(".timeRange").hide();
+                            	$(".saledetails").css({'top':'0%','right':'25%'})
+                            	    delete json['StartDate'];
+                            		delete json['EndDate'];
+                            		json.Days=activetime;
+                            }
+                            $(this).css("background","rgba(0,0,0,.9)").siblings("button").css("background","rgba(0,0,0,.2)");
+                      });
+                      $('#Search').click(function(){
+                      	if(!json.BigProductNum){
+                      		$.whiskey.web.alert({
+                        type: "warning",
+                        content: "请先输入大款号 点击放大镜查找对应的颜色和尺码！",
+                        callback: function () {
+                        }
+                    });
+                      	}
+                      	if(!json.Days){
+                      		var StartDate=$('#StartDate').val();
+                      		var EndDate=$('#EndDate').val();
+                      		json.StartDate=StartDate||$.whiskey.web.alert({
+                        type: "warning",
+                        content: "请选择开始时间",
+                        callback: function () {
+                        }
+                    });
+                      		json.EndDate=EndDate||$.whiskey.web.alert({
+                        type: "warning",
+                        content: "请选择结束时间",
+                        callback: function () {
+                        }
+                    });
+                      	}
+                            var len = $('.saleSwicher input:checked').length;
+		                     if( len == 0){
+		                    	//1==退
+		                    	json.StatType=1;
+		                    }else if( len == 1){
+		                    	//0==售
+		                    	json.StatType=0;
+		                    }
+		                    $.get("/datastat/bigproductnum/query",json,function(da){
+		                    	console.log("新的参数:"+JSON.stringify(json));
+		                		if(da.ResultType==3){
+		                			var data=da.Data;
+		                	       console.log("新的数据"+JSON.stringify(data));
+		                	           CountFromAllStoreArr.splice(0,CountFromAllStoreArr.length);
+		                			   CountFromCurrentStoreArr.splice(0,CountFromCurrentStoreArr.length);
+		                			   Xname.splice(0,Xname.length);
+		                			   if(!data.Entries.length){
+		                			      	Xname.push("暂无数据");
+		                			   	    reloadCateChart([0],[0],Xname)
+		                			   }else{
+				                			   	 $.each(data.Entries,function(i,item){
+				                	        	CountFromAllStoreArr.push(item.CountFromAllStore);
+				                	        	CountFromCurrentStoreArr.push(item.CountFromCurrentStore);
+				                	            Xname.push(item.Name);
+				                	        })
+				                	        reloadCateChart(CountFromAllStoreArr,CountFromCurrentStoreArr,Xname)
+		                			   }
+		                	       
+		                		}
+		                    })
+                      })
+                      
+        
+        function reloadCateChart(CountFromAllStoreArr,CountFromCurrentStoreArr,Xname){
+        require(
+            [
+            'echarts',
+            'echarts/chart/line',
+            'echarts/chart/bar',
+
+            ],
+            function (ec) {
+         var bigProductChart = ec.init(document.getElementById('saleStatistics'));
+         var bigProductOption = {
+  
+    tooltip : {
+        trigger: 'axis',
+         axisPointer: {
+        type: 'none'
+        }
+    },
+    calculable : false,
+    xAxis : [
+        {
+            type : 'category',
+            data : Xname,
+            axisLabel: {
+                            show: true,
+                            textStyle: {
+                                color: '#fff'
+                            }
+                       },
+            splitLine:{
+            	show:true,
+            	lineStyle:{
+            		color: ['rgba(255,255,255,.1)'],
+    width: 1,
+    type: 'solid'
+            	}
+            },
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            axisLabel: {
+                            show: true,
+                            textStyle: {
+                                color: '#fff'
+                            }
+                       },
+            splitLine:{
+            	show:true,
+            	lineStyle:{
+            		color: ['rgba(255,255,255,.1)'],
+    width: 1,
+    type: 'solid'
+            	}
+            },
+        }
+    ],
+      grid:{
+    	borderWidth:0,
+    	x2:'14%',
+    	x:'7%',
+    	y:'14%',
+    	y2:"10%"
+    },
+    series : [
+        {
+            name:'本店铺',
+            type:'bar',
+            data:CountFromCurrentStoreArr||[0],
+           itemStyle: {
+                normal: {
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: '本店铺{b}'
+                    }
+                }
+            },
+        },
+        {
+            name:'全网',
+            type:'bar',
+            data:CountFromAllStoreArr||[0],
+               itemStyle: {
+                normal: {
+                    label: {
+                        show: true,
+                        position: 'top',
+                        formatter: '全网{b}'
+                    }
+                }
+            },
+        }
+    ]
+};
+                    
+               bigProductChart.setOption(bigProductOption);       
+                    
+            }
+        );
+     }      		
+      	}
+    </script>

@@ -1,0 +1,143 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using System.Collections
+<style>
+    .dataTables_filter {
+        display: none !important;
+    }
+
+    .disable_all_conte {
+        position: relative;
+        z-index: 1025;
+        opacity: 0.3 !important;
+        background-color: black !important;
+        cursor: not-allowed;
+    }
+
+    .disable_all_aOrlab {
+        cursor: not-allowed;
+    }
+
+    .bg_gray {
+        background-color: #dddddd !important;
+    }
+</style>
+<link href="~/Content/Styles/Bootstrap/bootstrapSwitch/bootstrap-switch.min.css" rel="stylesheet" />
+<script src="~/Content/Scripts/Bootstrap/bootstrapSwitch/bootstrap-switch.min.js"></script>
+
+
+<div class="row batchproduct">
+
+    <div class="col-md-7">
+        <div id="left_content" title="请选择右侧的下拉菜单以激活当前区域">
+            <div class="panel panel-danger panel-dark widget-profile">
+                <div class="panel-heading">
+                    <div class="widget-profile-bg-icon"></div>
+                    <div class="widget-profile-header text-center">
+                        <h3>请使用扫码枪将商品货号扫入下边文本框</h3>
+                    </div>
+                </div>
+                <div class="list-group-item no-border-hr clearfix valign-middle">
+                    <div>
+                        <div class=""></div>
+                        <div class="" style="padding-left:0;margin-bottom:10px">
+                           
+                            @Html.TextBox("ScanNumber", "", new { @placeholder = "请输入商品货号", @class = "scan-number  text-center input-lg form-control", @style = "ime-mode:disabled;margin-top:15px;display:inline;width:70%;height:30%", @onkeyup = "this.value=this.value.toUpperCase().replace(/[\u4e00-\u9fa5]/g,'')" })
+                            <input id="sear-ok" class="input-lg form-control" style="display:inline;width:16%;margin-left:auto" type="button" value="&raquo;" />
+                        </div>
+                        <div class="valign-middle"></div>
+                        <div>
+                            @*<input class="form-control" id="selec_prod_list" type="button" value="选择商品……" style="font-weight: bold;" />*@
+                            <input class="form-control" id="selec_prodBatch_list" type="button" value="批量导入……" style="font-weight: bold;" />
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget-profile-counters clearfix">
+                    <div class="col-xs-4"><label class="label label-info scan-queue-count">0</label><br />队列数量</div>
+                    <div class="col-xs-4"><a href="" class="scan-valid valid"><label class="label label-success scan-valid-count">0</label><br />有效数量</a></div>
+                    <div class="col-xs-4"><a href="javascript:" class="scan-invalid invalid"><label class="label label-danger scan-invalid-count">0</label><br />无效数量</a> </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="stat-panel">
+            <div class="stat-row">
+                <div class="stat-cell padding-sm-hr bordered valign-top">
+                    <ul class="list-group no-margin">
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix ">
+                            <label class="control-label col-md-4">零售折扣</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("saleDiscount", null, new { @class = "form-control" })
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4">批发折扣</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("wholesaleDiscount", null, new { @class = "form-control" })
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4">采购折扣</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("purchaseDiscount", null, new { @class = "form-control" })
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix">
+                            <label class="control-label col-md-4">折扣方案名</label>
+                            <div class="col-md-8">
+                                @Html.TextBox("DiscountName", null, new { @class = "form-control" })
+                            </div>
+                        </li>
+                        <li class="list-group-item no-border-hr no-border-t padding-xs-vr no-bg no-border-radius clearfix" style="display: none">
+                            <label class="control-label col-md-4">备注信息</label>
+                            <div class="col-md-8">
+                                @Html.TextArea("Notes", new { @class = "form-control" })
+                            </div>
+                        </li>
+
+                        <li class="list-group-item no-border-hr no-border-b padding-xs-vr no-bg no-border-radius clearfix">
+                            <div>
+                                <input type="hidden" id="isSave" value="0"/>
+                                <button id="Create" type="button" class="btn btn-success  btn-padding-right"><i class="fa fa-arrow-right"></i> 保存</button>
+                                <button id="RemoveAll" type="button" class="btn btn-danger btn-padding-right"><i class="fa fa-trash"></i> 移除所选商品</button>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-12">
+        <div class="panel  panel-list">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <h5><i class="fa fa-list"></i> 已选择的商品</h5>
+                </div>
+                <span class="text-right list-info"></span>
+            </div>
+            <div>
+                <table class="table-list addprod_li table table-bordered" width="100%">
+                    <thead>
+
+                    </thead>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<div class="modal fade" id="modal_di"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <img style="position:fixed;top:40%;left:45%" cla uu7 onmouseups="modal-body" src="/content/images/ajax_loader.gif">
+</div>
+
+
+

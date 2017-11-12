@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/Content/Styles/JqueryMobile/jquery.mobile.icons-1.4.5.min.css" rel="stylesheet" />
+    <link href="~/Content/Styles/JqueryMobile/theme-classic.css" rel="stylesheet" />
+    <link href="~/Content/Styles/JqueryMobile/jquery.mobile.structure-1.4.5.min.css" rel="stylesheet" />
+    <script src="~/Content/Scripts/JqueryMobile/jquery.min.js"></script>
+    <script src="~/Content/Scripts/JqueryMobile/jquery.mobile-1.4.5.min.js"></script>
+</head>
+<style>
+    .div_input {
+        float: left;
+        width: 54%;
+    }
+</style>
+<body>
+    <div data-role="page">
+        <div class="ui-content" role="main" style="margin-top:10%;">
+            <center><b>打&nbsp;&nbsp;卡</b></center>
+            <br /><br />
+            <form>
+                <div class="ui-field-contain">
+
+                    <label for="name2">部门：</label>
+                    <input type="text" name="name2" style="height:50px;" class="inputCl" id="name2" value="技术部" data-clear-btn="false" disabled>
+                </div>
+                <div class="ui-field-contain">
+                    <label for="userName">姓名：</label>
+                    <input type="text" class="inputCl" style="height:50px;" name="userName" id="userName" value="" data-clear-btn="false">
+                </div>
+                <div class="ui-field-contain">
+                    <label for="userName">打卡类型：</label>
+                    <fieldset data-role="controlgroup" data-type="horizontal">
+                        <label for="on" id="qiandao">签到</label>
+                        <input type="radio" name="shadow" id="on" checked>
+                        <label for="off" id="qiantui">签退</label>
+                        <input type="radio" name="shadow" id="off">
+                    </fieldset>
+                </div>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <div class="ui-field-contain">
+                    <a class="ui-btn ui-shadow" id="submitBtn">提交</a>
+                </div>
+            </form>
+        </div><!-- /content -->
+        <a href="#popupDialog" id="popupClick" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-corner-all ui-shadow ui-btn-inline ui-icon-delete ui-btn-icon-left ui-btn-b" style="display:none;"></a>
+        <div data-role="popup" id="popupDialog" data-overlay-theme="b" data-theme="b" data-dismissible="false" style="max-width:400px;">
+            <div data-role="header" data-theme="a">
+                <h1>提示</h1>
+            </div>
+            <div role="main" class="ui-content">
+                <br />
+                <h3 class="ui-title" id="errmsg">请输入打卡人姓名！</h3>
+                <br />
+                <a href="#" class="ui-btn ui-shadow ui-btn-a" data-rel="back">确定</a>
+            </div>
+        </div>
+    </div><!-- /page -->
+</body>
+</html>
+<script type="text/javascript">
+    var signType = 0;
+    var methodStr = "/PunchClock/PunchSign/LoginIn";
+    $(function () {
+        //$(".inputCl").parent().addClass("div_input");
+        $("#opt-shadow input").on("change", function (event) {
+            if ($("#on").prop("checked")) {
+                $("#testpage").removeClass("noshadow");
+            } else if ($("#off").prop("checked")) {
+                $("#testpage").addClass("noshadow");
+            }
+        });
+        $("#submitBtn").click(function () {
+            var oncacheval = $("#on").prop("checked");
+            var offcacheval = $("#off").prop("checked");
+            if (oncacheval && !offcacheval) {
+                signType = 0;
+                methodStr = "/PunchClock/PunchSign/LoginIn";
+                Save();
+            } else if (offcacheval && !oncacheval) {
+                signType = 1;
+                methodStr = "/PunchClock/PunchSign/LoginOut";
+                Save();
+            } else {
+                $("#errmsg").html(" 打  卡  异  常  ！ ");
+                $("#popupClick").trigger("click");
+            }
+
+        });
+    });
+
+    function Save() {
+        var userName = $("#userName").val();
+        if (userName == "") {
+            $("#errmsg").html("请输入打卡人姓名！");
+            $("#popupClick").trigger("click");
+            return false;
+        } else {
+
+            $.ajax({
+                type: "post",
+                url: methodStr,
+                data: { userNamer: userName },
+                success: function (msg) {
+                    if (msg.ResultType == 3) {
+                        $("#errmsg").html(" 打  卡  成  功  ！ ");
+                        $("#popupClick").trigger("click");
+                        $("#submitBtn").attr("disabled", "disabled");
+                    } else {
+                        $("#errmsg").html(" 打  卡  失  败  ！ ");
+                        $("#popupClick").trigger("click");
+                    }
+                }
+            });
+        }
+    }
+</script>

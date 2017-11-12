@@ -1,0 +1,127 @@
+﻿@using Whiskey.ZeroStore.ERP.Models
+<div class="row adminlist">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-7">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">人员姓名</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("RealName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix">
+            <div class="pull-left">
+                <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+        </div>
+        <table class="table table-hover valign-middle" width="100%" id="NotiAdminList">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<style>
+    .dataTable th {
+        text-align:center;
+    }
+    .viewnotipeo .modal-dialog {
+        width: 55%;
+    }
+    #NotiAdminList_length>label{
+    display: flex;
+    width: 200px
+    }
+    #NotiAdminList_info[
+    width:180px;
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.whiskey.datatable.instances[1] = $("#NotiAdminList").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("ViewNotiPeoList", "Notification", new { area = "Notices" })",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("Administrator.RealName", $(".adminlist #RealName").val(), "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("NotificationId", '@Request.QueryString["Id"]', "equal"));
+                if ('@Request.QueryString["IsRead"]' == 'true') {
+                    conditions.Rules.push(new $.whiskey.filter.rule("IsRead", '@Request.QueryString["IsRead"]', "equal"));
+                }
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+
+            {
+                "sTitle": "人员名称",
+                "bSortable": false,
+                "sName": "RealName",
+                "mData": function (data) {
+                    return data.RealName;
+                },
+            },
+            {
+                "sTitle": '@Request.QueryString["IsRead"]' == "true" ? "阅读时间" : "选择",
+                "bSortable": false,
+                bVisible: '@Request.QueryString["IsRead"]' == "true" ? true : false,
+                "sName": "",
+                "mData": function (data) {
+                    return $.whiskey.tools.dateFormat(data.UpdatedTime, "yyyy-MM-dd HH:mm:ss");
+                },
+            },
+            ]
+        });
+
+        $(".adminlist #Search").on("click", function () {
+            $.whiskey.datatable.reset(false, $.whiskey.datatable.instances[1]);
+        });
+
+        $(".adminlist #Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+    });
+</script>

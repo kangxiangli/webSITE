@@ -1,0 +1,211 @@
+﻿@using Whiskey.ZeroStore.ERP.Models.Enums;
+<style>
+    .diacl .modal-dialog {
+        width: 80%;
+    }
+ #tbl> tbody > tr > td {
+   
+    line-height: 1.42857143;
+    text-align: center;
+    border: 1px solid rgba(0,0,0,.1);
+    
+}
+.table_border> thead > tr > th {
+    text-align: center;
+}
+
+
+</style>
+
+<div>
+    <table id="tbl" class="table table_border table-bordered table-list_retu table-hover valign-middle" width="100%">
+        <thead>
+            <tr>
+                <th>
+                    <label>
+                        <input type="checkbox" class="chkall" />全选
+                    </label>
+                </th>
+                <th> 流水号 </th>
+                <th> 图片 </th>
+                <th> 单价 </th>
+                <th> 状态 </th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<div style="margin-top: 25px;color: #fff;"><i class="fa fa-list"></i>退货金额明细<hr style="margin-top:0;padding-top: 0;" /></div>
+<div style="margin-top: 15px" class="returnProd_pg">
+    <div class="form-group">
+        <input id="hidRetailNumber" type="hidden" value="@ViewBag.RetailNumber" />
+        <div class="">
+            <label class="control-label col-md-2">
+                应退总额(￥) :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBox("ReturnMoneyCoun", "0.00", new { @class = "form-control", disabled = "disabled", style = "color: #5ebd5e" })
+            </div>
+        </div>
+        <div class="">
+            <label class="control-label col-md-3">
+                应退储值(￥) :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBox("ReturnCardValue", "0.00", new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div>
+            <label class="control-label col-md-2">
+                消费积分应退(￥) :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBox("ReturnScore", "0", new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+
+        <div>
+
+            <label class="control-label col-md-3">
+                赠送积分应扣 :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBox("ReturnGetScore", "0", new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+
+        <div>
+            <label class="control-label col-md-2">
+                现金应退(￥) :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBox("ReturnCash", "", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="">
+            <label class="control-label col-md-3">
+                优惠券应扣(￥) :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBox("CouponMon", "0.00", new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="form-group">
+        <div class="">
+            <label class="control-label col-md-2">
+                刷卡应退(￥) :
+            </label>
+            <div class="col-md-3" style=" display: flex;">
+
+                @Html.TextBox("ReturnSwipCard", "0.00", new { @class = "form-control" })
+
+                <select id="SwipeCardType" name="SwipeCardType" class="form-control selectpicker_b" style="position: relative; left: 103%; z-index: 999; top: -32px;width:112%;">
+                    <option value="@((int)SwipeCardType.银行卡)">@SwipeCardType.银行卡.ToString()</option>
+                    <option value="@((int)SwipeCardType.微信)">@SwipeCardType.微信.ToString()</option>
+                    <option value="@((int)SwipeCardType.支付宝)">@SwipeCardType.支付宝.ToString()</option>
+                </select>
+            </div>
+        </div>
+        <div class="">
+            <label class="control-label col-md-3">
+                店铺活动应扣(￥) :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBox("StoreActivityDiscount", "0.00", new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+
+
+    </div>
+    <div class="form-group">
+        <div class="">
+            <label class="control-label col-md-2">
+                抹去应扣(￥) :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBox("EraseMoney", "0.00", new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+        <div>
+            <label class="control-label col-md-3">
+                退货总数 :
+            </label>
+            <div class="col-md-3">
+                @Html.TextBox("ReturnCount", "", new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+
+
+    </div>
+    <div class="form-group">
+        <div>
+            <label class="control-label col-md-2">
+                退货时间 :
+            </label>
+            <div class="col-md-3">
+                <span style="position: relative; z-index: 9999;">
+                    @Html.TextBox("ReturnTime", "", new { @class = "form-control" })
+                </span>
+            </div>
+        </div>
+        <label class="control-label col-md-3">
+            经办人 :
+        </label>
+        <div class="col-md-3">
+            @Html.TextBox("Admin", "", new { @class = "form-control", disabled = "disabled" })
+        </div>
+
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2">
+            退货原因 :
+        </label>
+        <div class="col-md-9">
+            @Html.TextArea("Note", "", new { @class = "form-control", placeholder = "*退货原因必填",required = "required" })
+        </div>
+    </div>
+
+</div>
+<script src="~/wwwroot/built/ReturnProduct.js"></script>
+<script>
+    var globalProcessor = new ReturnProcessor();
+    globalProcessor.Init();
+</script>
+<script>
+	 // selectpicker_b 初始化
+    $(function () {
+       
+        	 $('.selectpicker_b').selectpicker();
+       
+    })
+    
+    $("#tbl").on("mouseover", ".popimg", function () {
+		var imgsrc= $(this).attr("src");
+                if(imgsrc=="/Content/Images/noimage.png"||imgsrc==""){
+                	
+                	return;
+                }
+                if (this.tagName == "IMG") {
+                    var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                    
+                    toolTip(strImg);
+                  //  console.log(this.src);
+                } else {
+                    $(this).find("img").each(function () {
+                        var strImg = "<img src=" + this.src + " style='width:200px;'>";
+                        toolTip(strImg);
+                    });
+                }
+            }).on("mouseout", function () {
+                $("body").find("#toolTipLayer").hide();
+            });
+  
+</script>

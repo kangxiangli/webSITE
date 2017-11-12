@@ -1,0 +1,191 @@
+﻿@using Whiskey.ZeroStore.ERP.Models.Entities
+@model ProductOriginNumber
+<style>
+    .modal-dialog {
+        width: 80% !important;
+        max-width: 80%;
+    }
+
+    .cls_configm {
+        width: 100%;
+    }
+
+        .cls_configm .modal-content {
+            width: 40%;
+            margin: 0 auto;
+        }
+</style>
+@Html.HiddenFor(f => f.Id)
+<ul id="productdetialsnav" class="nav nav-tabs">
+    <li class="active">
+        <a href="#tempPC" data-toggle="tab">PC模板</a>
+    </li>
+    <li class="">
+        <a href="#tempPhone" data-toggle="tab">手机模板</a>
+    </li>
+</ul>
+
+<div class="tab-content" style="min-height:400px;">
+    <div class="tab-pane fade active in " id="tempPC">
+        <div class="form-group">
+            <label class="control-label col-md-1">切换模板：</label>
+            <div class="col-md-3">
+                @Html.DropDownListFor(m => m.TemplateId, (List<SelectListItem>)ViewBag.Templates, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10" style="width:100%;padding:1rem;display:inline-block;border:1px dashed #f28020;">
+                <div class="edit" id="TemplateContent_Show" style="float:left;width:50%;padding:2rem 0 0 0;max-height:530px;overflow-y:scroll;"></div>
+                <div class="form-group keditor" style="display:none;">
+                    <label class="control-label col-md-1">编辑内容：</label>
+                    <div class="col-md-5">
+                        <textarea class="form-control textarea_input" id="template_PC_Input" rows="20" placeholder="请输入编辑的内容"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div style="display:none;" id="TemplateContent">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade clearfix" id="tempPhone">
+        <div class="form-group">
+            <div class="form-group">
+                <label class="control-label col-md-1">切换模板：</label>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => m.TemplatePhoneId, (List<SelectListItem>)ViewBag.TemplatesPhone, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10" style="width:100%;padding:1rem;display:inline-block;border:1px dashed #f28020;">
+                    <div style="float:left;width:50%;padding:2rem 0 0 0;max-height:530px;overflow-y:scroll;">
+                        <div class="edit" id="TemplatePhoneContent_Show" style="width:300px;margin:0 auto;"></div>
+                    </div>
+                    <div class="form-group keditor" style="display:none;">
+                        <label class="control-label col-md-1">编辑内容：</label>
+                        <div class="col-md-5">
+                            <textarea class="form-control textarea_input" id="template_Phone_Input" rows="20" placeholder="请输入编辑的内容"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:none;" id="TemplatePhoneContent">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/content/editor/kindeditor-min.js"></script>
+<script type="text/javascript" src="/content/editor/lang/zh_CN.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var $curDescribe;
+        initialTemplate();
+
+        $("#TemplateId").change(function () {
+            var val = $(this).val();
+            $.whiskey.web.confirm({
+                question: "确定要切换嘛？",
+                notes: "切换模板后，之前的模板内容会丢失",
+                ok: function () {
+                    getTempldateDetail("#TemplateContent", val, 0);
+                }
+            });
+        });
+
+        $("#TemplatePhoneId").change(function () {
+            var val = $(this).val();
+            $.whiskey.web.confirm({
+                question: "确定要切换嘛？",
+                notes: "切换模板后，之前的模板内容会丢失",
+                ok: function () {
+                    getTempldateDetail("#TemplatePhoneContent", val, 1);
+                }
+            });
+        });
+
+        $(document).off("click.fashion").on("click.fashion", "[fashion]", function (e) {
+            $curDescribe = $(this);
+            $(".tab-pane.active .keditor").show();
+            var strcontent = $curDescribe.clone();
+            strcontent.find("img[src='']").remove();
+            KindEditor.html('.tab-pane.active .textarea_input', strcontent.html());
+        });
+
+        $("#TemplatePhoneContent_Show,#TemplateContent_Show").off("click.fashion").on("click.fashion", ":not([fashion])", function () {
+            $curDescribe = null;
+            $(".tab-pane.active .keditor").hide();
+        });
+
+        $("#productdetialsnav").off("click.nav").on("click.nav", "li:not(.active)", function () {
+            $curDescribe = null;
+            $(".tab-pane.active .keditor").hide();
+        });
+
+        function getTempldateDetail(wrapper, Id, phoneOrpc) {
+            $.whiskey.web.ajaxRequest({
+                actionUrl: "TempldateDetail",
+                method: "post",
+                params: { templateId: Id, ponid: "@Model.Id", phoneOrpc: phoneOrpc || 0 },
+                complete: function (data) {
+                    $(wrapper + "_Show").html(data.Content);
+                    $(wrapper).html(data.OrgContent);
+                }
+            });
+        }
+        function initialTemplate() {
+            var temp_pc = $("#TemplateId").val();
+            var temp_phone = $("#TemplatePhoneId").val();
+            getTempldateDetail("#TemplateContent", temp_pc, 0);
+            getTempldateDetail("#TemplatePhoneContent", temp_phone, 1);
+        }
+
+        function KindContentChange(content) {
+            if ($curDescribe && $($curDescribe).length > 0) {
+                var type = $curDescribe.attr("fashion");
+                var $curSelectors = $(".tab-pane.active").find("[fashion='" + type + "']");
+                $curSelectors.html(content);
+                if (type.indexOf("img") > -1) {
+                    if (content.length > 0) {
+                        $curSelectors.css("background", "none");
+                    } else {
+                        $curSelectors.css("background", "#ccc");
+                    }
+                }
+            }
+        }
+
+        KindEditor.create("#template_PC_Input,#template_Phone_Input", {
+            width: "100%",
+            height: "510px",
+            resizeType: 1,
+            uploadJson: "/content/editor/upload_json.ashx",
+            fileManagerJson: "/content/editor/file_manager_json.ashx",
+            allowFileManager: true,
+            allowPreviewEmoticons: true,
+            allowImageUpload: true,
+            contentEditable: true,
+            filterMode: false,
+            items: [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen',
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'hr', 'emoticons',
+                'link', 'unlink'
+            ],
+            afterCreate: function (id) {
+                this.focus();
+            },
+            afterChange: function (id) {
+                this.sync();
+                KindContentChange(this.html());
+            },
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+    });
+</script>

@@ -1,0 +1,551 @@
+﻿<style>
+    #store-memu {
+        width: 280px !important;
+        margin-left: 0;
+    }
+
+        #store-memu li {
+            float: left;
+        }
+
+    .child_memu {
+        width: 163px !important;
+        padding: 7px 0;
+        margin-top: 6px;
+        min-width: 86px
+    }
+
+        .child_memu li a {
+            text-align: center;
+            max-width: 163px;
+        }
+
+    .memu {
+        width: 307px !important;
+        min-width: 86px !important;
+        padding: 7px 0;
+        margin-top: 6px;
+    }
+
+    .dropdown_sale {
+        margin-right: 10px;
+        height: 100%;
+    }
+
+    .bootstrap-select {
+        height: 100%
+    }
+
+        .bootstrap-select button {
+            background: rgba(0, 0, 0, .1);
+            padding: 10px 38px;
+        }
+
+        .bootstrap-select .open {
+            margin-top: 15px
+        }
+
+    .open .dropdown-toggle.btn-default {
+        background-color: rgba(0, 0, 0, .1) !important;
+    }
+
+    .btn-default:focus,
+    .btn-default:active,
+    .btn-default.active,
+    .open .dropdown-toggle.btn-default {
+        background-color: rgba(0, 0, 0, 0.1) !important;
+    }
+
+    #OutStoreId {
+        min-width: 100px;
+        min-height: 100%;
+        padding: 10px 20px
+    }
+
+    .dropdown_sale > a {
+        background: rgba(0, 0, 0, .2);
+    }
+
+        .dropdown_sale > a:focus {
+            background: rgba(0, 0, 0, .2);
+        }
+
+        .dropdown_sale > a:active {
+            color: #fff !important;
+        }
+
+    .memu li:hover {
+        background: rgba(0, 0, 0, .4);
+    }
+
+    .memu li a:hover {
+        background: none;
+    }
+
+    .memu li {
+        float: left;
+        max-width: 101px;
+        cursor: pointer;
+    }
+
+    .child_memu li {
+        cursor: pointer;
+    }
+
+    .time button,
+    .pageSize button {
+        background: rgba(0, 0, 0, .2);
+        padding: 20px 23px;
+        line-height: 0px;
+    }
+
+        .time button:active,
+        .time button:focus,
+        .pageSize button:active,
+        .pageSize button:focus {
+            background: rgba(0, 0, 0, .2);
+        }
+
+    .saledetails {
+        top: 0%;
+        right: 25%;
+        width: 300px;
+        background: rgba(0, 0, 0, .2);
+        border-radius: 4px;
+        display: none;
+        min-width: 325px;
+    }
+
+    .SaleData li {
+        color: #fff;
+        font-size: 14px;
+        text-decoration: none;
+        list-style-type: none;
+        float: left;
+        margin: 5px;
+        padding: 5px
+    }
+
+        .SaleData li:hover {
+            cursor: pointer;
+            background: rgba(0, 0, 0, .2);
+        }
+
+    .datepicker-dropdown {
+        background: rgba(0, 0, 0, 1) !important;
+    }
+
+    #Search {
+        float: left;
+        margin-left: 8px;
+        height: 39px;
+    }
+
+    .nodataDiv {
+        position: absolute;
+        top: 43%;
+        left: 22%;
+        width: 59px;
+        height: 20px;
+        border: 1px solid #ccc;
+        color: #ccc;
+        border-radius: 4px;
+        line-height: 17px;
+        display: none;
+    }
+
+    .sale_content {
+        width: 100%;
+        height: 40px;
+        position: absolute;
+        top: 6%;
+        left: 2%;
+    }
+
+        .sale_content > div {
+            float: left;
+            margin: 0;
+        }
+
+    .option {
+        position: absolute;
+        width: 200px;
+        top: 100%;
+        left: -74%;
+        font-size: 15px;
+        padding: 4px;
+        display: none;
+        z-index: 99;
+    }
+
+    .option_content {
+        width: 100%;
+        height: 100%;
+        display: block;
+        margin-bottom: 4px;
+        position: relative;
+    }
+
+    .option input {
+        width: 50px;
+        display: inline-block;
+        line-height: 20px;
+        text-align: center;
+    }
+
+    .addContent {
+        position: absolute;
+        top: 6px;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        z-index: 3;
+    }
+
+    .delContent {
+        position: absolute;
+        top: 0px;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        z-index: 3;
+        display: none;
+    }
+</style>
+<div id="saleStatistics" style="width: 100%;height:800px;position:relative;">
+    <!-- Single button -->
+
+</div>
+<div class="nodataDiv">暂无销售</div>
+<div class="sale_content">
+    <div class="dropdown dropdown_sale" style="z-index: 999;">
+        <select id="OutStoreId" class="form-control"></select>
+    </div>
+
+    <div class="btn-group pageSize" role="group" aria-label="..." style="margin-left:5px;z-index: 999;">
+        <button type="button" class="btn btn-default" page-data="0" style="background: rgba(0,0,0,.9);">会员类型</button>
+        <button type="button" class="btn btn-default" page-data="11">会员级别</button>
+        <!--  <button type="button" class="btn btn-default" page-data="1">热度</button>-->
+        <button type="button" class="btn btn-default" page-data="2">性别</button>
+        <button type="button" class="btn btn-default" page-data="12">体型</button>
+        <button type="button" class="btn btn-default" page-data="3">上身尺码</button>
+        <button type="button" class="btn btn-default" page-data="3">下身尺码</button>
+        <button type="button" class="btn btn-default" page-data="4">偏好颜色</button>
+        <button type="button" class="btn btn-default" page-data="5" data-type="HeightRanges">
+            身高
+            <div class="option">
+                <img class="addContent" src="../../../../Theme/default/img/list-icons/qbsc.png" alt="" />
+
+                <div class="option_content">
+                    <input type="text" /> ~
+                    <input type="text" />cm
+                    <img class="delContent" src="../../../../Theme/default/img/list-icons/jian.png" alt="" />
+                </div>
+            </div>
+        </button>
+        <button type="button" class="btn btn-default" page-data="6" data-type="WeightRanges">
+            体重
+            <div class="option">
+                <img class="addContent" src="../../../../Theme/default/img/list-icons/qbsc.png" alt="" />
+
+                <div class="option_content">
+                    <input type="text" /> ~
+                    <input type="text" />kg
+                    <img class="delContent" style=";" src="../../../../Theme/default/img/list-icons/jian.png" alt="" />
+                </div>
+            </div>
+
+        </button>
+        <button type="button" class="btn btn-default" page-data="7" data-type="ShoudlerRanges">
+            肩宽
+            <div class="option">
+                <img class="addContent" src="../../../../Theme/default/img/list-icons/qbsc.png" alt="" />
+
+                <div class="option_content">
+                    <input type="text" /> ~
+                    <input type="text" />cm
+                    <img class="delContent" src="../../../../Theme/default/img/list-icons/jian.png" alt="" />
+                </div>
+            </div>
+        </button>
+        <button type="button" class="btn btn-default" page-data="8" data-type="BustRanges">
+            胸围
+            <div class="option">
+                <img class="addContent" src="../../../../Theme/default/img/list-icons/qbsc.png" alt="" />
+
+                <div class="option_content">
+                    <input type="text" /> ~
+                    <input type="text" />cm
+                    <img class="delContent" src="../../../../Theme/default/img/list-icons/jian.png" alt="" />
+                </div>
+            </div>
+        </button>
+        <button type="button" class="btn btn-default" page-data="9" data-type="WaistLineRanges">
+            腰围
+            <div class="option">
+                <img class="addContent" src="../../../../Theme/default/img/list-icons/qbsc.png" alt="" />
+
+                <div class="option_content">
+                    <input type="text" /> ~
+                    <input type="text" />cm
+                    <img class="delContent" src="../../../../Theme/default/img/list-icons/jian.png" alt="" />
+                </div>
+            </div>
+        </button>
+        <button type="button" class="btn btn-default" page-data="10" data-type="HipRanges">
+            臀围
+            <div class="option">
+                <img class="addContent" src="../../../../Theme/default/img/list-icons/qbsc.png" alt="" />
+
+                <div class="option_content">
+                    <input type="text" /> ~
+                    <input type="text" />cm
+                    <img class="delContent" src="../../../../Theme/default/img/list-icons/jian.png" alt="" />
+                </div>
+            </div>
+        </button>
+    </div>
+    <button id="Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+</div>
+<script type="text/javascript" src="/Content/scripts/echart/echarts.js"></script>
+<script type="text/javascript">
+    var StoreId = -1;
+    var json = {};
+    json.MemberStatType = 0;
+    var activeType = '';
+    var CountFromCurrentStoreArr = []; //全网数据
+    var CountFromAllStoreArr = []; //当前店铺数据
+    var Xname = [];
+    var sizeObjType = -1;
+    var isShow = true; //是否显示label
+    $(function () {
+        require.config({
+            paths: {
+                echarts: '/content/scripts/echart/'
+            }
+        });
+        plotWithOptions();
+    })
+
+    function plotWithOptions() {
+
+        $(".dropdown_sale #OutStoreId").queryManageStore({
+            defaultSelect: true,
+            callback: function () {
+                var storeID = $("#OutStoreId").val();
+                json.StoreId = parseInt(storeID);
+            }
+        });
+        $('#OutStoreId').change(function () {
+            json.StoreId = parseInt($("#OutStoreId").val());
+        });
+        /*添加分组*/
+        $(".addContent").bind("click", function () {
+            var contentlength = $(this).siblings(".option_content").length;
+            var content = $(this).siblings(".option_content").eq(contentlength - 1).clone(true);
+            $(this).parent().append(content);
+            $(this).siblings(".option_content").eq(contentlength).find(".delContent").show();
+        })
+        /*删除分组*/
+        $(".delContent").bind("click", function () {
+            $(this).parent().remove();
+        })
+
+        /*切换类型*/
+        $(".pageSize button").bind("click", function () {
+            var activepage = $(this).attr('page-data'); //MemberStatType
+            activeType = $(this).attr('data-type'); //带有范围的类型
+            $(this).css("background", "rgba(0,0,0,.9)").siblings().css("background", "rgba(0,0,0,.2)");
+            $(".option").hide();
+            if ($(this).has(".option").length > 0) {
+                $(this).find(".option").show();
+            }
+            if ($(this).text() == "上身尺码") sizeObjType = 0;
+            if ($(this).text() == "下身尺码") sizeObjType = 1;
+            if ($(this).text() == "偏好颜色") sizeObjType = 3;
+            delete json['HeightRanges'];
+            delete json['WeightRanges'];
+            delete json['ShoudlerRanges'];
+            delete json['BustRanges'];
+            delete json['WaistLineRanges'];
+            delete json['HipRanges'];
+
+            json.MemberStatType = parseInt(activepage);
+
+        })
+
+        $('#Search').click(function () {
+            //  json[activeType].splice(0, json[activeType].length);
+            debugger
+
+            var option_contentarr = $("[data-type='" + activeType + "'] .option_content").filter(".option_content");
+            if (option_contentarr.length > 0) {
+                json[activeType] = [];
+                $.each(option_contentarr, function (i, item) {
+                    var dataOption = {};
+                    var MinValue = $(item).find("input:eq(0)").val();
+                    var MaxValue = $(item).find("input:eq(1)").val();
+                    dataOption.MinValue = parseInt(MinValue);
+                    dataOption.MaxValue = parseInt(MaxValue);
+                    json[activeType].push(dataOption);
+                })
+            }
+            if (activeType != "undefined" && activeType != '') {
+                json[activeType] = JSON.stringify(json[activeType])
+            }
+            console.log("新的参数:" + JSON.stringify(json));
+            var strjson = JSON.stringify(json);
+            $.post("/datastat/member/query", json, function (da) {
+                debugger
+                if (da.ResultType == 3) {
+                    var data = da.Data;
+                    console.log("新的数据" + JSON.stringify(data));
+                    CountFromAllStoreArr.splice(0, CountFromAllStoreArr.length);
+                    CountFromCurrentStoreArr.splice(0, CountFromCurrentStoreArr.length);
+                    Xname.splice(0, Xname.length);
+                    if (data.length == 0) {
+                        Xname.push("暂无数据");
+                        reloadCateChart([0], [0], Xname)
+                    } else {
+                        if (json.MemberStatType == 3) {
+                            var sizeObj;
+                            if (sizeObjType == 0) sizeObj = data.TopSizeDict;
+                            if (sizeObjType == 1) sizeObj = data.BottomSizeDict;
+                            $.each(sizeObj, function (i, item) {
+                                CountFromAllStoreArr.push(sizeObj[i].CountFromAllStore);
+                                CountFromCurrentStoreArr.push(sizeObj[i].CountFromCurrentStore);
+                                Xname = ["S", "M", "L", "XL", "2XL"];
+                            });
+                            isShow = true;
+                        } else if (json.MemberStatType == 0 || json.MemberStatType == 11 || json.MemberStatType == 2 || json.MemberStatType == 12) {
+                            $.each(data, function (i, item) {
+                                CountFromAllStoreArr.push(item.CountFromAllStore);
+                                CountFromCurrentStoreArr.push(item.CountFromCurrentStore);
+                                Xname.push(item.Name);
+                            })
+                            isShow = true;
+                        } else if (json.MemberStatType == 4) {
+                            if (sizeObjType == 3) sizeObj = data.ColorPreference;
+                            $.each(sizeObj, function (i, item) {
+                                CountFromAllStoreArr.push(sizeObj[i].CountFromAllStore);
+                                CountFromCurrentStoreArr.push(sizeObj[i].CountFromCurrentStore);
+                                Xname.push(sizeObj[i].Name);
+                            })
+                            isShow = false;
+                        } else {
+                            var danwei = "cm";
+                            if (data.FigureStatType == "体重") danwei = "kg";
+                            $.each(data.StatEntries, function (i, item) {
+                                CountFromAllStoreArr.push(item.CountFromAllStore);
+                                CountFromCurrentStoreArr.push(item.CountFromCurrentStore);
+                                var dataRange = item.MinValue + "~" + item.MaxValue + danwei;
+                                Xname.push(dataRange);
+                            })
+                            isShow = true;
+                        }
+                        reloadCateChart(CountFromAllStoreArr, CountFromCurrentStoreArr, Xname, isShow);
+                    }
+
+                }
+            })
+        })
+
+        function reloadCateChart(CountFromAllStoreArr, CountFromCurrentStoreArr, Xname, isShow) {
+            require(
+                [
+                    'echarts',
+                    'echarts/chart/line',
+                    'echarts/chart/bar',
+
+                ],
+                function (ec) {
+                    var bigProductChart = ec.init(document.getElementById('saleStatistics'));
+                    var bigProductOption = {
+
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'none'
+                            }
+                        },
+                        calculable: false,
+                        xAxis: [{
+                            type: 'category',
+                            data: Xname,
+                            axisLabel: {
+                                show: true,
+                                textStyle: {
+                                    color: '#fff'
+                                }
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    color: ['rgba(255,255,255,.1)'],
+                                    width: 1,
+                                    type: 'solid'
+                                }
+                            },
+                        }],
+                        yAxis: [{
+                            type: 'value',
+                            axisLabel: {
+                                show: true,
+                                textStyle: {
+                                    color: '#fff'
+                                }
+                            },
+                            splitLine: {
+                                show: true,
+                                lineStyle: {
+                                    color: ['rgba(255,255,255,.1)'],
+                                    width: 1,
+                                    type: 'solid'
+                                }
+                            },
+                        }],
+                        grid: {
+                            borderWidth: 0,
+                            x2: '14%',
+                            x: '7%',
+                            y: '14%',
+                            y2: "10%"
+                        },
+                        series: [{
+                            name: '本店铺',
+                            type: 'bar',
+                            data: CountFromCurrentStoreArr || [0],
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: isShow,
+                                        position: 'top',
+                                        formatter: '本店铺{b}'
+                                    }
+                                }
+                            },
+                        },
+                        {
+                            name: '全网',
+                            type: 'bar',
+                            data: CountFromAllStoreArr || [0],
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: isShow,
+                                        position: 'top',
+                                        formatter: '全网{b}'
+                                    }
+                                }
+                            },
+                        }
+                        ]
+                    };
+
+                    bigProductChart.setOption(bigProductOption);
+
+                }
+            );
+        }
+    }
+</script>

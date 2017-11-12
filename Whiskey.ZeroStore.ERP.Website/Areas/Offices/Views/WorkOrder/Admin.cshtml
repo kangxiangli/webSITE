@@ -1,0 +1,184 @@
+﻿
+<style>
+    #hoverStyle_tow:hover {
+        width: 62px;
+        border-radius: 0%;
+        background: black !important;
+    }
+
+    #hoverStyle_tow {
+        width: 62px;
+        border-radius: 0% !important;
+        background: #5cb85c !important;
+    }
+    #nwe_table_1_paginate {
+        width: 104%;
+    }
+    .datatable-footer .info {
+     
+      width: 129px; 
+    }
+    #new_Clear {
+        background-color: #e5603b;
+    }
+</style>
+<div class="row">
+    <div class="panel panel-search">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-search"></i> <span>查询条件</span></h5>
+            </div>
+            <div class="col-md-8 text-right">
+            </div>
+        </div>
+        <div class="panel-body">
+            <form class="form-horizontal form-search">
+                <div class="col-md-7">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">员工姓名</label>
+                        <div class="col-md-7">
+                            @Html.TextBox("new_RealName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="form-group no-margin-hr">
+                        <label class="control-label col-md-4">可查看部门：</label>
+                        <div class="col-md-7">
+                            @Html.DropDownList("new_DepartmentId", (List<SelectListItem>)ViewBag.depList, new { @class = "form-control selectpicker ser_sel", data_live_search="true" })
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer text-right clearfix ">
+
+            <div class="pull-left">
+                <button id="new_Search" title="按条件搜索数据" type="button" class="btn btn-primary btn-padding-right"><i class="fa fa-search"></i> <span>搜索</span></button>
+                <button id="new_Clear" title="重置搜索栏的各项输入" type="button" class="btn btn-default btn-padding-right"><i class="fa fa-refresh"></i> <span>清除</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="panel panel-list">
+        <div class="panel-heading clearfix">
+            <div class="col-md-4 panel-title">
+                <h5><i class="fa fa-list"></i> <span>数据列表</span></h5>
+            </div>
+        </div>
+        <table id="nwe_table_1" class="table table-list table-hover valign-middle" width="100%">
+            <thead>
+            </thead>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    var datatable_install;
+
+    $(document).ready(function () {
+
+        var dts = $("#nwe_table_1").dataTable({
+            "bScrollCollapse": false,
+            "sAjaxSource": "@Url.Action("AdminList")",
+            "fnServerParams": function (aoData) {
+                var conditions = new $.whiskey.filter.group();
+                conditions.Rules.push(new $.whiskey.filter.rule("IsDeleted", "false", "equal"));
+                conditions.Rules.push(new $.whiskey.filter.rule("IsEnabled", "true", "equal"));
+                $(".form-search input[name][name!='StartDate'][name!='EndDate']").each(function () {
+                    var field = $(this).attr("name");
+                    var value = $(this).val();
+                    if (value != null && value.length > 0 && field != "new_RealName") {
+                        conditions.Rules.push(new $.whiskey.filter.rule(field, value, "contains"));
+                    }
+                    if (value != null && value.length > 0 && field == "new_RealName") {
+                        conditions.Rules.push(new $.whiskey.filter.rule("RealName", value, "contains"));
+                    }
+                });
+                var departmentId = $("#new_DepartmentId").val();
+                if (departmentId != undefined && departmentId.trim().length > 0) {
+                    conditions.Rules.push(new $.whiskey.filter.rule("DepartmentId", departmentId, "equal"));
+                }
+                aoData.push({ name: "conditions", value: JSON.stringify(conditions) });
+            },
+            "aoColumns": [{
+                "bVisible": false,
+                "bSearchable": false,
+                "sName": "Id",
+                "mData": "Id"
+            },
+            {
+                "sTitle": $.whiskey.datatable.tplTitleCheckbox(),
+                "sName": "Id",
+                "bSortable": false,
+                "bSearchable": false,
+                "mData": function (data) {
+                    return $.whiskey.datatable.tplListCheckbox(data.Id);
+                }
+            },
+            {
+                "sTitle": "编号",
+                "bSortable": false,
+                "sName": "RowNumber",
+                "mData": function (data) {
+                    var index = data.iDisplayIndex + 1;
+                    return '' + index + '';
+                }
+            },
+
+            {
+                "sTitle": "员工名称",
+                "bSortable": false,
+                "sName": "MemberName",
+                "mData": function (data) {
+                    return data.RealName;
+                },
+            },
+            {
+                "sTitle": "选择",
+                "bSortable": false,
+                "sName": "",
+                "mData": function (data) {
+                    var btn = '<button id="hoverStyle_tow" type="button" onclick="choose(this,false)" style="width: 62px;height: 30px;" class="btn bootbox-close-button  btn-light-green" data-name="' + data.RealName + '"  data-id="' + data.Id + '">选择</button>';
+                    return btn;
+                },
+            },
+            ]
+        });
+
+        $.whiskey.datatable.instances[0] = dts;
+
+        $("#new_Search").on("click", function () {
+            //$.whiskey.datatable.instance.reset(false);
+            $.whiskey.datatable.reset(true, $.whiskey.datatable.instances[0]);
+        });
+
+        $("#new_Clear").on("click", function () {
+            $.whiskey.web.clearForm(".form-search");
+        });
+
+    });
+
+    //选择员工
+    function choose(my, isdelete) {
+        var name = $(my).attr("data-name");
+        var id = $(my).attr("data-id");
+
+        $("#RealNames").attr("value", name);
+        $("#AdminIds").attr("value", id);
+//open(location, '_self').close();
+        //$.whiskey.datatable.instance.reset(false);
+        //$.whiskey.datatable.reset(true, $.whiskey.datatable.instances[0]);
+
+        
+    }
+</script>
+
+<script>
+    // selectpicker 初始化
+    $(function () {
+        $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker('refresh');
+    })
+</script>

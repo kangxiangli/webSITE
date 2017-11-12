@@ -1,0 +1,55 @@
+﻿@using Whiskey.ZeroStore.ERP.Transfers
+@using Whiskey.ZeroStore.ERP.Transfers.Enum.Base
+@model ResignationDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.PersonnelVerifyType) :
+    </label>
+    <div class="col-md-8">
+        @Html.DropDownList("PersonnelVerifyType", (List<SelectListItem>)ViewBag.VerifyList, new { @class = "form-control" })        
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.TechniqueVerifyType) :
+    </label>
+    <div class="col-md-8">
+        @Html.DropDownList("TechniqueVerifyType", (List<SelectListItem>)ViewBag.VerifyList, new { @class = "form-control selectpicker" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m => m.ManagerVerifyType) :
+    </label>
+    <div class="col-md-8">
+        @Html.DropDownList("ManagerVerifyType", (List<SelectListItem>)ViewBag.VerifyList, new { @class = "form-control selectpicker" })
+    </div>
+</div>
+@Html.HiddenFor(x=>x.Id)
+<script type="text/javascript">
+    $(function () {
+        //debugger
+        var PersonnelVerifyType = "@Model.PersonnelVerifyType";
+        var TechniqueVerifyType = "@Model.TechniqueVerifyType";
+        var ManagerVerifyType = "@Model.ManagerVerifyType";
+        var $PersonnelVerifyType = ".bootbox #PersonnelVerifyType";
+        var $TechniqueVerifyType = ".bootbox #TechniqueVerifyType";
+        var $ManagerVerifyType = ".bootbox #ManagerVerifyType";
+        initData($PersonnelVerifyType, PersonnelVerifyType);
+        initData($TechniqueVerifyType, TechniqueVerifyType)
+        initData($ManagerVerifyType, ManagerVerifyType)
+    })
+    //初始化界面
+    function initData(option, verifyType) {
+        if (verifyType != "@((int)VerifyFlag.Verifing)") {
+            var objTemp = $(option + " option");
+            $(objTemp).each(function () {
+                var temp =$(this).val();
+                if (temp==verifyType) {
+                    $(this).attr("selected", "selected");
+                }
+            });
+            $(option).attr("disabled", "disabled");
+        }
+    }
+</script>

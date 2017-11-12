@@ -1,0 +1,120 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model StoreDto
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.StoreName) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.StoreName, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.StoreType) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.StoreType, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.IsMainStore) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.IsMainStore, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Description, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.StoreCredit) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.StoreCredit, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Balance) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Balance, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ContactPerson) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ContactPerson, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.MobilePhone) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.MobilePhone, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Telephone) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Telephone, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ProvinceId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ProvinceId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.CityId) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.CityId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.ZipCode) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.ZipCode, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Address) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Address, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-2">
+        @Html.DisplayNameFor(m=>m.Notes) :
+    </label>
+    <div class="col-md-10">
+        @Html.TextBoxFor(m=> m.Notes, new { @class = "form-control" })
+    </div>
+</div>
+@Html.HiddenFor(m=> m.Id)

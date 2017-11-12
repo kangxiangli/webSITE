@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<PermissionList>
+  <permission>
+    <id>1</id>
+    <name>商品管理</name>
+    <createTime>2012-12-2</createTime>
+  </permission>
+</PermissionList>
+

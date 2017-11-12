@@ -1,0 +1,283 @@
+﻿@using Whiskey.ZeroStore.ERP.Models;
+@model  Group
+<style>
+    * {
+        font-size: 13px;
+    }
+
+    .pri-ul-li label {
+        margin-left: 10px;
+    }
+
+    .permis-contain li {
+        border-left: 1px solid gray;
+    }
+
+
+    .memb li {
+        float: left;
+        list-style-type:none;
+        cursor:pointer;
+        margin-left:18px;
+    }
+
+    .modal-dialog {
+        width: 680px;
+    }
+
+    /*#defauright-tab ul li {
+        float: left;
+    }
+
+        #defauright-tab ul li a {
+            padding: 7px 3px;
+        }*/
+
+    .par_ul li {
+        list-style-type: none;
+    }
+
+    #groupmemb-tab dl dd {
+        float: left;
+        margin-left: 10px;
+    }
+</style>
+<div class="update-dep">
+    <ul id="myTab" class="nav nav-tabs">
+        <li class="active">
+            <a href="#baseinfo-tab" data-toggle="tab">
+                基本信息
+            </a>
+        </li>
+        @*<li><a href="#defauright-tab" id="defauright_a" data-toggle="tab">默认权限</a></li>*@
+        <li><a href="#groupmemb-tab" id="groupmemb_a" data-toggle="tab">组成员管理</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="baseinfo-tab">
+            <div class="view group_up">
+
+                <input name="Id" id="hid-id" type="hidden" value="@Model.Id" />
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.GroupName) :
+                    </label>
+                    <div class="col-md-7">
+                        @Html.TextBoxFor(c => c.GroupName, new { @class = "form-control", placeholder = "请输入中文、字母或者数字" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3">
+                        @Html.DisplayNameFor(m => m.Description) :
+                    </label>
+                    <div class="col-md-7">
+                        <textarea class="form-control" id="Description" name="Description">@Model.Description</textarea>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3" style="padding-top:2px">
+                        @Html.DisplayNameFor(m => m.IsDeleted) :
+                    </label>
+                    <input type="hidden" id="hid-isdel" value="@Model.IsDeleted" />
+                    <div class="col-md-7">
+                        <label>是<input type="radio" value="1" name="IsDeleted" /></label>
+                        <label>否<input type="radio" value="0" name="IsDeleted" /></label>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3" style="padding-top:2px">
+                        @Html.DisplayNameFor(m => m.IsEnabled) :
+                    </label>
+                    <input type="hidden" id="hid-isenabl" value="@Model.IsEnabled" />
+                    <div class="col-md-7">
+                        <label>是<input type="radio" value="1" name="IsEnabled" /></label>
+                        <label>否<input name="IsEnabled" value="0" type="radio" /></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div class="tab-pane fade" id="defauright-tab">
+            @{Html.RenderAction("LoadPermissionTree", "Group");}
+        </div>*@
+        <div class="tab-pane fade" id="groupmemb-tab">
+            <div>
+                <button class="btn membadd_btn" style="margin-bottom:10px">添加成员</button>
+                <div>
+                    <div>
+                        <span style="font-weight:bold">组中的用户</span>
+                        <ul class="memb userlis_ul">
+
+                            @foreach (var item in (Dictionary<int, string>)ViewBag.Membs)
+                            {
+                                <li class="sel_memb" style="cursor:pointer;margin-left:18px">
+                                    <input type="hidden" name="memb" value="@item.Key" />
+                                    <span class="gr_me">@item.Value</span>
+                                </li>
+                            }
+
+
+                        </ul>
+
+                    </div>
+                    <div style="clear:both">
+                        <span style="font-weight:bold">组中的角色</span>
+                        <ul class="memb roleli_ul">
+
+                            @foreach (var item in (Dictionary<int, string>)ViewBag.Roles)
+                            {
+                                <li class="sel_memb" style="cursor:pointer;margin-left:18px">
+                                    <input type="hidden" name="role" value="@item.Key" />
+                                    <span class="gr_me">@item.Value</span>
+                                </li>
+                            }
+
+
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+<script>
+    //debugger
+    var isexisTree = false;
+    $(function () {
+        $(".group_up #GroupName").keyup(function () {
+            var t = $(this).val().trim().replace(/[^\u4e00-\u9fa5\da-z]/gi, "");
+
+            $(this).val(t);
+            if (t != "") {
+                $("[data-bb-handler='success']").removeAttr("disabled");
+                $(this).parents("div:first").removeClass("has-error");
+            }
+            else {
+                $(this).parents("div:first").addClass("has-error");
+                $(this).attr("title", "组名称不为空");
+                $("[data-bb-handler='success']").attr("disabled", "disabled");
+            }
+        });
+        var isdel = $("#hid-isdel").val();
+        var isenab = $("#hid-isenabl").val();
+        if (isdel) {
+            $(".group_up input[name='IsDeleted']").first().attr("checked", "checked");
+        }
+        else {
+            $(".group_up input[name='IsDeleted']").last().attr("checked", "checked");
+        }
+
+        if (isenab) {
+            $(".group_up input[name='IsEnabled']").first().attr("checked", "checked");
+        }
+        else {
+            $(".group_up input[name='IsEnabled']").last().attr("checked", "checked");
+        }
+
+        $(document).delegate(".sel_memb", "mouseover", function () {
+            if ($(this).children(".del_icon_flg").length == 0)
+                $(this).append("<span class='del_icon_flg glyphicon glyphicon-remove form-control-feedback' style='float:right;right:10'></span>");
+        })
+        .delegate(".del_icon_flg", "click", dele_icon_flg).delegate(".sel_memb", "mouseleave", function () {
+            $(this).children(".del_icon_flg").remove();
+        })
+
+        $("#defauright_a").click(function () {
+
+            if (!isexisTree) {
+
+            }
+        })
+        $(".membadd_btn").click(function () {
+            var dialog = new $.whiskey.web.ajaxDialog({
+                caption: "添加组成员",
+                successTit: "确定",
+                actionUrl: "@Url.Action("AddMemb")",
+                lockButton: $(this),
+                formValidator: function () {
+                    var $form = $(".modal-form");
+                    if (!$form.valid()) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+                successEvent: function () {
+                    var uselis = {};
+                    var rolelis = {};
+                    $(".group_addmember #user_tab tbody :checkbox:checked").each(function () {
+                        var _id = $(this).val();
+                        var reg = /^p.*/;
+                        if (!reg.test(_id)) {
+                           var exis=$(".userlis_ul").find("input[value='" + _id + "']").length>0;
+                           if (!exis) {
+                               var nam = $(this).parents("tr:first").find("td:eq(4)").text();
+                               var tx = "<li class='sel_memb'><input type='hidden' name='memb' value='" + _id + "' ><span class='gr_me'>" + nam + "</span></li>";
+                               $(".userlis_ul").append(tx);
+                           }
+                           
+                            //uselis.push({id:_id,name:nam});
+                        }
+                    })
+                    $(".group_addmember #role_tab tbody :checkbox:checked").each(function () {
+                        var _rid = $(this).val();
+                        var rnam = $(this).parents("tr:first").find("td:eq(2)").text();
+
+                        var exis = $(".roleli_ul").find("input[value='" + _rid + "']").length > 0;
+                        if (!exis) {
+                            //rolelis.push({id:_rid,name:rnam});
+                            var tx = "<li class='sel_memb'><input type='hidden' name='role' value='" + _rid + "' ><span class='gr_me'>" + rnam + "</span></li>";
+                            $(".roleli_ul").append(tx);
+                        }
+                       
+                    })
+
+
+                },
+                postComplete: function () {
+                    //$.whiskey.datatable.reset(false);
+                    return true;
+                },
+            });
+
+        });
+    })
+
+    function editDa() {
+        var parId = $(".par_view #hid-id").val();
+        var parName = $(".par_view #DepartmentName").val();
+        var notes = $(".par_view #Description").val();
+        var admi = $("#AdminId option:selected").val();
+        var isdel = $(".par_view [name='IsDeleted']:checked").val();
+        var isenab = $(".par_view [name='IsEnabled']:checked").val();
+        $.post("/Authorities/Department/Edit", { parId: parId, partName: parName, notes: notes, admin: admi, isdel: isdel, isenab: isenab }, function (da) {
+
+            if (da.ResultType == 3) {
+                $.whiskey.datatable.instance.fnDraw(false);
+
+            }
+            //$.whiskey.datatable.instance.fnDraw(true);
+
+            if (da.ResultType != 3 && da.ResultType != 2) {
+                $.whiskey.web.alert({
+                    type: "info",
+                    content: "修改失败",
+                    par: { keyboard: false, backdrop: "static" }
+                });
+            }
+        });
+
+    }
+    function dele_icon_flg() {
+        $(this).parents("li:first").remove();
+    }
+
+
+</script>

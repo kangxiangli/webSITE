@@ -1,0 +1,130 @@
+﻿
+
+
+
+
+@using Whiskey.ZeroStore.ERP.Transfers
+@model PermissionDto
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.ModuleId) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.ModuleId, new { @class = "form-control" ,style="background-color:#dddddd",@readonly="readonly"})
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.ModuleId)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.PermissionName) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.PermissionName, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.PermissionName)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Description) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.Description, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.Description)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.Identifier) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.Identifier, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.Identifier)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.OnlyFlag) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.OnlyFlag, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.OnlyFlag)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.AreaName) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.AreaName, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.AreaName)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.ControllName) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.ControllName, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.ControllName)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m => m.ActionName) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.ActionName, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-3">
+        @Html.ValidationMessageFor(m => m.ActionName)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Icon) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.Icon, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.Icon)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.Style) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.Style, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.Style)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-md-4">
+        @Html.DisplayNameFor(m=>m.onClickScripts) :
+    </label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m=> m.onClickScripts, new { @class = "form-control" })
+    </div>
+    <div class="control-detail col-md-4">
+        @Html.ValidationMessageFor(m => m.onClickScripts)
+    </div>
+</div>
+
+@Html.HiddenFor(m=> m.Id)
